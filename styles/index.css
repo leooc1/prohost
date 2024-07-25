@@ -1,0 +1,33 @@
+@import url('./loader.css');
+@import url('./switch.css');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.nav-hover {
+    transition: .3s;
+
+    &:hover {
+        background-color: #335D6C;
+    }
+
+    &:hover>svg {
+        fill: #84FFCD;
+    }
+
+    &:hover>p {
+        color: #ffffff;
+    }
+}
+
+.nav-active {
+    background-color: #335D6C;
+
+    &>svg {
+        fill: #84FFCD;
+    }
+
+    &>p {
+        color: #ffffff;
+    }
+}
