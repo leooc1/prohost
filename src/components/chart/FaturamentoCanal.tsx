@@ -26,10 +26,11 @@ export default function FaturamentoCanal({ labels, dados, colors }: { labels: st
                 const options: any = {
                     responsive: true,
                     maintainAspectRatio: false,
+                    borderRadius: 6,
                     cutout: '65%',
                     plugins: {
                         legend: {
-                            display: true,
+                            display: false,
                             position: 'top',
                             maxWidth: 200,
                             labels: {
@@ -41,17 +42,17 @@ export default function FaturamentoCanal({ labels, dados, colors }: { labels: st
                         tooltip: {
                             callbacks: {
                                 label: function (context: any) {
-                                    return `R$ ${context.raw.toFixed(2)}`;
+                                    return `R$ ${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(context.raw)}`;
                                 },
                             },
                         },
                         datalabels: {
                             formatter: (value: number) => {
-                                return `R$ ${value.toFixed(2)}`;
+                                return `R$ ${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)}`;
                             },
                             color: '#000',
                             backgroundColor: '#E6ECEF',
-                            borderRadius: 3,
+                            borderRadius: 2,
                             font: {
                                 weight: 'medium',
                                 size: 6
@@ -66,7 +67,6 @@ export default function FaturamentoCanal({ labels, dados, colors }: { labels: st
                     options: options,
                 });
 
-                // Cleanup function to destroy the chart instance when the component is unmounted
                 return () => {
                     myPieChart.destroy();
                 };

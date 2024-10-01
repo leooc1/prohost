@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+body, html, #calendar {
+  height: 100%;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.resource-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.resource-thumb {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.4em;
+  object-fit: cover;
+}
+
+.resource-title {
+  margin-left: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.fc-event {
+  cursor: pointer;
+  transition: 200ms;
+  border-radius: 200px;
+}
+
+.fc-event:hover {
+  transform: scale(1.05);
+}
+
+.gs-event-continuidade::before {
+  content: '';
+  background-color: #30C46D;
+  width: 21px;
+  height: 21px;
+  border-radius: 2px;
+  transform: translateX(-19px) translateY(-50%) rotate(45deg);
+  position: fixed;
+  top: 49%;
+  z-index: -1;
+}

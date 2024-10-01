@@ -1,5 +1,5 @@
 
-export default function RegistrarReceita() {
+export default function RegistrarReceita({ close }: { close: () => void }) {
     const setCategoria = () => {
         const categorias = document.querySelectorAll('label:has(input[type="radio"])')
         categorias.forEach((e: any) => {
@@ -20,7 +20,8 @@ export default function RegistrarReceita() {
         })
     }
     return (
-        <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20">
+        <div className='w-screen h-screen fixed z-10 top-0 right-0'>
+        <div className="w-screen h-screen bg-black fixed top-0 right-0 bg-opacity-20" onClick={close}></div>
             <form onSubmit={(e) => { e.preventDefault() }} className="flex rounded-md flex-col absolute max-w-96 min-w-80 px-4 pb-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white pt-2">
                 <h5 className="font-semibold text-2xl mb-2">Registrar Receita</h5>
                 
@@ -69,7 +70,7 @@ export default function RegistrarReceita() {
                     <input placeholder="Opcional" type="text" name="observacao" id="observacao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                 </label>
                 <section className="flex gap-3 justify-end mt-2">
-                    <button className="px-3 py-2 border border-zinc-300 rounded-lg">Cancelar</button>
+                    <button className="px-3 py-2 border border-zinc-300 rounded-lg" onClick={close}>Cancelar</button>
                     <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary">Registrar Movimentação</button>
                 </section>
             </form>

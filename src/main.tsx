@@ -5,6 +5,11 @@ import '../styles/index.css'
 import App from './App.tsx'
 import NotFound from './NotFound.tsx'
 import Dashboard from './pages/Dashboard.tsx'
+import Reserva from './pages/Reserva.tsx'
+import Acomodacoes from './pages/Acomodacoes.tsx'
+import AcomodacoesDetalhes from './pages/AcomodacoesDetalhes.tsx'
+import Hospede from './pages/Hospede.tsx'
+import Financeiro from './pages/Financeiro.tsx'
 
 const router = createBrowserRouter([
   {
@@ -14,23 +19,27 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/dashboard",
-        element: <Dashboard/>,
+        element: <Dashboard />,
       },
       {
         path: "/reservas",
-        element: <></>,
+        element: <Reserva />,
       },
       {
         path: "/acomodacoes",
-        element: <></>,
+        element: <Acomodacoes />,
+      },
+      {
+        path: "/acomodacoes/:id",
+        element: <AcomodacoesDetalhes />,
       },
       {
         path: "/hospedes",
-        element: <></>,
+        element: <Hospede />,
       },
       {
         path: "/movimentacoes",
-        element: <></>,
+        element: <Financeiro />,
       },
     ]
   },

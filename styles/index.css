@@ -1,5 +1,6 @@
 @import url('./loader.css');
 @import url('./switch.css');
+@import url('./calendar.css');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

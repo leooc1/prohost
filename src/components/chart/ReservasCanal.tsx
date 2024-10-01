@@ -28,7 +28,7 @@ export default function ReservasCanal({ labels, dados, colors }: { labels: strin
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            display: true,
+                            display: false,
                             position: 'left',
                             maxWidth: 200,
                             labels: {
@@ -40,7 +40,7 @@ export default function ReservasCanal({ labels, dados, colors }: { labels: strin
                         tooltip: {
                             callbacks: {
                                 label: function (context: any) {
-                                    return `${context.raw} diárias`;
+                                    return `${context.raw} reservas`;
                                 },
                             },
                         },

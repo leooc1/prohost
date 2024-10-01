@@ -19,6 +19,7 @@ export default function OcupacaoMedia({dados}:{dados:number[]}) {
                             data: dados,
                             backgroundColor: ['#00D19A', '#f2f2f2'],
                             hoverBackgroundColor: ['#00D19A', '#f2f2f2'],
+                            borderRadius: 4
                         },
                     ],
                 };
@@ -62,7 +63,7 @@ export default function OcupacaoMedia({dados}:{dados:number[]}) {
     }, []);
 
     return (
-        <div className='h-28 w-full'>
+        <div className='h-28 w-48'>
             <canvas ref={chartRef}></canvas>
         </div>
     );

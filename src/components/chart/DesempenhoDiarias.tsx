@@ -28,7 +28,7 @@ export default function DesempenhoDiarias({dados}:{dados:number[]}) {
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              display: true,
+              display: false,
               position: 'left',
               maxWidth: 200,
               labels: {
