@@ -1,3 +1,4 @@
+@import url('./input-range.css');
 @import url('./loader.css');
 @import url('./switch.css');
 @import url('./calendar.css');
@@ -30,5 +31,17 @@
 
     &>p {
         color: #ffffff;
+    }
+}
+
+.scroll-default {
+    &::-webkit-scrollbar {
+        border-radius: 10px;
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-radius: 5px;
+        background-color: #00000060;
     }
 }

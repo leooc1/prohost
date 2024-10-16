@@ -16,7 +16,7 @@ export default function SidebarMenu({route}:{route:string}) {
                             </h1>
                         </>:
                         <h1 className='text-white font-bold text-3xl tracking-tight'>
-                        <span className='text-[#08FAB8]'>p</span><span>h</span>
+                        <span className='text-secondary'>p</span><span>h</span>
                     </h1>
                     }
                 </a>

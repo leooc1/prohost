@@ -1,16 +1,30 @@
-import ptBrLocale from '@fullcalendar/core/locales/pt-br';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import FullCalendar from "@fullcalendar/react";
-import { ChangeEvent, useState } from "react";
+// import ptBrLocale from '@fullcalendar/core/locales/pt-br';
+// import dayGridPlugin from '@fullcalendar/daygrid';
+// import FullCalendar from "@fullcalendar/react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import NovaIndisponibilidade from '../components/NovaIndisponibilidade';
-import NovaReserva from '../components/NovaReserva';
-import ReservaCardView from '../components/ReservaCardView';
+// import NovaIndisponibilidade from '../components/NovaIndisponibilidade';
+// import NovaReserva from '../components/NovaReserva';
+// import ReservaCardView from '../components/ReservaCardView';
 import FaturamentoCanalAc from '../components/chart/FaturamentoCanalAc';
 import OcupacaoMedia from '../components/chart/OcupacaoMedia';
 import FaturamentoDespesas from '../components/chart/FaturamentoDespesas';
-import timeGridPlugin from '@fullcalendar/timegrid';
-
+// import timeGridPlugin from '@fullcalendar/timegrid';
+interface Acomodacao {
+    id?: number
+    tipo: string
+    comissao: number | null
+    data_ini_ope: string
+    endereco: string
+    check_in_p: string | null
+    check_out_p: string | null
+    foto: string | null
+    nome: string
+    numero_hospedes: number
+    valor_imovel: number
+    desativado: boolean
+    saas: { id: number }
+}
 
 export default function AcomodacoesDetalhes() {
     const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
@@ -53,45 +67,130 @@ export default function AcomodacoesDetalhes() {
         return porcentagem.toFixed(1);
     }
     //  
-    const [reservaView, setReservaView] = useState(false)
-    const [novaIndisponibilidade, setNovaIndisponibilidade] = useState(false)
-    const [novaReserva, setNovaReserva] = useState(false)
-    const [evento, serEvento]: any = useState()
+
+    // const [reservaView, setReservaView] = useState(false)
+    // const [novaIndisponibilidade, setNovaIndisponibilidade] = useState(false)
+    // const [novaReserva, setNovaReserva] = useState(false)
+    // const [evento, serEvento]: any = useState()
     const [sessao, setSessao] = useState(0)
-    const [qtdMaxHospede, setQtdMaxHospede] = useState(1)
     const { id } = useParams()
-    const acomodacoes = {
-        proprio: [
-            { id: '123x123', nome: 'Acomodação 1', img: 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2Faf19a0c58ea3d8ff8c151e96f3e2400f.cdn.bubble.io%2Ff1722622541722x929096526101806700%2Fprohost-logo.png?w=256&h=144&auto=compress&dpr=0.75&fit=max' },
-            { id: '123x321', nome: 'Acomodação 2', img: 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max' }
-        ],
-        terceiro: [
-            { id: '321x123', nome: 'Acomodação 3', img: 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max' },
-            { id: '321x321', nome: 'Acomodação 4', img: 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2Faf19a0c58ea3d8ff8c151e96f3e2400f.cdn.bubble.io%2Ff1722622541722x929096526101806700%2Fprohost-logo.png?w=256&h=144&auto=compress&dpr=0.75&fit=max' }
-        ]
+
+    const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
+
+    async function getAcomodacao() {
+        await fetch(`http://localhost:3000/acomodacao/1/${id}`, {
+            method: 'GET'
+        })
+            .then(data => data.json())
+            .then((data: Acomodacao[]) => {
+                setAcomodacao(data)
+                if (!identificador)
+                    setIdentificador(data[0].nome)
+
+                if (!status)
+                    setStatus(data[0].tipo)
+
+                if (!iniOpe)
+                    setIniOpe(data[0].data_ini_ope)
+
+                if (!pdCO)
+                    setPdCO(data[0].check_out_p)
+
+                if (!pdCI)
+                    setPdCI(data[0].check_in_p)
+
+                if (!endereco)
+                    setEndereco(data[0].endereco)
+
+                if (!valor)
+                    setValor(data[0].valor_imovel)
+
+                if (!comissao)
+                    setComissao(data[0].comissao)
+
+                if (!foto) {
+                    setFoto(data[0].foto)
+
+                }
+
+                if (qtdMaxHospede == -1)
+                    setQtdMaxHospede(data[0].numero_hospedes)
+
+            })
+            .catch(err => console.log(err))
     }
 
-    function setAcomodacao(id: string | undefined): any {
-        if (acomodacoes.proprio.find((e) => e.id == id)) {
-            return [acomodacoes.proprio.find((e) => e.id == id), 'próprio']
+    async function updateAcomodacao(pbody: Acomodacao) {
+        await fetch(`http://localhost:3000/acomodacao/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(pbody),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json())
+            .then((data) => {
+                if (data.affected == 1)
+                    alert('ATUALIZADO!')
+            })
+            .catch(err => console.log(err))
+    }
+
+    const [identificador, setIdentificador] = useState<string | null>(null)
+    const [status, setStatus] = useState<string | null>(null)
+    const [iniOpe, setIniOpe] = useState<string | null>(null)
+    const [pdCO, setPdCO] = useState<string | null>(null)
+    const [pdCI, setPdCI] = useState<string | null>(null)
+    const [endereco, setEndereco] = useState<string | null>(null)
+    const [valor, setValor] = useState<number | null>(null)
+    const [comissao, setComissao] = useState<number | null>(null)
+    const [foto, setFoto] = useState<string | null>(null)
+    const [qtdMaxHospede, setQtdMaxHospede] = useState<number>(-1)
+
+    async function desativar(id: number, desativado: boolean) {
+        await fetch(`http://localhost:3000/acomodacao/${id}`, {
+            method: 'DELETE',
+            body: JSON.stringify({ desativado: desativado }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json())
+            .then((data) => {
+                if (data.affected == 1) {
+                    desativado?alert('DESATIVADO!'):alert('ATIVADO!');
+                    close()
+                    location.assign('/acomodacoes')
+                }
+            })
+            .catch(err => console.log(err))
+    }
+
+    useEffect(() => {
+        getAcomodacao()
+        const input = document.getElementById('input-file') as HTMLInputElement | null;
+        const preview = document.getElementById('preview') as HTMLImageElement | null;
+        if (foto && preview) {
+            preview?.classList.remove('hidden')
+            input?.classList.add('hidden')
+            preview.src = foto || ''
+        } else {
+            preview?.classList.add('hidden')
+            input?.classList.remove('hidden')
         }
-        else
-            return [acomodacoes.terceiro.find((e) => e.id == id), 'terceiro']
-
-    }
-
+    }, [sessao, foto])
 
     return (
         <div className="w-full px-8">
             <div className="bg-white w-full p-5">
                 <a href="/acomodacoes" className="font-medium hover:text-blue-500">←  Voltar</a>
                 <div className="flex my-5">
-                    <img className="w-16 h-16 object-cover rounded-md mr-8" src={setAcomodacao(id)[0]?.img} alt="" />
+                    <img className="w-16 h-16 object-cover rounded-md mr-8" src={foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'} alt="" />
                     <div className="flex flex-col gap-2">
-                        <p className="font-bold text-3xl">{setAcomodacao(id)[0]?.nome}</p>
+                        <p className="font-bold text-3xl">{acomodacao[0]?.nome}</p>
                         <div className="flex items-center gap-1 bg-[#CCD6DA] h-fit w-fit px-2 py-1 rounded-md">
-                            <div className="bg-[#1266B5] w-2 h-2 rounded-full"></div>
-                            <div className="uppercase text-xs font-semibold text-[#1266B5]" style={{ lineHeight: 'normal', fontSize: '10px' }}>{setAcomodacao(id)[1]}</div>
+                            <div className={`bg-[${acomodacao[0]?.tipo == 'proprio' ? '#1266B5' : '#3A8E71'}] w-2 h-2 rounded-full`}></div>
+                            <div className={`uppercase text-xs font-semibold text-[${acomodacao[0]?.tipo == 'proprio' ? '#1266B5' : '#3A8E71'}]`} style={{ lineHeight: 'normal', fontSize: '10px' }}>{acomodacao[0]?.tipo}</div>
                         </div>
                     </div>
                 </div>
@@ -100,10 +199,10 @@ export default function AcomodacoesDetalhes() {
                         onClick={() => setSessao(0)}>
                         <svg className="w-4 h-fit" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 512 512" ><g><path d="M64.671 146.502C27.711 188.049 3.457 241.62 0 300.62h60.76c3.259-42.488 20.112-81.161 46.32-111.709l-42.409-42.409zM249.305 332.188c-5.113 2.581-8.305 7.726-8.305 13.432.015 12.598 17.783 19.438 26.191 9.99l52.427-58.608-70.313 35.186zM85.882 125.291l42.409 42.409c30.548-26.208 70.221-43.061 112.709-46.32v-60c-59 3.456-113.57 26.951-155.118 63.911zM271 61.38v60c42.488 3.259 82.161 20.112 112.709 46.32l42.409-42.409C384.57 88.331 330 64.836 271 61.38zM447.329 146.502l-42.409 42.409c26.208 30.547 43.061 69.221 46.32 111.709H512c-3.457-59-27.711-112.571-64.671-154.118z" fill="#000000" opacity="1" data-original="#000000" ></path><path d="M450.731 330.62c-1.307 17.011-4.142 33.83-9.835 49.98a15.007 15.007 0 0 1-19.131 9.17c-7.822-2.754-11.924-11.323-9.17-19.131a165.1 165.1 0 0 0 9.404-55.02c0-45.487-18.501-86.733-48.375-116.611a.027.027 0 0 0-.007-.004l-.007-.011C343.733 169.12 301.487 150.62 256 150.62s-87.733 18.501-117.611 48.375l-.004.007-.011.007C108.501 228.886 90 270.133 90 315.62a165.1 165.1 0 0 0 9.404 55.02c2.754 7.808-1.348 16.377-9.17 19.131-7.749 2.739-16.362-1.362-19.131-9.17-5.693-16.15-8.527-32.968-9.835-49.98H0c2.146 36.632 11.7 67.637 25.107 95.464 7.178 14.897 22.939 24.536 40.151 24.536h381.468c17.227 0 32.988-9.639 40.181-24.551 13.239-27.556 23.031-60.256 25.093-95.449h-61.269zm-55.333-72.217L289.545 375.62c-27.25 30.48-78.545 11.411-78.545-30 0-17.124 9.525-32.536 24.838-40.23.02-.009.029-.029.049-.038l141.625-70.371c.049-.024.101-.016.15-.04 14.508-7.072 28.789 10.752 17.736 23.462z" fill="#000000" opacity="1" data-original="#000000" ></path></g></svg>
                         Painel de Resultados</button>
-                    <button className={`hover:bg-slate-200 font-medium px-3 py-1 rounded-3xl text-sm transition-all flex gap-1 ${sessao == 1 && 'bg-slate-200'}`}
+                    {/* <button className={`hover:bg-slate-200 font-medium px-3 py-1 rounded-3xl text-sm transition-all flex gap-1 ${sessao == 1 && 'bg-slate-200'}`}
                         onClick={() => setSessao(1)}>
                         <svg className="w-4 h-fit" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 512 512" ><g><path d="M452 40h-24V0h-40v40H124V0H84v40H60C26.916 40 0 66.916 0 100v352c0 33.084 26.916 60 60 60h392c33.084 0 60-26.916 60-60V100c0-33.084-26.916-60-60-60zm20 412c0 11.028-8.972 20-20 20H60c-11.028 0-20-8.972-20-20V188h432v264zm0-304H40v-48c0-11.028 8.972-20 20-20h24v40h40V80h264v40h40V80h24c11.028 0 20 8.972 20 20v48z" fill="#000000" opacity="1" data-original="#000000" ></path><path d="M76 230h40v40H76zM156 230h40v40h-40zM236 230h40v40h-40zM316 230h40v40h-40zM396 230h40v40h-40zM76 310h40v40H76zM156 310h40v40h-40zM236 310h40v40h-40zM316 310h40v40h-40zM76 390h40v40H76zM156 390h40v40h-40zM236 390h40v40h-40zM316 390h40v40h-40zM396 310h40v40h-40z" fill="#000000" opacity="1" data-original="#000000" ></path></g></svg>
-                        Calendário</button>
+                        Calendário</button> */}
                     <button className={`hover:bg-slate-200 font-medium px-3 py-1 rounded-3xl text-sm transition-all flex gap-1 ${sessao == 2 && 'bg-slate-200'}`}
                         onClick={() => setSessao(2)}>
                         <svg className="w-4 h-fit" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 512 511" ><g><path d="M405.332 256.484c-11.797 0-21.332 9.559-21.332 21.332v170.668c0 11.754-9.559 21.332-21.332 21.332H64c-11.777 0-21.332-9.578-21.332-21.332V149.816c0-11.754 9.555-21.332 21.332-21.332h170.668c11.797 0 21.332-9.558 21.332-21.332 0-11.777-9.535-21.336-21.332-21.336H64c-35.285 0-64 28.715-64 64v298.668c0 35.286 28.715 64 64 64h298.668c35.285 0 64-28.714 64-64V277.816c0-11.796-9.54-21.332-21.336-21.332zm0 0" fill="#000000" opacity="1" data-original="#000000" className=""></path><path d="M200.02 237.05a10.793 10.793 0 0 0-2.922 5.438l-15.082 75.438c-.703 3.496.406 7.101 2.922 9.64a10.673 10.673 0 0 0 7.554 3.114c.68 0 1.387-.063 2.09-.211l75.414-15.082c2.09-.43 3.988-1.43 5.461-2.926l168.79-168.79-75.415-75.41zM496.383 16.102c-20.797-20.801-54.633-20.801-75.414 0l-29.524 29.523 75.414 75.414 29.524-29.527C506.453 81.465 512 68.066 512 53.816s-5.547-27.648-15.617-37.714zm0 0" fill="#000000" opacity="1" data-original="#000000" className=""></path></g></svg>
@@ -203,7 +302,7 @@ export default function AcomodacoesDetalhes() {
                         <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center">
                             <div className="bg-[#F8DCDC] rounded-md w-fit py-2 px-2 ml-4">
                                 <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D94D52"><path d="M3.00488 2.99979H21.0049C21.5572 2.99979 22.0049 3.4475 22.0049 3.99979V19.9998C22.0049 20.5521 21.5572 20.9998 21.0049 20.9998H3.00488C2.4526 20.9998 2.00488 20.5521 2.00488 19.9998V3.99979C2.00488 3.4475 2.4526 2.99979 3.00488 2.99979ZM20.0049 10.9998H4.00488V18.9998H20.0049V10.9998ZM20.0049 8.99979V4.99979H4.00488V8.99979H20.0049ZM14.0049 14.9998H18.0049V16.9998H14.0049V14.9998Z"></path></svg>
-                                </div>
+                            </div>
                             <div className="flex flex-col ml-4">
                                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Despesas</p>
                                 <div className="flex items-end gap-4">
@@ -231,7 +330,7 @@ export default function AcomodacoesDetalhes() {
                                     18,0%
                                 </div>
                                 <p className='text-[10px] text-wrap w-28'>
-                                    {/* <svg className='w-9' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM11 11V17H13V11H11ZM11 7V9H13V7H11Z"></path></svg> */}
+                                    <svg className='w-4' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM11 11V17H13V11H11ZM11 7V9H13V7H11Z"></path></svg>
                                     A rentabilidade é calculada pela razão entre o faturamento do período e valor estimado do imóvel ( R$ 122,00 )
                                 </p>
                             </div>
@@ -262,7 +361,7 @@ export default function AcomodacoesDetalhes() {
                         </div>
                     </section>
                 </section>}
-            {sessao == 1 &&
+            {/* {sessao == 1 &&
                 <section className="my-10">
                     <div className='flex justify-between items-start'>
                         <h5 className="font-semibold text-2xl mb-2 px-4 pb-7">Calendário da Acomodação</h5>
@@ -283,14 +382,16 @@ export default function AcomodacoesDetalhes() {
                                 end: 'today prev,next'
                             }}
                             plugins={[dayGridPlugin, timeGridPlugin]}
-                            initialView="dayGridMonth" // Altere para timeGridDay para ver os eventos com horários específicos
+                            initialView="dayGridMonth"
                             locale={ptBrLocale}
+
+                            //reservas que buscaria do banco
                             events={[
                                 {
                                     resourceId: '1',
                                     title: 'leonardo',
-                                    start: '2024-08-01T12:00:00',
-                                    end: '2024-08-05T10:00:00',
+                                    start: '2024-10-01T12:00:00',
+                                    end: '2024-10-05T10:00:00',
                                     hospedes: 3,
                                     color: '#3B82F6',
                                     id: '1',
@@ -303,8 +404,8 @@ export default function AcomodacoesDetalhes() {
                                 {
                                     resourceId: '1',
                                     title: 'leonardo',
-                                    start: '2024-08-06T12:00:00',
-                                    end: '2024-08-08T12:00:00',
+                                    start: '2024-10-06T12:00:00',
+                                    end: '2024-10-08T12:00:00',
                                     hospedes: 1,
                                     color: '#30C46D',
                                     id: '2',
@@ -317,8 +418,8 @@ export default function AcomodacoesDetalhes() {
                                 {
                                     resourceId: '1',
                                     title: 'adm',
-                                    start: '2024-08-09T12:00:00',
-                                    end: '2024-08-12T12:00:00',
+                                    start: '2024-10-09T12:00:00',
+                                    end: '2024-10-12T12:00:00',
                                     hospedes: 1,
                                     color: '#353535',
                                     id: '3',
@@ -334,10 +435,10 @@ export default function AcomodacoesDetalhes() {
                                 serEvento(e);
                             }}
                             eventContent={function (arg) {
-                                var title = arg.event.title;
-                                var numGuests = arg.event.extendedProps.hospedes;
-                                var tipo = arg.event.extendedProps.tipo;
-                                var obs = arg.event.extendedProps.obs;
+                                const title = arg.event.title;
+                                const numGuests = arg.event.extendedProps.hospedes;
+                                const tipo = arg.event.extendedProps.tipo;
+                                const obs = arg.event.extendedProps.obs;
 
                                 if (tipo === 'Continuidade') {
                                     return {
@@ -401,45 +502,76 @@ export default function AcomodacoesDetalhes() {
                             />
                         }
                     </div>
-                </section>}
+                </section>} */}
             {sessao == 2 &&
                 <section className="my-10">
                     <h5 className="font-semibold text-2xl mb-2 px-4 pb-7">Dados da Acomodação</h5>
-                    <form onSubmit={(e) => { e.preventDefault() }} className="flex flex-col w-fit px-4 gap-5 rounded-md">
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault()
+                        }}
+                        className="flex flex-col w-fit px-4 gap-5 rounded-md">
                         <label htmlFor="identificador" className="flex flex-col">
-                            <span className="text-zinc-500 text-xs font-medium mb-1">Identificador</span>
-                            <input placeholder="Ex: Apartamento Guarujá" type="text" name="identificador" id="identificador" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                            <span className="text-zinc-500 text-xs font-medium mb-1">Identificador
+                                <span className='text-red-500 font-bold'> *</span>
+                            </span>
+                            <input placeholder="Ex: Apartamento Guarujá" type="text" name="identificador" id="identificador" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" value={identificador || ''} onChange={(e) => setIdentificador(e.target.value)} />
                         </label>
-                        <div className="grid gap-4 items-center" style={{ gridTemplateColumns: '1fr 1fr 1fr 1fr' }}>
+                        <div className={`grid gap-4 items-center ${status == 'terceiro' ? 'grid-cols-5' : 'grid-cols-4'}`}>
                             <label htmlFor="status" className="flex flex-col">
-                                <span className="text-zinc-500 text-xs font-medium mb-1">Status</span>
-                                <select name="status" id="status" className="border border-zinc-300 rounded-md px-2 py-1 outline-none">
+                                <span className="text-zinc-500 text-xs font-medium mb-1">Status
+                                    <span className='text-red-500 font-bold'> *</span>
+                                </span>
+                                <select name="status" id="status" className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
+                                    value={status || ''} onChange={(e) => setStatus(e.target.value)}>
                                     <option value="" selected disabled></option>
                                     <option value="terceiro">Terceiro</option>
                                     <option value="proprio">Próprio</option>
                                 </select>
                             </label>
+                            {status == 'terceiro' && <label htmlFor="comissao" className="flex flex-col">
+                                <span className="text-zinc-500 text-xs font-medium mb-1">Comissão
+                                    <span className='text-red-500 font-bold'> *</span>
+                                </span>
+                                <input type="number" name="comissao" id="comissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" placeholder='%'
+                                    value={comissao || ''} onChange={(e) => setComissao(Number(e.target.value))} />
+                            </label>}
                             <label htmlFor="inicio-operacao" className="flex flex-col">
-                                <span className="text-zinc-500 text-xs font-medium mb-1">Início de Operação</span>
-                                <input type="date" name="inicio-operacao" id="inicio-operacao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                                <span className="text-zinc-500 text-xs font-medium mb-1">Início de Operação
+                                    <span className='text-red-500 font-bold'> *</span>
+                                </span>
+                                <input type="date" name="inicio-operacao" id="inicio-operacao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
+                                    value={iniOpe || ''} onChange={(e) => setIniOpe(e.target.value)} />
                             </label>
                             <label htmlFor="padrao-checkout" className="flex flex-col">
-                                <span className="text-zinc-500 text-xs font-medium mb-1">Horário Padrão de Checkout</span>
-                                <input type="time" name="padrao-checkout" id="padrao-checkout" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                                <span className="text-zinc-500 text-xs font-medium mb-1">Horário Padrão de Checkout
+                                    <span className='text-red-500 font-bold'> *</span>
+                                </span>
+                                <input type="time" name="padrao-checkout" id="padrao-checkout" className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
+                                    value={pdCO || ''} onChange={(e) => setPdCO(e.target.value)} />
                             </label>
                             <label htmlFor="padrao-checkin" className="flex flex-col">
-                                <span className="text-zinc-500 text-xs font-medium mb-1">Horário Padrão de Checkin</span>
-                                <input type="time" name="padrao-checkin" id="padrao-checkin" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                                <span className="text-zinc-500 text-xs font-medium mb-1">Horário Padrão de Checkin
+                                    <span className='text-red-500 font-bold'> *</span>
+                                </span>
+                                <input type="time" name="padrao-checkin" id="padrao-checkin" className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
+                                    value={pdCI || ''} onChange={(e) => setPdCI(e.target.value)} />
                             </label>
                         </div>
                         <div className="grid gap-4 items-center" style={{ gridTemplateColumns: '2fr 1fr' }}>
                             <label htmlFor="endereco" className="flex flex-col">
-                                <span className="text-zinc-500 text-xs font-medium mb-1">Endereço</span>
-                                <input type="text" name="endereco" id="endereco" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                                <span className="text-zinc-500 text-xs font-medium mb-1">Endereço
+                                    <span className='text-red-500 font-bold'> *</span>
+                                </span>
+                                <input type="text" name="endereco" id="endereco" className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
+                                    value={endereco || ''} onChange={(e) => setEndereco(e.target.value)} />
                             </label>
                             <label htmlFor="valor-imovel" className="flex flex-col">
-                                <span className="text-zinc-500 text-xs font-medium mb-1">Valor do Imóvel</span>
-                                <input type="number" name="valor-imovel" id="valor-imovel" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                                <span className="text-zinc-500 text-xs font-medium mb-1">Valor do Imóvel
+                                    <span className='text-red-500 font-bold'> *</span>
+                                </span>
+                                <input type="number" name="valor-imovel" id="valor-imovel" className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
+                                    value={valor || ''} onChange={(e) => setValor(Number(e.target.value))} />
                             </label>
                         </div>
                         <div className="grid gap-4 items-center" style={{ gridTemplateColumns: '1fr 1fr' }}>
@@ -449,6 +581,7 @@ export default function AcomodacoesDetalhes() {
                                     <svg className="w-28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#777777"><path d="M2.9918 21C2.44405 21 2 20.5551 2 20.0066V3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918ZM20 15V5H4V19L14 9L20 15ZM20 17.8284L14 11.8284L6.82843 19H20V17.8284ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path></svg>
                                     <p className="text-zinc-400">Clique ou arraste uma imagem aqui</p>
                                 </div>
+
                                 <img id="preview" src="" alt="Pré-Visualização da Imagem" className="hidden w-64 h-28 object-contain cursor-pointer border border-zinc-300 rounded-md px-1 py-1 outline-none" />
                                 <input type="file" name="imagem" id="imagem" accept=".jpg, .jpeg, .jfif, .pjpeg, .pjp, .png, .gif, .bmp, .dib, .tif, .tiff, .webp, .heic, .heif, .svg, .ico, .cur, .apng" className="hidden"
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -462,6 +595,7 @@ export default function AcomodacoesDetalhes() {
                                             reader.onload = (event: ProgressEvent<FileReader>) => {
                                                 if (event.target) {
                                                     preview.src = event.target.result as string;
+                                                    setFoto(preview.src)
                                                 }
                                             };
                                             reader.readAsDataURL(file);
@@ -474,7 +608,7 @@ export default function AcomodacoesDetalhes() {
                             <label htmlFor="qtd-max-hospede" className="flex flex-col w-fit">
                                 <span className="text-zinc-500 text-xs font-medium mb-1">Qtd. Máxima de Hóspedes</span>
                                 <div className="flex justify-center gap-3 items-center">
-                                    <button className="border border-zinc-300 rounded-md w-8 h-8 font-bold bg-white" onClick={() => {
+                                    <button type='button' className="border border-zinc-300 rounded-md w-8 h-8 font-bold bg-white" onClick={() => {
                                         if (qtdMaxHospede <= 1)
                                             return
                                         else
@@ -482,13 +616,55 @@ export default function AcomodacoesDetalhes() {
                                     }}>-</button>
                                     <input type="number" name="qtd-max-hospede" id="qtd-max-hospede" className="border border-zinc-300 rounded-md px-2 py-1 outline-none max-w-20 text-center"
                                         onChange={(e) => setQtdMaxHospede(Number(e.target.value))} value={qtdMaxHospede} />
-                                    <button className="border border-zinc-300 rounded-md w-8 h-8 font-bold bg-white" onClick={() => setQtdMaxHospede(qtdMaxHospede + 1)}>+</button>
+                                    <button type='button' className="border border-zinc-300 rounded-md w-8 h-8 font-bold bg-white" onClick={() => setQtdMaxHospede(qtdMaxHospede + 1)}>+</button>
                                 </div>
                             </label>
                         </div>
                         <section className="flex gap-3 justify-between mt-2">
-                            <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary">Salvar Alterações</button>
-                            <button className="px-3 py-2 rounded-lg bg-red-100 text-red-500">Excluir Acomodação</button>
+                            <button
+                                onClick={() => {
+                                    if (status?.length && iniOpe?.length && endereco?.length && identificador?.length && valor) {
+                                        const fotoi = document.getElementById('preview') as HTMLImageElement
+                                        if (status == 'proprio')
+                                            updateAcomodacao({
+                                                "tipo": status,
+                                                "comissao": null,
+                                                "data_ini_ope": iniOpe,
+                                                "endereco": endereco,
+                                                "check_in_p": pdCI,
+                                                "check_out_p": pdCO,
+                                                "foto": fotoi.classList.contains('hidden') ? null : foto,
+                                                "nome": identificador,
+                                                "numero_hospedes": qtdMaxHospede,
+                                                "valor_imovel": valor,
+                                                "desativado":false,
+                                                "saas": {
+                                                    "id": 1
+                                                }
+                                            })
+                                        else if (status == 'terceiro' && String(comissao).length)
+                                            updateAcomodacao({
+                                                "tipo": status,
+                                                "comissao": comissao,
+                                                "data_ini_ope": iniOpe,
+                                                "endereco": endereco,
+                                                "check_in_p": pdCI,
+                                                "check_out_p": pdCO,
+                                                "foto": fotoi.classList.contains('hidden') ? null : foto,
+                                                "nome": identificador,
+                                                "numero_hospedes": qtdMaxHospede,
+                                                "valor_imovel": valor,
+                                                "desativado":false,
+                                                "saas": {
+                                                    "id": 1
+                                                }
+                                            })
+                                    }
+                                }}
+                                className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary">Salvar Alterações</button>
+                            <button 
+                            onClick={()=>desativar(Number(id), true)}
+                            className="px-3 py-2 rounded-lg bg-red-100 text-red-500">Excluir Acomodação</button>
                         </section>
                     </form>
                 </section>}

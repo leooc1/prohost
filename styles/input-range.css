@@ -1,0 +1,18 @@
+#qtdAcomodacao {
+    @apply bg-zinc-500;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 5px;
+    width: 200px;
+    height: 5px;
+    outline: none;
+
+    &::-webkit-slider-thumb {
+        @apply bg-secondary;
+        -webkit-appearance: none;
+        appearance: none;
+        border-radius: 5px;
+        width: 20px;
+        height: 20px;
+    }
+}

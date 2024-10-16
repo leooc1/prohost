@@ -10,6 +10,8 @@ import Acomodacoes from './pages/Acomodacoes.tsx'
 import AcomodacoesDetalhes from './pages/AcomodacoesDetalhes.tsx'
 import Hospede from './pages/Hospede.tsx'
 import Financeiro from './pages/Financeiro.tsx'
+import Auth from './pages/Auth.tsx'
+import Assinar from './pages/Assinar.tsx'
 
 const router = createBrowserRouter([
   {
@@ -43,6 +45,16 @@ const router = createBrowserRouter([
       },
     ]
   },
+  {
+    path: "/auth",
+    element: <Auth />,
+    errorElement: <NotFound />,
+  },
+  {
+    path: "/assinar",
+    element: <Assinar />,
+    errorElement: <NotFound />,
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

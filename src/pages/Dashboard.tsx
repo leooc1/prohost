@@ -8,6 +8,23 @@ import FaturamentoLiquido from "../components/chart/FaturamentoLiquido";
 import EvolucaoNegocio from "../components/chart/EvolucaoNegocio";
 import QtdeHospede from "../components/chart/QtdeHospede";
 import FaturamentoxDespesa from "../components/chart/FaturamentoxDespesa";
+interface Acomodacao {
+  id: number
+  tipo: string
+  comissao: number
+  data_ini_ope: string
+  descricao: string
+  endereco: string
+  check_in_p: string
+  check_out_p: string
+  foto: string
+  nome: string
+  numero_hospedes: number
+  valor_imovel: number
+  desativado: boolean
+  saas: { id: number }
+}
+
 export default function Dashboard() {
 
   const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
@@ -16,6 +33,7 @@ export default function Dashboard() {
   const [sessao, setSessao] = useState(0)//////////////////////
   const [deData, setDeData] = useState('')
   const [ateData, setAteData] = useState('')
+  const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
   function getDaysInMonth(month: number, year: number) {
     switch (month) {
       case 1: // Janeiro
@@ -51,12 +69,24 @@ export default function Dashboard() {
     return porcentagem.toFixed(1);
   }
 
+  async function acomodacoes() {
+    await fetch('http://localhost:3000/acomodacao/1', {
+      method: 'GET'
+    })
+      .then(data => data.json())
+      .then((data: Acomodacao[]) => {
+        setAcomodacao(data.filter((e => !e.desativado)))
+      })
+      .catch(err => console.log(err))
+  }
+
   useEffect(() => {
     if (location.search) {
-      let ss = Number(location.search.replace('?ss=', ''))
+      const ss = Number(location.search.replace('?ss=', ''))
       setSessao(ss)
     }
-  })
+    acomodacoes()
+  }, [])
   return (
     <div className="w-full px-8">
       <h3 className="text-3xl font-semibold mb-7 pt-2">Painel do Negócio</h3>
@@ -114,9 +144,10 @@ export default function Dashboard() {
         <label htmlFor="acomodacao" className={`flex flex-col w-fit mb-8`}>
           <select name="acomodacao" id="acomodacao" className={`border border-zinc-300 rounded-md text-zinc-5 00 px-2 py-1 outline-none`}>
             <option value="all" selected>Todas acomodações</option>
-            <option value="1">Lorem.</option>
-            <option value="2">Lorem.</option>
-            <option value="3">Lorem.</option>
+            {acomodacao.length ?
+              acomodacao.map(e=><option value={`${e.id}`}>{e.nome}</option>)
+              : null
+            }
           </select>
         </label>
       </div> : null}

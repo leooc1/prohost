@@ -1,15 +1,111 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import CanaisDeReserva from '../components/CanaisDeReserva'
 import NovaIndisponibilidade from '../components/NovaIndisponibilidade'
 import NovaReserva from '../components/NovaReserva'
 import Calendario from '../components/chart/Calendario'
 import ListaReserva from '../components/list/ListaReserva'
 
+interface Acomodacao {
+  id: number
+  tipo: string
+  comissao: number
+  data_ini_ope: string
+  descricao: string
+  endereco: string
+  check_in_p: string
+  check_out_p: string
+  foto: string
+  nome: string
+  numero_hospedes: number
+  valor_imovel: number
+  desativado: boolean
+  saas: { id: number }
+}
+
+interface Reserva {
+  id?: number
+  acomodacao: { id: number, foto: string, nome: string }
+  check_in: string
+  check_out: string
+  canal_reserva: { id: number, cor: string, nome: string } | null
+  comissao_ota: number
+  continuidade: boolean
+  hospede: { id: number, nome: string } | null
+  qtd_hospede: number
+  saas: { id: number }
+  valor: number
+  valor_liq: number
+  valor_prop: number
+  valor_gestor: number
+  tipo_reserva: string
+  obs: string | null
+}
+
 export default function Reserva() {
+  const [render, setRender] = useState(false)
   const [calendario, setCalendario] = useState(true)
   const [canaisReserva, setCanaisReserva] = useState(false)
   const [novaReserva, setNovaReserva] = useState(false)
   const [novaIndisponibilidade, setNovaIndisponibilidade] = useState(false)
+  const [reserva, setReserva] = useState<Reserva[]>([])
+  const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
+  const [ids, setIds] = useState<{ id: number, index: number }[]>([])
+
+  async function getReserva() {
+    await fetch('http://localhost:3000/reserva/1', {
+      method: 'GET'
+    })
+      .then(data => data.json())
+      .then((data: Reserva[]) => {
+        setReserva(data)
+        getAll(1)
+      })
+      .catch(err => console.log(err))
+  }
+
+  async function getAcomodacoes() {
+    await fetch('http://localhost:3000/acomodacao/1', {
+      method: 'GET'
+    })
+      .then(data => data.json())
+      .then((data: Acomodacao[]) => {
+        setAcomodacao(data.filter((e => !e.desativado)))
+      })
+      .catch(err => console.log(err))
+  }
+
+  async function getAll(saas: number) {
+    await fetch(`http://localhost:3000/reserva/index/${saas}`, {
+      method: 'GET',
+    })
+      .then(data => data.json())
+      .then((data) => {
+        setIds(data)
+      })
+      .catch(err => console.log(err))
+  }
+
+  async function calendar() {
+    await getAcomodacoes()
+    await getReserva()
+    setRender(true)
+  } 
+
+  function toDateBr(data: string) {
+    const checkIn = new Date(data)
+    const ano = (checkIn.getFullYear())
+    const mes = (checkIn.getMonth() + 1)
+    const dia = (checkIn.getDate())
+    const hr = (checkIn.getHours())
+    const min = (checkIn.getMinutes())
+    const seg = (checkIn.getSeconds())
+    return (`${ano}-${mes < 10 ? '0' + mes : mes}-${dia < 10 ? '0' + dia : dia}T${hr < 10 ? '0' + hr : hr}:${min < 10 ? '0' + min : min}:${seg < 10 ? '0' + seg : seg}Z`)
+  }
+
+  useEffect(() => {
+    calendar()
+  }, [calendario])
+
   return (
     <div className='w-full px-8'>
       <div className='mb-7 pt-2 flex gap-5 flex-wrap'>
@@ -32,112 +128,36 @@ export default function Reserva() {
           onClick={() => setNovaReserva(true)}>Nova Reserva</button>
         {novaReserva && <NovaReserva close={() => setNovaReserva(false)} />}
       </div>
-      {calendario && <Calendario
-        acomodacoes={[
-          {
-            id: '1',
-            title: 'Acomodação 1',
-            image: null || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'
-          }
-        ]}
-
-        reservas={[
-          {
-            resourceId: '1',
-            title: 'leonardo',
-            start: '2024-08-01T12:00:00',
-            end: '2024-08-05T12:00:00',
-            hospedes: 3,
-            color: '#3B82F6',
-            id: '1',
-            tipo: 'Reserva',
-            obs: '',
-            bruto: 200.00,
-            liquido: 150.00,
-            comissao: 50.00
-          },
-          {
-            resourceId: '1',
-            title: 'leonardo',
-            start: '2024-08-05T12:00:00',
-            end: '2024-08-08T12:00:00',
-            hospedes: 1,
-            color: '#30C46D',
-            id: '2',
-            tipo: 'Continuidade',
-            obs: '',
-            bruto: 50.00,
-            liquido: 50.00,
-            comissao: 0.00
-          },
-          {
-            resourceId: '1',
-            title: 'adm',
-            start: '2024-08-09T12:00:00',
-            end: '2024-08-12T12:00:00',
-            hospedes: 1,
-            color: '#353535',
-            id: '3',
-            tipo: 'Indisponibilidade',
-            obs: 'Problema de infiltração',
-            bruto: 0.00,
-            liquido: 0.00,
-            comissao: 0.00
-          }
-        ]} />}
-      {!calendario && <ListaReserva 
-      acomodacoes={[
-          {
-            id: '1',
-            title: 'Acomodação 1',
-            image: null || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'
-          }
-        ]}
-
-        reservas={[
-          {
-            resourceId: '1',
-            title: 'leonardo',
-            start: '2024-08-01T12:00:00',
-            end: '2024-08-05T12:00:00',
-            hospedes: 3,
-            color: '#3B82F6',
-            id: '1',
-            tipo: 'Reserva',
-            obs: '',
-            bruto: 200.00,
-            liquido: 150.00,
-            comissao: 50.00
-          },
-          {
-            resourceId: '1',
-            title: 'leonardo',
-            start: '2024-08-05T12:00:00',
-            end: '2024-08-08T12:00:00',
-            hospedes: 1,
-            color: '#30C46D',
-            id: '2',
-            tipo: 'Continuidade',
-            obs: '',
-            bruto: 50.00,
-            liquido: 50.00,
-            comissao: 0.00
-          },
-          {
-            resourceId: '1',
-            title: 'adm',
-            start: '2024-08-09T12:00:00',
-            end: '2024-08-12T12:00:00',
-            hospedes: 1,
-            color: '#353535',
-            id: '3',
-            tipo: 'Indisponibilidade',
-            obs: 'Problema de infiltração',
-            bruto: 0.00,
-            liquido: 0.00,
-            comissao: 0.00
-          }
-        ]} />}
+      {render ?
+        calendario ? <Calendario
+          acomodacoes={acomodacao.map((a) => ({
+            id: String(a.id),
+            title: a.nome,
+            image: a.foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'
+          }))}
+          
+          reservas={reserva.map((r) => ({
+            "resourceId": String(r.acomodacao.id),
+            "title": r.hospede?.nome || '',
+            "start": toDateBr(r.check_in),
+            "end": toDateBr(r.check_out),
+            "hospedes": r.qtd_hospede,
+            "color": r.tipo_reserva == 'Continuidade' ? '#30C46D'
+              : r.tipo_reserva == 'Indisponibilidade' ? '#353535'
+                : r.canal_reserva?.cor || '',
+            "id": String(r.id),
+            "tipo": r.tipo_reserva,
+            "obs": '',
+            "bruto": r.valor,
+            "liquido": r.valor_liq,
+            "comissao": r.comissao_ota
+          }))}
+        />
+          : <ListaReserva
+            ids={ids}
+            reservas={reserva}
+          />
+        : null}
     </div>
   )
 }
