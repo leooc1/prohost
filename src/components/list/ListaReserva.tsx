@@ -1,4 +1,3 @@
-import { useEffect } from "react"
 
 interface Reserva {
     id?: number
@@ -20,6 +19,13 @@ interface Reserva {
 }
 
 export default function ListaReserva({ reservas, ids }: { reservas: Reserva[], ids: { id: number, index: number }[] }) {
+    function formatarMoedaBrasileira(valorStr: string) {
+        const valor = parseFloat(valorStr);
+        if (isNaN(valor)) {
+            return "Valor inválido";
+        }
+        return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
     function formatDate(isoString: string) {
         const date = new Date(isoString);
 
@@ -38,13 +44,8 @@ export default function ListaReserva({ reservas, ids }: { reservas: Reserva[], i
 
         const diferencaDias: number = Math.round(diferencaMs / (1000 * 60 * 60 * 24));
 
-        return diferencaDias;
+        return diferencaDias == 0 ? 1 : diferencaDias;
     }
-
-
-    useEffect(() => {
-        console.log(ids)
-    }, [ids,reservas])
 
     return (
         <section className="w-full min-h-56 border border-zinc-300 rounded-lg bg-white px-4 py-4">
@@ -144,8 +145,8 @@ export default function ListaReserva({ reservas, ids }: { reservas: Reserva[], i
                                     <td className="text-center text-xs font-medium">{formatDate(e.check_in)}</td>
                                     <td className="text-center text-xs font-medium">{formatDate(e.check_out)}</td>
                                     <td className="text-center text-xs font-medium">{calcularDiasEntreDatas(e.check_in, e.check_out)}</td>
-                                    <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `R$ ${Number(e.valor).toFixed(2)}`}</td>
-                                    <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `R$ ${Number(e.valor_liq).toFixed(2)}`}</td>
+                                    <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.valor).toFixed(2))}`}</td>
+                                    <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.valor_liq).toFixed(2))}`}</td>
                                 </tr>)
                             : null
                     }
@@ -155,15 +156,15 @@ export default function ListaReserva({ reservas, ids }: { reservas: Reserva[], i
                         <td className="text-center">Total de Reserva: {
                             reservas.filter(e => e.tipo_reserva != 'Indisponibilidade').length
                         }</td>
-                        <td className="text-center">Total Bruto: R$ {
-                            (reservas
+                        <td className="text-center">Total Bruto: {
+                            formatarMoedaBrasileira((reservas
                                 .map(r => Number(r.valor))
-                                .reduce((sum, valor) => sum + valor, 0)).toFixed(2)
+                                .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
                         }</td>
-                        <td className="text-center">Total Líquido: R$ {
-                            (reservas
+                        <td className="text-center">Total Líquido: {
+                            formatarMoedaBrasileira((reservas
                                 .map(r => Number(r.valor_liq))
-                                .reduce((sum, valor) => sum + valor, 0)).toFixed(2)
+                                .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
                         }</td>
                     </tr>
                 </tfoot>

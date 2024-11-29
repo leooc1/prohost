@@ -1,4 +1,28 @@
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
+interface Acomodacao {
+    id: number
+    tipo: string
+    comissao: number
+    data_ini_ope: string
+    descricao: string
+    endereco: string
+    check_in_p: string
+    check_out_p: string
+    foto: string
+    nome: string
+    numero_hospedes: number
+    valor_imovel: number
+    desativado: boolean
+    saas: { id: number }
+}
+interface CategoriaFinanceiro {
+    id?: number;
+    cor: string;
+    editavel: boolean;
+    nome: string;
+    receita: boolean
+    saas: { id: number };
+}
 
 export default function RegistrarDespesa({ close }: { close: () => void }) {
     const [tipoDespesa, setTipoDespesa] = useState('')
@@ -21,6 +45,52 @@ export default function RegistrarDespesa({ close }: { close: () => void }) {
             }
         })
     }
+    async function getAcomodacoes() {
+        await fetch('http://localhost:3000/acomodacao/1', {
+            method: 'GET'
+        })
+            .then(data => data.json())
+            .then((data: Acomodacao[]) => {
+                setAcomodacao(data.filter((e => !e.desativado)))
+            })
+            .catch(err => console.log(err))
+    }
+    async function getCategorias() {
+        await fetch('http://localhost:3000/categoria_financeiro/1', {
+            method: 'GET'
+        })
+            .then(data => data.json())
+            .then((data: CategoriaFinanceiro[]) => {
+                setCategoriaF(data.filter(e => !e.receita))
+            })
+            .catch(err => console.log(err))
+    }
+    async function create(pbody: any) {
+        await fetch(`http://localhost:3000/movimentacao/`, {
+            method: 'POST',
+            body: JSON.stringify(pbody),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json())
+            .then((data) => {
+                if (data.id) {
+                    alert('CRIADO!')
+                    close()
+                    location.reload()
+                }
+            })
+            .catch(err => console.log(err))
+    }
+
+    const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
+    const [categoriaf, setCategoriaF] = useState<CategoriaFinanceiro[]>([])
+
+    useEffect(() => {
+        getAcomodacoes()
+        getCategorias()
+    }, [])
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black fixed top-0 right-0 bg-opacity-20" onClick={close}></div>
@@ -31,24 +101,20 @@ export default function RegistrarDespesa({ close }: { close: () => void }) {
                     <select name="tipo-despesa" id="tipo-despesa" className={`${tipoDespesa == '' ? 'text-zinc-400' : ''} font-medium border border-zinc-300 rounded-md text-zinc-5 00 px-2 py-1 outline-none`}
                         onChange={(e: ChangeEvent<HTMLSelectElement>) => { setTipoDespesa(e.target.value) }}>
                         <option value="" selected disabled className="hidden">Padrão</option>
-                        <option value="negocio" className="text-black">Despesas do Negócio</option>
-                        <option value="fixas" className="text-black">Despesas Fixas</option>
-                        <option value="variaveis" className="text-black">Despesas Variáveis</option>
+                        <option value="Despesas do Negócio" className="text-black">Despesas do Negócio</option>
+                        <option value="Despesas Fixas" className="text-black">Despesas Fixas</option>
+                        <option value="Despesas Variáveis" className="text-black">Despesas Variáveis</option>
                     </select>
                 </label>
                 <section>
                     <span className="text-zinc-500 font-medium">Categoria</span>
                     <div className="mt-2 flex gap-2 flex-wrap">
-                        <label htmlFor="gerais" onClick={() => setCategoria()} className="bg-slate-100 text-sm font-medium cursor-pointer flex items-center text-slate-500 rounded-2xl px-2 py-px">
-                            <div className="w-2 h-2 bg-red-600 rounded-full mr-2"></div>
-                            Despesas Gerais
-                            <input type="radio" name="categoria" id="gerais" className="hidden" />
-                        </label>
-                        <label htmlFor="exemplo" onClick={() => setCategoria()} className="bg-slate-100 text-sm font-medium cursor-pointer flex items-center text-slate-500 rounded-2xl px-2 py-px">
-                            <div className="w-2 h-2 bg-red-600 rounded-full mr-2"></div>
-                            Despesa Exemplo
-                            <input type="radio" name="categoria" id="exemplo" className="hidden" />
-                        </label>
+                        {categoriaf.length > 0 &&
+                            categoriaf.map(cat => <label htmlFor={String(cat.id)} onClick={() => setCategoria()} className="bg-slate-100 text-sm font-medium cursor-pointer flex items-center text-slate-500 rounded-2xl px-2 py-px">
+                                <div className={`w-2 h-2 rounded-full mr-2 bg-[${cat.cor}]`}></div>
+                                {cat.nome}
+                                <input type="radio" name="categoria" id={String(cat.id)} className="hidden" />
+                            </label>)}
                     </div>
                 </section>
                 <div className="grid gap-4 grid-cols-2">
@@ -61,28 +127,32 @@ export default function RegistrarDespesa({ close }: { close: () => void }) {
                         <input placeholder="Ex: Mercado Paulista" type="text" name="recebedor" id="recebedor" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                     </label>
                 </div>
-                <label htmlFor="acomodacao" className={`flex flex-col ${tipoDespesa == 'negocio' ? 'hidden' : null}`}>
+                <label htmlFor="acomodacaoReceita" className={`flex flex-col ${tipoDespesa == 'Despesas do Negócio' ? 'hidden' : null}`}>
                     <span className="text-zinc-500 font-medium mb-1 text-sm">Acomodação (opicional)</span>
-                    <select name="acomodacao" id="acomodacao" className="border border-zinc-300 rounded-md text-zinc-5 00 px-2 py-1 outline-none">
+                    <select name="acomodacaoReceita" id="acomodacaoReceita" className="border border-zinc-300 rounded-md text-zinc-5 00 px-2 py-1 outline-none">
                         <option value="" selected disabled className="hidden">Selecione uma acomodação</option>
-                        <option value="1">Lorem.</option>
-                        <option value="2">Lorem.</option>
-                        <option value="3">Lorem.</option>
+                        <option value="null"></option>
+                        {acomodacao?.length > 0 &&
+                            acomodacao?.map(a => <option value={a.id}>{a.nome}</option>)}
                     </select>
                 </label>
                 <div className="grid gap-3 items-center" style={{ gridTemplateColumns: '1fr 1fr 0.3fr' }}>
                     <label htmlFor="data" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Data</span>
-                        <input placeholder="dd/mm/aaaa" type="text" name="data" id="data" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                        <input placeholder="dd/mm/aaaa" type="date" name="data" id="data" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                     </label>
                     <label htmlFor="valor" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Valor</span>
-                        <input placeholder="R$" type="text" name="valor" id="valor" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                        <input
+                            onChange={(e) => {
+                                e.target.value = Number(e.target.value).toFixed(2)
+                            }}
+                            type="number" step={0.01} name="valor" placeholder="R$" id="valor" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full" />
                     </label>
                     <div className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-2 text-sm">Pago?</span>
                         <label className="switch">
-                            <input type="checkbox" defaultChecked />
+                            <input type="checkbox" id="pago" defaultChecked />
                             <div className="slider">
                                 <div className="circle">
                                     <svg className="cross" viewBox="0 0 365.696 365.696" y="0" x="0" height="6" width="6" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -106,7 +176,63 @@ export default function RegistrarDespesa({ close }: { close: () => void }) {
                 </label>
                 <section className="flex gap-3 justify-end mt-2">
                     <button className="px-3 py-2 border border-zinc-300 rounded-lg" onClick={close}>Cancelar</button>
-                    <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary">Registrar Movimentação</button>
+                    <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
+                        onClick={async () => {
+                            const categoriaInput = document.querySelectorAll('label:has(input[type="radio"]:checked)')[0] as HTMLLabelElement
+                            const descricaoInput = document.getElementById('descricao') as HTMLInputElement
+                            const acomodacaoInput = document.getElementById('acomodacaoReceita') as HTMLInputElement
+                            const tipoDespesa = document.getElementById('tipo-despesa') as HTMLInputElement
+                            const dataInput = document.getElementById('data') as HTMLInputElement
+                            const valorInput = document.getElementById('valor') as HTMLInputElement
+                            const recebedor = document.getElementById('recebedor') as HTMLInputElement
+                            const observacaoInput = document.getElementById('observacao') as HTMLInputElement
+                            const pago = document.getElementById('pago') as HTMLInputElement
+                            let vProprietario: number = 0
+                            let vGestor: number = 0
+                            if (acomodacaoInput.value != 'null' && acomodacaoInput.value != '' && acomodacao.filter(e => e.id == Number(acomodacaoInput.value))[0].comissao) {
+                                const comissao = acomodacao.filter(a => a.id == Number(acomodacaoInput.value))[0].comissao
+                                vProprietario = ((100 - comissao) / 100) * Number(valorInput.value)
+                                vGestor = (comissao / 100) * Number(valorInput.value)
+                            }
+                            else {
+                                vProprietario = Number(valorInput.value)
+                                vGestor = Number(valorInput.value)
+                            }
+                            if ((Boolean(categoriaInput?.htmlFor) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && tipoDespesa.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value) > 0)) {
+                                await create({
+                                    "acomodacao": {
+                                        "id": tipoDespesa.value == 'Despesas do Negócio' ? null : eval(acomodacaoInput.value)
+                                    },
+                                    "categoria_financeiro": {
+                                        "id": categoriaInput.htmlFor
+                                    },
+                                    "data": dataInput.value,
+                                    "canal_reserva": {
+                                        "id": null
+                                    },
+                                    "nome": descricaoInput.value,
+                                    "saas": {
+                                        "id": 1
+                                    },
+                                    "valor": Number(valorInput.value),
+                                    "valor_liq": Number(valorInput.value),
+                                    "valor_prop": vProprietario,
+                                    "valor_gestor": vGestor,
+                                    "reserva": {
+                                        "id": null
+                                    },
+                                    "pago": pago.checked,
+                                    "receita": false,
+                                    "tipo_despesa": tipoDespesa.value,
+                                    "recebedor": recebedor.value,
+                                    "obs": observacaoInput.value
+                                })
+                            }
+                            else {
+                                alert('Preenchimento incorreto')
+                            }
+                        }}
+                    >Registrar Movimentação</button>
                 </section>
             </form>
         </div>

@@ -73,7 +73,7 @@ export default function FaturamentoxDespesa({mes, dadosAtuais, dadosPassado}:{me
                         },
                         datalabels: {
                             display: function (context: any) {
-                                return context.dataset.data[context.dataIndex] !== 0;
+                                return context.dataset.data[context.dataIndex] != 0;
                             },
                             formatter: (value: number) => {
                                 return value.toString();

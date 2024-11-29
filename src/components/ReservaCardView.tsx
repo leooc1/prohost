@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react"
+import NovaContinuidade from "./NovaContinuidade"
+import EditarReserva from "./EditarReserva"
 
 interface propsReserva {
     id: string
@@ -7,12 +9,12 @@ interface propsReserva {
 
 interface Reserva {
     id?: number
-    acomodacao: { id: number, foto: string, nome: string }
+    acomodacao: { id: number, foto: string, nome: string, comissao: number }
     check_in: string
     check_out: string
     canal_reserva: { id: number, cor: string, nome: string } | null
     comissao_ota: number
-    continuidade: boolean
+    continuidade: number | null
     hospede: { id: number, nome: string } | null
     qtd_hospede: number
     saas: { id: number }
@@ -26,7 +28,10 @@ interface Reserva {
 
 export default function ReservaCardView(props: propsReserva) {
     const [reserva, setReserva] = useState<Reserva>()
-    const [idR, setIdR] = useState(0)
+    const [idR, setIdR] = useState<number>(0)
+    const [continuidade, setContinuidade] = useState(false)
+    const [editar, setEditar] = useState(false)
+
     function formatDate(isoDateStr: string) {
         const date = new Date(isoDateStr);
 
@@ -51,20 +56,8 @@ export default function ReservaCardView(props: propsReserva) {
         return diferencaDias === 1 ? `${diferencaDias} noite` : `${diferencaDias} noites`;
     }
 
-    function toDateBr(data: string) {
-        const checkIn = new Date(data)
-        const ano = (checkIn.getFullYear())
-        const mes = (checkIn.getMonth() + 1)
-        const dia = (checkIn.getDate())
-        const hr = (checkIn.getHours())
-        const min = (checkIn.getMinutes())
-        const seg = (checkIn.getSeconds())
-        return (`${ano}-${mes < 10 ? '0' + mes : mes}-${dia < 10 ? '0' + dia : dia} ${hr < 10 ? '0' + hr : hr}:${min < 10 ? '0' + min : min}:${seg < 10 ? '0' + seg : seg}`)
-    }
-
-    async function idContinuidade(idAcomodacao: number, checkin: string) {
-        const check = await toDateBr(checkin)
-        await fetch(`http://localhost:3000/reserva/1/${idAcomodacao}/ci/${check}`, {
+    async function idContinuidade(idAcomodacao: number, idContinuidade: number) {
+        await fetch(`http://localhost:3000/reserva/1/${idAcomodacao}/ci/${idContinuidade}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -95,7 +88,22 @@ export default function ReservaCardView(props: propsReserva) {
                 if (data[0].tipo_reserva != "Indisponibilidade" && data[0].tipo_reserva != "Continuidade")
                     idReserva(data[0].id || 0, data[0].acomodacao.id)
                 else if (data[0].tipo_reserva == "Continuidade")
-                    idContinuidade(data[0].acomodacao.id, data[0].check_in)
+                    idContinuidade(data[0].acomodacao.id, data[0].continuidade || 0)
+            })
+            .catch(err => console.log(err))
+    }
+
+    async function deleteReserva(id: number) {
+        await fetch(`http://localhost:3000/reserva/${id}`, {
+            method: 'DELETE'
+        })
+            .then(data => data.json())
+            .then((data) => {
+                if (data.affected == 1) {
+                    alert('EXCLUÍDO!')
+                    props.close()
+                    location.reload()
+                }
             })
             .catch(err => console.log(err))
     }
@@ -106,10 +114,35 @@ export default function ReservaCardView(props: propsReserva) {
 
     return (
         <div className='w-screen min-h-screen fixed z-10 top-0 right-0'>
+            {continuidade && <NovaContinuidade
+                idReserva={props.id}
+                close={() => setContinuidade(false)}
+                checkinDate={reserva?.check_out || ''}
+                acomodacao={reserva?.acomodacao.id || 0}
+                canal={reserva?.canal_reserva?.id || 0}
+                qtdHospede={reserva?.qtd_hospede || 0}
+                hospede={reserva?.hospede?.id || 0}
+                comissao={reserva?.acomodacao.comissao || null}
+            />}
+
+            {editar && <EditarReserva
+                id={reserva?.id || 0}
+                close={() => setEditar(false)}
+                acomodacaoID={reserva?.acomodacao.id || 0}
+                canalID={reserva?.canal_reserva?.id || 0}
+                checkIn={reserva?.check_in || ''}
+                checkOut={reserva?.check_out || ''}
+                comissao={reserva?.comissao_ota || 0}
+                hospedeNOME={reserva?.hospede?.nome || ''}
+                obs={reserva?.obs || ''}
+                qtdHospede={reserva?.qtd_hospede || 0}
+                valorLiq={reserva?.valor_liq || 0}
+                valorTotal={reserva?.valor || 0}
+            />}
             <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={props.close}></div>
             <div className="flex rounded-md flex-col absolute min-w-80 px-4 pb-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white max-h-[calc(100vh-40px)] overflow-y-scroll scroll-default">
                 <section className="flex items-center mt-2 gap-5">
-                    <img className="w-14 h-14 rounded-full border-2 border-blue-600" src={reserva?.acomodacao.foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'} />
+                    <img className="w-14 h-14 rounded-full border-2 border-blue-600 object-cover" src={reserva?.acomodacao.foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'} />
                     <div className="flex flex-col gap-3 mt-2">
                         {reserva?.tipo_reserva == 'Indisponibilidade' ?
                             <h5 className="font-semibold text-2xl">{'Indisponibilidade'}</h5> :
@@ -164,7 +197,7 @@ export default function ReservaCardView(props: propsReserva) {
                         <div className="border border-zinc-300 rounded-md px-3 py-2 flex flex-col justify-center relative pl-12">
                             <svg className="absolute w-8 h-fit left-2 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 105.78"><defs></defs><title>scissors</title><path d="M95.36,19.84c11-5.17,20.18-5.08,27.52-.1l-65,37.45a12.92,12.92,0,0,1-7.22,3c-2.42.13-3.29-.56-5.39-.95a7.22,7.22,0,0,0-5.4,1l-1.71,1.56c-1.53,1.39-3.37,2.6-3.07,5,.2,1.58,1.55,2.91,3.69,4.06A15.4,15.4,0,0,1,42.56,76,17.92,17.92,0,0,1,44,82.5c-.39,7.55-3.92,14.07-12.41,19-9.68,6-17.86,5.27-25.18.86C2,98.93,0,94.82,0,90.16,0,83,3.41,77.26,8.73,72.78A73.68,73.68,0,0,1,20.66,65.1l14-10.95.25.85L95.36,19.84Zm0,66.1c11,5.17,20.18,5.08,27.52.1L69.16,55.09,55.53,62.78,95.36,85.94ZM42.29,46.56a7.4,7.4,0,0,1-2.41-1L38.17,44c-1.53-1.39-3.37-2.6-3.07-5,.2-1.59,1.55-2.92,3.69-4.06a15.44,15.44,0,0,0,3.77-5.2A17.86,17.86,0,0,0,44,23.29c-.39-7.55-3.92-14.08-12.41-19C21.93-1.63,13.75-.95,6.43,3.46,2,6.85,0,11,0,15.63,0,22.74,3.41,28.53,8.73,33a73,73,0,0,0,11.93,7.68L34.24,51.31l.6-.35.06-.18.12.08,7.27-4.3ZM32.85,30.43c3.91-2.55,4.31-6.85,2.87-10.95C34.57,16.19,32.1,13.35,28.4,11A21.36,21.36,0,0,0,15.88,7.77c-8.44.77-10,8.29-6.35,14.86a17.07,17.07,0,0,0,7.37,6.92A24.19,24.19,0,0,0,24.44,32a12.16,12.16,0,0,0,8.41-1.56ZM55.08,53.11a3.58,3.58,0,1,1-3.57-3.58,3.57,3.57,0,0,1,3.57,3.58ZM32.85,75.36c3.91,2.55,4.31,6.84,2.87,10.94-1.15,3.3-3.62,6.13-7.32,8.53A21.44,21.44,0,0,1,15.88,98c-8.44-.78-10-8.3-6.35-14.87a17,17,0,0,1,7.37-6.91,23.94,23.94,0,0,1,7.54-2.45,12.16,12.16,0,0,1,8.41,1.57Z" fill="#6279f2" /></svg>
                             <span className="text-zinc-500 font-medium mb-1 text-sm">Comissão</span>
-                            <p className="font-semibold text-sm">R$ {Number(reserva?.comissao_ota).toFixed(2)}</p>
+                            {reserva?.tipo_reserva != 'Continuidade' && <p className="font-semibold text-sm">R$ {Number(reserva?.comissao_ota).toFixed(2)}</p>}
                         </div>
                     </div>}
                     {reserva?.tipo_reserva == 'Indisponibilidade' ? null : <div className="grid gap-4"
@@ -188,18 +221,47 @@ export default function ReservaCardView(props: propsReserva) {
                         </div>
                     </div> : null}
                     {reserva?.tipo_reserva != 'Indisponibilidade' && reserva?.tipo_reserva != 'Continuidade' ? <div className="flex justify-between mt-3">
-                        <button className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md">Excluir Reserva</button>
-                        <button className="px-2 py-1 text-sm font-medium bg-blue-100 text-blue-500 rounded-md">Editar Reserva</button>
-                        <button className="px-2 py-1 text-sm font-medium bg-green-100 text-green-500 rounded-md">Extender Reserva</button>
+                        <button
+                            onClick={() => {
+                                const confirma = confirm('Tem certeza que deseja excluir esta reserva?')
+                                if (confirma) {
+                                    deleteReserva(Number(props.id))
+                                }
+                            }}
+                            className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md">Excluir Reserva</button>
+                        <button
+                            onClick={() => {
+                                setEditar(true)
+                            }}
+                            className="px-2 py-1 text-sm font-medium bg-blue-100 text-blue-500 rounded-md">Editar Reserva</button>
+                        <button
+                            onClick={() => {
+                                setContinuidade(true)
+                            }}
+                            className="px-2 py-1 text-sm font-medium bg-green-100 text-green-500 rounded-md">Extender Reserva</button>
                     </div> : null}
                     {reserva?.tipo_reserva == 'Continuidade' ? <div className="flex justify-between mt-3">
-                        <button className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md">Excluir Continuidade</button>
+                        <button
+                            onClick={() => {
+                                const confirma = confirm('Tem certeza que deseja excluir esta reserva?')
+                                if (confirma) {
+                                    deleteReserva(Number(props.id))
+                                }
+                            }}
+                            className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md">Excluir Continuidade</button>
                     </div> : null}
                     {reserva?.tipo_reserva == 'Indisponibilidade' ? <div className="flex justify-between mt-3">
-                        <button className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md">Excluir Indisponibilidade</button>
+                        <button
+                            onClick={() => {
+                                const confirma = confirm('Tem certeza que deseja excluir esta reserva?')
+                                if (confirma) {
+                                    deleteReserva(Number(props.id))
+                                }
+                            }}
+                            className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md">Excluir Indisponibilidade</button>
                     </div> : null}
                 </section>
-            </div>
-        </div>
+            </div >
+        </div >
     )
 }

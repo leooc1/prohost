@@ -1,6 +1,34 @@
 import prohostLogo from '../../public/prohost-logo.png'
 
 export default function Auth() {
+    async function logar(login: { email: string, senha: string }) {
+        await fetch('http://localhost:3000/users/auth', {
+            method: 'POST',
+            body: JSON.stringify({
+                email: login.email,
+                senha: login.senha
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => {
+                if (data.status == 200)
+                    return data.json()
+                else return null
+            })
+            .then((data) => {
+                if(data){
+                    window.localStorage.setItem('ph_token_acc', data)
+                    window.location.assign('/')
+                }
+                else{
+                    alert('Dados incorretos!')
+                }
+            })
+            .catch(err => console.log(err))
+    }
+
     return (
         <div className="flex">
             <main className="w-full min-h-screen h-full relative bg-zinc-100 grid grid-cols-3">
@@ -14,8 +42,17 @@ export default function Auth() {
 
                     <h2 className='text-3xl font-semibold mb-5 mt-10 ml-10'>Faça login</h2>
 
-                    <form action="#" className='mx-10 flex flex-col gap-5'>
-
+                    <form action="" className='mx-10 flex flex-col gap-5'
+                        onSubmit={(e) => {
+                            e.preventDefault()
+                            const email = document.getElementById('email') as HTMLInputElement
+                            const senha = document.getElementById('senha') as HTMLInputElement
+                            logar({
+                                email: email.value,
+                                senha: senha.value
+                            })
+                        }}
+                    >
                         <label className='text-zinc-500 flex flex-col text-sm gap-2 relative col-span-2'>
                             Seu e-mail
                             <svg className='h-fit w-4 fill-zinc-300 absolute top-10 left-2' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM12.0606 11.6829L5.64722 6.2377L4.35278 7.7623L12.0731 14.3171L19.6544 7.75616L18.3456 6.24384L12.0606 11.6829Z"></path></svg>

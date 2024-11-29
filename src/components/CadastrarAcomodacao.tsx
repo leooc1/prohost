@@ -63,7 +63,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Comissão
                             <span className='text-red-500 font-bold'> *</span>
                         </span>
-                        <input type="number" name="comissao" id="comissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" placeholder="%" />
+                        <input type="number" step="0.01" name="comissao" id="comissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" placeholder="%" />
                     </label>}
 
                     <label htmlFor="inicio-operacao" className={`flex flex-col ${tipo == 'terceiro' ? 'col-span-2' : ''}`}>
@@ -82,7 +82,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Valor do Imóvel
                             <span className='text-red-500 font-bold'> *</span>
                         </span>
-                        <input type="number" name="valor-imovel" id="valor-imovel" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                        <input type="number" step="0.01" name="valor-imovel" id="valor-imovel" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                     </label>
                 </div>
                 <div className="grid gap-4 items-center" style={{ gridTemplateColumns: '1fr 1fr' }}>

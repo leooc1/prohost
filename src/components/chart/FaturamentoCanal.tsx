@@ -12,11 +12,13 @@ export default function FaturamentoCanal({ labels, dados, colors }: { labels: st
             const ctx = chartRef.current.getContext('2d');
 
             if (ctx) {
+                const total = dados.reduce((sum, value) => sum + value, 0);
+
                 const data = {
                     labels: labels,
                     datasets: [
                         {
-                            data: dados,
+                            data: dados.map(v => Number((v).toFixed(1))),
                             backgroundColor: colors,
                             hoverBackgroundColor: colors,
                         },
@@ -42,7 +44,8 @@ export default function FaturamentoCanal({ labels, dados, colors }: { labels: st
                         tooltip: {
                             callbacks: {
                                 label: function (context: any) {
-                                    return `R$ ${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(context.raw)}`;
+                                    const percentage = (context.raw/total * 100).toFixed(2);
+                                    return `${percentage}%`;
                                 },
                             },
                         },

@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 
 Chart.register(PieController, ArcElement, Tooltip, Legend, Title, ChartDataLabels);
 
-export default function OcupacaoMedia({dados}:{dados:number[]}) {
+export default function OcupacaoMedia({ dados }: { dados: number }) {
     const chartRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
@@ -16,7 +16,7 @@ export default function OcupacaoMedia({dados}:{dados:number[]}) {
                     labels: ['Ocupado', 'Ocioso'],
                     datasets: [
                         {
-                            data: dados,
+                            data: [Number(dados), 100 - Number(dados)],
                             backgroundColor: ['#00D19A', '#f2f2f2'],
                             hoverBackgroundColor: ['#00D19A', '#f2f2f2'],
                             borderRadius: 4
@@ -43,7 +43,7 @@ export default function OcupacaoMedia({dados}:{dados:number[]}) {
                                 },
                             },
                         },
-                        datalabels:{
+                        datalabels: {
                             display: false
                         }
                     },

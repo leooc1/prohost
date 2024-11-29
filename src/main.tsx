@@ -12,6 +12,12 @@ import Hospede from './pages/Hospede.tsx'
 import Financeiro from './pages/Financeiro.tsx'
 import Auth from './pages/Auth.tsx'
 import Assinar from './pages/Assinar.tsx'
+import Cadastro from './components/assinatura/Cadastro.tsx'
+import FormaPagamento from './components/assinatura/FormaPagamento.tsx'
+import Pix from './components/assinatura/Pix.tsx'
+import Boleto from './components/assinatura/Boleto.tsx'
+import CartaoCredito from './components/assinatura/CartaoCredito.tsx'
+import { AssinaturaProvider } from './contexts/AssinaturaContext.tsx'
 
 const router = createBrowserRouter([
   {
@@ -43,7 +49,7 @@ const router = createBrowserRouter([
         path: "/movimentacoes",
         element: <Financeiro />,
       },
-    ]
+    ],
   },
   {
     path: "/auth",
@@ -52,10 +58,36 @@ const router = createBrowserRouter([
   },
   {
     path: "/assinar",
-    element: <Assinar />,
+    element: <AssinaturaProvider>
+      <Assinar />
+    </AssinaturaProvider>,
     errorElement: <NotFound />,
-  }
+    children: [
+      {
+        path: "",
+        element: <Cadastro />,
+      },
+      {
+        path: "forma-pagamento",
+        element: <FormaPagamento />,
+        errorElement: <NotFound />,
+      },
+      {
+        path: "pix",
+        element: <Pix />,
+      },
+      {
+        path: "boleto",
+        element: <Boleto />,
+      },
+      {
+        path: "credit-card",
+        element: <CartaoCredito />,
+      },
+    ],
+  },
 ]);
+
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
