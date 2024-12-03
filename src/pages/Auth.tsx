@@ -67,7 +67,7 @@ export default function Auth() {
                         </label>
                         <p className='flex gap-2 items-center font-medium text-zinc-500 cursor-pointer hover:text-blue-600'>Esqueceu sua senha?</p>
                         <button className={`py-2 text-white text-xl font-medium px-10 rounded-lg bg-primary w-fit`}>Avançar</button>
-                        <a href='/assinar' className='flex gap-2 items-center font-medium text-zinc-500 hover:text-blue-600'>Não tem uma conta? Registre-se</a>
+                        <button onClick={()=>{location.href = ('/assinar')}} className='flex gap-2 items-center font-medium text-zinc-500 hover:text-blue-600'>Não tem uma conta? Registre-se</button>
                     </form>
 
                 </section>
