@@ -30,9 +30,9 @@ export default function Auth() {
     }
 
     return (
-        <div className="flex">
-            <main className="w-full min-h-screen h-full relative bg-zinc-100 grid grid-cols-3">
-                <section className="bg-white flex flex-col justify-center h-full">
+        <div className="flex w-full min-h-screen h-full">
+            <main className="w-full min-h-screen h-full relative bg-zinc-100 flex flex-col md:grid md:grid-cols-3">
+                <section className="bg-white flex flex-col justify-center h-full py-20 md:py-0">
                     <div className='flex gap-2 ml-10'>
                         <img src={prohostLogo} alt='Logo ProHost' width={32} height={32} />
                         <h1 className='text-zinc-500 font-bold text-3xl tracking-tight'>
@@ -72,8 +72,8 @@ export default function Auth() {
 
                 </section>
 
-                <section className="bg-gradient-to-t from-[#003447] to-[#0e7c71] relative flex items-center col-span-2">
-                    <h2 className="text-6xl text-white font-semibold ml-10">
+                <section className="bg-gradient-to-t from-[#003447] to-[#0e7c71] relative flex items-center col-span-2 py-20 md:py-0">
+                    <h2 className="text-4xl md:text-6xl text-white font-semibold ml-10">
                         Seja bem-vindo <br />
                         à próxima geração <br />
                         de anfitriões

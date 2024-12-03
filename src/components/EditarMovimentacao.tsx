@@ -33,6 +33,8 @@ interface propsEditar {
     data: string | null
     valor: string | null
     pago: boolean | null
+    saas: number | null
+    tipo_despesa: string | null
     obs: string | null
     close: () => void
 }
@@ -77,9 +79,27 @@ export default function EditarMovimentacao(props: propsEditar) {
             })
             .catch(err => console.log(err))
     }
-    async function create(pbody: any) {
-        await fetch(`http://localhost:3000/movimentacao/`, {
-            method: 'POST',
+    async function editar(pbody: {
+        id: number | null
+        acomodacao: { id: number | null }
+        categoria_financeiro: { id: number | null }
+        data: string
+        canal_reserva: { id: number | null }
+        nome: string
+        saas: { id: number| null }
+        valor: number
+        valor_liq: number
+        valor_prop: number
+        valor_gestor: number
+        reserva: { id: number | null }
+        pago: boolean | null
+        receita: boolean
+        tipo_despesa: string| null
+        recebedor: string
+        obs: string
+    }) {
+        await fetch(`http://localhost:3000/movimentacao/${props.id}`, {
+            method: 'PUT',
             body: JSON.stringify(pbody),
             headers: {
                 'Content-Type': 'application/json'
@@ -87,10 +107,27 @@ export default function EditarMovimentacao(props: propsEditar) {
         })
             .then(data => data.json())
             .then((data) => {
-                if (data.id) {
-                    alert('CRIADO!')
+                if (data.affected) {
+                    alert('Atualizado!')
                     close()
                     location.reload()
+                }
+
+            })
+            .catch(err => console.log(err))
+    }
+    async function excluir(id: number) {
+        await fetch(`http://localhost:3000/movimentacao/${id}`, {
+            method: 'DELETE',
+        })
+            .then(data => data.json())
+            .then((data) => {
+                if (data.affected) {
+                    alert('Excluído!')
+                    location.reload()
+                }
+                else {
+                    alert('Algo deu errado, tente novamente.')
                 }
             })
             .catch(err => console.log(err))
@@ -118,7 +155,7 @@ export default function EditarMovimentacao(props: propsEditar) {
                         <span className="text-zinc-500 font-medium">Categoria</span>
                         <div className="mt-2 flex gap-2 flex-wrap">
                             {categoriaf.length > 0 &&
-                                categoriaf.map(cat => <label htmlFor={String(cat.id)} onClick={() => setCategoria()} className={`${String(props.categoria) == String(cat.id)?'outline outline-2 outline-slate-700 bg-slate-300':'bg-slate-100'} bg-slate-100 text-sm font-medium cursor-pointer flex items-center text-slate-500 rounded-2xl px-2 py-px`}>
+                                categoriaf.map(cat => <label htmlFor={String(cat.id)} onClick={() => setCategoria()} className={`${String(props.categoria) == String(cat.id) ? 'outline outline-2 outline-slate-700 bg-slate-300' : 'bg-slate-100'} bg-slate-100 text-sm font-medium cursor-pointer flex items-center text-slate-500 rounded-2xl px-2 py-px`}>
                                     <div className={`w-2 h-2 rounded-full mr-2 bg-[${cat.cor}]`}></div>
                                     {cat.nome}
                                     <input type="radio" name="categoria" defaultChecked={String(props.categoria) == String(cat.id)} id={String(cat.id)} className="hidden" />
@@ -135,9 +172,9 @@ export default function EditarMovimentacao(props: propsEditar) {
                             <input placeholder="Ex: Mercado Paulista" type="text" name="recebedor" id="recebedor" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" defaultValue={props.recebedor || ''} />
                         </label>
                     </div>
-                    <label htmlFor="acomodacaoReceita" className={`flex flex-col`}>
+                    <label htmlFor="acomodacaoEdit" className={`flex flex-col`}>
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Acomodação (opicional)</span>
-                        <select name="acomodacaoReceita" id="acomodacaoReceita" className="border border-zinc-300 rounded-md text-zinc-5 00 px-2 py-1 outline-none" defaultValue={props.acomodacao || 'null'}>
+                        <select name="acomodacaoEdit" id="acomodacaoEdit" className="border border-zinc-300 rounded-md text-zinc-5 00 px-2 py-1 outline-none" defaultValue={props.acomodacao || 'null'}>
                             <option value="" selected disabled className="hidden">Selecione uma acomodação</option>
                             <option value="null"></option>
                             {acomodacao?.length > 0 &&
@@ -184,13 +221,14 @@ export default function EditarMovimentacao(props: propsEditar) {
                     </label>
                     <section className="flex gap-3 justify-end mt-2">
                         <button className="px-3 py-2 border border-zinc-300 rounded-lg" onClick={props.close}>Cancelar</button>
-                        <button className="px-3 py-2 border bg-red-400 text-white rounded-lg" onClick={props.close}>Excluir</button>
+                        <button className="px-3 py-2 border bg-red-400 text-white rounded-lg" onClick={() => {
+                            excluir(props.id || 0)
+                        }}>Excluir</button>
                         <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
                             onClick={async () => {
                                 const categoriaInput = document.querySelectorAll('label:has(input[type="radio"]:checked)')[0] as HTMLLabelElement
                                 const descricaoInput = document.getElementById('descricao') as HTMLInputElement
-                                const acomodacaoInput = document.getElementById('acomodacaoReceita') as HTMLInputElement
-                                const tipoDespesa = document.getElementById('tipo-despesa') as HTMLInputElement
+                                const acomodacaoInput = document.getElementById('acomodacaoEdit') as HTMLInputElement
                                 const dataInput = document.getElementById('data') as HTMLInputElement
                                 const valorInput = document.getElementById('valor') as HTMLInputElement
                                 const recebedor = document.getElementById('recebedor') as HTMLInputElement
@@ -207,13 +245,14 @@ export default function EditarMovimentacao(props: propsEditar) {
                                     vProprietario = Number(valorInput.value)
                                     vGestor = Number(valorInput.value)
                                 }
-                                if ((Boolean(categoriaInput?.htmlFor) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && tipoDespesa.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value) > 0)) {
-                                    /* await create({
+                                if ((Boolean(categoriaInput?.htmlFor) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value) > 0)) {
+                                    await editar({
+                                        "id": props.id,
                                         "acomodacao": {
-                                            "id": tipoDespesa.value == 'Despesas do Negócio' ? null : eval(acomodacaoInput.value)
+                                            "id": eval(acomodacaoInput.value)
                                         },
                                         "categoria_financeiro": {
-                                            "id": categoriaInput.htmlFor
+                                            "id": Number(categoriaInput.htmlFor)
                                         },
                                         "data": dataInput.value,
                                         "canal_reserva": {
@@ -221,7 +260,7 @@ export default function EditarMovimentacao(props: propsEditar) {
                                         },
                                         "nome": descricaoInput.value,
                                         "saas": {
-                                            "id": 1
+                                            "id": props.saas
                                         },
                                         "valor": Number(valorInput.value),
                                         "valor_liq": Number(valorInput.value),
@@ -232,10 +271,10 @@ export default function EditarMovimentacao(props: propsEditar) {
                                         },
                                         "pago": pago.checked,
                                         "receita": false,
-                                        "tipo_despesa": tipoDespesa.value,
+                                        "tipo_despesa": props.tipo_despesa,
                                         "recebedor": recebedor.value,
                                         "obs": observacaoInput.value
-                                    }) */
+                                    })
                                 }
                                 else {
                                     alert('Preenchimento incorreto')
@@ -244,7 +283,7 @@ export default function EditarMovimentacao(props: propsEditar) {
                         >Salvar Alterações</button>
                     </section>
                 </form>
-            </div>
+            </div >
             :
             <Loader />
     )

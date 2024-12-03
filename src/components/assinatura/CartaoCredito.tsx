@@ -1,11 +1,40 @@
 import { InputMask } from "@react-input/mask"
 
 export default function CartaoCredito() {
+    async function pagamento(pbody: any) {
+        const storage = window.localStorage.getItem('ph_pay_acc')
+        let pay = ''
+        await fetch(`http://localhost:3000/assinatura/${storage}`, {
+            method: 'GET'
+        })
+            .then(data => data.json())
+            .then(data => {
+                pay = data
+            })
+            .catch(err => console.error(err))
+        await fetch(`http://localhost:3000/assinatura/credit-card/${pay}`, {
+            method: 'POST',
+            body: JSON.stringify(pbody),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json())
+            .then((data) => {
+                if (data.status == 'CONFIRMED') {
+                    alert('Feito!')
+                    location.assign('/auth')
+                }
+                else {
+                    alert('Algo deu errado, tente novamente')
+                }
+            })
+    }
     return (
         <section className="bg-white flex flex-col py-20 h-full">
             <h2 className='text-3xl font-semibold mb-5 ml-10'>Pagamento</h2>
             <hr className='mx-5 mb-10' />
-            <form action="" className='mx-10 flex flex-col gap-2'>
+            <form action="" onSubmit={(e) => e.preventDefault()} className='mx-10 flex flex-col gap-2'>
                 <label className='text-zinc-500 flex flex-col text-sm gap-2 relative'>
                     Nome impresso no cartão
                     <input id='nome' type="text"
@@ -26,7 +55,7 @@ export default function CartaoCredito() {
                         <InputMask
                             placeholder="MM / AAAA"
                             mask="xx / xxxx"
-                            replacement={{ x: /\d/ }} id='data-expiracap' type="text"
+                            replacement={{ x: /\d/ }} id='data-expiracao' type="text"
                             className='border border-zinc-300 bg-transparent text-lg py-1 pr-2 pl-4 outline-secondary text-black rounded-md' />
                     </label>
                     <label className='text-zinc-500 flex flex-col text-sm gap-2 relative'>
@@ -40,12 +69,24 @@ export default function CartaoCredito() {
                 </div>
 
                 <section className='flex gap-10 mt-4'>
-                    <a href="/assinar/forma-pagamento" className={`py-2 text-white text-xl font-medium px-10 rounded-lg ${true ? 'bg-primary' : 'bg-zinc-400 cursor-no-drop'}`}
-                        onClick={(e) => {
-                            if (!true)
-                                e.preventDefault()
+                    <button className={`py-2 text-white text-xl font-medium px-10 rounded-lg bg-primary`}
+                        onClick={() => {
+                            const nome = document.getElementById('nome') as HTMLInputElement
+                            const num_card = document.getElementById('num-card') as HTMLInputElement
+                            const data_expiracao = document.getElementById('data-expiracao') as HTMLInputElement
+                            const cvc = document.getElementById('cvc') as HTMLInputElement
+
+                            if (nome.value.length > 0 && num_card.value.length > 0 && data_expiracao.value.length > 6 && cvc.value.length > 0) {
+                                pagamento({
+                                    "holderName": nome.value,
+                                    "number": num_card.value,
+                                    "expiryMonth": data_expiracao.value.split(' / ')[0],
+                                    "expiryYear": data_expiracao.value.split(' / ')[1],
+                                    "ccv": cvc.value
+                                })
+                            }
                         }}
-                    >Avançar</a>
+                    >Avançar</button>
                 </section>
             </form>
         </section>

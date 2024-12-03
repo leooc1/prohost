@@ -30,6 +30,7 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
     const [ediID, setEdiID] = useState<number | null>(null)
     const [ediCategoria, setEdiCategoria] = useState<number | null>(null)
     const [ediDescricao, setEdiDescricao] = useState<string | null>(null)
+    const [tipoDespesa, setTipoDespesa] = useState<string | null>(null)
     const [ediRecebedor, setEdiRecebedor] = useState<string | null>(null)
     const [ediAcomodacao, setEdiAcomodacao] = useState<number | null>(null)
     const [ediData, setEdiData] = useState<string | null>(null)
@@ -77,8 +78,10 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
                             recebedor={ediRecebedor}
                             acomodacao={ediAcomodacao}
                             data={ediData}
+                            tipo_despesa={tipoDespesa}
                             valor={ediValor}
                             pago={ediPago}
+                            saas={dataToken.id}
                             obs={ediObs} />}
                         <table className="w-full mt-3 border border-zinc-200 rounded-lg">
                             <thead className="w-full">
@@ -101,6 +104,7 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
                                                     onClick={() => {
                                                         if (e.reserva == null) {
                                                             setEditavel(true)
+                                                            setTipoDespesa(e?.tipo_despesa || null)
                                                             setEdiID(e?.id || null)
                                                             setEdiCategoria(e?.categoria_financeiro?.id || null)
                                                             setEdiDescricao(e?.nome || null)
