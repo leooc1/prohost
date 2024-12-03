@@ -6,13 +6,13 @@ export default defineConfig({
   base: '/',
   build: {
     chunkSizeWarningLimit: 1000,
-    rollupOptions: {
+    /* rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
         },
       },
-    },
+    }, */
   },
 
 });
