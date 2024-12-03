@@ -249,7 +249,7 @@ export default function EditarMovimentacao(props: propsEditar) {
                                     await editar({
                                         "id": props.id,
                                         "acomodacao": {
-                                            "id": eval(acomodacaoInput.value)
+                                            "id": Number(acomodacaoInput.value) || null
                                         },
                                         "categoria_financeiro": {
                                             "id": Number(categoriaInput.htmlFor)

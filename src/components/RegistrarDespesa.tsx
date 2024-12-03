@@ -24,7 +24,7 @@ interface CategoriaFinanceiro {
     saas: { id: number };
 }
 
-export default function RegistrarDespesa({ close }: { close: () => void }) {
+export default function RegistrarDespesa({ close, saas }: { close: () => void, saas: string }) {
     const [tipoDespesa, setTipoDespesa] = useState('')
     const setCategoria = () => {
         const categorias = document.querySelectorAll('label:has(input[type="radio"])')
@@ -201,7 +201,7 @@ export default function RegistrarDespesa({ close }: { close: () => void }) {
                             if ((Boolean(categoriaInput?.htmlFor) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && tipoDespesa.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value) > 0)) {
                                 await create({
                                     "acomodacao": {
-                                        "id": tipoDespesa.value == 'Despesas do Negócio' ? null : eval(acomodacaoInput.value)
+                                        "id": tipoDespesa.value == 'Despesas do Negócio' ? null : Number(acomodacaoInput.value) || null
                                     },
                                     "categoria_financeiro": {
                                         "id": categoriaInput.htmlFor
@@ -212,7 +212,7 @@ export default function RegistrarDespesa({ close }: { close: () => void }) {
                                     },
                                     "nome": descricaoInput.value,
                                     "saas": {
-                                        "id": 1
+                                        "id": saas
                                     },
                                     "valor": Number(valorInput.value),
                                     "valor_liq": Number(valorInput.value),

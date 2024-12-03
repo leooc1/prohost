@@ -1,4 +1,4 @@
-// import prohostLogo from '../../public/prohost-logo.png'
+import prohostLogo from '../../public/prohost-logo.png'
 
 export default function Auth() {
     async function logar(login: { email: string, senha: string }) {
@@ -34,7 +34,7 @@ export default function Auth() {
             <main className="w-full min-h-screen h-full relative bg-zinc-100 flex flex-col md:grid md:grid-cols-3">
                 <section className="bg-white flex flex-col justify-center h-full py-20 md:py-0">
                     <div className='flex gap-2 ml-10'>
-                        {/* <img src={prohostLogo} alt='Logo ProHost' width={32} height={32} /> */}
+                        <img src={prohostLogo} alt='Logo ProHost' width={32} height={32} />
                         <h1 className='text-zinc-500 font-bold text-3xl tracking-tight'>
                             prohost
                         </h1>

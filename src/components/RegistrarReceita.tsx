@@ -23,7 +23,7 @@ interface CategoriaFinanceiro {
     receita: boolean
     saas: { id: number };
 }
-export default function RegistrarReceita({ close }: { close: () => void }) {
+export default function RegistrarReceita({ close, saas }: { close: () => void, saas: string }) {
     const setCategoria = () => {
         const categorias = document.querySelectorAll('label:has(input[type="radio"])')
         categorias.forEach((e: any) => {
@@ -163,7 +163,7 @@ export default function RegistrarReceita({ close }: { close: () => void }) {
                             if ((Boolean(categoriaInput?.htmlFor) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value) > 0)) {
                                 await create({
                                     "acomodacao": {
-                                        "id": eval(acomodacaoInput.value)
+                                        "id": Number(acomodacaoInput.value)||null
                                     },
                                     "categoria_financeiro": {
                                         "id": categoriaInput.htmlFor
@@ -174,7 +174,7 @@ export default function RegistrarReceita({ close }: { close: () => void }) {
                                     },
                                     "nome": descricaoInput.value,
                                     "saas": {
-                                        "id": 1
+                                        "id": saas
                                     },
                                     "valor": Number(valorInput.value),
                                     "valor_liq": Number(valorInput.value),

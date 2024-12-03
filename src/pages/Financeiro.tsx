@@ -268,8 +268,8 @@ export default function Financeiro() {
                         </div>
                     </div>
                     {cadastrarCategoria && <CadastrarCategoria close={() => setCadastrarCategoria(false)} />}
-                    {novaDespesa && <RegistrarDespesa close={() => setNovaDespesa(false)} />}
-                    {novaReceita && <RegistrarReceita close={() => setNovaReceita(false)} />}
+                    {novaDespesa && <RegistrarDespesa close={() => setNovaDespesa(false)} saas={dataToken.id}/>}
+                    {novaReceita && <RegistrarReceita close={() => setNovaReceita(false)} saas={dataToken.id}/>}
                     {session == 0 &&
                         <div className='grid grid-cols-4 gap-4'>
                             <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center">
