@@ -15,13 +15,15 @@ interface Movimentacao {
     canal_reserva: { id: number | null }
     nome: string
     saas: { id: number | null }
-    valor: number
+    valor: string
     valor_liq: number
     valor_prop: number
     valor_gestor: number
     reserva: { id: number | null }
     pago: boolean
     receita: boolean
+    recebedor: null | string
+    obs: null | string
     tipo_despesa: string | null
 }
 
