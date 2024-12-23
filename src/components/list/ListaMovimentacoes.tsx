@@ -22,7 +22,7 @@ interface Movimentacao {
     tipo_despesa: string | null
 }
 
-const apiUrl = import.meta.env.VITE_baseURLAPI;
+// const apiUrl = import.meta.env.VITE_baseURLAPI;
 
 export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: Movimentacao[] }) {
     const { dataToken } = useContext(SideBarContext)
@@ -49,7 +49,7 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
     }
     const [ids, setIds] = useState<{ id: number, index: number }[]>([])
     async function getAll(saas: number) {
-        await fetch(`${apiUrl}/reserva/index/${saas}`, {
+        await fetch(`https://api.prohost.net.br/reserva/index/${saas}`, {
             method: 'GET',
         })
             .then(data => data.json())
