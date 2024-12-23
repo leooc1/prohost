@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import image from '../../../public/none-result.svg'
+import image from '/none-result.svg'
 import { SideBarContext } from '../../contexts/SideBarMenuContext'
 import EditarMovimentacao from '../EditarMovimentacao'
 interface Movimentacao {

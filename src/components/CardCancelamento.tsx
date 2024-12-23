@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import nomoney from '../../public/no-money.svg'
+import nomoney from '/no-money.svg'
 
 interface propsCancelamento {
     close: () => void

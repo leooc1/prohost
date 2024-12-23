@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import prohostLogo from '../../public/prohost-logo.png'
+import prohostLogo from '/prohost-logo.png'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { AssinaturaContext } from '../contexts/AssinaturaContext';
 

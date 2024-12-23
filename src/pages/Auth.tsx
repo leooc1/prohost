@@ -1,4 +1,4 @@
-import prohostLogo from '../../public/prohost-logo.png'
+import prohostLogo from '/prohost-logo.png'
 
 //const apiURl = import.meta.env.VITE_baseURLAPI;
 

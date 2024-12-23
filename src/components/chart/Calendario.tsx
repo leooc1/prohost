@@ -39,7 +39,7 @@ export default function Calendario({ acomodacoes, reservas }:
       <iframe
         id='frame-calendar'
         ref={iframeRef}
-        src='../../../public/calendar.html'
+        src='/calendar.html'
         className={`w-full min-h-56 max-h-[440px] border border-zinc-300 rounded-lg`}
         style={{ height: `${altura}px` }}
       />

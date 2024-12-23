@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react'
-import prohostLogo from '../../public/prohost-logo.png'
+import prohostLogo from '/prohost-logo.png'
 import { SideBarContext } from '../contexts/SideBarMenuContext'
 
 //const apiURl = import.meta.env.VITE_baseURLAPI;

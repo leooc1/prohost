@@ -138,13 +138,13 @@ export default function Reserva() {
         {render ?
           calendario ? <Calendario
             acomodacoes={acomodacao.map((a) => ({
-              id: String(a.id),
+              id: String(a ? a.id : null),
               title: a.nome,
               image: a.foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'
             }))}
 
             reservas={reserva.map((r) => ({
-              "resourceId": String(r.acomodacao.id),
+              "resourceId": String(r.acomodacao? r.acomodacao.id: null),
               "title": r.hospede?.nome || '',
               "start": toDateBr(r.check_in),
               "end": toDateBr(r.check_out),
@@ -152,7 +152,7 @@ export default function Reserva() {
               "color": r.tipo_reserva == 'Continuidade' ? '#30C46D'
                 : r.tipo_reserva == 'Indisponibilidade' ? '#353535'
                   : r.canal_reserva?.cor || '',
-              "id": String(r.id),
+              "id": String(r? r.id : null),
               "tipo": r.tipo_reserva,
               "obs": '',
               "bruto": r.valor,
