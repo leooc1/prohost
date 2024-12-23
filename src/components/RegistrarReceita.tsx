@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import { SideBarContext } from "../contexts/SideBarMenuContext"
 interface Acomodacao {
     id: number
     tipo: string
@@ -27,6 +28,8 @@ interface CategoriaFinanceiro {
 //const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function RegistrarReceita({ close, saas }: { close: () => void, saas: string }) {
+    const { dataToken } = useContext(SideBarContext)
+
     const setCategoria = () => {
         const categorias = document.querySelectorAll('label:has(input[type="radio"])')
         categorias.forEach((e: any) => {
@@ -47,7 +50,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
         })
     }
     async function getAcomodacoes() {
-        await fetch('https://api.prohost.net.br/acomodacao/1', {
+        await fetch('https://api.prohost.net.br/acomodacao/'+dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -57,7 +60,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
             .catch(err => console.log(err))
     }
     async function getCategorias() {
-        await fetch('https://api.prohost.net.br/categoria_financeiro/1', {
+        await fetch('https://api.prohost.net.br/categoria_financeiro/'+dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -90,7 +93,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
     useEffect(() => {
         getAcomodacoes()
         getCategorias()
-    }, [])
+    }, [dataToken])
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black fixed top-0 right-0 bg-opacity-20" onClick={close}></div>
@@ -166,7 +169,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                             if ((Boolean(categoriaInput?.htmlFor) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value) > 0)) {
                                 await create({
                                     "acomodacao": {
-                                        "id": Number(acomodacaoInput.value)||null
+                                        "id": Number(acomodacaoInput.value) || null
                                     },
                                     "categoria_financeiro": {
                                         "id": categoriaInput.htmlFor

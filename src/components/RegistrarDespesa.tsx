@@ -1,4 +1,5 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useContext, useEffect, useState } from "react"
+import { SideBarContext } from "../contexts/SideBarMenuContext"
 interface Acomodacao {
     id: number
     tipo: string
@@ -27,6 +28,8 @@ interface CategoriaFinanceiro {
 //const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function RegistrarDespesa({ close, saas }: { close: () => void, saas: string }) {
+    const { dataToken } = useContext(SideBarContext)
+
     const [tipoDespesa, setTipoDespesa] = useState('')
     const setCategoria = () => {
         const categorias = document.querySelectorAll('label:has(input[type="radio"])')
@@ -48,7 +51,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
         })
     }
     async function getAcomodacoes() {
-        await fetch('https://api.prohost.net.br/acomodacao/1', {
+        await fetch('https://api.prohost.net.br/acomodacao/' + dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -58,7 +61,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
             .catch(err => console.log(err))
     }
     async function getCategorias() {
-        await fetch('https://api.prohost.net.br/categoria_financeiro/1', {
+        await fetch('https://api.prohost.net.br/categoria_financeiro/'+dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -92,7 +95,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
     useEffect(() => {
         getAcomodacoes()
         getCategorias()
-    }, [])
+    }, [dataToken])
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black fixed top-0 right-0 bg-opacity-20" onClick={close}></div>

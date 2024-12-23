@@ -64,7 +64,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function idContinuidade(idAcomodacao: number, idContinuidade: number) {
-        await fetch(`https://api.prohost.net.br/reserva/1/${idAcomodacao}/ci/${idContinuidade}`, {
+        await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/${idAcomodacao}/ci/${idContinuidade}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -86,7 +86,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function getReserva(id: string) {
-        await fetch(`https://api.prohost.net.br/reserva/1/${id}`, {
+        await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/${id}`, {
             method: 'GET'
         })
             .then(data => data.json())

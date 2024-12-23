@@ -19,7 +19,7 @@ export default function CadastrarCategoria({ close }: { close: () => void }) {
     const [despesas, setDespesas] = useState<CategoriaFinanceiro[]>([])
 
     async function getCategorias() {
-        await fetch('https://api.prohost.net.br/categoria_financeiro/1', {
+        await fetch('https://api.prohost.net.br/categoria_financeiro/'+dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
