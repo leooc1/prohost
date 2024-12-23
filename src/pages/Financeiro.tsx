@@ -102,7 +102,7 @@ export default function Financeiro() {
     }
 
     async function acomodacoes() {
-        await fetch(`${apiUrl}/acomodacao/${dataToken.id}`, {
+        await fetch(`https://api.prohost.net.br/acomodacao/${dataToken.id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -113,7 +113,7 @@ export default function Financeiro() {
     }
 
     async function getMovimentacao() {
-        await fetch(`${apiUrl}/movimentacao/${dataToken.id}/${dataBW[0]}/${dataBW[1]}`, {
+        await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/${dataBW[0]}/${dataBW[1]}`, {
             method: 'GET'
         })
             .then(data => data.json())

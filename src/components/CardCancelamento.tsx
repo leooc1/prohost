@@ -12,7 +12,7 @@ export default function CardCancelamento(props: propsCancelamento) {
     const [possuiTaxa, setPossuiTaxa] = useState<boolean>(false)
 
     /* async function cancelarReserva(id: number) {
-        await fetch(`${apiUrl}/reserva/${id}`, {
+        await fetch(`https://api.prohost.net.br/reserva/${id}`, {
             method: 'DELETE'
         })
             .then(data => data.json())

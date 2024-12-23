@@ -62,7 +62,7 @@ export default function EditarMovimentacao(props: propsEditar) {
         })
     }
     async function getAcomodacoes() {
-        await fetch('${apiUrl}/acomodacao/1', {
+        await fetch('https://api.prohost.net.br/acomodacao/1', {
             method: 'GET'
         })
             .then(data => data.json())
@@ -72,7 +72,7 @@ export default function EditarMovimentacao(props: propsEditar) {
             .catch(err => console.log(err))
     }
     async function getCategorias() {
-        await fetch('${apiUrl}/categoria_financeiro/1', {
+        await fetch('https://api.prohost.net.br/categoria_financeiro/1', {
             method: 'GET'
         })
             .then(data => data.json())
@@ -100,7 +100,7 @@ export default function EditarMovimentacao(props: propsEditar) {
         recebedor: string
         obs: string
     }) {
-        await fetch(`${apiUrl}/movimentacao/${props.id}`, {
+        await fetch(`https://api.prohost.net.br/movimentacao/${props.id}`, {
             method: 'PUT',
             body: JSON.stringify(pbody),
             headers: {
@@ -119,7 +119,7 @@ export default function EditarMovimentacao(props: propsEditar) {
             .catch(err => console.log(err))
     }
     async function excluir(id: number) {
-        await fetch(`${apiUrl}/movimentacao/${id}`, {
+        await fetch(`https://api.prohost.net.br/movimentacao/${id}`, {
             method: 'DELETE',
         })
             .then(data => data.json())

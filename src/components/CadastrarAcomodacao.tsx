@@ -22,7 +22,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
     const [qtdMaxHospede, setQtdMaxHospede] = useState(1)
     const [tipo, setTipo] = useState('')
     async function createAcomodacao(pbody: Acomodacao) {
-        await fetch(`${apiUrl}/acomodacao/`, {
+        await fetch(`https://api.prohost.net.br/acomodacao/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {

@@ -86,7 +86,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
 
     async function createHospede(pbody: Hospede) {
         try {
-            const response = await fetch(`${apiUrl}/hospede/`, {
+            const response = await fetch(`https://api.prohost.net.br/hospede/`, {
                 method: 'POST',
                 body: JSON.stringify(pbody),
                 headers: {
@@ -103,7 +103,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function createReserva(pbody: Reserva) {
-        await fetch(`${apiUrl}/reserva/`, {
+        await fetch(`https://api.prohost.net.br/reserva/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {
@@ -122,7 +122,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getAcomodacoes() {
-        await fetch('${apiUrl}/acomodacao/1', {
+        await fetch('https://api.prohost.net.br/acomodacao/1', {
             method: 'GET'
         })
             .then(data => data.json())
@@ -133,7 +133,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getCanais() {
-        await fetch('${apiUrl}/canal_reserva/1', {
+        await fetch('https://api.prohost.net.br/canal_reserva/1', {
             method: 'GET'
         })
             .then(data => data.json())
@@ -144,7 +144,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getHospede() {
-        await fetch('${apiUrl}/hospede/1', {
+        await fetch('https://api.prohost.net.br/hospede/1', {
             method: 'GET'
         })
             .then(data => data.json())

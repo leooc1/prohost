@@ -20,7 +20,7 @@ export default function Hospede() {
 
     const apiUrl = import.meta.env.VITE_baseURLAPI;
     async function getHospede() {
-        await fetch(`${apiUrl}/hospede/${dataToken.id}`, {
+        await fetch(`https://api.prohost.net.br/hospede/${dataToken.id}`, {
             method: 'GET'
         })
             .then(data => data.json())

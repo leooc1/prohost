@@ -19,7 +19,7 @@ export default function CadastrarCategoria({ close }: { close: () => void }) {
     const [despesas, setDespesas] = useState<CategoriaFinanceiro[]>([])
 
     async function getCategorias() {
-        await fetch('${apiUrl}/categoria_financeiro/1', {
+        await fetch('https://api.prohost.net.br/categoria_financeiro/1', {
             method: 'GET'
         })
             .then(data => data.json())
@@ -31,7 +31,7 @@ export default function CadastrarCategoria({ close }: { close: () => void }) {
     }
 
     async function createCategorias(pbody: CategoriaFinanceiro) {
-        await fetch('${apiUrl}/categoria_financeiro/', {
+        await fetch('https://api.prohost.net.br/categoria_financeiro/', {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {
@@ -52,7 +52,7 @@ export default function CadastrarCategoria({ close }: { close: () => void }) {
     }
 
     async function deleteCategorias(id: number) {
-        await fetch(`${apiUrl}/categoria_financeiro/${id}`, {
+        await fetch(`https://api.prohost.net.br/categoria_financeiro/${id}`, {
             method: 'DELETE',
         })
             .then(data => data.json())
@@ -66,7 +66,7 @@ export default function CadastrarCategoria({ close }: { close: () => void }) {
     }
 
     async function updateCategorias(id: number, pbody: { cor: string, nome: string }) {
-        await fetch(`${apiUrl}/categoria_financeiro/${id}`, {
+        await fetch(`https://api.prohost.net.br/categoria_financeiro/${id}`, {
             method: 'PUT',
             body: JSON.stringify(pbody),
             headers: {

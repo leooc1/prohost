@@ -62,7 +62,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function idContinuidade(idAcomodacao: number, idContinuidade: number) {
-        await fetch(`${apiUrl}/reserva/1/${idAcomodacao}/ci/${idContinuidade}`, {
+        await fetch(`https://api.prohost.net.br/reserva/1/${idAcomodacao}/ci/${idContinuidade}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -73,7 +73,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function idReserva(idReserva: number, idAcomodacao: number) {
-        await fetch(`${apiUrl}/reserva/1/${idReserva}/${idAcomodacao}`, {
+        await fetch(`https://api.prohost.net.br/reserva/1/${idReserva}/${idAcomodacao}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -84,7 +84,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function getReserva(id: string) {
-        await fetch(`${apiUrl}/reserva/1/${id}`, {
+        await fetch(`https://api.prohost.net.br/reserva/1/${id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -99,7 +99,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function deleteReserva(id: number) {
-        await fetch(`${apiUrl}/reserva/${id}`, {
+        await fetch(`https://api.prohost.net.br/reserva/${id}`, {
             method: 'DELETE'
         })
             .then(data => data.json())

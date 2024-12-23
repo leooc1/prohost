@@ -31,7 +31,7 @@ export default function Acomodacoes() {
     const [desativados, setDesativados] = useState<Acomodacao[]>([])
 
     async function acomodacoes() {
-        await fetch('${apiUrl}/acomodacao/' + dataToken.id, {
+        await fetch('https://api.prohost.net.br/acomodacao/' + dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -45,7 +45,7 @@ export default function Acomodacoes() {
     }
 
     async function desativar(id: number, desativado: boolean) {
-        await fetch(`${apiUrl}/acomodacao/${id}`, {
+        await fetch(`https://api.prohost.net.br/acomodacao/${id}`, {
             method: 'DELETE',
             body: JSON.stringify({ desativado: desativado }),
             headers: {

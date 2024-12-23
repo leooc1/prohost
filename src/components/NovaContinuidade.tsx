@@ -36,7 +36,7 @@ export default function NovaContinuidade(props: propsContinuidade) {
     const { dataToken } = useContext(SideBarContext)
 
     async function createContinuidade(pbody: Reserva) {
-        await fetch(`${apiUrl}/reserva/`, {
+        await fetch(`https://api.prohost.net.br/reserva/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {

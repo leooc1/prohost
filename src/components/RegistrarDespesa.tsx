@@ -48,7 +48,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
         })
     }
     async function getAcomodacoes() {
-        await fetch('${apiUrl}/acomodacao/1', {
+        await fetch('https://api.prohost.net.br/acomodacao/1', {
             method: 'GET'
         })
             .then(data => data.json())
@@ -58,7 +58,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
             .catch(err => console.log(err))
     }
     async function getCategorias() {
-        await fetch('${apiUrl}/categoria_financeiro/1', {
+        await fetch('https://api.prohost.net.br/categoria_financeiro/1', {
             method: 'GET'
         })
             .then(data => data.json())
@@ -68,7 +68,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
             .catch(err => console.log(err))
     }
     async function create(pbody: any) {
-        await fetch(`${apiUrl}/movimentacao/`, {
+        await fetch(`https://api.prohost.net.br/movimentacao/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {

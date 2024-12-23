@@ -17,7 +17,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
     const [email, setEmail] = useState<string | null>()
     const [tel, setTel] = useState<string | null>()
     async function getHospede() {
-        await fetch(`${apiUrl}/hospede/1/${id}`, {
+        await fetch(`https://api.prohost.net.br/hospede/1/${id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -30,7 +30,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
     }
 
     async function updateHospede(pbody: Hospede) {
-        await fetch(`${apiUrl}/hospede/${id}`, {
+        await fetch(`https://api.prohost.net.br/hospede/${id}`, {
             method: 'PUT',
             body: JSON.stringify(pbody),
             headers: {

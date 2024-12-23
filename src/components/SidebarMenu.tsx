@@ -9,7 +9,7 @@ export default function SidebarMenu({ route }: { route: string }) {
     async function infoToken() {
         const token = window.localStorage.getItem('ph_token_acc')
         if (token) {
-            await fetch(`${apiUrl}/users/token/${token}`, {
+            await fetch(`https://api.prohost.net.br/users/token/${token}`, {
                 method: 'GET'
             })
                 .then(data => {

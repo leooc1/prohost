@@ -138,7 +138,7 @@ export default function Dashboard() {
   }
 
   async function acomodacoes() {
-    await fetch(`${apiUrl}/acomodacao/${dataToken.id}`, {
+    await fetch(`https://api.prohost.net.br/acomodacao/${dataToken.id}`, {
       method: 'GET'
     })
       .then(data => data.json())
@@ -150,7 +150,7 @@ export default function Dashboard() {
 
   async function resultAc() {
     if (filterAC == 'all') {
-      await fetch(`${apiUrl}/movimentacao/${dataToken.id}/fat-canal/${dataBW[0]}/${dataBW[1]}`, {
+      await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/fat-canal/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -159,7 +159,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`${apiUrl}/movimentacao/${dataToken.id}/fat-bar/${dataBar}`, {
+      await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/fat-bar/${dataBar}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -168,7 +168,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`${apiUrl}/movimentacao/${dataToken.id}/result-ac/${dataBW[0]}/${dataBW[1]}`, {
+      await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/result-ac/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -190,7 +190,7 @@ export default function Dashboard() {
 
     }
     else {
-      await fetch(`${apiUrl}/movimentacao/${dataToken.id}/fat-canal/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/fat-canal/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -199,7 +199,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`${apiUrl}/movimentacao/${dataToken.id}/fat-bar/${dataBar}/${filterAC}`, {
+      await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/fat-bar/${dataBar}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -208,7 +208,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`${apiUrl}/movimentacao/${dataToken.id}/result-ac/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/result-ac/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -234,7 +234,7 @@ export default function Dashboard() {
 
   async function indicaOpe() {
     if (filterAC == 'all') {
-      await fetch(`${apiUrl}/reserva/${dataToken.id}/ind-ope/${dataBW[0]}/${dataBW[1]}`, {
+      await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/ind-ope/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -244,7 +244,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`${apiUrl}/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}`, {
+      await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -254,7 +254,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`${apiUrl}/reserva/${dataToken.id}/por-canal/${dataBW[0]}/${dataBW[1]}`, {
+      await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/por-canal/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -263,7 +263,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`${apiUrl}/reserva/${dataToken.id}/qtd-hospede/${dataBW[0]}/${dataBW[1]}`, {
+      await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/qtd-hospede/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -272,7 +272,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`${apiUrl}/reserva/${dataToken.id}/desempenho/${dataBW[0]}/${dataBW[1]}`, {
+      await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/desempenho/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -283,7 +283,7 @@ export default function Dashboard() {
     }
     else {
 
-      await fetch(`${apiUrl}/reserva/${dataToken.id}/ind-ope/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/ind-ope/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -293,7 +293,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`${apiUrl}/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -303,7 +303,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`${apiUrl}/reserva/${dataToken.id}/por-canal/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/por-canal/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -312,7 +312,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`${apiUrl}/reserva/${dataToken.id}/qtd-hospede/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/qtd-hospede/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -321,7 +321,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`${apiUrl}/reserva/${dataToken.id}/desempenho/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/desempenho/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -336,7 +336,7 @@ export default function Dashboard() {
   }
 
   async function resultGest() {
-    await fetch(`${apiUrl}/movimentacao/${dataToken.id}/result-gestor/${dataBW[0]}/${dataBW[1]}`, {
+    await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/result-gestor/${dataBW[0]}/${dataBW[1]}`, {
       method: 'GET'
     })
       .then(data => data.json())
@@ -347,7 +347,7 @@ export default function Dashboard() {
 
     const inicioDate = dataBW[0].slice(0, 4) + '-01-01'
     const finalDate = periodo == 'personalizado' ? dataBW[1] : dataBW[1].slice(0, 4) + '-12-31'
-    await fetch(`${apiUrl}/movimentacao/${dataToken.id}/lucroxdespesa/${inicioDate}/${finalDate}`, {
+    await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/lucroxdespesa/${inicioDate}/${finalDate}`, {
       method: 'GET'
     })
       .then(data => data.json())

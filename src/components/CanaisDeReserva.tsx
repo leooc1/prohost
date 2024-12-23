@@ -15,7 +15,7 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
     const [color, setColor] = useState('#bdc3c7')
 
     async function getCanais() {
-        await fetch('${apiUrl}/canal_reserva/1', {
+        await fetch('https://api.prohost.net.br/canal_reserva/1', {
             method: 'GET'
         })
             .then(data => data.json())
@@ -26,7 +26,7 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
     }
 
     async function updateCanais(id: number, pbody: { cor: string, nome: string }) {
-        await fetch(`${apiUrl}/canal_reserva/${id}`, {
+        await fetch(`https://api.prohost.net.br/canal_reserva/${id}`, {
             method: 'PUT',
             body: JSON.stringify(pbody),
             headers: {
@@ -43,7 +43,7 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
     }
 
     async function createCanais(pbody: Canais) {
-        await fetch('${apiUrl}/canal_reserva/', {
+        await fetch('https://api.prohost.net.br/canal_reserva/', {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {
@@ -64,7 +64,7 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
     }
 
     async function deleteCanais(id: number) {
-        await fetch(`${apiUrl}/canal_reserva/${id}`, {
+        await fetch(`https://api.prohost.net.br/canal_reserva/${id}`, {
             method: 'DELETE',
         })
             .then(data => data.json())

@@ -15,7 +15,7 @@ export default function CadastrarHospede({ close }: { close: () => void }) {
     const { dataToken } = useContext(SideBarContext)
 
     async function createHospede(pbody: Hospede) {
-        await fetch(`${apiUrl}/hospede/`, {
+        await fetch(`https://api.prohost.net.br/hospede/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {

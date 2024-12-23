@@ -4,7 +4,7 @@ const apiUrl = import.meta.env.VITE_baseURLAPI;
 
 export default function Auth() {
     async function logar(login: { email: string, senha: string }) {
-        await fetch(`${apiUrl}/users/auth`, {
+        await fetch(`https://api.prohost.net.br/users/auth`, {
             method: 'POST',
             body: JSON.stringify({
                 email: login.email,
@@ -15,6 +15,8 @@ export default function Auth() {
             }
         })
             .then(data => {
+                console.log(data.status)
+                console.log(data.json())
                 if (data.status == 200)
                     return data.json()
                 else return null

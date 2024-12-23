@@ -57,7 +57,7 @@ export default function Reserva() {
 
   const apiUrl = import.meta.env.VITE_baseURLAPI;
   async function getReserva() {
-    await fetch(`${apiUrl}/reserva/${dataToken.id}`, {
+    await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}`, {
       method: 'GET'
     })
       .then(data => data.json())
@@ -69,7 +69,7 @@ export default function Reserva() {
   }
 
   async function getAcomodacoes() {
-    await fetch(`${apiUrl}/acomodacao/${dataToken.id}`, {
+    await fetch(`https://api.prohost.net.br/acomodacao/${dataToken.id}`, {
       method: 'GET'
     })
       .then(data => data.json())
@@ -80,7 +80,7 @@ export default function Reserva() {
   }
 
   async function getAll(saas: number) {
-    await fetch(`${apiUrl}/reserva/index/${saas}`, {
+    await fetch(`https://api.prohost.net.br/reserva/index/${saas}`, {
       method: 'GET',
     })
       .then(data => data.json())
