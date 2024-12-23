@@ -24,7 +24,7 @@ interface CategoriaFinanceiro {
     saas: { id: number };
 }
 
-const apiUrl = import.meta.env.VITE_baseURLAPI;
+//const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function RegistrarDespesa({ close, saas }: { close: () => void, saas: string }) {
     const [tipoDespesa, setTipoDespesa] = useState('')

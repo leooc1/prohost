@@ -35,7 +35,7 @@ interface Reserva {
     tipo_reserva: string
 }
 
-const apiUrl = import.meta.env.VITE_baseURLAPI;
+//const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function NovaIndisponibilidade({ close }: { close: () => void }) {
     const { dataToken } = useContext(SideBarContext)

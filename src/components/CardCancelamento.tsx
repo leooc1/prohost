@@ -6,7 +6,7 @@ interface propsCancelamento {
     id: number
 }
 
-// const apiUrl = import.meta.env.VITE_baseURLAPI;
+// //const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function CardCancelamento(props: propsCancelamento) {
     const [possuiTaxa, setPossuiTaxa] = useState<boolean>(false)

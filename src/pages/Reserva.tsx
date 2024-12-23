@@ -55,7 +55,7 @@ export default function Reserva() {
   const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
   const [ids, setIds] = useState<{ id: number, index: number }[]>([])
 
-  const apiUrl = import.meta.env.VITE_baseURLAPI;
+  //const apiURl = import.meta.env.VITE_baseURLAPI;
   async function getReserva() {
     await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}`, {
       method: 'GET'

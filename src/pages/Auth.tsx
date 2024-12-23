@@ -1,6 +1,6 @@
 import prohostLogo from '../../public/prohost-logo.png'
 
-const apiUrl = import.meta.env.VITE_baseURLAPI;
+//const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function Auth() {
     async function logar(login: { email: string, senha: string }) {

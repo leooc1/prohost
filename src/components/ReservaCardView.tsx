@@ -28,7 +28,7 @@ interface Reserva {
 }
 
 
-const apiUrl = import.meta.env.VITE_baseURLAPI;
+//const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function ReservaCardView(props: propsReserva) {
     const [reserva, setReserva] = useState<Reserva>()

@@ -65,7 +65,7 @@ interface propsEdicao {
     obs: string
 }
 
-const apiUrl = import.meta.env.VITE_baseURLAPI;
+//const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function EditarReserva(props: propsEdicao) {
     const { dataToken } = useContext(SideBarContext)

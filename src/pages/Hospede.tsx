@@ -18,7 +18,7 @@ export default function Hospede() {
     const [atualizarHospede, setAtualizarHospede] = useState<[boolean, number]>([false, 0])
     const [hospede, setHospede] = useState<Hospede[]>([])
 
-    const apiUrl = import.meta.env.VITE_baseURLAPI;
+    //const apiURl = import.meta.env.VITE_baseURLAPI;
     async function getHospede() {
         await fetch(`https://api.prohost.net.br/hospede/${dataToken.id}`, {
             method: 'GET'

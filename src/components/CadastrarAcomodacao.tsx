@@ -15,7 +15,7 @@ interface Acomodacao {
     desativado: boolean
     saas: { id: number }
 }
-const apiUrl = import.meta.env.VITE_baseURLAPI;
+//const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function CadastrarAcomodacao({ close }: { close: () => void }) {
     const { dataToken } = useContext(SideBarContext)

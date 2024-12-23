@@ -9,7 +9,7 @@ interface Hospede {
     email: string | null;
 }
 
-const apiUrl = import.meta.env.VITE_baseURLAPI;
+//const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function CadastrarHospede({ close }: { close: () => void }) {
     const { dataToken } = useContext(SideBarContext)

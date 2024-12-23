@@ -2,7 +2,7 @@ import { useContext, useState } from 'react'
 import prohostLogo from '../../public/prohost-logo.png'
 import { SideBarContext } from '../contexts/SideBarMenuContext'
 
-const apiUrl = import.meta.env.VITE_baseURLAPI;
+//const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function SidebarMenu({ route }: { route: string }) {
     const [refresh, setRefresh] = useState<boolean>(true)
