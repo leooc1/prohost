@@ -15,8 +15,6 @@ export default function Auth() {
             }
         })
             .then(data => {
-                console.log(data.status)
-                console.log(data.json())
                 if (data.status == 200)
                     return data.json()
                 else return null
