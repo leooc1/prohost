@@ -122,7 +122,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getAcomodacoes() {
-        await fetch('https://api.prohost.net.br/acomodacao/1', {
+        await fetch(`https://api.prohost.net.br/acomodacao/${dataToken.id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -133,7 +133,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getCanais() {
-        await fetch('https://api.prohost.net.br/canal_reserva/1', {
+        await fetch(`https://api.prohost.net.br/canal_reserva/${dataToken.id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -144,7 +144,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getHospede() {
-        await fetch('https://api.prohost.net.br/hospede/1', {
+        await fetch(`https://api.prohost.net.br/hospede/${dataToken.id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -163,7 +163,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
 
     useEffect(() => {
         getAll()
-    }, [])
+    }, [dataToken])
 
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>

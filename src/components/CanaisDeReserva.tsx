@@ -15,7 +15,7 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
     const [color, setColor] = useState('#bdc3c7')
 
     async function getCanais() {
-        await fetch('https://api.prohost.net.br/canal_reserva/1', {
+        await fetch('https://api.prohost.net.br/canal_reserva/'+dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
