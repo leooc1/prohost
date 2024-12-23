@@ -43,7 +43,7 @@ export default function NovaIndisponibilidade({ close }: { close: () => void }) 
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
 
     async function getAcomodacoes() {
-        await fetch('https://api.prohost.net.br/acomodacao/1', {
+        await fetch('https://api.prohost.net.br/acomodacao/'+dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())

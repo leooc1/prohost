@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import NovaContinuidade from "./NovaContinuidade"
 import EditarReserva from "./EditarReserva"
 import CardCancelamento from "./CardCancelamento"
+import { SideBarContext } from "../contexts/SideBarMenuContext"
 
 interface propsReserva {
     id: string
@@ -31,6 +32,7 @@ interface Reserva {
 //const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function ReservaCardView(props: propsReserva) {
+    const { dataToken } = useContext(SideBarContext)
     const [reserva, setReserva] = useState<Reserva>()
     const [idR, setIdR] = useState<number>(0)
     const [continuidade, setContinuidade] = useState(false)
@@ -73,7 +75,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function idReserva(idReserva: number, idAcomodacao: number) {
-        await fetch(`https://api.prohost.net.br/reserva/1/${idReserva}/${idAcomodacao}`, {
+        await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/${idReserva}/${idAcomodacao}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -115,7 +117,7 @@ export default function ReservaCardView(props: propsReserva) {
 
     useEffect(() => {
         getReserva(props.id)
-    }, [])
+    }, [dataToken])
 
     return (
         <div className='w-screen min-h-screen fixed z-10 top-0 right-0'>
