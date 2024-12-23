@@ -24,6 +24,8 @@ interface CategoriaFinanceiro {
     saas: { id: number };
 }
 
+const apiUrl = import.meta.env.VITE_baseURLAPI;
+
 export default function RegistrarDespesa({ close, saas }: { close: () => void, saas: string }) {
     const [tipoDespesa, setTipoDespesa] = useState('')
     const setCategoria = () => {
@@ -46,7 +48,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
         })
     }
     async function getAcomodacoes() {
-        await fetch('http://localhost:3000/acomodacao/1', {
+        await fetch('${apiUrl}/acomodacao/1', {
             method: 'GET'
         })
             .then(data => data.json())
@@ -56,7 +58,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
             .catch(err => console.log(err))
     }
     async function getCategorias() {
-        await fetch('http://localhost:3000/categoria_financeiro/1', {
+        await fetch('${apiUrl}/categoria_financeiro/1', {
             method: 'GET'
         })
             .then(data => data.json())
@@ -66,7 +68,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
             .catch(err => console.log(err))
     }
     async function create(pbody: any) {
-        await fetch(`http://localhost:3000/movimentacao/`, {
+        await fetch(`${apiUrl}/movimentacao/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {

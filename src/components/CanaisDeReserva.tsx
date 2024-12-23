@@ -7,13 +7,15 @@ interface Canais {
     saas: { id: number }
 }
 
+const apiUrl = import.meta.env.VITE_baseURLAPI;
+
 export default function CanaisDeReserva({ close }: { close: () => void }) {
     const { dataToken } = useContext(SideBarContext)
     const [canais, setCanais] = useState<Canais[]>([])
     const [color, setColor] = useState('#bdc3c7')
 
     async function getCanais() {
-        await fetch('http://localhost:3000/canal_reserva/1', {
+        await fetch('${apiUrl}/canal_reserva/1', {
             method: 'GET'
         })
             .then(data => data.json())
@@ -24,7 +26,7 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
     }
 
     async function updateCanais(id: number, pbody: { cor: string, nome: string }) {
-        await fetch(`http://localhost:3000/canal_reserva/${id}`, {
+        await fetch(`${apiUrl}/canal_reserva/${id}`, {
             method: 'PUT',
             body: JSON.stringify(pbody),
             headers: {
@@ -41,7 +43,7 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
     }
 
     async function createCanais(pbody: Canais) {
-        await fetch('http://localhost:3000/canal_reserva/', {
+        await fetch('${apiUrl}/canal_reserva/', {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {
@@ -62,7 +64,7 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
     }
 
     async function deleteCanais(id: number) {
-        await fetch(`http://localhost:3000/canal_reserva/${id}`, {
+        await fetch(`${apiUrl}/canal_reserva/${id}`, {
             method: 'DELETE',
         })
             .then(data => data.json())

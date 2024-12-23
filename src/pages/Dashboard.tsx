@@ -28,6 +28,7 @@ interface Acomodacao {
 }
 
 
+const apiUrl = import.meta.env.VITE_baseURLAPI;
 export default function Dashboard() {
   const { dataToken } = useContext(SideBarContext)
   const [loaded, setLoaded] = useState(false)
@@ -137,7 +138,7 @@ export default function Dashboard() {
   }
 
   async function acomodacoes() {
-    await fetch(`http://localhost:3000/acomodacao/${dataToken.id}`, {
+    await fetch(`${apiUrl}/acomodacao/${dataToken.id}`, {
       method: 'GET'
     })
       .then(data => data.json())
@@ -149,7 +150,7 @@ export default function Dashboard() {
 
   async function resultAc() {
     if (filterAC == 'all') {
-      await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/fat-canal/${dataBW[0]}/${dataBW[1]}`, {
+      await fetch(`${apiUrl}/movimentacao/${dataToken.id}/fat-canal/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -158,7 +159,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/fat-bar/${dataBar}`, {
+      await fetch(`${apiUrl}/movimentacao/${dataToken.id}/fat-bar/${dataBar}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -167,7 +168,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/result-ac/${dataBW[0]}/${dataBW[1]}`, {
+      await fetch(`${apiUrl}/movimentacao/${dataToken.id}/result-ac/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -189,7 +190,7 @@ export default function Dashboard() {
 
     }
     else {
-      await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/fat-canal/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      await fetch(`${apiUrl}/movimentacao/${dataToken.id}/fat-canal/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -198,7 +199,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/fat-bar/${dataBar}/${filterAC}`, {
+      await fetch(`${apiUrl}/movimentacao/${dataToken.id}/fat-bar/${dataBar}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -207,7 +208,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/result-ac/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      await fetch(`${apiUrl}/movimentacao/${dataToken.id}/result-ac/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -233,7 +234,7 @@ export default function Dashboard() {
 
   async function indicaOpe() {
     if (filterAC == 'all') {
-      await fetch(`http://localhost:3000/reserva/${dataToken.id}/ind-ope/${dataBW[0]}/${dataBW[1]}`, {
+      await fetch(`${apiUrl}/reserva/${dataToken.id}/ind-ope/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -243,7 +244,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`http://localhost:3000/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}`, {
+      await fetch(`${apiUrl}/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -253,7 +254,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`http://localhost:3000/reserva/${dataToken.id}/por-canal/${dataBW[0]}/${dataBW[1]}`, {
+      await fetch(`${apiUrl}/reserva/${dataToken.id}/por-canal/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -262,7 +263,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`http://localhost:3000/reserva/${dataToken.id}/qtd-hospede/${dataBW[0]}/${dataBW[1]}`, {
+      await fetch(`${apiUrl}/reserva/${dataToken.id}/qtd-hospede/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -271,7 +272,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`http://localhost:3000/reserva/${dataToken.id}/desempenho/${dataBW[0]}/${dataBW[1]}`, {
+      await fetch(`${apiUrl}/reserva/${dataToken.id}/desempenho/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -282,7 +283,7 @@ export default function Dashboard() {
     }
     else {
 
-      await fetch(`http://localhost:3000/reserva/${dataToken.id}/ind-ope/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      await fetch(`${apiUrl}/reserva/${dataToken.id}/ind-ope/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -292,7 +293,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`http://localhost:3000/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      await fetch(`${apiUrl}/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -302,7 +303,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`http://localhost:3000/reserva/${dataToken.id}/por-canal/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      await fetch(`${apiUrl}/reserva/${dataToken.id}/por-canal/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -311,7 +312,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`http://localhost:3000/reserva/${dataToken.id}/qtd-hospede/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      await fetch(`${apiUrl}/reserva/${dataToken.id}/qtd-hospede/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -320,7 +321,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`http://localhost:3000/reserva/${dataToken.id}/desempenho/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      await fetch(`${apiUrl}/reserva/${dataToken.id}/desempenho/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -335,7 +336,7 @@ export default function Dashboard() {
   }
 
   async function resultGest() {
-    await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/result-gestor/${dataBW[0]}/${dataBW[1]}`, {
+    await fetch(`${apiUrl}/movimentacao/${dataToken.id}/result-gestor/${dataBW[0]}/${dataBW[1]}`, {
       method: 'GET'
     })
       .then(data => data.json())
@@ -346,7 +347,7 @@ export default function Dashboard() {
 
     const inicioDate = dataBW[0].slice(0, 4) + '-01-01'
     const finalDate = periodo == 'personalizado' ? dataBW[1] : dataBW[1].slice(0, 4) + '-12-31'
-    await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/lucroxdespesa/${inicioDate}/${finalDate}`, {
+    await fetch(`${apiUrl}/movimentacao/${dataToken.id}/lucroxdespesa/${inicioDate}/${finalDate}`, {
       method: 'GET'
     })
       .then(data => data.json())

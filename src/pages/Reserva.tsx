@@ -55,8 +55,9 @@ export default function Reserva() {
   const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
   const [ids, setIds] = useState<{ id: number, index: number }[]>([])
 
+  const apiUrl = import.meta.env.VITE_baseURLAPI;
   async function getReserva() {
-    await fetch(`http://localhost:3000/reserva/${dataToken.id}`, {
+    await fetch(`${apiUrl}/reserva/${dataToken.id}`, {
       method: 'GET'
     })
       .then(data => data.json())
@@ -68,7 +69,7 @@ export default function Reserva() {
   }
 
   async function getAcomodacoes() {
-    await fetch(`http://localhost:3000/acomodacao/${dataToken.id}`, {
+    await fetch(`${apiUrl}/acomodacao/${dataToken.id}`, {
       method: 'GET'
     })
       .then(data => data.json())
@@ -79,7 +80,7 @@ export default function Reserva() {
   }
 
   async function getAll(saas: number) {
-    await fetch(`http://localhost:3000/reserva/index/${saas}`, {
+    await fetch(`${apiUrl}/reserva/index/${saas}`, {
       method: 'GET',
     })
       .then(data => data.json())

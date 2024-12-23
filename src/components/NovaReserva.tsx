@@ -51,6 +51,9 @@ interface Reserva {
     continuidade: number | null
 }
 
+
+const apiUrl = import.meta.env.VITE_baseURLAPI;
+
 export default function NovaReserva({ close }: { close: () => void }) {
     const { dataToken } = useContext(SideBarContext)
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
@@ -83,7 +86,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
 
     async function createHospede(pbody: Hospede) {
         try {
-            const response = await fetch(`http://localhost:3000/hospede/`, {
+            const response = await fetch(`${apiUrl}/hospede/`, {
                 method: 'POST',
                 body: JSON.stringify(pbody),
                 headers: {
@@ -100,7 +103,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function createReserva(pbody: Reserva) {
-        await fetch(`http://localhost:3000/reserva/`, {
+        await fetch(`${apiUrl}/reserva/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {
@@ -119,7 +122,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getAcomodacoes() {
-        await fetch('http://localhost:3000/acomodacao/1', {
+        await fetch('${apiUrl}/acomodacao/1', {
             method: 'GET'
         })
             .then(data => data.json())
@@ -130,7 +133,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getCanais() {
-        await fetch('http://localhost:3000/canal_reserva/1', {
+        await fetch('${apiUrl}/canal_reserva/1', {
             method: 'GET'
         })
             .then(data => data.json())
@@ -141,7 +144,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getHospede() {
-        await fetch('http://localhost:3000/hospede/1', {
+        await fetch('${apiUrl}/hospede/1', {
             method: 'GET'
         })
             .then(data => data.json())

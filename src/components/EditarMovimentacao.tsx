@@ -39,6 +39,8 @@ interface propsEditar {
     close: () => void
 }
 
+const apiUrl = import.meta.env.VITE_baseURLAPI;
+
 export default function EditarMovimentacao(props: propsEditar) {
     const setCategoria = () => {
         const categorias = document.querySelectorAll('label:has(input[type="radio"])')
@@ -60,7 +62,7 @@ export default function EditarMovimentacao(props: propsEditar) {
         })
     }
     async function getAcomodacoes() {
-        await fetch('http://localhost:3000/acomodacao/1', {
+        await fetch('${apiUrl}/acomodacao/1', {
             method: 'GET'
         })
             .then(data => data.json())
@@ -70,7 +72,7 @@ export default function EditarMovimentacao(props: propsEditar) {
             .catch(err => console.log(err))
     }
     async function getCategorias() {
-        await fetch('http://localhost:3000/categoria_financeiro/1', {
+        await fetch('${apiUrl}/categoria_financeiro/1', {
             method: 'GET'
         })
             .then(data => data.json())
@@ -98,7 +100,7 @@ export default function EditarMovimentacao(props: propsEditar) {
         recebedor: string
         obs: string
     }) {
-        await fetch(`http://localhost:3000/movimentacao/${props.id}`, {
+        await fetch(`${apiUrl}/movimentacao/${props.id}`, {
             method: 'PUT',
             body: JSON.stringify(pbody),
             headers: {
@@ -117,7 +119,7 @@ export default function EditarMovimentacao(props: propsEditar) {
             .catch(err => console.log(err))
     }
     async function excluir(id: number) {
-        await fetch(`http://localhost:3000/movimentacao/${id}`, {
+        await fetch(`${apiUrl}/movimentacao/${id}`, {
             method: 'DELETE',
         })
             .then(data => data.json())

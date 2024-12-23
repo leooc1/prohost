@@ -35,13 +35,15 @@ interface Reserva {
     tipo_reserva: string
 }
 
+const apiUrl = import.meta.env.VITE_baseURLAPI;
+
 export default function NovaIndisponibilidade({ close }: { close: () => void }) {
     const { dataToken } = useContext(SideBarContext)
     const [render, setRender] = useState(false)
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
 
     async function getAcomodacoes() {
-        await fetch('http://localhost:3000/acomodacao/1', {
+        await fetch('${apiUrl}/acomodacao/1', {
             method: 'GET'
         })
             .then(data => data.json())
@@ -52,7 +54,7 @@ export default function NovaIndisponibilidade({ close }: { close: () => void }) 
     }
 
     async function createIndisponibilidade(pbody: Reserva) {
-        await fetch(`http://localhost:3000/reserva/`, {
+        await fetch(`${apiUrl}/reserva/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {

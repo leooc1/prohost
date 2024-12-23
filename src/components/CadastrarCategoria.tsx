@@ -9,6 +9,7 @@ interface CategoriaFinanceiro {
     receita: boolean
     saas: { id: number };
 }
+const apiUrl = import.meta.env.VITE_baseURLAPI;
 
 export default function CadastrarCategoria({ close }: { close: () => void }) {
     const { dataToken } = useContext(SideBarContext)
@@ -18,7 +19,7 @@ export default function CadastrarCategoria({ close }: { close: () => void }) {
     const [despesas, setDespesas] = useState<CategoriaFinanceiro[]>([])
 
     async function getCategorias() {
-        await fetch('http://localhost:3000/categoria_financeiro/1', {
+        await fetch('${apiUrl}/categoria_financeiro/1', {
             method: 'GET'
         })
             .then(data => data.json())
@@ -30,7 +31,7 @@ export default function CadastrarCategoria({ close }: { close: () => void }) {
     }
 
     async function createCategorias(pbody: CategoriaFinanceiro) {
-        await fetch('http://localhost:3000/categoria_financeiro/', {
+        await fetch('${apiUrl}/categoria_financeiro/', {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {
@@ -51,7 +52,7 @@ export default function CadastrarCategoria({ close }: { close: () => void }) {
     }
 
     async function deleteCategorias(id: number) {
-        await fetch(`http://localhost:3000/categoria_financeiro/${id}`, {
+        await fetch(`${apiUrl}/categoria_financeiro/${id}`, {
             method: 'DELETE',
         })
             .then(data => data.json())
@@ -65,7 +66,7 @@ export default function CadastrarCategoria({ close }: { close: () => void }) {
     }
 
     async function updateCategorias(id: number, pbody: { cor: string, nome: string }) {
-        await fetch(`http://localhost:3000/categoria_financeiro/${id}`, {
+        await fetch(`${apiUrl}/categoria_financeiro/${id}`, {
             method: 'PUT',
             body: JSON.stringify(pbody),
             headers: {

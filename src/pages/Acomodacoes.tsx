@@ -20,6 +20,8 @@ interface Acomodacao {
     saas: { id: number }
 }
 
+const apiUrl = import.meta.env.VITE_baseURLAPI;
+
 export default function Acomodacoes() {
     const { dataToken } = useContext(SideBarContext)
     const [loaded, setLoaded] = useState(false)
@@ -29,7 +31,7 @@ export default function Acomodacoes() {
     const [desativados, setDesativados] = useState<Acomodacao[]>([])
 
     async function acomodacoes() {
-        await fetch('http://localhost:3000/acomodacao/' + dataToken.id, {
+        await fetch('${apiUrl}/acomodacao/' + dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -43,7 +45,7 @@ export default function Acomodacoes() {
     }
 
     async function desativar(id: number, desativado: boolean) {
-        await fetch(`http://localhost:3000/acomodacao/${id}`, {
+        await fetch(`${apiUrl}/acomodacao/${id}`, {
             method: 'DELETE',
             body: JSON.stringify({ desativado: desativado }),
             headers: {

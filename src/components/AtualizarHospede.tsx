@@ -8,13 +8,16 @@ interface Hospede {
     telefone: string | null;
     email: string | null;
 }
+
+const apiUrl = import.meta.env.VITE_baseURLAPI;
+
 export default function AtualizarHospede({ close, id }: { close: () => void, id: number }) {
     const { dataToken } = useContext(SideBarContext)
     const [nome, setNome] = useState<string>()
     const [email, setEmail] = useState<string | null>()
     const [tel, setTel] = useState<string | null>()
     async function getHospede() {
-        await fetch(`http://localhost:3000/hospede/1/${id}`, {
+        await fetch(`${apiUrl}/hospede/1/${id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -27,7 +30,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
     }
 
     async function updateHospede(pbody: Hospede) {
-        await fetch(`http://localhost:3000/hospede/${id}`, {
+        await fetch(`${apiUrl}/hospede/${id}`, {
             method: 'PUT',
             body: JSON.stringify(pbody),
             headers: {

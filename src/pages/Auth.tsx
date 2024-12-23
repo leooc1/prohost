@@ -1,8 +1,10 @@
 import prohostLogo from '../../public/prohost-logo.png'
 
+const apiUrl = import.meta.env.VITE_baseURLAPI;
+
 export default function Auth() {
     async function logar(login: { email: string, senha: string }) {
-        await fetch('http://localhost:3000/users/auth', {
+        await fetch(`${apiUrl}/users/auth`, {
             method: 'POST',
             body: JSON.stringify({
                 email: login.email,

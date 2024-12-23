@@ -65,6 +65,8 @@ interface propsEdicao {
     obs: string
 }
 
+const apiUrl = import.meta.env.VITE_baseURLAPI;
+
 export default function EditarReserva(props: propsEdicao) {
     const { dataToken } = useContext(SideBarContext)
     const checkin = new Date(props.checkIn)
@@ -105,7 +107,7 @@ export default function EditarReserva(props: propsEdicao) {
 
     async function createHospede(pbody: Hospede) {
         try {
-            const response = await fetch(`http://localhost:3000/hospede/`, {
+            const response = await fetch(`${apiUrl}/hospede/`, {
                 method: 'POST',
                 body: JSON.stringify(pbody),
                 headers: {
@@ -122,7 +124,7 @@ export default function EditarReserva(props: propsEdicao) {
     }
 
     async function updateReserva(pbody: Reserva) {
-        await fetch(`http://localhost:3000/reserva/${props.id}`, {
+        await fetch(`${apiUrl}/reserva/${props.id}`, {
             method: 'PUT',
             body: JSON.stringify(pbody),
             headers: {
@@ -141,7 +143,7 @@ export default function EditarReserva(props: propsEdicao) {
     }
 
     async function getAcomodacoes() {
-        await fetch('http://localhost:3000/acomodacao/1', {
+        await fetch('${apiUrl}/acomodacao/1', {
             method: 'GET'
         })
             .then(data => data.json())
@@ -152,7 +154,7 @@ export default function EditarReserva(props: propsEdicao) {
     }
 
     async function getCanais() {
-        await fetch('http://localhost:3000/canal_reserva/1', {
+        await fetch('${apiUrl}/canal_reserva/1', {
             method: 'GET'
         })
             .then(data => data.json())
@@ -163,7 +165,7 @@ export default function EditarReserva(props: propsEdicao) {
     }
 
     async function getHospede() {
-        await fetch('http://localhost:3000/hospede/1', {
+        await fetch('${apiUrl}/hospede/1', {
             method: 'GET'
         })
             .then(data => data.json())

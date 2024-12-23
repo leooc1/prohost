@@ -27,6 +27,9 @@ interface Reserva {
     obs: string | null
 }
 
+
+const apiUrl = import.meta.env.VITE_baseURLAPI;
+
 export default function ReservaCardView(props: propsReserva) {
     const [reserva, setReserva] = useState<Reserva>()
     const [idR, setIdR] = useState<number>(0)
@@ -59,7 +62,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function idContinuidade(idAcomodacao: number, idContinuidade: number) {
-        await fetch(`http://localhost:3000/reserva/1/${idAcomodacao}/ci/${idContinuidade}`, {
+        await fetch(`${apiUrl}/reserva/1/${idAcomodacao}/ci/${idContinuidade}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -70,7 +73,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function idReserva(idReserva: number, idAcomodacao: number) {
-        await fetch(`http://localhost:3000/reserva/1/${idReserva}/${idAcomodacao}`, {
+        await fetch(`${apiUrl}/reserva/1/${idReserva}/${idAcomodacao}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -81,7 +84,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function getReserva(id: string) {
-        await fetch(`http://localhost:3000/reserva/1/${id}`, {
+        await fetch(`${apiUrl}/reserva/1/${id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -96,7 +99,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function deleteReserva(id: number) {
-        await fetch(`http://localhost:3000/reserva/${id}`, {
+        await fetch(`${apiUrl}/reserva/${id}`, {
             method: 'DELETE'
         })
             .then(data => data.json())

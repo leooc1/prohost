@@ -2,6 +2,8 @@ import { InputMask } from "@react-input/mask"
 import { useContext, useState } from "react"
 import { AssinaturaContext } from "../../contexts/AssinaturaContext"
 
+const apiUrl = import.meta.env.VITE_baseURLAPI;
+
 export default function Cadastro() {
     const { planoDTO } = useContext(AssinaturaContext)
     const [button, setButton] = useState(false)
@@ -51,7 +53,7 @@ export default function Cadastro() {
 
 
         {
-            await fetch(`http://localhost:3000/plano/${planoDTO.qtd_acomodacao}/${planoDTO.valor_ano}`, {
+            await fetch(`${apiUrl}/plano/${planoDTO.qtd_acomodacao}/${planoDTO.valor_ano}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -67,7 +69,7 @@ export default function Cadastro() {
         }
 
         if (getPlano) {
-            await fetch('http://localhost:3000/assinatura', {
+            await fetch('${apiUrl}/assinatura', {
                 method: 'POST',
                 body: JSON.stringify({ user: user, plano: getPlano }),
                 headers: {
@@ -85,7 +87,7 @@ export default function Cadastro() {
 
         if (assinatura) {
             {
-                await fetch('http://localhost:3000/saas', {
+                await fetch('${apiUrl}/saas', {
                     method: 'POST',
                     body: JSON.stringify({ ...saas, assinatura: assinatura.id }),
                     headers: {
@@ -104,7 +106,7 @@ export default function Cadastro() {
                 const usuarioDTO = {
                     ...user, saas: idSaas, asaas_id: assinatura?.id
                 }
-                await fetch('http://localhost:3000/users', {
+                await fetch('${apiUrl}/users', {
                     method: 'POST',
                     body: JSON.stringify(usuarioDTO),
                     headers: {
@@ -117,7 +119,7 @@ export default function Cadastro() {
                             alert('Criado!')
                         }
                     })
-                await fetch('http://localhost:3000/assinatura/crypto', {
+                await fetch('${apiUrl}/assinatura/crypto', {
                     method: 'POST',
                     body: JSON.stringify({ pay }),
                     headers: {

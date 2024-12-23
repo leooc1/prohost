@@ -30,11 +30,13 @@ interface Reserva {
     continuidade: number | null
 }
 
+const apiUrl = import.meta.env.VITE_baseURLAPI;
+
 export default function NovaContinuidade(props: propsContinuidade) {
     const { dataToken } = useContext(SideBarContext)
 
     async function createContinuidade(pbody: Reserva) {
-        await fetch(`http://localhost:3000/reserva/`, {
+        await fetch(`${apiUrl}/reserva/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {

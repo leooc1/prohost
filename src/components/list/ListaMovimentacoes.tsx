@@ -22,6 +22,8 @@ interface Movimentacao {
     tipo_despesa: string | null
 }
 
+const apiUrl = import.meta.env.VITE_baseURLAPI;
+
 export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: Movimentacao[] }) {
     const { dataToken } = useContext(SideBarContext)
     const [arrayMovimentacoes, setArrayMovimentacoes] = useState<Movimentacao[][]>([])
@@ -47,7 +49,7 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
     }
     const [ids, setIds] = useState<{ id: number, index: number }[]>([])
     async function getAll(saas: number) {
-        await fetch(`http://localhost:3000/reserva/index/${saas}`, {
+        await fetch(`${apiUrl}/reserva/index/${saas}`, {
             method: 'GET',
         })
             .then(data => data.json())

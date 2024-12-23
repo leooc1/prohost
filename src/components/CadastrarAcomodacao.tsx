@@ -15,13 +15,14 @@ interface Acomodacao {
     desativado: boolean
     saas: { id: number }
 }
+const apiUrl = import.meta.env.VITE_baseURLAPI;
 
 export default function CadastrarAcomodacao({ close }: { close: () => void }) {
     const { dataToken } = useContext(SideBarContext)
     const [qtdMaxHospede, setQtdMaxHospede] = useState(1)
     const [tipo, setTipo] = useState('')
     async function createAcomodacao(pbody: Acomodacao) {
-        await fetch(`http://localhost:3000/acomodacao/`, {
+        await fetch(`${apiUrl}/acomodacao/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {

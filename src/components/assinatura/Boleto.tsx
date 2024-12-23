@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react"
 
+const apiUrl = import.meta.env.VITE_baseURLAPI;
+
 export default function Boleto() {
     const [link, setLink] = useState<string>('')
     async function gerarBoleto() {
-        await fetch(`http://localhost:3000/assinatura/boleto/${'pay_uyi79p2jasuuxzo8'}`, {
+        await fetch(`${apiUrl}/assinatura/boleto/${'pay_uyi79p2jasuuxzo8'}`, {
             method: 'GET'
         })
             .then(data => data.json())

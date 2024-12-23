@@ -44,6 +44,8 @@ interface Acomodacao {
     saas: { id: number }
 }
 
+const apiUrl = import.meta.env.VITE_baseURLAPI;
+
 export default function Financeiro() {
     const { dataToken } = useContext(SideBarContext)
     const [loaded, setLoaded] = useState(false)
@@ -100,7 +102,7 @@ export default function Financeiro() {
     }
 
     async function acomodacoes() {
-        await fetch(`http://localhost:3000/acomodacao/${dataToken.id}`, {
+        await fetch(`${apiUrl}/acomodacao/${dataToken.id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -111,7 +113,7 @@ export default function Financeiro() {
     }
 
     async function getMovimentacao() {
-        await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/${dataBW[0]}/${dataBW[1]}`, {
+        await fetch(`${apiUrl}/movimentacao/${dataToken.id}/${dataBW[0]}/${dataBW[1]}`, {
             method: 'GET'
         })
             .then(data => data.json())

@@ -9,11 +9,13 @@ interface Hospede {
     email: string | null;
 }
 
+const apiUrl = import.meta.env.VITE_baseURLAPI;
+
 export default function CadastrarHospede({ close }: { close: () => void }) {
     const { dataToken } = useContext(SideBarContext)
 
     async function createHospede(pbody: Hospede) {
-        await fetch(`http://localhost:3000/hospede/`, {
+        await fetch(`${apiUrl}/hospede/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {

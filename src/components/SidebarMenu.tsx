@@ -2,12 +2,14 @@ import { useContext, useState } from 'react'
 import prohostLogo from '../../public/prohost-logo.png'
 import { SideBarContext } from '../contexts/SideBarMenuContext'
 
+const apiUrl = import.meta.env.VITE_baseURLAPI;
+
 export default function SidebarMenu({ route }: { route: string }) {
     const [refresh, setRefresh] = useState<boolean>(true)
     async function infoToken() {
         const token = window.localStorage.getItem('ph_token_acc')
         if (token) {
-            await fetch(`http://localhost:3000/users/token/${token}`, {
+            await fetch(`${apiUrl}/users/token/${token}`, {
                 method: 'GET'
             })
                 .then(data => {
