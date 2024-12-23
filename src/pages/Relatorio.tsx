@@ -13,14 +13,14 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import FullCalendar from "@fullcalendar/react"; */
 import CalendarioR from '../report/CalendarioR';
 import DespesasR from '../report/DespesasR';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+// import html2canvas from 'html2canvas';
+// import jsPDF from 'jspdf';
 
 export default function Relatorio() {
     const pdfRef = useRef(null);
 
     const generatePDF = () => {
-        const input = pdfRef.current;
+        /* const input = pdfRef.current;
 
         setTimeout(() => {
             html2canvas(input, { scale: 3 }).then((canvas) => {
@@ -54,7 +54,7 @@ export default function Relatorio() {
 
                 pdf.save('relatorio.pdf');
             });
-        }, 1000);
+        }, 1000); */
     };
 
     return (

@@ -6,12 +6,12 @@ interface propsCancelamento {
     id: number
 }
 
-const apiUrl = import.meta.env.VITE_baseURLAPI;
+// const apiUrl = import.meta.env.VITE_baseURLAPI;
 
 export default function CardCancelamento(props: propsCancelamento) {
     const [possuiTaxa, setPossuiTaxa] = useState<boolean>(false)
 
-    async function cancelarReserva(id: number) {
+    /* async function cancelarReserva(id: number) {
         await fetch(`${apiUrl}/reserva/${id}`, {
             method: 'DELETE'
         })
@@ -25,7 +25,7 @@ export default function CardCancelamento(props: propsCancelamento) {
                 }
             })
             .catch(err => console.log(err))
-    }
+    } */
 
     console.log(props.id)
 
