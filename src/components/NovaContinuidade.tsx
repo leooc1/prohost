@@ -1,3 +1,6 @@
+import { useContext } from "react"
+import { SideBarContext } from "../contexts/SideBarMenuContext"
+
 interface propsContinuidade {
     close: () => void
     checkinDate: string
@@ -28,6 +31,7 @@ interface Reserva {
 }
 
 export default function NovaContinuidade(props: propsContinuidade) {
+    const { dataToken } = useContext(SideBarContext)
 
     async function createContinuidade(pbody: Reserva) {
         await fetch(`http://localhost:3000/reserva/`, {
@@ -117,7 +121,7 @@ export default function NovaContinuidade(props: propsContinuidade) {
                                     },
                                     "qtd_hospede": props.qtdHospede,
                                     "saas": {
-                                        "id": 1
+                                        "id": dataToken.id
                                     },
                                     "valor": Number(valorTotal.value),
                                     "valor_liq": Number(valorTotal.value),

@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import { SideBarContext } from "../contexts/SideBarMenuContext"
 
 interface Acomodacao {
     id: number
@@ -65,6 +66,7 @@ interface propsEdicao {
 }
 
 export default function EditarReserva(props: propsEdicao) {
+    const { dataToken } = useContext(SideBarContext)
     const checkin = new Date(props.checkIn)
     const checkinDate = (`${checkin.getFullYear()}-${('0' + (checkin.getMonth() + 1)).slice(-2)}-${('0' + (checkin.getDate())).slice(-2)}`)
     const checkinTime = (`${('0' + (checkin.getHours())).slice(-2)}:${('0' + (checkin.getMinutes())).slice(-2)}`)
@@ -361,7 +363,7 @@ export default function EditarReserva(props: propsEdicao) {
                                         hospedeId = await createHospede({
                                             nome: hospedeInput.value,
                                             email: null,
-                                            saas: { id: 1 },
+                                            saas: { id: dataToken.id },
                                             telefone: null
                                         })
 
@@ -389,7 +391,7 @@ export default function EditarReserva(props: propsEdicao) {
                                         },
                                         "qtd_hospede": Number(qtdHospede.value),
                                         "saas": {
-                                            "id": 1
+                                            "id": dataToken.id
                                         },
                                         "valor": Number(valorBruto.value),
                                         "valor_liq": Number(valorLiquido.value),

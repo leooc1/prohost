@@ -1,4 +1,5 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useContext, useState } from "react";
+import { SideBarContext } from "../contexts/SideBarMenuContext";
 interface Acomodacao {
     id?: number
     tipo: string
@@ -16,6 +17,7 @@ interface Acomodacao {
 }
 
 export default function CadastrarAcomodacao({ close }: { close: () => void }) {
+    const { dataToken } = useContext(SideBarContext)
     const [qtdMaxHospede, setQtdMaxHospede] = useState(1)
     const [tipo, setTipo] = useState('')
     async function createAcomodacao(pbody: Acomodacao) {
@@ -171,9 +173,9 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                                         "nome": identificador.value,
                                         "numero_hospedes": Number(qtdMaxHospede.value),
                                         "valor_imovel": Number(valor.value),
-                                        "desativado":false,
+                                        "desativado": false,
                                         "saas": {
-                                            "id": 1
+                                            "id": dataToken.id
                                         }
                                     })
                                 else if (status.value == 'terceiro' && String(comissao.value).length)
@@ -188,9 +190,9 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                                         "nome": identificador.value,
                                         "numero_hospedes": Number(qtdMaxHospede.value),
                                         "valor_imovel": Number(valor.value),
-                                        "desativado":false,
+                                        "desativado": false,
                                         "saas": {
-                                            "id": 1
+                                            "id": dataToken.id
                                         }
                                     })
                             }

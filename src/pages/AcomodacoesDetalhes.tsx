@@ -7,11 +7,11 @@
 // import ReservaCardView from '../components/ReservaCardView';
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import FaturamentoCanalAc from '../components/chart/FaturamentoCanalAc';
-import OcupacaoMedia from '../components/chart/OcupacaoMedia';
-import FaturamentoDespesas from '../components/chart/FaturamentoDespesas';
-import { SideBarContext } from "../contexts/SideBarMenuContext";
 import Loader from "../components/Loader";
+import FaturamentoCanalAc from '../components/chart/FaturamentoCanalAc';
+import FaturamentoDespesas from '../components/chart/FaturamentoDespesas';
+import OcupacaoMedia from '../components/chart/OcupacaoMedia';
+import { SideBarContext } from "../contexts/SideBarMenuContext";
 
 interface Acomodacao {
     id?: number
@@ -33,10 +33,21 @@ export default function AcomodacoesDetalhes() {
     const { dataToken } = useContext(SideBarContext)
     const [loaded, setLoaded] = useState(false)
     const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
+    function formatarMoedaBrasileira(valorStr: string) {
+        const valor = parseFloat(valorStr);
+        if (isNaN(valor)) {
+            return "Valor inválido";
+        }
+        if (valor < 0)
+            return (0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
     const date = new Date()
+    const [dataBW, setDataBW] = useState<[string, string]>([`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`, `${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`])
+    const [deData, setDeData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`)
+    const [dataBar, setDataBar] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
+    const [ateData, setAteData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
     const [periodo, setPeriodo] = useState('m-atual')
-    const [deData, setDeData] = useState('')
-    const [ateData, setAteData] = useState('')
     function getDaysInMonth(month: number, year: number) {
         switch (month) {
             case 1: // Janeiro
@@ -63,26 +74,19 @@ export default function AcomodacoesDetalhes() {
                 return "Mês inválido";
         }
     }
-    function calcularPorcentagem(valor1: number, valor2: number, valor3: number) {
-        const total = valor1 + valor2 + valor3;
-        if (total === 0) {
-            return 0;
-        }
-        const porcentagem = (valor1 / total) * 100;
-        return porcentagem.toFixed(1);
-    }
-    //  
 
     // const [reservaView, setReservaView] = useState(false)
     // const [novaIndisponibilidade, setNovaIndisponibilidade] = useState(false)
     // const [novaReserva, setNovaReserva] = useState(false)
     // const [evento, serEvento]: any = useState()
     const [sessao, setSessao] = useState(0)
+    const [graf, setGraf] = useState(false)
     const { id } = useParams()
 
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
 
     async function getAcomodacao() {
+
         await fetch(`http://localhost:3000/acomodacao/${dataToken.id}/${id}`, {
             method: 'GET'
         })
@@ -124,6 +128,79 @@ export default function AcomodacoesDetalhes() {
                 setLoaded(true)
             })
             .catch(err => console.log(err))
+
+    }
+
+    async function dataDashs() {
+        {
+            await fetch(`http://localhost:3000/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}/${id}`, {
+                method: 'GET'
+            })
+                .then(data => data.json())
+                .then((data) => {
+                    if (data.length > 0 && data[0].taxa_ocupacao) {
+                        setTaxaOcupacao(data[0].taxa_ocupacao)
+                    }
+                    else {
+                        setTaxaOcupacao(0)
+                    }
+
+                })
+                .catch(err => console.log(err))
+        }
+        {
+            await fetch(`http://localhost:3000/reserva/${dataToken.id}/ind-ope/${dataBW[0]}/${dataBW[1]}/${id}`, {
+                method: 'GET'
+            })
+                .then(data => data.json())
+                .then((data) => {
+                    if (data.length > 0 && data[0].total_reserva)
+                        setTotalReserva(Number(data[0].total_reserva))
+                })
+                .catch(err => console.log(err))
+        }
+        {
+            await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/result-ac/${dataBW[0]}/${dataBW[1]}/${id}`, {
+                method: 'GET'
+            })
+                .then(data => data.json())
+                .then((data) => {
+                    if (data.statusCode == 500 || data.length == 0)
+                        setRentabilidade([{
+                            comissao_plataforma: "0",
+                            despesas: "0",
+                            diaria_media: "0",
+                            faturamento_bruto: "0",
+                            faturamento_liquido: "0",
+                            lucro: "0",
+                            rentabilidade_imovel: "0",
+                        }])
+                    else
+                        setRentabilidade(data)
+                })
+                .catch(err => console.log(err))
+        }
+        {
+            await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/fat-canal/${dataBW[0]}/${dataBW[1]}/${id}`, {
+                method: 'GET'
+            })
+                .then(data => data.json())
+                .then((data: []) => {
+                    setFaturamentoCanal(data)
+                })
+                .catch(err => console.log(err))
+        }
+        {
+            await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/fat-bar/${dataBar}/${id}`, {
+                method: 'GET'
+            })
+                .then(data => data.json())
+                .then((data: []) => {
+                    setFaturamento(data)
+                })
+                .catch(err => console.log(err))
+        }
+        setGraf(true)
     }
 
     async function updateAcomodacao(pbody: Acomodacao) {
@@ -172,6 +249,30 @@ export default function AcomodacoesDetalhes() {
             .catch(err => console.log(err))
     }
 
+    const [totalReserva, setTotalReserva] = useState<number>(0)
+    const [rentabilidade, setRentabilidade] = useState<{
+        comissao_plataforma: string
+        despesas: string
+        diaria_media: string
+        faturamento_bruto: string
+        faturamento_liquido: string
+        lucro: string
+        rentabilidade_imovel: string | number
+    }[]>([])
+    const [faturamento, setFaturamento] = useState<{
+        mes: string
+        receita: string
+        despesa: string
+        receita_ano_anterior: string
+    }[]>([])
+    const [taxaOcupacao, setTaxaOcupacao] = useState<number>(0)
+    const [faturamentoCanal, setFaturamentoCanal] = useState<{
+        nome: string
+        cor: string
+        tipo_reserva: string
+        valor_liq: number
+    }[]>([])
+
     useEffect(() => {
         getAcomodacao()
         const input = document.getElementById('input-file') as HTMLInputElement | null;
@@ -184,7 +285,44 @@ export default function AcomodacoesDetalhes() {
             preview?.classList.add('hidden')
             input?.classList.remove('hidden')
         }
-    }, [sessao, foto, dataToken])
+        dataDashs()
+    }, [sessao, foto, dataToken, graf])
+
+    useEffect(() => {
+        {
+            if (periodo == 'm-atual') {
+                const de = `${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`
+                const ate = `${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`
+                setDataBW([de, ate])
+                setDataBar(ate)
+            }
+            else if (periodo == 'm-passado') {
+                const de = `${date.getMonth() == 0 ? date.getFullYear() - 1 : date.getFullYear()}-${date.getMonth() == 0 ? 12 : (`0${date.getMonth()}`).slice(-2)}-01`
+                const ate = `${date.getMonth() == 0 ? date.getFullYear() - 1 : date.getFullYear()}-${date.getMonth() == 0 ? 12 : (`0${date.getMonth()}`).slice(-2)}-${getDaysInMonth(date.getMonth() == 0 ? 12 : date.getMonth(), date.getFullYear())}`
+                setDataBW([de, ate])
+                setDataBar(ate)
+            }
+            else if (periodo == 'a-atual') {
+                const de = `${date.getFullYear()}-01-01`
+                const ate = `${date.getFullYear()}-12-31`
+                setDataBW([de, ate])
+                setDataBar(ate)
+            }
+            else if (periodo == 'a-passado') {
+                const de = `${date.getFullYear() - 1}-01-01`
+                const ate = `${date.getFullYear() - 1}-12-31`
+                setDataBW([de, ate])
+                setDataBar(ate)
+            }
+            else {
+                const de = deData
+                const ate = ateData
+                setDataBW([de, ate])
+                setDataBar(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
+            }
+        }
+        setGraf(false)
+    }, [deData, ateData, periodo])
 
     return (
         loaded ?
@@ -223,7 +361,7 @@ export default function AcomodacoesDetalhes() {
                             <div className='flex gap-4'>
                                 <label htmlFor="periodo" className="flex flex-col text-zinc-600 font-medium text-sm">
                                     Período de Análise
-                                    <select name="periodo" id="periodo" onChange={(e) => { setPeriodo(e.target.value) }} className="border border-zinc-300 rounded-md px-2 py-1 h-9 outline-none text-base">
+                                    <select name="periodo" id="periodo" onChange={(e) => { setPeriodo(e.target.value) }} className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base">
                                         <option value="m-atual" className="text-black">Mês Atual</option>
                                         <option value="m-passado" className="text-black">Mês Passado</option>
                                         <option value="a-atual" className="text-black">Ano Atual</option>
@@ -234,11 +372,11 @@ export default function AcomodacoesDetalhes() {
                                 {periodo == 'personalizado' ? <>
                                     <label htmlFor="de" className="flex flex-col text-zinc-600 font-medium text-sm">
                                         De:
-                                        <input type="date" name="de" id="de" onChange={(e) => { setDeData(e.target.value) }} className="border border-zinc-300 rounded-md h-9 px-1 py-1 w-32 outline-none text-base" />
+                                        <input type="date" name="de" id="de" onChange={(e) => { setDeData(e.target.value) }} className="border border-zinc-300 rounded-md px-1 py-1 w-32 outline-none text-base" />
                                     </label>
                                     <label htmlFor="ate" className="flex flex-col text-zinc-600 font-medium text-sm">
                                         Até:
-                                        <input type="date" name="ate" id="ate" onChange={(e) => { setAteData(e.target.value) }} className="border border-zinc-300 rounded-md h-9 px-1 py-1 w-32 outline-none text-base" />
+                                        <input type="date" name="ate" id="ate" onChange={(e) => { setAteData(e.target.value) }} className="border border-zinc-300 rounded-md px-1 py-1 w-32 outline-none text-base" />
                                     </label>
                                 </> : null}
                             </div>
@@ -261,7 +399,7 @@ export default function AcomodacoesDetalhes() {
                                     : null}
                             </div>
                         </div>
-                        <section className='grid grid-cols-3 bg-white border-zinc-300 border rounded-lg p-4 gap-4'>
+                        {graf && <section className='grid grid-cols-3 bg-white border-zinc-300 border rounded-lg p-4 gap-4'>
                             <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center">
                                 <div className="bg-[#E6E9FD] rounded-md w-fit py-2 px-2 ml-4">
                                     <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#6279F2"><path d="M9 1V3H15V1H17V3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3H7V1H9ZM20 10H4V19H20V10ZM15.0355 11.136L16.4497 12.5503L11.5 17.5L7.96447 13.9645L9.37868 12.5503L11.5 14.6716L15.0355 11.136ZM7 5H4V8H20V5H17V6H15V5H9V6H7V5Z"></path></svg>
@@ -269,7 +407,7 @@ export default function AcomodacoesDetalhes() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Reservas</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-3xl">1</span>
+                                        <span className="text-3xl">{totalReserva}</span>
                                     </div>
                                 </div>
                             </div>
@@ -280,7 +418,7 @@ export default function AcomodacoesDetalhes() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Receita Bruta</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-nowrap text-xl">R$ 22,00</span>
+                                        <span className="text-nowrap text-xl">{formatarMoedaBrasileira(rentabilidade[0].faturamento_bruto)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -291,7 +429,7 @@ export default function AcomodacoesDetalhes() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Receita Líquida</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-nowrap text-xl">R$ 22,00</span>
+                                        <span className="text-nowrap text-xl">{formatarMoedaBrasileira(rentabilidade[0].faturamento_liquido)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -302,7 +440,7 @@ export default function AcomodacoesDetalhes() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Diária Média</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-nowrap text-xl">R$ 10,00</span>
+                                        <span className="text-nowrap text-xl">{formatarMoedaBrasileira(rentabilidade[0].diaria_media)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -313,7 +451,7 @@ export default function AcomodacoesDetalhes() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Despesas</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-nowrap text-xl">R$ 0,00</span>
+                                        <span className="text-nowrap text-xl">{formatarMoedaBrasileira(rentabilidade[0].despesas)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -324,192 +462,205 @@ export default function AcomodacoesDetalhes() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Lucro</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-nowrap text-xl">R$ 10,00</span>
+                                        <span className="text-nowrap text-xl">{formatarMoedaBrasileira(rentabilidade[0].lucro)}</span>
                                     </div>
                                 </div>
                             </div>
-                        </section>
-                        <section className='grid grid-cols-3 gap-4 mt-4'>
+                        </section>}
+                        {graf && <section className='grid grid-cols-3 gap-4 mt-4'>
                             <div className="relative bg-white border-zinc-300 border rounded-lg flex flex-col h-56 justify-between items-center py-3">
-                                <p className="flex flex-col text-zinc-400 font-medium text-sm mb-7">Faturamento por Canal</p>
+                                <p className="flex flex-col text-zinc-400 font-medium text-sm mb-7">Rentabilidade do Imóvel</p>
                                 <div className='flex justify-between gap-4 items-center'>
                                     <div className='bg-[#E3F8E9] flex justify-center items-center rounded-full w-28 h-28 text-3xl'>
-                                        18,0%
+                                        {Number(rentabilidade[0].rentabilidade_imovel).toFixed(1)}%
                                     </div>
                                     <p className='text-[10px] text-wrap w-28'>
                                         <svg className='w-4' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM11 11V17H13V11H11ZM11 7V9H13V7H11Z"></path></svg>
-                                        A rentabilidade é calculada pela razão entre o faturamento do período e valor estimado do imóvel ( R$ 122,00 )
+                                        A rentabilidade é calculada pela razão entre o faturamento do período e valor estimado do imóvel ( R$ {valor ? Number(valor).toFixed(2) : 0} )
                                     </p>
                                 </div>
                             </div>
                             <div className="bg-white border-zinc-300 border rounded-lg flex flex-col items-center justify-between h-56 py-3">
                                 <p className="flex flex-col text-zinc-400 font-medium text-sm mb-7">Faturamento por Canal</p>
-                                <FaturamentoCanalAc labels={['Continuidade', 'Indicação']} dados={[12, 10]} colors={['#30C46D', '#0074E0']} />
+                                <FaturamentoCanalAc labels={faturamentoCanal.map(e => e.nome)} dados={faturamentoCanal.map(e => e.valor_liq)} colors={faturamentoCanal.map(e => e.cor)} />
                             </div>
                             <div className="relative bg-white border-zinc-300 border rounded-lg flex flex-col h-56 justify-between items-center py-3">
                                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Taxa de Ocupação</p>
-                                <OcupacaoMedia dados={[1, 17, 0]} />
-                                <p className="absolute text-3xl font-bold bottom-3 text-zinc-500">{calcularPorcentagem(1, 17, 0)}%</p>
+                                <OcupacaoMedia dados={[Number(taxaOcupacao.toFixed(1))]} />
+                                <p className="absolute text-3xl font-bold bottom-3 text-zinc-500">{taxaOcupacao.toFixed(1)}%</p>
                             </div>
-                        </section>
-                        <section className='grid mt-4'>
+                        </section>}
+                        {graf && <section className='grid mt-4'>
                             <div className="bg-white border-zinc-300 border rounded-lg flex flex-col px-2 items-center" style={{ gridArea: 'en' }}>
                                 <p className="flex flex-col text-zinc-400 font-medium text-sm mb-14 mt-3">Faturamento x Despesa</p>
-                                {periodo == 'm-atual' ? <FaturamentoDespesas mes={6} ano={24}
-                                    dadosLucros={[0, 0, 0, 0, 0, 0, 10]} dadosDespesas={[0, 0, 0, 0, 0, 0, 0]} /> : null}
-                                {periodo == 'm-passado' ? <FaturamentoDespesas mes={5} ano={24}
-                                    dadosLucros={[0, 0, 0, 0, 0, 0]} dadosDespesas={[0, 0, 0, 0, 0, 0]} /> : null}
-                                {periodo == 'a-atual' ? <FaturamentoDespesas mes={11} ano={24}
-                                    dadosLucros={[0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0]} dadosDespesas={[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]} /> : null}
-                                {periodo == 'a-passado' ? <FaturamentoDespesas mes={11} ano={23}
-                                    dadosLucros={[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]} dadosDespesas={[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]} /> : null}
-                                {periodo == 'personalizado' ? <FaturamentoDespesas mes={6} ano={24}
-                                    dadosLucros={[0, 0, 0, 0, 0, 0, 10]} dadosDespesas={[0, 0, 0, 0, 0, 0, 0]} /> : null}
+                                {periodo == 'm-atual' ? <FaturamentoDespesas
+                                    ano={date.getFullYear()}
+                                    dadosLucros={faturamento.map(fat => Number(fat.receita))}
+                                    dadosDespesas={faturamento.map(fat => Number(fat.despesa))} mes={date.getMonth()} /> : null}
+                                {periodo == 'm-passado' ? <FaturamentoDespesas
+                                    ano={date.getFullYear()}
+                                    dadosLucros={faturamento.map(fat => Number(fat.receita))}
+                                    dadosDespesas={faturamento.map(fat => Number(fat.despesa))} mes={date.getMonth() == 0 ? 11 : date.getMonth() - 1} /> : null}
+                                {periodo == 'a-atual' ? <FaturamentoDespesas
+                                    ano={date.getFullYear()}
+                                    dadosLucros={faturamento.map(fat => Number(fat.receita))}
+                                    dadosDespesas={faturamento.map(fat => Number(fat.despesa))} mes={11} /> : null}
+                                {periodo == 'a-passado' ? <FaturamentoDespesas
+                                    ano={date.getFullYear()}
+                                    dadosLucros={faturamento.map(fat => Number(fat.receita))}
+                                    dadosDespesas={faturamento.map(fat => Number(fat.despesa))} mes={11} /> : null}
+                                {periodo == 'personalizado' ? <FaturamentoDespesas
+                                    ano={date.getFullYear()}
+                                    dadosLucros={faturamento.map(fat => Number(fat.receita))}
+                                    dadosDespesas={faturamento.map(fat => Number(fat.despesa))} mes={date.getMonth()} /> : null}
                             </div>
-                        </section>
+                        </section>}
                     </section>}
-                {/* {sessao == 1 &&
-                <section className="my-10">
-                    <div className='flex justify-between items-start'>
-                        <h5 className="font-semibold text-2xl mb-2 px-4 pb-7">Calendário da Acomodação</h5>
-                        <div className='flex gap-5'>
-                            <button className='px-3 py-2 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#003447] hover:bg-[#325B6A] hover:shadow-md shadow-black'
-                                onClick={() => setNovaReserva(true)}>Nova Reserva</button>
-                            {novaReserva && <NovaReserva close={() => setNovaReserva(false)} />}
-                            <button className='px-3 py-2 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#F45C61] hover:bg-[#ED3E44] hover:shadow-md shadow-black'
-                                onClick={() => setNovaIndisponibilidade(true)}>Nova Indisponibilidade</button>
-                            {novaIndisponibilidade && <NovaIndisponibilidade close={() => setNovaIndisponibilidade(false)} />}
+                {/* 
+                    {sessao == 1 &&
+                    <section className="my-10">
+                        <div className='flex justify-between items-start'>
+                            <h5 className="font-semibold text-2xl mb-2 px-4 pb-7">Calendário da Acomodação</h5>
+                            <div className='flex gap-5'>
+                                <button className='px-3 py-2 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#003447] hover:bg-[#325B6A] hover:shadow-md shadow-black'
+                                    onClick={() => setNovaReserva(true)}>Nova Reserva</button>
+                                {novaReserva && <NovaReserva close={() => setNovaReserva(false)} />}
+                                <button className='px-3 py-2 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#F45C61] hover:bg-[#ED3E44] hover:shadow-md shadow-black'
+                                    onClick={() => setNovaIndisponibilidade(true)}>Nova Indisponibilidade</button>
+                                {novaIndisponibilidade && <NovaIndisponibilidade close={() => setNovaIndisponibilidade(false)} />}
+                            </div>
+                        </div>
+                        <div className="mx-4 mt-4 pt-2 border border-zinc-200 rounded-md">
+                            <FullCalendar
+                                headerToolbar={{
+                                    start: '',
+                                    center: 'title',
+                                    end: 'today prev,next'
+                                }}
+                                plugins={[dayGridPlugin, timeGridPlugin]}
+                                initialView="dayGridMonth"
+                                locale={ptBrLocale}
+    
+                                //reservas que buscaria do banco
+                                events={[
+                                    {
+                                        resourceId: '1',
+                                        title: 'leonardo',
+                                        start: '2024-10-01T12:00:00',
+                                        end: '2024-10-05T10:00:00',
+                                        hospedes: 3,
+                                        color: '#3B82F6',
+                                        id: '1',
+                                        tipo: 'Reserva',
+                                        obs: '',
+                                        bruto: 200.00,
+                                        liquido: 150.00,
+                                        comissao: 50.00
+                                    },
+                                    {
+                                        resourceId: '1',
+                                        title: 'leonardo',
+                                        start: '2024-10-06T12:00:00',
+                                        end: '2024-10-08T12:00:00',
+                                        hospedes: 1,
+                                        color: '#30C46D',
+                                        id: '2',
+                                        tipo: 'Continuidade',
+                                        obs: '',
+                                        bruto: 50.00,
+                                        liquido: 50.00,
+                                        comissao: 0.00
+                                    },
+                                    {
+                                        resourceId: '1',
+                                        title: 'adm',
+                                        start: '2024-10-09T12:00:00',
+                                        end: '2024-10-12T12:00:00',
+                                        hospedes: 1,
+                                        color: '#353535',
+                                        id: '3',
+                                        tipo: 'Indisponibilidade',
+                                        obs: 'Problema de infiltração',
+                                        bruto: 0.00,
+                                        liquido: 0.00,
+                                        comissao: 0.00
+                                    }
+                                ]}
+                                eventClick={(e) => {
+                                    setReservaView(true);
+                                    serEvento(e);
+                                }}
+                                eventContent={function (arg) {
+                                    const title = arg.event.title;
+                                    const numGuests = arg.event.extendedProps.hospedes;
+                                    const tipo = arg.event.extendedProps.tipo;
+                                    const obs = arg.event.extendedProps.obs;
+    
+                                    if (tipo === 'Continuidade') {
+                                        return {
+                                            html: `
+                    <div class='flex overflow-hidden items-center flex-nowrap p-1 h-full relative gap-4'>
+                        <svg class="w-5 h-fit" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 2.54 2.54" fill-rule="#000000">
+                            <g>
+                                <circle cx="1.27" cy="1.27" r="1.27" fill="#ffffff" opacity="1" data-original="#ffffff"></circle>
+                                <g fill="#000">
+                                    <path d="M1.143 1.944V.674a.127.127 0 0 1 .254 0v1.27a.127.127 0 0 1-.254 0z" fill="#30C46D" opacity="1" data-original="#30C46D"></path>
+                                    <path d="M.635 1.182h1.27a.127.127 0 0 1 0 .254H.635a.127.127 0 0 1 0-.254z" fill="#30C46D" opacity="1" data-original="#30C46D"></path>
+                                </g>
+                            </g>
+                        </svg>
+                        <div class='gs-event-title'>${tipo}</div>
+                    </div>
+                    `
+                                        };
+                                    } else if (tipo === 'Indisponibilidade') {
+                                        return {
+                                            html: `
+                    <div class='flex overflow-hidden items-center flex-nowrap p-1 h-full relative gap-4'>
+                        <svg class="w-5 h-fit" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 426.667 426.667" style="enable-background:new 0 0 512 512" xml:space="preserve">
+                            <g>
+                                <path d="M213.333 0C95.467 0 0 95.467 0 213.333s95.467 213.333 213.333 213.333S426.667 331.2 426.667 213.333 331.2 0 213.333 0zM42.667 213.333c0-94.293 76.373-170.667 170.667-170.667 39.467 0 75.627 13.547 104.533 35.947L78.613 317.867c-22.4-28.907-35.946-65.067-35.946-104.534zM213.333 384c-39.467 0-75.627-13.547-104.533-35.947L348.053 108.8C370.453 137.707 384 173.867 384 213.333 384 307.627 307.627 384 213.333 384z" fill="#ffffff" opacity="1" data-original="#000000"></path>
+                            </g>
+                        </svg>
+                        <div class='gs-event-title'>${obs}</div>
+                    </div>
+                    `
+                                        };
+                                    } else {
+                                        return {
+                                            html: `
+                    <div class='flex overflow-hidden justify-between items-center flex-nowrap py-1 px-2 h-full relative gap-4'>
+                        <div class='gs-event-title'>${title}</div>
+                        <div class='flex'>
+                            <svg class="w-5 h-fit" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF">
+                                <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/>
+                            </svg>${numGuests}
                         </div>
                     </div>
-                    <div className="mx-4 mt-4 pt-2 border border-zinc-200 rounded-md">
-                        <FullCalendar
-                            headerToolbar={{
-                                start: '',
-                                center: 'title',
-                                end: 'today prev,next'
-                            }}
-                            plugins={[dayGridPlugin, timeGridPlugin]}
-                            initialView="dayGridMonth"
-                            locale={ptBrLocale}
-
-                            //reservas que buscaria do banco
-                            events={[
-                                {
-                                    resourceId: '1',
-                                    title: 'leonardo',
-                                    start: '2024-10-01T12:00:00',
-                                    end: '2024-10-05T10:00:00',
-                                    hospedes: 3,
-                                    color: '#3B82F6',
-                                    id: '1',
-                                    tipo: 'Reserva',
-                                    obs: '',
-                                    bruto: 200.00,
-                                    liquido: 150.00,
-                                    comissao: 50.00
-                                },
-                                {
-                                    resourceId: '1',
-                                    title: 'leonardo',
-                                    start: '2024-10-06T12:00:00',
-                                    end: '2024-10-08T12:00:00',
-                                    hospedes: 1,
-                                    color: '#30C46D',
-                                    id: '2',
-                                    tipo: 'Continuidade',
-                                    obs: '',
-                                    bruto: 50.00,
-                                    liquido: 50.00,
-                                    comissao: 0.00
-                                },
-                                {
-                                    resourceId: '1',
-                                    title: 'adm',
-                                    start: '2024-10-09T12:00:00',
-                                    end: '2024-10-12T12:00:00',
-                                    hospedes: 1,
-                                    color: '#353535',
-                                    id: '3',
-                                    tipo: 'Indisponibilidade',
-                                    obs: 'Problema de infiltração',
-                                    bruto: 0.00,
-                                    liquido: 0.00,
-                                    comissao: 0.00
-                                }
-                            ]}
-                            eventClick={(e) => {
-                                setReservaView(true);
-                                serEvento(e);
-                            }}
-                            eventContent={function (arg) {
-                                const title = arg.event.title;
-                                const numGuests = arg.event.extendedProps.hospedes;
-                                const tipo = arg.event.extendedProps.tipo;
-                                const obs = arg.event.extendedProps.obs;
-
-                                if (tipo === 'Continuidade') {
-                                    return {
-                                        html: `
-                <div class='flex overflow-hidden items-center flex-nowrap p-1 h-full relative gap-4'>
-                    <svg class="w-5 h-fit" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 2.54 2.54" fill-rule="#000000">
-                        <g>
-                            <circle cx="1.27" cy="1.27" r="1.27" fill="#ffffff" opacity="1" data-original="#ffffff"></circle>
-                            <g fill="#000">
-                                <path d="M1.143 1.944V.674a.127.127 0 0 1 .254 0v1.27a.127.127 0 0 1-.254 0z" fill="#30C46D" opacity="1" data-original="#30C46D"></path>
-                                <path d="M.635 1.182h1.27a.127.127 0 0 1 0 .254H.635a.127.127 0 0 1 0-.254z" fill="#30C46D" opacity="1" data-original="#30C46D"></path>
-                            </g>
-                        </g>
-                    </svg>
-                    <div class='gs-event-title'>${tipo}</div>
-                </div>
-                `
-                                    };
-                                } else if (tipo === 'Indisponibilidade') {
-                                    return {
-                                        html: `
-                <div class='flex overflow-hidden items-center flex-nowrap p-1 h-full relative gap-4'>
-                    <svg class="w-5 h-fit" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 426.667 426.667" style="enable-background:new 0 0 512 512" xml:space="preserve">
-                        <g>
-                            <path d="M213.333 0C95.467 0 0 95.467 0 213.333s95.467 213.333 213.333 213.333S426.667 331.2 426.667 213.333 331.2 0 213.333 0zM42.667 213.333c0-94.293 76.373-170.667 170.667-170.667 39.467 0 75.627 13.547 104.533 35.947L78.613 317.867c-22.4-28.907-35.946-65.067-35.946-104.534zM213.333 384c-39.467 0-75.627-13.547-104.533-35.947L348.053 108.8C370.453 137.707 384 173.867 384 213.333 384 307.627 307.627 384 213.333 384z" fill="#ffffff" opacity="1" data-original="#000000"></path>
-                        </g>
-                    </svg>
-                    <div class='gs-event-title'>${obs}</div>
-                </div>
-                `
-                                    };
-                                } else {
-                                    return {
-                                        html: `
-                <div class='flex overflow-hidden justify-between items-center flex-nowrap py-1 px-2 h-full relative gap-4'>
-                    <div class='gs-event-title'>${title}</div>
-                    <div class='flex'>
-                        <svg class="w-5 h-fit" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF">
-                            <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/>
-                        </svg>${numGuests}
-                    </div>
-                </div>
-                `
-                                    };
-                                }
-                            }}
-                        />
-                        {
-                            reservaView &&
-                            <ReservaCardView
-                                close={() => setReservaView(false)}
-                                hospede={evento.event.title}
-                                qtdhospede={evento.event.extendedProps.hospedes}
-                                chegada={String(evento.event.start)}
-                                partida={String(evento.event.end)}
-                                bruto={evento.event.extendedProps.bruto}
-                                liquido={evento.event.extendedProps.liquido}
-                                comissao={evento.event.extendedProps.comissao}
-                                tipo={evento.event.extendedProps.tipo}
-                                obs={evento.event.extendedProps.obs}
+                    `
+                                        };
+                                    }
+                                }}
                             />
-                        }
-                    </div>
-                </section>} */}
+                            {
+                                reservaView &&
+                                <ReservaCardView
+                                    close={() => setReservaView(false)}
+                                    hospede={evento.event.title}
+                                    qtdhospede={evento.event.extendedProps.hospedes}
+                                    chegada={String(evento.event.start)}
+                                    partida={String(evento.event.end)}
+                                    bruto={evento.event.extendedProps.bruto}
+                                    liquido={evento.event.extendedProps.liquido}
+                                    comissao={evento.event.extendedProps.comissao}
+                                    tipo={evento.event.extendedProps.tipo}
+                                    obs={evento.event.extendedProps.obs}
+                                />
+                            }
+                        </div>
+                    </section>} 
+                    */}
+
                 {sessao == 2 &&
                     <section className="my-10">
                         <h5 className="font-semibold text-2xl mb-2 px-4 pb-7">Dados da Acomodação</h5>
@@ -646,7 +797,7 @@ export default function AcomodacoesDetalhes() {
                                                     "valor_imovel": valor,
                                                     "desativado": false,
                                                     "saas": {
-                                                        "id": 1
+                                                        "id": dataToken.id
                                                     }
                                                 })
                                             else if (status == 'terceiro' && String(comissao).length)
@@ -663,7 +814,7 @@ export default function AcomodacoesDetalhes() {
                                                     "valor_imovel": valor,
                                                     "desativado": false,
                                                     "saas": {
-                                                        "id": 1
+                                                        "id": dataToken.id
                                                     }
                                                 })
                                         }

@@ -62,8 +62,13 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
         for (let i = 0; i < movimentacoes.length; i += 10) {
             grupos.push(movimentacoes.slice(i, i + 10));
         }
-        setArrayMovimentacoes(grupos);
+        if (grupos.length > 0)
+            setArrayMovimentacoes(grupos);
+        else
+            setArrayMovimentacoes([[]]);
     }, [dataToken, movimentacoes])
+
+    console.log(arrayMovimentacoes)
 
     return (
         <>

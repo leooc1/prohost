@@ -1,3 +1,6 @@
+import { useContext, useEffect } from "react";
+import { SideBarContext } from "../contexts/SideBarMenuContext";
+
 interface Hospede {
     id?: number;
     saas: { id: number };
@@ -7,6 +10,7 @@ interface Hospede {
 }
 
 export default function CadastrarHospede({ close }: { close: () => void }) {
+    const { dataToken } = useContext(SideBarContext)
 
     async function createHospede(pbody: Hospede) {
         await fetch(`http://localhost:3000/hospede/`, {
@@ -26,6 +30,7 @@ export default function CadastrarHospede({ close }: { close: () => void }) {
             })
             .catch(err => console.log(err))
     }
+    useEffect(() => { }, [dataToken])
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black top-0 right-0 bg-opacity-20" onClick={close}></div>
@@ -37,7 +42,7 @@ export default function CadastrarHospede({ close }: { close: () => void }) {
                 if (nome.value?.length)
                     createHospede({
                         "saas": {
-                            "id": 1
+                            "id": dataToken.id
                         },
                         "nome": nome.value,
                         "telefone": tel.value?.length ? tel.value : null,

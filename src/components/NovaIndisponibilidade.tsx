@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import { SideBarContext } from "../contexts/SideBarMenuContext"
 
 interface Acomodacao {
     id: number
@@ -35,6 +36,7 @@ interface Reserva {
 }
 
 export default function NovaIndisponibilidade({ close }: { close: () => void }) {
+    const { dataToken } = useContext(SideBarContext)
     const [render, setRender] = useState(false)
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
 
@@ -146,7 +148,7 @@ export default function NovaIndisponibilidade({ close }: { close: () => void }) 
                                         },
                                         "qtd_hospede": 0,
                                         "saas": {
-                                            "id": 1
+                                            "id": dataToken.id
                                         },
                                         "valor": 0,
                                         "valor_liq": 0,

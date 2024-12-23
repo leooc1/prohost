@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { SideBarContext } from "../contexts/SideBarMenuContext";
 
 interface Hospede {
     id?: number;
@@ -8,6 +9,7 @@ interface Hospede {
     email: string | null;
 }
 export default function AtualizarHospede({ close, id }: { close: () => void, id: number }) {
+    const { dataToken } = useContext(SideBarContext)
     const [nome, setNome] = useState<string>()
     const [email, setEmail] = useState<string | null>()
     const [tel, setTel] = useState<string | null>()
@@ -45,7 +47,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
 
     useEffect(() => {
         getHospede()
-    }, [])
+    }, [dataToken])
 
 
     return (
@@ -56,7 +58,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
                 if (nome?.length)
                     updateHospede({
                         "saas": {
-                            "id": 1
+                            "id": dataToken.id
                         },
                         "nome": nome,
                         "telefone": tel?.length ? tel : null,

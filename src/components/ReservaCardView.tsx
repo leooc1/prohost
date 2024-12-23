@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import NovaContinuidade from "./NovaContinuidade"
 import EditarReserva from "./EditarReserva"
+import CardCancelamento from "./CardCancelamento"
 
 interface propsReserva {
     id: string
@@ -31,6 +32,7 @@ export default function ReservaCardView(props: propsReserva) {
     const [idR, setIdR] = useState<number>(0)
     const [continuidade, setContinuidade] = useState(false)
     const [editar, setEditar] = useState(false)
+    const [cancelamento, setCancelamento] = useState(false)
 
     function formatDate(isoDateStr: string) {
         const date = new Date(isoDateStr);
@@ -223,12 +225,13 @@ export default function ReservaCardView(props: propsReserva) {
                     {reserva?.tipo_reserva != 'Indisponibilidade' && reserva?.tipo_reserva != 'Continuidade' ? <div className="flex justify-between mt-3">
                         <button
                             onClick={() => {
-                                const confirma = confirm('Tem certeza que deseja excluir esta reserva?')
+                                /* const confirma = confirm('Tem certeza que deseja excluir esta reserva?')
                                 if (confirma) {
                                     deleteReserva(Number(props.id))
-                                }
+                                } */
+                                setCancelamento(true)
                             }}
-                            className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md">Excluir Reserva</button>
+                            className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md">Cancelar Reserva</button>
                         <button
                             onClick={() => {
                                 setEditar(true)
@@ -243,12 +246,13 @@ export default function ReservaCardView(props: propsReserva) {
                     {reserva?.tipo_reserva == 'Continuidade' ? <div className="flex justify-between mt-3">
                         <button
                             onClick={() => {
-                                const confirma = confirm('Tem certeza que deseja excluir esta reserva?')
+                                /* const confirma = confirm('Tem certeza que deseja excluir esta reserva?')
                                 if (confirma) {
                                     deleteReserva(Number(props.id))
-                                }
+                                } */
+                                setCancelamento(true)
                             }}
-                            className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md">Excluir Continuidade</button>
+                            className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md">Cancelar Continuidade</button>
                     </div> : null}
                     {reserva?.tipo_reserva == 'Indisponibilidade' ? <div className="flex justify-between mt-3">
                         <button
@@ -262,6 +266,11 @@ export default function ReservaCardView(props: propsReserva) {
                     </div> : null}
                 </section>
             </div >
+            {cancelamento &&
+                <CardCancelamento
+                    close={() => setCancelamento(false)}
+                    id={reserva?.id || 0} />
+            }
         </div >
     )
 }

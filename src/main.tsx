@@ -18,6 +18,10 @@ import Pix from './components/assinatura/Pix.tsx'
 import Boleto from './components/assinatura/Boleto.tsx'
 import CartaoCredito from './components/assinatura/CartaoCredito.tsx'
 import { AssinaturaProvider } from './contexts/AssinaturaContext.tsx'
+import JivoChat from './JivoChat.tsx'
+import Config from './pages/Config.tsx'
+import FeedBacks from './pages/FeedBacks.tsx'
+import Relatorio from './pages/Relatorio.tsx'
 
 const router = createBrowserRouter([
   {
@@ -48,6 +52,14 @@ const router = createBrowserRouter([
       {
         path: "/movimentacoes",
         element: <Financeiro />,
+      },
+      {
+        path: "/assinatura",
+        element: <Config />,
+      },
+      {
+        path: "/feedback",
+        element: <FeedBacks />,
       },
     ],
   },
@@ -86,11 +98,19 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "/relatorio",
+    element: <Relatorio />,
+    errorElement: <NotFound />,
+  },
 ]);
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <>
+      <JivoChat />
+      <RouterProvider router={router} />
+    </>
   </React.StrictMode>,
 )

@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import { SideBarContext } from "../contexts/SideBarMenuContext"
 
 interface Acomodacao {
     id: number
@@ -51,6 +52,7 @@ interface Reserva {
 }
 
 export default function NovaReserva({ close }: { close: () => void }) {
+    const { dataToken } = useContext(SideBarContext)
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
     const [canais, setCanais] = useState<Canais[]>([])
     const [render, setRender] = useState(false)
@@ -345,7 +347,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                         hospedeId = await createHospede({
                                             nome: hospedeInput.value,
                                             email: null,
-                                            saas: { id: 1 },
+                                            saas: { id: dataToken.id },
                                             telefone: null
                                         })
 
@@ -373,7 +375,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                         },
                                         "qtd_hospede": Number(qtdHospede.value),
                                         "saas": {
-                                            "id": 1
+                                            "id": dataToken.id
                                         },
                                         "valor": Number(valorBruto.value),
                                         "valor_liq": Number(valorLiquido.value),

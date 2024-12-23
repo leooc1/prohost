@@ -22,7 +22,7 @@ export default function App() {
         <>
           <SidebarMenu route={route} />
           <main className="w-full relative bg-zinc-100">
-            {route != '/movimentacoes' && <TopBar />}
+            {route != '/movimentacoes' && route != '/assinatura' && <TopBar />}
             <Outlet />
           </main>
         </>

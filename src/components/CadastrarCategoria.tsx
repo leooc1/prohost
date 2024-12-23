@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import { SideBarContext } from "../contexts/SideBarMenuContext";
 
 interface CategoriaFinanceiro {
     id?: number;
@@ -10,6 +11,7 @@ interface CategoriaFinanceiro {
 }
 
 export default function CadastrarCategoria({ close }: { close: () => void }) {
+    const { dataToken } = useContext(SideBarContext)
     const [mov, setMov] = useState(false)
     const [color, setColor] = useState('#bdc3c7')
     const [receitas, setReceitas] = useState<CategoriaFinanceiro[]>([])
@@ -81,7 +83,7 @@ export default function CadastrarCategoria({ close }: { close: () => void }) {
 
     useEffect(() => {
         getCategorias()
-    }, [receitas, despesas])
+    }, [receitas, despesas, dataToken])
 
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
@@ -446,7 +448,7 @@ export default function CadastrarCategoria({ close }: { close: () => void }) {
                                     "receita": tipo.value == 'receitas',
                                     "nome": nome.value,
                                     "saas": {
-                                        "id": 1
+                                        "id": dataToken.id
                                     }
                                 }
                                 )

@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { SideBarContext } from '../contexts/SideBarMenuContext'
 interface Canais {
     id?: number
     cor: string
@@ -7,6 +8,7 @@ interface Canais {
 }
 
 export default function CanaisDeReserva({ close }: { close: () => void }) {
+    const { dataToken } = useContext(SideBarContext)
     const [canais, setCanais] = useState<Canais[]>([])
     const [color, setColor] = useState('#bdc3c7')
 
@@ -75,7 +77,7 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
 
     useEffect(() => {
         getCanais()
-    }, [])
+    }, [dataToken])
 
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
@@ -314,7 +316,7 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
                                     createCanais({
                                         cor: color,
                                         nome: nome.value,
-                                        saas: { id: 1 }
+                                        saas: { id: dataToken.id }
                                     })
                                 }
                             }}

@@ -36,6 +36,8 @@ export default function Dashboard() {
     if (isNaN(valor)) {
       return "Valor inválido";
     }
+    if (valor < 0)
+      return (0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
   const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
@@ -169,8 +171,19 @@ export default function Dashboard() {
         method: 'GET'
       })
         .then(data => data.json())
-        .then((data: []) => {
-          setResultadoAcomodacoes(data)
+        .then((data) => {
+          if (data.statusCode == 500)
+            setResultadoAcomodacoes([{
+              comissao_plataforma: "0",
+              despesas: "0",
+              diaria_media: "0",
+              faturamento_bruto: "0",
+              faturamento_liquido: "0",
+              lucro: "0",
+              rentabilidade_imovel: 0,
+            }])
+          else
+            setResultadoAcomodacoes(data)
         })
         .catch(err => console.log(err))
 
@@ -198,8 +211,19 @@ export default function Dashboard() {
         method: 'GET'
       })
         .then(data => data.json())
-        .then((data: []) => {
-          setResultadoAcomodacoes(data)
+        .then((data) => {
+          if (data.statusCode == 500 || data.length == 0)
+            setResultadoAcomodacoes([{
+              comissao_plataforma: "0",
+              despesas: "0",
+              diaria_media: "0",
+              faturamento_bruto: "0",
+              faturamento_liquido: "0",
+              lucro: "0",
+              rentabilidade_imovel: 0,
+            }])
+          else
+            setResultadoAcomodacoes(data)
         })
         .catch(err => console.log(err))
     }
@@ -257,54 +281,54 @@ export default function Dashboard() {
         .catch(err => console.log(err))
     }
     else {
-      {
-        await fetch(`http://localhost:3000/reserva/${dataToken.id}/ind-ope/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
-          method: 'GET'
-        })
-          .then(data => data.json())
-          .then((data) => {
-            if (data.length > 0)
-              setIndicadores(data[0])
-          })
-          .catch(err => console.log(err))
 
-        await fetch(`http://localhost:3000/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
-          method: 'GET'
+      await fetch(`http://localhost:3000/reserva/${dataToken.id}/ind-ope/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+        method: 'GET'
+      })
+        .then(data => data.json())
+        .then((data) => {
+          if (data.length > 0)
+            setIndicadores(data[0])
         })
-          .then(data => data.json())
-          .then((data) => {
-            if (data.length > 0)
-              setTaxaOcupacao(data[0])
-          })
-          .catch(err => console.log(err))
+        .catch(err => console.log(err))
 
-        await fetch(`http://localhost:3000/reserva/${dataToken.id}/por-canal/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
-          method: 'GET'
+      await fetch(`http://localhost:3000/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+        method: 'GET'
+      })
+        .then(data => data.json())
+        .then((data) => {
+          if (data.length > 0)
+            setTaxaOcupacao(data[0])
         })
-          .then(data => data.json())
-          .then((data) => {
-            setReservaCanal(data)
-          })
-          .catch(err => console.log(err))
+        .catch(err => console.log(err))
 
-        await fetch(`http://localhost:3000/reserva/${dataToken.id}/qtd-hospede/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
-          method: 'GET'
+      await fetch(`http://localhost:3000/reserva/${dataToken.id}/por-canal/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+        method: 'GET'
+      })
+        .then(data => data.json())
+        .then((data) => {
+          setReservaCanal(data)
         })
-          .then(data => data.json())
-          .then((data) => {
-            setQtdHospede(data)
-          })
-          .catch(err => console.log(err))
+        .catch(err => console.log(err))
 
-        await fetch(`http://localhost:3000/reserva/${dataToken.id}/desempenho/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
-          method: 'GET'
+      await fetch(`http://localhost:3000/reserva/${dataToken.id}/qtd-hospede/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+        method: 'GET'
+      })
+        .then(data => data.json())
+        .then((data) => {
+          setQtdHospede(data)
         })
-          .then(data => data.json())
-          .then((data) => {
-            setDesempenhoDiarias(data)
-          })
-          .catch(err => console.log(err))
-      }
+        .catch(err => console.log(err))
+
+      await fetch(`http://localhost:3000/reserva/${dataToken.id}/desempenho/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+        method: 'GET'
+      })
+        .then(data => data.json())
+        .then((data) => {
+          setDesempenhoDiarias(data)
+        })
+        .catch(err => console.log(err))
+
     }
 
     setIndiOpe(true)
@@ -743,23 +767,23 @@ export default function Dashboard() {
               {periodo == 'm-atual' ? <EvolucaoNegocio
                 mes={new Date().getMonth()}
                 ano={Number(String(new Date().getFullYear()).slice(-2))}
-                dadosLucros={lucroXDespesa.map(d=>Number(d.lucro_acomodacoes))} dadosDespesas={lucroXDespesa.map(d=>Number(d.despesas_negocio))} /> : null}
+                dadosLucros={lucroXDespesa.map(d => Number(d.lucro_acomodacoes))} dadosDespesas={lucroXDespesa.map(d => Number(d.despesas_negocio))} /> : null}
               {periodo == 'm-passado' ? <EvolucaoNegocio
                 mes={new Date().getMonth() == 0 ? 11 : new Date().getMonth() - 1}
                 ano={new Date().getMonth() == 0 ? Number(String(new Date().getFullYear()).slice(-2)) - 1 : Number(String(new Date().getFullYear()).slice(-2))}
-                dadosLucros={lucroXDespesa.map(d=>Number(d.lucro_acomodacoes))} dadosDespesas={lucroXDespesa.map(d=>Number(d.despesas_negocio))} /> : null}
+                dadosLucros={lucroXDespesa.map(d => Number(d.lucro_acomodacoes))} dadosDespesas={lucroXDespesa.map(d => Number(d.despesas_negocio))} /> : null}
               {periodo == 'a-atual' ? <EvolucaoNegocio
                 mes={11}
                 ano={Number(String(new Date().getFullYear()).slice(-2))}
-                dadosLucros={lucroXDespesa.map(d=>Number(d.lucro_acomodacoes))} dadosDespesas={lucroXDespesa.map(d=>Number(d.despesas_negocio))} /> : null}
+                dadosLucros={lucroXDespesa.map(d => Number(d.lucro_acomodacoes))} dadosDespesas={lucroXDespesa.map(d => Number(d.despesas_negocio))} /> : null}
               {periodo == 'a-passado' ? <EvolucaoNegocio
                 mes={11}
                 ano={Number(String(new Date().getFullYear()).slice(-2)) - 1}
-                dadosLucros={lucroXDespesa.map(d=>Number(d.lucro_acomodacoes))} dadosDespesas={lucroXDespesa.map(d=>Number(d.despesas_negocio))} /> : null}
+                dadosLucros={lucroXDespesa.map(d => Number(d.lucro_acomodacoes))} dadosDespesas={lucroXDespesa.map(d => Number(d.despesas_negocio))} /> : null}
               {periodo == 'personalizado' ? <EvolucaoNegocio
                 mes={new Date().getMonth()}
                 ano={Number(String(new Date().getFullYear()).slice(-2))}
-                dadosLucros={lucroXDespesa.map(d=>Number(d.lucro_acomodacoes))} dadosDespesas={lucroXDespesa.map(d=>Number(d.despesas_negocio))} /> : null}
+                dadosLucros={lucroXDespesa.map(d => Number(d.lucro_acomodacoes))} dadosDespesas={lucroXDespesa.map(d => Number(d.despesas_negocio))} /> : null}
             </div>
           </section> : null}
       </div>
