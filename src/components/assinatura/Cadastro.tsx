@@ -69,7 +69,7 @@ export default function Cadastro() {
         }
 
         if (getPlano) {
-            await fetch('${apiUrl}/assinatura', {
+            await fetch('https://api.prohost.net.br/assinatura', {
                 method: 'POST',
                 body: JSON.stringify({ user: user, plano: getPlano }),
                 headers: {
@@ -87,7 +87,7 @@ export default function Cadastro() {
 
         if (assinatura) {
             {
-                await fetch('${apiUrl}/saas', {
+                await fetch('https://api.prohost.net.br/saas', {
                     method: 'POST',
                     body: JSON.stringify({ ...saas, assinatura: assinatura.id }),
                     headers: {
@@ -106,7 +106,7 @@ export default function Cadastro() {
                 const usuarioDTO = {
                     ...user, saas: idSaas, asaas_id: assinatura?.id
                 }
-                await fetch('${apiUrl}/users', {
+                await fetch('https://api.prohost.net.br/users', {
                     method: 'POST',
                     body: JSON.stringify(usuarioDTO),
                     headers: {
@@ -119,7 +119,7 @@ export default function Cadastro() {
                             alert('Criado!')
                         }
                     })
-                await fetch('${apiUrl}/assinatura/crypto', {
+                await fetch('https://api.prohost.net.br/assinatura/crypto', {
                     method: 'POST',
                     body: JSON.stringify({ pay }),
                     headers: {
