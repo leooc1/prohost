@@ -62,11 +62,12 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                         </select>
                     </label>
 
-                    {tipo == 'terceiro' && <label htmlFor="comissao" className="flex flex-col">
+                    {tipo == 'terceiro' && <label htmlFor="comissao" className="flex flex-col relative">
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Comissão
                             <span className='text-red-500 font-bold'> *</span>
                         </span>
-                        <input type="number" step="0.01" name="comissao" id="comissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" placeholder="%" />
+                        <input type="number" step="0.01" name="comissao" id="comissao" className="border border-zinc-300 rounded-md px-1 input-number py-1 outline-none w-10" placeholder="%" />
+                        <span className="absolute right-2 bottom-1">%</span>
                     </label>}
 
                     <label htmlFor="inicio-operacao" className={`flex flex-col ${tipo == 'terceiro' ? 'col-span-2' : ''}`}>
@@ -85,7 +86,27 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Valor do Imóvel
                             <span className='text-red-500 font-bold'> *</span>
                         </span>
-                        <input type="number" step="0.01" name="valor-imovel" id="valor-imovel" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                        <input type="text" name="valor-imovel" id="valor-imovel" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" placeholder="R$"
+                            onChange={(e) => {
+                                if (e.target.value.replace(/[.,]/gm, '').length <= 3)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})/gm, '$1,$2')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 4)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{2})/gm, '$1,$2')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 5)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{2})/gm, '$1,$2')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 6)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 7)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 8)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 9)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 10)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 11)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                            }} />
                     </label>
                 </div>
                 <div className="grid gap-4 items-center" style={{ gridTemplateColumns: '1fr 1fr' }}>
@@ -93,13 +114,109 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Horário Padrão de Checkout
                             <span className='text-red-500 font-bold'> *</span>
                         </span>
-                        <input type="time" name="padrao-checkout" id="padrao-checkout" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                        <select name="padrao-checkout" id="padrao-checkout"
+                        className="border border-zinc-300 rounded-md px-2 py-1 outline-none">
+                            <option value="00:00:00">00:00</option>
+                            <option value="00:30:00">00:30</option>
+                            <option value="01:00:00">01:00</option>
+                            <option value="01:30:00">01:30</option>
+                            <option value="02:00:00">02:00</option>
+                            <option value="02:30:00">02:30</option>
+                            <option value="03:00:00">03:00</option>
+                            <option value="03:30:00">03:30</option>
+                            <option value="04:00:00">04:00</option>
+                            <option value="04:30:00">04:30</option>
+                            <option value="05:00:00">05:00</option>
+                            <option value="05:30:00">05:30</option>
+                            <option value="06:00:00">06:00</option>
+                            <option value="06:30:00">06:30</option>
+                            <option value="07:00:00">07:00</option>
+                            <option value="07:30:00">07:30</option>
+                            <option value="08:00:00">08:00</option>
+                            <option value="08:30:00">08:30</option>
+                            <option value="09:00:00">09:00</option>
+                            <option value="09:30:00">09:30</option>
+                            <option value="10:00:00">10:00</option>
+                            <option value="10:30:00">10:30</option>
+                            <option value="11:00:00">11:00</option>
+                            <option value="11:30:00">11:30</option>
+                            <option value="12:00:00">12:00</option>
+                            <option value="12:30:00">12:30</option>
+                            <option value="13:00:00">13:00</option>
+                            <option value="13:30:00">13:30</option>
+                            <option value="14:00:00">14:00</option>
+                            <option value="14:30:00">14:30</option>
+                            <option value="15:00:00">15:00</option>
+                            <option value="15:30:00">15:30</option>
+                            <option value="16:00:00">16:00</option>
+                            <option value="16:30:00">16:30</option>
+                            <option value="18:00:00">18:00</option>
+                            <option value="18:30:00">18:30</option>
+                            <option value="19:00:00">19:00</option>
+                            <option value="19:30:00">19:30</option>
+                            <option value="20:00:00">20:00</option>
+                            <option value="20:30:00">20:30</option>
+                            <option value="21:00:00">21:00</option>
+                            <option value="21:30:00">21:30</option>
+                            <option value="22:00:00">22:00</option>
+                            <option value="22:30:00">22:30</option>
+                            <option value="23:00:00">23:00</option>
+                            <option value="23:30:00">23:30</option>
+                        </select>
                     </label>
                     <label htmlFor="padrao-checkin" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Horário Padrão de Checkin
                             <span className='text-red-500 font-bold'> *</span>
                         </span>
-                        <input type="time" name="padrao-checkin" id="padrao-checkin" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                        <select name="padrao-checkin" id="padrao-checkin"
+                        className="border border-zinc-300 rounded-md px-2 py-1 outline-none">
+                            <option value="00:00:00">00:00</option>
+                            <option value="00:30:00">00:30</option>
+                            <option value="01:00:00">01:00</option>
+                            <option value="01:30:00">01:30</option>
+                            <option value="02:00:00">02:00</option>
+                            <option value="02:30:00">02:30</option>
+                            <option value="03:00:00">03:00</option>
+                            <option value="03:30:00">03:30</option>
+                            <option value="04:00:00">04:00</option>
+                            <option value="04:30:00">04:30</option>
+                            <option value="05:00:00">05:00</option>
+                            <option value="05:30:00">05:30</option>
+                            <option value="06:00:00">06:00</option>
+                            <option value="06:30:00">06:30</option>
+                            <option value="07:00:00">07:00</option>
+                            <option value="07:30:00">07:30</option>
+                            <option value="08:00:00">08:00</option>
+                            <option value="08:30:00">08:30</option>
+                            <option value="09:00:00">09:00</option>
+                            <option value="09:30:00">09:30</option>
+                            <option value="10:00:00">10:00</option>
+                            <option value="10:30:00">10:30</option>
+                            <option value="11:00:00">11:00</option>
+                            <option value="11:30:00">11:30</option>
+                            <option value="12:00:00">12:00</option>
+                            <option value="12:30:00">12:30</option>
+                            <option value="13:00:00">13:00</option>
+                            <option value="13:30:00">13:30</option>
+                            <option value="14:00:00">14:00</option>
+                            <option value="14:30:00">14:30</option>
+                            <option value="15:00:00">15:00</option>
+                            <option value="15:30:00">15:30</option>
+                            <option value="16:00:00">16:00</option>
+                            <option value="16:30:00">16:30</option>
+                            <option value="18:00:00">18:00</option>
+                            <option value="18:30:00">18:30</option>
+                            <option value="19:00:00">19:00</option>
+                            <option value="19:30:00">19:30</option>
+                            <option value="20:00:00">20:00</option>
+                            <option value="20:30:00">20:30</option>
+                            <option value="21:00:00">21:00</option>
+                            <option value="21:30:00">21:30</option>
+                            <option value="22:00:00">22:00</option>
+                            <option value="22:30:00">22:30</option>
+                            <option value="23:00:00">23:00</option>
+                            <option value="23:30:00">23:30</option>
+                        </select>
                     </label>
                 </div>
                 <div className="grid gap-4 items-center" style={{ gridTemplateColumns: '1fr 1fr' }}>
@@ -110,7 +227,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                             <p className="text-zinc-400">Clique ou arraste uma imagem aqui</p>
                         </div>
                         <img id="preview" src="" alt="Pré-Visualização da Imagem" className="hidden w-52 max-h-20 object-contain cursor-pointer border border-zinc-300 rounded-md px-1 py-1 outline-none" />
-                        <input type="file" name="imagem" id="imagem" accept=".jpg, .jpeg, .jfif, .pjpeg, .pjp, .png, .gif, .bmp, .dib, .tif, .tiff, .webp, .heic, .heif, .svg, .ico, .cur, .apng" className="hidden"
+                        <input type="file" name="imagem" id="imagem" accept=".jpg, .jpeg, .jfif, .pjpeg, .pjp, .png, .gif, .bmp, .dib, .tif, .tiff, .webp, .heic, .heif, .svg, .ico, .cur, .apng" className="absolute w-52 h-20 mt-10 opacity-0"
                             onChange={(e: ChangeEvent<HTMLInputElement>) => {
                                 const input = document.getElementById('input-file') as HTMLInputElement | null;
                                 const preview = document.getElementById('preview') as HTMLImageElement | null;
@@ -173,7 +290,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                                         "foto": foto.classList.contains('hidden') ? null : foto.src,
                                         "nome": identificador.value,
                                         "numero_hospedes": Number(qtdMaxHospede.value),
-                                        "valor_imovel": Number(valor.value),
+                                        "valor_imovel": Number(valor.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                         "desativado": false,
                                         "saas": {
                                             "id": dataToken.id
@@ -190,7 +307,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                                         "foto": foto.classList.contains('hidden') ? null : foto.src,
                                         "nome": identificador.value,
                                         "numero_hospedes": Number(qtdMaxHospede.value),
-                                        "valor_imovel": Number(valor.value),
+                                        "valor_imovel": Number(valor.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                         "desativado": false,
                                         "saas": {
                                             "id": dataToken.id

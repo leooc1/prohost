@@ -67,7 +67,7 @@ export default function FaturamentoxDespesa({mes, dadosAtuais, dadosPassado}:{me
                         tooltip: {
                             callbacks: {
                                 label: function (context: any) {
-                                    return `${context.raw}`;
+                                    return `R$ ${context.raw}`;
                                 },
                             },
                         },

@@ -150,9 +150,26 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Valor</span>
                         <input
                             onChange={(e) => {
-                                e.target.value = Number(e.target.value).toFixed(2)
+                                if (e.target.value.replace(/[.,]/gm, '').length <= 3)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})/gm, '$1,$2')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 4)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{2})/gm, '$1,$2')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 5)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{2})/gm, '$1,$2')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 6)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 7)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 8)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 9)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 10)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                else if (e.target.value.replace(/[.,]/gm,'').length <= 11)
+                                    e.target.value = e.target.value.replace(/[.,]/gm,'').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
                             }}
-                            type="number" step={0.01} name="valor" placeholder="R$" id="valor" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full" />
+                            type="text" name="valor" placeholder="R$" id="valor" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full" />
                     </label>
                     <div className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-2 text-sm">Pago?</span>
@@ -196,14 +213,14 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
                             let vGestor: number = 0
                             if (acomodacaoInput.value != 'null' && acomodacaoInput.value != '' && acomodacao.filter(e => e.id == Number(acomodacaoInput.value))[0].comissao) {
                                 const comissao = acomodacao.filter(a => a.id == Number(acomodacaoInput.value))[0].comissao
-                                vProprietario = ((100 - comissao) / 100) * Number(valorInput.value)
-                                vGestor = (comissao / 100) * Number(valorInput.value)
+                                vProprietario = ((100 - comissao) / 100) * Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
+                                vGestor = (comissao / 100) * Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
                             }
                             else {
-                                vProprietario = Number(valorInput.value)
-                                vGestor = Number(valorInput.value)
+                                vProprietario = Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
+                                vGestor = Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
                             }
-                            if ((Boolean(categoriaInput?.htmlFor) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && tipoDespesa.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value) > 0)) {
+                            if ((Boolean(categoriaInput?.htmlFor) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && tipoDespesa.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) > 0)) {
                                 await create({
                                     "acomodacao": {
                                         "id": tipoDespesa.value == 'Despesas do Negócio' ? null : Number(acomodacaoInput.value) || null
@@ -219,8 +236,8 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
                                     "saas": {
                                         "id": saas
                                     },
-                                    "valor": Number(valorInput.value),
-                                    "valor_liq": Number(valorInput.value),
+                                    "valor": Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
+                                    "valor_liq": Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                     "valor_prop": vProprietario,
                                     "valor_gestor": vGestor,
                                     "reserva": {

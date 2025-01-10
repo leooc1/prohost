@@ -29,8 +29,6 @@ interface Acomodacao {
     saas: { id: number }
 }
 
-//const apiURl = import.meta.env.VITE_baseURLAPI;
-
 export default function AcomodacoesDetalhes() {
     const { dataToken } = useContext(SideBarContext)
     const [loaded, setLoaded] = useState(false)
@@ -89,7 +87,7 @@ export default function AcomodacoesDetalhes() {
 
     async function getAcomodacao() {
 
-        await fetch(`https://api.prohost.net.br/acomodacao/${dataToken.id}/${id}`, {
+        await fetch(`http://localhost:3000/acomodacao/${dataToken.id}/${id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -135,7 +133,7 @@ export default function AcomodacoesDetalhes() {
 
     async function dataDashs() {
         {
-            await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}/${id}`, {
+            await fetch(`http://localhost:3000/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}/${id}`, {
                 method: 'GET'
             })
                 .then(data => data.json())
@@ -151,7 +149,7 @@ export default function AcomodacoesDetalhes() {
                 .catch(err => console.log(err))
         }
         {
-            await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/ind-ope/${dataBW[0]}/${dataBW[1]}/${id}`, {
+            await fetch(`http://localhost:3000/reserva/${dataToken.id}/ind-ope/${dataBW[0]}/${dataBW[1]}/${id}`, {
                 method: 'GET'
             })
                 .then(data => data.json())
@@ -162,7 +160,7 @@ export default function AcomodacoesDetalhes() {
                 .catch(err => console.log(err))
         }
         {
-            await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/result-ac/${dataBW[0]}/${dataBW[1]}/${id}`, {
+            await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/result-ac/${dataBW[0]}/${dataBW[1]}/${id}`, {
                 method: 'GET'
             })
                 .then(data => data.json())
@@ -183,7 +181,7 @@ export default function AcomodacoesDetalhes() {
                 .catch(err => console.log(err))
         }
         {
-            await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/fat-canal/${dataBW[0]}/${dataBW[1]}/${id}`, {
+            await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/fat-canal/${dataBW[0]}/${dataBW[1]}/${id}`, {
                 method: 'GET'
             })
                 .then(data => data.json())
@@ -193,7 +191,7 @@ export default function AcomodacoesDetalhes() {
                 .catch(err => console.log(err))
         }
         {
-            await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/fat-bar/${dataBar}/${id}`, {
+            await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/fat-bar/${dataBar}/${id}`, {
                 method: 'GET'
             })
                 .then(data => data.json())
@@ -206,7 +204,7 @@ export default function AcomodacoesDetalhes() {
     }
 
     async function updateAcomodacao(pbody: Acomodacao) {
-        await fetch(`https://api.prohost.net.br/acomodacao/${id}`, {
+        await fetch(`http://localhost:3000/acomodacao/${id}`, {
             method: 'PUT',
             body: JSON.stringify(pbody),
             headers: {
@@ -233,7 +231,7 @@ export default function AcomodacoesDetalhes() {
     const [qtdMaxHospede, setQtdMaxHospede] = useState<number>(-1)
 
     async function desativar(id: number, desativado: boolean) {
-        await fetch(`https://api.prohost.net.br/acomodacao/${id}`, {
+        await fetch(`http://localhost:3000/acomodacao/${id}`, {
             method: 'DELETE',
             body: JSON.stringify({ desativado: desativado }),
             headers: {

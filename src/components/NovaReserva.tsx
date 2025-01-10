@@ -84,6 +84,28 @@ export default function NovaReserva({ close }: { close: () => void }) {
         }
     }
 
+    function formatedNumber(input: string) {
+        if (input.replace(/[.,]/gm, '').length <= 3)
+            return input.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})/gm, '$1,$2')
+        else if (input.replace(/[.,]/gm, '').length <= 4)
+            return input.replace(/[.,]/gm, '').replace(/(\d{2})(\d{2})/gm, '$1,$2')
+        else if (input.replace(/[.,]/gm, '').length <= 5)
+            return input.replace(/[.,]/gm, '').replace(/(\d{3})(\d{2})/gm, '$1,$2')
+        else if (input.replace(/[.,]/gm, '').length <= 6)
+            return input.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{2})/gm, '$1.$2,$3')
+        else if (input.replace(/[.,]/gm, '').length <= 7)
+            return input.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{2})/gm, '$1.$2,$3')
+        else if (input.replace(/[.,]/gm, '').length <= 8)
+            return input.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{2})/gm, '$1.$2,$3')
+        else if (input.replace(/[.,]/gm, '').length <= 9)
+            return input.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+        else if (input.replace(/[.,]/gm, '').length <= 10)
+            return input.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+        else if (input.replace(/[.,]/gm, '').length <= 11)
+            return input.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+        else return '0,00'
+    }
+
     async function createHospede(pbody: Hospede) {
         try {
             const response = await fetch(`https://api.prohost.net.br/hospede/`, {
@@ -177,9 +199,9 @@ export default function NovaReserva({ close }: { close: () => void }) {
                             onChange={(ac) => {
                                 const cIN = document.getElementById('checkin-hour') as HTMLInputElement
                                 const cOUT = document.getElementById('checkout-hour') as HTMLInputElement
-                                cIN.value = (acomodacao.filter(a => a.id == Number(ac.target.value))[0].check_in_p).slice(0,5) 
-                                cOUT.value = (acomodacao.filter(a => a.id == Number(ac.target.value))[0].check_out_p).slice(0,5)
-                            }}>          
+                                cIN.value = (acomodacao.filter(a => a.id == Number(ac.target.value))[0].check_in_p).slice(0, 5)
+                                cOUT.value = (acomodacao.filter(a => a.id == Number(ac.target.value))[0].check_out_p).slice(0, 5)
+                            }}>
                             <option value="" selected disabled className="hidden">Selecione uma acomodação</option>
                             {acomodacao.length &&
                                 acomodacao.map(a => <option value={a.id}>{a.nome}</option>)}
@@ -217,14 +239,14 @@ export default function NovaReserva({ close }: { close: () => void }) {
                             <input type="date" name="checkin-date" id="checkin-date" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                         </label>
                         <label htmlFor="checkin-hour" className="flex flex-col justify-end w-fit">
-                            <input type="time" name="checkin-hour" defaultValue={`0${new Date().getHours()}`.slice(-2)+':00'} id="checkin-hour" className="border border-zinc-300 max-w-24 rounded-md px-2 py-1 outline-none" />
+                            <input type="time" name="checkin-hour" defaultValue={`0${new Date().getHours()}`.slice(-2) + ':00'} id="checkin-hour" className="border border-zinc-300 max-w-24 rounded-md px-2 py-1 outline-none" />
                         </label>
                         <label htmlFor="checkout-date" className="flex flex-col justify-end">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Check-out</span>
                             <input type="date" name="checkout-date" id="checkout-date" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                         </label>
                         <label htmlFor="checkout-hour" className="flex flex-col justify-end w-fit">
-                            <input type="time" name="checkout-hour" defaultValue={`0${new Date().getHours()}`.slice(-2)+':00'} id="checkout-hour" className="border border-zinc-300 max-w-24 rounded-md px-2 py-1 outline-none" />
+                            <input type="time" name="checkout-hour" defaultValue={`0${new Date().getHours()}`.slice(-2) + ':00'} id="checkout-hour" className="border border-zinc-300 max-w-24 rounded-md px-2 py-1 outline-none" />
                         </label>
                     </div>
                     <label htmlFor="canal-reserva" className="flex flex-col">
@@ -239,32 +261,32 @@ export default function NovaReserva({ close }: { close: () => void }) {
                     <div className="grid gap-4 grid-cols-3">
                         <label htmlFor="tot" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Valor Total</span>
-                            <input type="number" placeholder="R$" step="0.01" name="tot" id="tot" className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
+                            <input type="text" placeholder="R$" step="0.01" name="tot" id="tot" className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
                                 onInput={() => {
                                     const total = document.getElementById('tot') as HTMLInputElement
                                     const comissao = document.getElementById('com') as HTMLInputElement
                                     const liquido = document.getElementById('liq') as HTMLInputElement
 
                                     if (comissao.value.length == 0 && liquido.value.length == 0) {
-                                        liquido.value = String(Number(total.value) - Number(comissao.value));
+                                        liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                     } else if (comissao.value.length == 0 && liquido.value.length > 0) {
-                                        comissao.value = String(Number(total.value) - Number(liquido.value));
+                                        comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                     } else if (comissao.value.length > 0 && liquido.value.length == 0) {
-                                        liquido.value = String(Number(total.value) - Number(comissao.value));
+                                        liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                     } else {
-                                        liquido.value = String(Number(total.value) - Number(comissao.value));
+                                        liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                     }
 
-                                    total.value = (Number(total.value).toFixed(2));
-                                    comissao.value = (Number(comissao.value).toFixed(2));
-                                    liquido.value = (Number(liquido.value).toFixed(2));
+                                    total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                    comissao.value = formatedNumber(String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                    liquido.value = formatedNumber(String(Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
 
                                     checkNegativeAndApplyStyle();
                                 }} />
                         </label>
                         <label htmlFor="com" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Comissão</span>
-                            <input type="number" placeholder="R$" step="0.01" name="com" id="com" className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
+                            <input type="text" placeholder="R$" step="0.01" name="com" id="com" className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
                                 onInput={() => {
                                     const total = document.getElementById('tot') as HTMLInputElement
                                     const comissao = document.getElementById('com') as HTMLInputElement
@@ -273,41 +295,41 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                     if (liquido.value.length == 0 && total.value.length == 0) {
                                         return;
                                     } else if (liquido.value.length == 0 && total.value.length > 0) {
-                                        liquido.value = String(Number(total.value) - Number(comissao.value));
+                                        liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                     } else if (liquido.value.length > 0 && total.value.length == 0) {
-                                        total.value = String(Number(comissao.value) + Number(liquido.value));
+                                        total.value = String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                     } else {
-                                        liquido.value = String(Number(total.value) - Number(comissao.value));
+                                        liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                     }
 
-                                    total.value = (Number(total.value).toFixed(2));
-                                    comissao.value = (Number(comissao.value).toFixed(2));
-                                    liquido.value = (Number(liquido.value).toFixed(2));
+                                    total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                    comissao.value = formatedNumber(String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                    liquido.value = formatedNumber(String(Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
 
                                     checkNegativeAndApplyStyle();
                                 }} />
                         </label>
                         <label htmlFor="liq" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Valor Líquido</span>
-                            <input type="number" placeholder="R$" step="0.01" name="liq" id="liq" className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
+                            <input type="text" placeholder="R$" step="0.01" name="liq" id="liq" className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
                                 onInput={() => {
                                     const total = document.getElementById('tot') as HTMLInputElement
                                     const comissao = document.getElementById('com') as HTMLInputElement
                                     const liquido = document.getElementById('liq') as HTMLInputElement
 
                                     if (comissao.value.length == 0 && total.value.length == 0) {
-                                        total.value = String(Number(liquido.value) + Number(comissao.value));
+                                        total.value = String(Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                     } else if (comissao.value.length == 0 && total.value.length > 0) {
-                                        comissao.value = String(Number(total.value) - Number(liquido.value));
+                                        comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                     } else if (comissao.value.length > 0 && total.value.length == 0) {
-                                        total.value = String(Number(total.value) - Number(comissao.value));
+                                        total.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                     } else {
-                                        comissao.value = String(Number(total.value) - Number(liquido.value));
+                                        comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                     }
 
-                                    total.value = (Number(total.value).toFixed(2));
-                                    comissao.value = (Number(comissao.value).toFixed(2));
-                                    liquido.value = (Number(liquido.value).toFixed(2));
+                                    total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                    comissao.value = formatedNumber(String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                    liquido.value = formatedNumber(String(Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
 
                                     checkNegativeAndApplyStyle();
                                 }} />

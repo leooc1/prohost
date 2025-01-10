@@ -105,7 +105,7 @@ export default function Acomodacoes() {
                 }
                 {terceiro.length ?
                     <section className="py-12">
-                        <p className="text-2xl font-medium">Terceiros</p>
+                        <p className="text-2xl font-medium">Terceiras</p>
                         <ul className="border border-zinc-300 w-full mt-5 rounded-md pt-px pb-1 px-px flex overflow-x-scroll gap-10">
                             {terceiro.map((e) =>
                                 <li className="bg-white min-w-52 min-h-56 border border-zinc-200 rounded-md p-5 cursor-pointer"
@@ -131,7 +131,7 @@ export default function Acomodacoes() {
                 }
                 {desativados.length ?
                     <section className="py-12">
-                        <p className="text-2xl font-medium">Desativados</p>
+                        <p className="text-2xl font-medium">Desativadas</p>
                         <ul className="border border-zinc-300 w-full mt-5 rounded-md pt-px pb-1 px-px flex overflow-x-scroll gap-10">
                             {desativados.map((e) =>
                                 <li className="bg-white min-w-52 min-h-56 border border-zinc-200 rounded-md p-5 cursor-pointer opacity-75 brightness-75">

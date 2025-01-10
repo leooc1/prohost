@@ -38,7 +38,7 @@ export default function Dashboard() {
       return "Valor inválido";
     }
     if (valor < 0)
-      return (0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      return (valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
   const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
@@ -505,7 +505,8 @@ export default function Dashboard() {
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-44 flex flex-col justify-between items-center py-1 row-span-2" >
               <p className="flex flex-col text-zinc-400 font-medium text-sm">Desempenho das Diárias</p>
-              <DesempenhoDiarias dados={[desempenhoDiarias?.reservadas || 0, desempenhoDiarias?.ociosas || 0, desempenhoDiarias?.indisponiveis || 0]} />
+              <DesempenhoDiarias 
+              dados={[desempenhoDiarias?.reservadas || 0, desempenhoDiarias?.ociosas || 0, desempenhoDiarias?.indisponiveis || 0]} />
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center" >
               <div className="bg-[#E9F7FD] rounded-md w-fit py-2 px-2 ml-4">

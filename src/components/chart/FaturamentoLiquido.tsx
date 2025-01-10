@@ -67,7 +67,7 @@ export default function FaturamentoLiquido({mes, dadosAtuais, dadosPassado}:{mes
                         tooltip: {
                             callbacks: {
                                 label: function (context: any) {
-                                    return `${context.raw}`;
+                                    return `R$ ${context.raw}`;
                                 },
                             },
                         },
