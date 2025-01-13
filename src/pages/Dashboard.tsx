@@ -106,9 +106,11 @@ export default function Dashboard() {
   const [taxaOcupacao, setTaxaOcupacao] = useState<{
     taxa_ocupacao: number
   }>()
+  const [showTaxaOcu, setShowTaxaOcu] = useState<boolean>(true)
   const [resAc, setResAc] = useState<boolean>(false)
   const [resGestor, setResGestor] = useState<boolean>(false)
   const [indiOpe, setIndiOpe] = useState<boolean>(false)
+  const [ocupacaoSemana, setOcupacaoSemana] = useState<[][][]>([])
 
   function getDaysInMonth(month: number, year: number) {
     switch (month) {
@@ -249,6 +251,7 @@ export default function Dashboard() {
       })
         .then(data => data.json())
         .then((data) => {
+          setShowTaxaOcu(false)
           if (data.length > 0)
             setTaxaOcupacao(data[0])
         })
@@ -280,6 +283,19 @@ export default function Dashboard() {
           setDesempenhoDiarias(data)
         })
         .catch(err => console.log(err))
+
+      await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/ocupacao-semana/${dataBW[0]}/${dataBW[1]}`, {
+        method: 'GET'
+      })
+        .then(data => data.json())
+        .then((data) => {
+          if (data.length > 0)
+            setOcupacaoSemana(data.map(d => [
+              d.dia_da_semana,
+              Number(d.total_dias_no_intervalo) > 0 ? (Number(d.total_movimentacoes) * 100) / Number(d.total_dias_no_intervalo) : 0
+            ]))
+        })
+        .catch(err => console.log(err))
     }
     else {
 
@@ -298,6 +314,7 @@ export default function Dashboard() {
       })
         .then(data => data.json())
         .then((data) => {
+          setShowTaxaOcu(false)
           if (data.length > 0)
             setTaxaOcupacao(data[0])
         })
@@ -327,6 +344,19 @@ export default function Dashboard() {
         .then(data => data.json())
         .then((data) => {
           setDesempenhoDiarias(data)
+        })
+        .catch(err => console.log(err))
+
+      await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/ocupacao-semana/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+        method: 'GET'
+      })
+        .then(data => data.json())
+        .then((data) => {
+          if (data.length > 0)
+            setOcupacaoSemana(data.map(d => [
+              d.dia_da_semana,
+              Number(d.total_dias_no_intervalo) > 0 ? (Number(d.total_movimentacoes) * 100) / Number(d.total_dias_no_intervalo) : 0
+            ]))
         })
         .catch(err => console.log(err))
 
@@ -414,6 +444,10 @@ export default function Dashboard() {
     loadAll()
   }, [resAc, indiOpe, resGestor, dataToken])
 
+  useEffect(() => {
+    setShowTaxaOcu(true)
+  }, [taxaOcupacao])
+
   return (
     loaded ?
       <div className="w-full px-8">
@@ -487,7 +521,7 @@ export default function Dashboard() {
             <div className="relative bg-white border-zinc-300 border rounded-lg flex flex-col justify-between items-center row-span-2 py-1 h-full">
               <p className="flex flex-col text-zinc-400 font-medium text-sm">Taxa de Ocupação Média</p>
               <div className="">
-                <OcupacaoMedia dados={taxaOcupacao?.taxa_ocupacao ? [Number(taxaOcupacao?.taxa_ocupacao.toFixed(1))] : [0]} />
+                {showTaxaOcu && <OcupacaoMedia dados={taxaOcupacao?.taxa_ocupacao ? [Number(taxaOcupacao?.taxa_ocupacao.toFixed(1))] : [0]} />}
                 <p className="text-3xl text-center font-bold bottom-3 text-zinc-500 mb-4">{taxaOcupacao?.taxa_ocupacao ? taxaOcupacao.taxa_ocupacao.toFixed(1) : 0}%</p>
               </div>
             </div>
@@ -505,8 +539,8 @@ export default function Dashboard() {
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-44 flex flex-col justify-between items-center py-1 row-span-2" >
               <p className="flex flex-col text-zinc-400 font-medium text-sm">Desempenho das Diárias</p>
-              <DesempenhoDiarias 
-              dados={[desempenhoDiarias?.reservadas || 0, desempenhoDiarias?.ociosas || 0, desempenhoDiarias?.indisponiveis || 0]} />
+              <DesempenhoDiarias
+                dados={[desempenhoDiarias?.reservadas || 0, desempenhoDiarias?.ociosas || 0, desempenhoDiarias?.indisponiveis || 0]} />
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center" >
               <div className="bg-[#E9F7FD] rounded-md w-fit py-2 px-2 ml-4">
@@ -523,20 +557,20 @@ export default function Dashboard() {
             <div className="relative bg-white border-zinc-300 border rounded-lg h-80 flex flex-col justify-between items-center py-1 row-span-3">
               <p className="flex flex-col text-zinc-400 font-medium text-sm">Ocupação nos Dias da Semana</p>
               <section className="grid grid-rows-7 grid-cols-2 gap-4 mb-2 w-full px-9">
-                <p>Segunda</p>
-                <p className="text-end">10.0%</p>
-                <p>Terça</p>
-                <p className="text-end">10.0%</p>
-                <p>Quarta</p>
-                <p className="text-end">10.0%</p>
-                <p>Quinta</p>
-                <p className="text-end">10.0%</p>
-                <p>Sexta</p>
-                <p className="text-end">10.0%</p>
-                <p>Sabado</p>
-                <p className="text-end">10.0%</p>
-                <p>Domingo</p>
-                <p className="text-end">10.0%</p>
+                <p>{ocupacaoSemana[1][0]}</p>
+                <p className="text-end">{Number(ocupacaoSemana[1][1]).toFixed(1)}%</p>
+                <p>{ocupacaoSemana[2][0]}</p>
+                <p className="text-end">{Number(ocupacaoSemana[2][1]).toFixed(1)}%</p>
+                <p>{ocupacaoSemana[3][0]}</p>
+                <p className="text-end">{Number(ocupacaoSemana[3][1]).toFixed(1)}%</p>
+                <p>{ocupacaoSemana[4][0]}</p>
+                <p className="text-end">{Number(ocupacaoSemana[4][1]).toFixed(1)}%</p>
+                <p>{ocupacaoSemana[5][0]}</p>
+                <p className="text-end">{Number(ocupacaoSemana[5][1]).toFixed(1)}%</p>
+                <p>{ocupacaoSemana[6][0]}</p>
+                <p className="text-end">{Number(ocupacaoSemana[6][1]).toFixed(1)}%</p>
+                <p>{ocupacaoSemana[0][0]}</p>
+                <p className="text-end">{Number(ocupacaoSemana[0][1]).toFixed(1)}%</p>
               </section>
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center" >

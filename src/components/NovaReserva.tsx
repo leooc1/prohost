@@ -365,7 +365,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                 const checkinDateTime = new Date(`${checkinDate.value} ${checkinHora.value}:00`);
                                 const checkoutDateTime = new Date(`${checkoutDate.value} ${checkoutHora.value}:00`);
 
-                                if (acomodacaoInput.value.length > 0 && canais.value.length > 0 && Number(qtdHospede.value) > 0 && checkinDate.value.length > 0 && checkinHora.value.length > 0 && checkoutDate.value.length > 0 && checkoutHora.value.length > 0 && Number(valorComissao.value) >= 0 && Number(valorBruto.value) >= 0 && Number(valorLiquido.value) >= 0 && hospedeInput.value.length > 0 && (checkinDateTime < checkoutDateTime)) {
+                                if (acomodacaoInput.value.length > 0 && canais.value.length > 0 && Number(qtdHospede.value) > 0 && checkinDate.value.length > 0 && checkinHora.value.length > 0 && checkoutDate.value.length > 0 && checkoutHora.value.length > 0 && Number(valorComissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) >= 0 && Number(valorBruto.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) >= 0 && Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) >= 0 && hospedeInput.value.length > 0 && (checkinDateTime < checkoutDateTime)) {
                                     if (hospede.filter(h => h.nome == hospedeInput.value).length > 0)
                                         hospedeId = (hospede.filter(h => h.nome == hospedeInput.value)[0].id) || 0
                                     else
@@ -378,12 +378,12 @@ export default function NovaReserva({ close }: { close: () => void }) {
 
                                     if (acomodacao.filter(a => a.id == Number(acomodacaoInput.value))[0].comissao) {
                                         const comissao = acomodacao.filter(a => a.id == Number(acomodacaoInput.value))[0].comissao
-                                        vProprietario = ((100 - comissao) / 100) * Number(valorLiquido.value)
-                                        vGestor = (comissao / 100) * Number(valorLiquido.value)
+                                        vProprietario = ((100 - comissao) / 100) * Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
+                                        vGestor = (comissao / 100) * Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
                                     }
                                     else {
-                                        vProprietario = Number(valorLiquido.value)
-                                        vGestor = Number(valorLiquido.value)
+                                        vProprietario = Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
+                                        vGestor = Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
                                     }
                                     await createReserva({
                                         "acomodacao": {
@@ -394,7 +394,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                         "canal_reserva": {
                                             "id": Number(canais.value)
                                         },
-                                        "comissao_ota": Number(valorComissao.value),
+                                        "comissao_ota": Number(valorComissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                         "hospede": {
                                             "id": hospedeId
                                         },
@@ -402,8 +402,8 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                         "saas": {
                                             "id": dataToken.id
                                         },
-                                        "valor": Number(valorBruto.value),
-                                        "valor_liq": Number(valorLiquido.value),
+                                        "valor": Number(valorBruto.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
+                                        "valor_liq": Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                         "valor_prop": vProprietario,
                                         "valor_gestor": vGestor,
                                         "obs": obs.value,
