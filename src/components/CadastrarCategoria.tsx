@@ -9,7 +9,6 @@ interface CategoriaFinanceiro {
     receita: boolean
     saas: { id: number };
 }
-//const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function CadastrarCategoria({ close }: { close: () => void }) {
     const { dataToken } = useContext(SideBarContext)
@@ -323,7 +322,7 @@ export default function CadastrarCategoria({ close }: { close: () => void }) {
                             <span className="text-zinc-500 font-medium mb-1">Nome</span>
                             <input type="text" name="nome" id="nome" className="border border-zinc-300 max-w-40 rounded-md px-2 py-1 outline-none" />
                         </label>
-                        <label htmlFor="tipo" className="flex flex-col">
+                        <label htmlFor="tipo" className="flex flex-col hidden">
                             <span className="text-zinc-500 font-medium mb-1">Tipo</span>
                             <select name="tipo" id="tipo" className={`outline outline-zinc-300 border2 border-white text-sm rounded-md px-1 py-1 outline-none`}>
                                 <option value="receitas" title='receitas' className='' selected={!mov} >Receita</option>

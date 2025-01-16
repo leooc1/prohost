@@ -261,78 +261,75 @@ export default function NovaReserva({ close }: { close: () => void }) {
                     <div className="grid gap-4 grid-cols-3">
                         <label htmlFor="tot" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Valor Total</span>
-                            <input type="text" placeholder="R$" step="0.01" name="tot" id="tot" className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
-                                onInput={() => {
-                                    const total = document.getElementById('tot') as HTMLInputElement
-                                    const comissao = document.getElementById('com') as HTMLInputElement
-                                    const liquido = document.getElementById('liq') as HTMLInputElement
-
-                                    if (comissao.value.length == 0 && liquido.value.length == 0) {
-                                        liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                    } else if (comissao.value.length == 0 && liquido.value.length > 0) {
-                                        comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                    } else if (comissao.value.length > 0 && liquido.value.length == 0) {
-                                        liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                    } else {
-                                        liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                    }
-
-                                    total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
-                                    comissao.value = formatedNumber(String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
-                                    liquido.value = formatedNumber(String(Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
-
-                                    checkNegativeAndApplyStyle();
-                                }} />
+                            <div className="flex items-center gap-2">
+                                R$<input type="text" placeholder="R$" step="0.01" name="tot" id="tot" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full"
+                                    onInput={() => {
+                                        const total = document.getElementById('tot') as HTMLInputElement
+                                        const comissao = document.getElementById('com') as HTMLInputElement
+                                        const liquido = document.getElementById('liq') as HTMLInputElement
+                                        if (comissao.value.length == 0 && liquido.value.length == 0) {
+                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        } else if (comissao.value.length == 0 && liquido.value.length > 0) {
+                                            comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        } else if (comissao.value.length > 0 && liquido.value.length == 0) {
+                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        } else {
+                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        }
+                                        total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                        comissao.value = formatedNumber(String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                        liquido.value = formatedNumber(String(Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                        checkNegativeAndApplyStyle();
+                                    }} />
+                            </div>
                         </label>
                         <label htmlFor="com" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Comissão</span>
-                            <input type="text" placeholder="R$" step="0.01" name="com" id="com" className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
-                                onInput={() => {
-                                    const total = document.getElementById('tot') as HTMLInputElement
-                                    const comissao = document.getElementById('com') as HTMLInputElement
-                                    const liquido = document.getElementById('liq') as HTMLInputElement
-
-                                    if (liquido.value.length == 0 && total.value.length == 0) {
-                                        return;
-                                    } else if (liquido.value.length == 0 && total.value.length > 0) {
-                                        liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                    } else if (liquido.value.length > 0 && total.value.length == 0) {
-                                        total.value = String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                    } else {
-                                        liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                    }
-
-                                    total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
-                                    comissao.value = formatedNumber(String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
-                                    liquido.value = formatedNumber(String(Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
-
-                                    checkNegativeAndApplyStyle();
-                                }} />
+                            <div className="flex items-center gap-2">
+                                R$<input type="text" placeholder="R$" step="0.01" name="com" id="com" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full"
+                                    onInput={() => {
+                                        const total = document.getElementById('tot') as HTMLInputElement
+                                        const comissao = document.getElementById('com') as HTMLInputElement
+                                        const liquido = document.getElementById('liq') as HTMLInputElement
+                                        if (liquido.value.length == 0 && total.value.length == 0) {
+                                            return;
+                                        } else if (liquido.value.length == 0 && total.value.length > 0) {
+                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        } else if (liquido.value.length > 0 && total.value.length == 0) {
+                                            total.value = String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        } else {
+                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        }
+                                        total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                        comissao.value = formatedNumber(String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                        liquido.value = formatedNumber(String(Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                        checkNegativeAndApplyStyle();
+                                    }} />
+                            </div>
                         </label>
                         <label htmlFor="liq" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Valor Líquido</span>
-                            <input type="text" placeholder="R$" step="0.01" name="liq" id="liq" className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
-                                onInput={() => {
-                                    const total = document.getElementById('tot') as HTMLInputElement
-                                    const comissao = document.getElementById('com') as HTMLInputElement
-                                    const liquido = document.getElementById('liq') as HTMLInputElement
-
-                                    if (comissao.value.length == 0 && total.value.length == 0) {
-                                        total.value = String(Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                    } else if (comissao.value.length == 0 && total.value.length > 0) {
-                                        comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                    } else if (comissao.value.length > 0 && total.value.length == 0) {
-                                        total.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                    } else {
-                                        comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                    }
-
-                                    total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
-                                    comissao.value = formatedNumber(String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
-                                    liquido.value = formatedNumber(String(Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
-
-                                    checkNegativeAndApplyStyle();
-                                }} />
+                            <div className="flex items-center gap-2">
+                                R$<input type="text" placeholder="R$" step="0.01" name="liq" id="liq" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full"
+                                    onInput={() => {
+                                        const total = document.getElementById('tot') as HTMLInputElement
+                                        const comissao = document.getElementById('com') as HTMLInputElement
+                                        const liquido = document.getElementById('liq') as HTMLInputElement
+                                        if (comissao.value.length == 0 && total.value.length == 0) {
+                                            total.value = String(Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        } else if (comissao.value.length == 0 && total.value.length > 0) {
+                                            comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        } else if (comissao.value.length > 0 && total.value.length == 0) {
+                                            total.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        } else {
+                                            comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        }
+                                        total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                        comissao.value = formatedNumber(String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                        liquido.value = formatedNumber(String(Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                        checkNegativeAndApplyStyle();
+                                    }} />
+                            </div>
                         </label>
                     </div>
                     {/*  */}

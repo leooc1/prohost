@@ -28,7 +28,6 @@ interface Acomodacao {
 }
 
 
-//const apiURl = import.meta.env.VITE_baseURLAPI;
 export default function Dashboard() {
   const { dataToken } = useContext(SideBarContext)
   const [loaded, setLoaded] = useState(false)

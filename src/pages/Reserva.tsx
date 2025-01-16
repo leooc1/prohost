@@ -53,9 +53,9 @@ export default function Reserva() {
   const [novaIndisponibilidade, setNovaIndisponibilidade] = useState(false)
   const [reserva, setReserva] = useState<Reserva[]>([])
   const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
+  const [canais, setCanais] = useState<Acomodacao[]>([])
   const [ids, setIds] = useState<{ id: number, index: number }[]>([])
 
-  //const apiURl = import.meta.env.VITE_baseURLAPI;
   async function getReserva() {
     await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}`, {
       method: 'GET'
@@ -79,6 +79,17 @@ export default function Reserva() {
       .catch(err => console.log(err))
   }
 
+  async function getCanais() {
+    await fetch(`https://api.prohost.net.br/canal_reserva/${dataToken.id}`, {
+      method: 'GET'
+    })
+      .then(data => data.json())
+      .then((data) => {
+        setCanais(data)
+      })
+      .catch(err => console.log(err))
+  }
+
   async function getAll(saas: number) {
     await fetch(`https://api.prohost.net.br/reserva/index/${saas}`, {
       method: 'GET',
@@ -91,6 +102,7 @@ export default function Reserva() {
   }
 
   async function calendar() {
+    await getCanais()
     await getAcomodacoes()
     await getReserva()
     setRender(true)
@@ -144,7 +156,7 @@ export default function Reserva() {
             }))}
 
             reservas={reserva.map((r) => ({
-              "resourceId": String(r.acomodacao? r.acomodacao.id: null),
+              "resourceId": String(r.acomodacao ? r.acomodacao.id : null),
               "title": r.hospede?.nome || '',
               "start": toDateBr(r.check_in),
               "end": toDateBr(r.check_out),
@@ -152,7 +164,7 @@ export default function Reserva() {
               "color": r.tipo_reserva == 'Continuidade' ? '#30C46D'
                 : r.tipo_reserva == 'Indisponibilidade' ? '#353535'
                   : r.canal_reserva?.cor || '',
-              "id": String(r? r.id : null),
+              "id": String(r ? r.id : null),
               "tipo": r.tipo_reserva,
               "obs": '',
               "bruto": r.valor,
@@ -163,6 +175,8 @@ export default function Reserva() {
             : <ListaReserva
               ids={ids}
               reservas={reserva}
+              acomodacoes={acomodacao}
+              canaisReserva={canais}
             />
           : null}
       </div>
