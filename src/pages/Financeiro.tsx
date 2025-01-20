@@ -101,6 +101,7 @@ export default function Financeiro() {
             if (item.categoria_financeiro) {
                 return {
                     ...item,
+                    data: '-',
                     nome: "Outras Receitas",
                     categoria_financeiro: {
                         ...item.categoria_financeiro,
@@ -113,7 +114,7 @@ export default function Financeiro() {
                     ...item,
                     categoria_financeiro: {
                         id: null,
-                        cor: item.canal_reserva ? item.canal_reserva.cor : "#000000", // Cor padrão se não tiver canal_reserva
+                        cor: item.canal_reserva ? item.canal_reserva.cor : "#000000",
                         editavel: true,
                         receita: true,
                         nome: item.canal_reserva ? item.canal_reserva.nome : "Desconhecido",

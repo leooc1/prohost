@@ -105,9 +105,9 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
                                         arrayMovimentacoes[page].map((e) =>
                                             <>
                                                 <tr className={`text-xs bg-white h-12 border border-zinc-200 w-full hover:bg-[#FAFBFD]
-                                                ${e.reserva == null ? 'cursor-pointer' : ''}`}
+                                                ${e.reserva == null && e.data != '-' ? 'cursor-pointer' : ''}`}
                                                     onClick={() => {
-                                                        if (e.reserva == null) {
+                                                        if (e.reserva == null && e.data != '-') {
                                                             setEditavel(true)
                                                             setTipoDespesa(e?.tipo_despesa || null)
                                                             setEdiID(e?.id || null)
@@ -121,7 +121,7 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
                                                             setEdiObs(e?.obs || null)
                                                         }
                                                     }}>
-                                                    <td className="text-center text-xs font-normal">{e.data.split('-')[2] + '/' + e.data.split('-')[1] + '/' + e.data.split('-')[0]}</td>
+                                                    <td className="text-center text-xs font-normal">{e.data.length == 1 ? e.data : e.data.split('-')[2] + '/' + e.data.split('-')[1] + '/' + e.data.split('-')[0]}</td>
                                                     <td className="text-xs font-normal capitalize flex items-center h-12 gap-3">
                                                         <div className="w-3 h-3 rounded-full" style={{
                                                             backgroundColor: e.categoria_financeiro ? e.categoria_financeiro.cor :
