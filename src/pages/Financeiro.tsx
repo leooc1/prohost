@@ -59,15 +59,14 @@ export default function Financeiro() {
     }
 
     function agruparMovimentacoes(dados: Movimentacao[]) {
-        const agrupados = {};
-
+        const agrupados: { [key: string]: any } = {};
+    
         dados.forEach((item) => {
             const reservaId = item.reserva?.id;
             const continuidadeId = item.reserva?.continuidade;
-
-            // Identificar chave de agrupamento (reserva ou continuidade)
-            const chave = continuidadeId || reservaId;
-
+    
+            const chave = String(continuidadeId || reservaId);
+    
             if (!agrupados[chave]) {
                 agrupados[chave] = {
                     id: item.id,
@@ -88,16 +87,16 @@ export default function Financeiro() {
                     canal_reserva: item.canal_reserva,
                 };
             }
-
-            // Somar os valores
+    
             agrupados[chave].valor += parseFloat(String(item.valor));
             agrupados[chave].valor_liq += parseFloat(String(item.valor_liq));
             agrupados[chave].valor_prop += parseFloat(String(item.valor_prop));
             agrupados[chave].valor_gestor += parseFloat(String(item.valor_gestor));
         });
-
-        const arrayAgroup = Object.values(agrupados) as Movimentacao[]
-        return arrayAgroup.map(item => {
+    
+        const arrayAgroup = Object.values(agrupados) as Movimentacao[];
+    
+        return arrayAgroup.map((item) => {
             if (item.categoria_financeiro) {
                 return {
                     ...item,
@@ -121,8 +120,9 @@ export default function Financeiro() {
                     },
                 };
             }
-        })
+        });
     }
+    
 
     const [novaReceita, setNovaReceita] = useState(false)
     const [novaDespesa, setNovaDespesa] = useState(false)
