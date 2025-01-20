@@ -289,9 +289,9 @@ export default function Dashboard() {
         .then(data => data.json())
         .then((data) => {
           if (data.length > 0)
-            setOcupacaoSemana(data.map((d: { dia_da_semana: string, total_dias_no_intervalo: string, total_movimentacoes: string }) => [
+            setOcupacaoSemana(data.map((d: { dia_da_semana: string, total_dias_no_intervalo: string, total_movimentacoes: string, total_indisponibilidades: string }) => [
               d.dia_da_semana,
-              Number(d.total_dias_no_intervalo) > 0 ? (Number(d.total_movimentacoes) * 100) / Number(d.total_dias_no_intervalo) : 0
+              (Number(d.total_movimentacoes) - Number(d.total_indisponibilidades)) * acomodacao.length > 0 ? (((Number(d.total_movimentacoes) - Number(d.total_indisponibilidades))) * acomodacao.length * 100) / Number(d.total_dias_no_intervalo) : 0
             ]))
         })
         .catch(err => console.log(err))
@@ -352,9 +352,9 @@ export default function Dashboard() {
         .then(data => data.json())
         .then((data) => {
           if (data.length > 0)
-            setOcupacaoSemana(data.map((d: { dia_da_semana: string, total_dias_no_intervalo: string, total_movimentacoes: string }) => [
+            setOcupacaoSemana(data.map((d: { dia_da_semana: string, total_dias_no_intervalo: string, total_movimentacoes: string, total_indisponibilidades: string }) => [
               d.dia_da_semana,
-              Number(d.total_dias_no_intervalo) > 0 ? (Number(d.total_movimentacoes) * 100) / Number(d.total_dias_no_intervalo) : 0
+              (Number(d.total_movimentacoes) - Number(d.total_indisponibilidades)) > 0 ? ((Number(d.total_movimentacoes) - Number(d.total_indisponibilidades)) * 100) / Number(d.total_dias_no_intervalo) : 0
             ]))
         })
         .catch(err => console.log(err))

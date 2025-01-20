@@ -11,13 +11,12 @@ interface propsCancelamento {
 export default function CardCancelamento(props: propsCancelamento) {
     const [possuiTaxa, setPossuiTaxa] = useState<boolean>(false)
 
-    /* async function cancelarReserva(id: number) {
+    async function deleteReserva(id: number) {
         await fetch(`https://api.prohost.net.br/reserva/${id}`, {
             method: 'DELETE'
         })
             .then(data => data.json())
             .then((data) => {
-                console.log(data)
                 if (data.affected == 1) {
                     alert('EXCLUÍDO!')
                     props.close()
@@ -25,9 +24,23 @@ export default function CardCancelamento(props: propsCancelamento) {
                 }
             })
             .catch(err => console.log(err))
-    } */
+    }
 
-    console.log(props.id)
+    async function cancelamentoReserva(id: number) {
+        const valorCancelamento = document.getElementById('taxa') as HTMLInputElement
+        await fetch(`https://api.prohost.net.br/reserva/${id}/${Number(valorCancelamento.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))}`, {
+            method: 'DELETE'
+        })
+            .then(data => data.json())
+            .then((data) => {
+                if (data.affected == 1) {
+                    alert('EXCLUÍDO!')
+                    props.close()
+                    location.reload()
+                }
+            })
+            .catch(err => console.log(err))
+    }
 
     return (
         <div className='w-screen h-screen fixed z-20 top-0 right-0'>
@@ -40,7 +53,7 @@ export default function CardCancelamento(props: propsCancelamento) {
                 <div className="flex gap-2">
                     <span className="text-zinc-500 font-medium mb-2 text-sm">Possui taxa?</span>
                     <label className="switch">
-                        <input type="checkbox" id="taxa" defaultChecked={false}
+                        <input type="checkbox" id="possui-taxa" defaultChecked={false}
                             onChange={(e) => setPossuiTaxa(e.target.checked)} />
                         <div className="slider">
                             <div className="circle">
@@ -63,17 +76,37 @@ export default function CardCancelamento(props: propsCancelamento) {
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Valor total</span>
                         <input
                             onChange={(e) => {
-                                e.target.value = Number(e.target.value).toFixed(2)
+                                if (e.target.value.replace(/[.,]/gm, '').length <= 3)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})/gm, '$1,$2')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 4)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{2})/gm, '$1,$2')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 5)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{2})/gm, '$1,$2')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 6)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 7)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 8)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 9)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 10)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 11)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
                             }}
-                            type="number" step={0.01} name="taxa" placeholder="R$" id="taxa" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full" />
+                            type="text" name="taxa" placeholder="R$" id="taxa" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full" />
                     </label>
                 }
                 <section className="flex gap-3 justify-end mt-2">
                     <button className="px-3 py-2 border border-zinc-300 rounded-lg" onClick={props.close}>Cancelar</button>
                     <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-red-600"
-                    onClick={()=>{
-                        // cancelarReserva(props.id)
-                    }}>Confirmar</button>
+                        onClick={() => {
+                            if (!possuiTaxa)
+                                deleteReserva(props.id)
+                            else
+                                cancelamentoReserva(props.id)
+                        }}>Confirmar</button>
                 </section>
             </section>
         </div>

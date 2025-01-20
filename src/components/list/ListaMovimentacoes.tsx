@@ -70,8 +70,6 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
             setArrayMovimentacoes([[]]);
     }, [dataToken, movimentacoes])
 
-    console.log(arrayMovimentacoes)
-
     return (
         <>
             {
@@ -127,10 +125,10 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
                                                     <td className="text-xs font-normal capitalize flex items-center h-12 gap-3">
                                                         <div className="w-3 h-3 rounded-full" style={{
                                                             backgroundColor: e.categoria_financeiro ? e.categoria_financeiro.cor :
-                                                                e.nome.split(' ')[0] == 'Continuidade' ? '#3CA6FC' : '#566DE7'
+                                                                e.nome.split(' ')[0] == 'Continuidade' ? '#3CA6FC' : e.nome.includes('Cancelamento') ? '#EC8C17' : '#566DE7'
                                                         }}></div>
                                                         {e.categoria_financeiro ? e.categoria_financeiro.nome :
-                                                            e.nome.split(' ')[0] == 'Continuidade' ? 'Continuidade' : 'Diária'}
+                                                            e.nome.split(' ')[0] == 'Continuidade' ? 'Continuidade' : e.nome.includes('Cancelamento') ? 'Cancelamento' : 'Diária'}
                                                     </td>
                                                     <td className="text-center text-xs font-normal">{e.reserva ? e.nome.replace(e.nome.split('Reserva ')[1].split(' ')[0], String(ids.filter(i => i.id == Number(e.nome.split('Reserva ')[1].split(' ')[0]))[0].index)) : e.nome}</td>
                                                     <td className="text-center text-xs font-normal">{e.acomodacao?.nome || ''}</td>

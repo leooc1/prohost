@@ -183,7 +183,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                                 vProprietario = Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
                                 vGestor = Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
                             }
-                            if ((Boolean(categoriaInput?.htmlFor) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value) > 0)) {
+                            if ((Boolean(categoriaInput?.htmlFor) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) > 0)) {
                                 await create({
                                     "acomodacao": {
                                         "id": Number(acomodacaoInput.value) || null

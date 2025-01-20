@@ -15,7 +15,7 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
     const [color, setColor] = useState('#bdc3c7')
 
     async function getCanais() {
-        await fetch('https://api.prohost.net.br/canal_reserva/'+dataToken.id, {
+        await fetch('https://api.prohost.net.br/canal_reserva/' + dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -94,83 +94,32 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
                                     <li className="flex items-center border border-zinc-200 pr-2 py-1 rounded-md pl-6">
                                         <details className="relative">
                                             <summary className="flex">
-                                                <div id={`cor-${e.id}`} title={e.cor} className={`cursor-pointer w-3 h-3 rounded-full bg-[${e.cor}] mr-5`}></div>
+                                                <div id={`cor-${e.id}`} title={e.cor} style={{backgroundColor: e.cor}} className={`cursor-pointer w-3 h-3 rounded-full mr-5`}></div>
                                             </summary>
 
-                                            <section className="grid grid-cols-4 absolute top-full bg-white p-2 gap-4 w-36 rounded-xl">
-                                                <div onClick={() => {
-                                                    const nome = document.getElementById(`nome-${e.id}`) as HTMLInputElement
-                                                    updateCanais(e.id || 0, { cor: '#ffffff', nome: nome.value })
-                                                    const ck = document.getElementById(`cor-${e.id}`) as HTMLDivElement
-                                                    ck.click()
-                                                }} title='#ffffff' className='bg-[#ffffff] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'></div>
-                                                <div onClick={() => {
-                                                    const nome = document.getElementById(`nome-${e.id}`) as HTMLInputElement
-                                                    updateCanais(e.id || 0, { cor: '#bdc3c7', nome: nome.value })
-                                                    const ck = document.getElementById(`cor-${e.id}`) as HTMLDivElement
-                                                    ck.click()
-                                                }} title='#bdc3c7' className='bg-[#bdc3c7] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'></div>
-                                                <div onClick={() => {
-                                                    const nome = document.getElementById(`nome-${e.id}`) as HTMLInputElement
-                                                    updateCanais(e.id || 0, { cor: '#f1c40f', nome: nome.value })
-                                                    const ck = document.getElementById(`cor-${e.id}`) as HTMLDivElement
-                                                    ck.click()
-                                                }} title='#f1c40f' className='bg-[#f1c40f] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'></div>
-                                                <div onClick={() => {
-                                                    const nome = document.getElementById(`nome-${e.id}`) as HTMLInputElement
-                                                    updateCanais(e.id || 0, { cor: '#f39c12', nome: nome.value })
-                                                    const ck = document.getElementById(`cor-${e.id}`) as HTMLDivElement
-                                                    ck.click()
-                                                }} title='#f39c12' className='bg-[#f39c12] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'></div>
-                                                <div onClick={() => {
-                                                    const nome = document.getElementById(`nome-${e.id}`) as HTMLInputElement
-                                                    updateCanais(e.id || 0, { cor: '#e74c3c', nome: nome.value })
-                                                    const ck = document.getElementById(`cor-${e.id}`) as HTMLDivElement
-                                                    ck.click()
-                                                }} title='#e74c3c' className='bg-[#e74c3c] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'></div>
-                                                <div onClick={() => {
-                                                    const nome = document.getElementById(`nome-${e.id}`) as HTMLInputElement
-                                                    updateCanais(e.id || 0, { cor: '#1abc9c', nome: nome.value })
-                                                    const ck = document.getElementById(`cor-${e.id}`) as HTMLDivElement
-                                                    ck.click()
-                                                }} title='#1abc9c' className='bg-[#1abc9c] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'></div>
-                                                <div onClick={() => {
-                                                    const nome = document.getElementById(`nome-${e.id}`) as HTMLInputElement
-                                                    updateCanais(e.id || 0, { cor: '#17d9fd', nome: nome.value })
-                                                    const ck = document.getElementById(`cor-${e.id}`) as HTMLDivElement
-                                                    ck.click()
-                                                }} title='#17d9fd' className='bg-[#17d9fd] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'></div>
-                                                <div onClick={() => {
-                                                    const nome = document.getElementById(`nome-${e.id}`) as HTMLInputElement
-                                                    updateCanais(e.id || 0, { cor: '#0000ff', nome: nome.value })
-                                                    const ck = document.getElementById(`cor-${e.id}`) as HTMLDivElement
-                                                    ck.click()
-                                                }} title='#0000ff' className='bg-[#0000ff] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'></div>
-                                                <div onClick={() => {
-                                                    const nome = document.getElementById(`nome-${e.id}`) as HTMLInputElement
-                                                    updateCanais(e.id || 0, { cor: '#2980b9', nome: nome.value })
-                                                    const ck = document.getElementById(`cor-${e.id}`) as HTMLDivElement
-                                                    ck.click()
-                                                }} title='#2980b9' className='bg-[#2980b9] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'></div>
-                                                <div onClick={() => {
-                                                    const nome = document.getElementById(`nome-${e.id}`) as HTMLInputElement
-                                                    updateCanais(e.id || 0, { cor: '#9b59b6', nome: nome.value })
-                                                    const ck = document.getElementById(`cor-${e.id}`) as HTMLDivElement
-                                                    ck.click()
-                                                }} title='#9b59b6' className='bg-[#9b59b6] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'></div>
-                                                <div onClick={() => {
-                                                    const nome = document.getElementById(`nome-${e.id}`) as HTMLInputElement
-                                                    updateCanais(e.id || 0, { cor: '#000000', nome: nome.value })
-                                                    const ck = document.getElementById(`cor-${e.id}`) as HTMLDivElement
-                                                    ck.click()
-                                                }} title='#000000' className='bg-[#000000] w-5 h-5 border border-zinc-400 text-zinc-400 flex justify-center items-center cursor-pointer'></div>
-                                                <div onClick={() => {
-                                                    const nome = document.getElementById(`nome-${e.id}`) as HTMLInputElement
-                                                    updateCanais(e.id || 0, { cor: '#f2354b', nome: nome.value })
-                                                    const ck = document.getElementById(`cor-${e.id}`) as HTMLDivElement
-                                                    ck.click()
-                                                }} title='#f2354b' className='bg-[#f2354b] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'></div>
+                                            <section className="grid grid-cols-6 absolute top-full bg-white p-2 gap-4 w-52 rounded-xl">
+                                                {[
+                                                    '#ffffff', '#bdc3c7', '#f1c40f', '#f39c12', '#e74c3c',
+                                                    '#1abc9c', '#17d9fd', '#0000ff', '#2980b9', '#9b59b6',
+                                                    '#000000', '#f2354b', '#ff9ff3', '#00d2d3', '#ff6b6b',
+                                                    '#48dbfb', '#feca57', '#5f27cd', '#2e86de', '#d980fa',
+                                                    '#10ac84', '#ff9f43', '#576574', '#8395a7'
+                                                ].map(colorHex => (
+                                                    <div
+                                                        key={colorHex}
+                                                        onClick={() => {
+                                                            setColor(colorHex);
+                                                            document.getElementById('select-color')?.click();
+                                                        }}
+                                                        title={colorHex}
+                                                        style={{ backgroundColor: colorHex }}
+                                                        className="w-5 h-5 border border-zinc-400 flex justify-center items-center cursor-pointer"
+                                                    >
+                                                        {color === colorHex ? '✖' : null}
+                                                    </div>
+                                                ))}
                                             </section>
+
 
                                         </details>
 
@@ -208,107 +157,33 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
                             <span className="text-zinc-500 font-medium mb-1">Cor</span>
                             <details name="color" id="color" className={`outline outline-zinc-300 border2 border-white max-w-20 rounded-md px-2 py-1 outline-none relative`}>
                                 <summary className="flex">
-                                    <div id="select-color" className={`cursor-pointer bg-[${color}] w-6 h-6 border border-zinc-400 pl-7`}></div>
+                                    <div id="select-color" style={{backgroundColor: color}} className={`cursor-pointer w-6 h-6 border border-zinc-400 pl-7`}></div>
                                 </summary>
 
-                                <section className="grid grid-cols-4 absolute top-full bg-white p-2 gap-4 w-36 rounded-xl">
-                                    <div onClick={() => {
-                                        setColor('#ffffff')
-                                        document.getElementById('select-color')?.click()
-                                    }} title='#ffffff' className='bg-[#ffffff] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'>
-                                        {color == '#ffffff' ?
-                                            '✖' :
-                                            null}
-                                    </div>
-                                    <div onClick={() => {
-                                        setColor('#bdc3c7')
-                                        document.getElementById('select-color')?.click()
-                                    }} title='#bdc3c7' className='bg-[#bdc3c7] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'>
-                                        {color == '#bdc3c7' ?
-                                            '✖' :
-                                            null}
-                                    </div>
-                                    <div onClick={() => {
-                                        setColor('#f1c40f')
-                                        document.getElementById('select-color')?.click()
-                                    }} title='#f1c40f' className='bg-[#f1c40f] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'>
-                                        {color == '#f1c40f' ?
-                                            '✖' :
-                                            null}
-                                    </div>
-                                    <div onClick={() => {
-                                        setColor('#f39c12')
-                                        document.getElementById('select-color')?.click()
-                                    }} title='#f39c12' className='bg-[#f39c12] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'>
-                                        {color == '#f39c12' ?
-                                            '✖' :
-                                            null}
-                                    </div>
-                                    <div onClick={() => {
-                                        setColor('#e74c3c')
-                                        document.getElementById('select-color')?.click()
-                                    }} title='#e74c3c' className='bg-[#e74c3c] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'>
-                                        {color == '#e74c3c' ?
-                                            '✖' :
-                                            null}
-                                    </div>
-                                    <div onClick={() => {
-                                        setColor('#1abc9c')
-                                        document.getElementById('select-color')?.click()
-                                    }} title='#1abc9c' className='bg-[#1abc9c] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'>
-                                        {color == '#1abc9c' ?
-                                            '✖' :
-                                            null}
-                                    </div>
-                                    <div onClick={() => {
-                                        setColor('#17d9fd')
-                                        document.getElementById('select-color')?.click()
-                                    }} title='#17d9fd' className='bg-[#17d9fd] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'>
-                                        {color == '#17d9fd' ?
-                                            '✖' :
-                                            null}
-                                    </div>
-                                    <div onClick={() => {
-                                        setColor('#0000ff')
-                                        document.getElementById('select-color')?.click()
-                                    }} title='#0000ff' className='bg-[#0000ff] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'>
-                                        {color == '#0000ff' ?
-                                            '✖' :
-                                            null}
-                                    </div>
-                                    <div onClick={() => {
-                                        setColor('#2980b9')
-                                        document.getElementById('select-color')?.click()
-                                    }} title='#2980b9' className='bg-[#2980b9] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'>
-                                        {color == '#2980b9' ?
-                                            '✖' :
-                                            null}
-                                    </div>
-                                    <div onClick={() => {
-                                        setColor('#9b59b6')
-                                        document.getElementById('select-color')?.click()
-                                    }} title='#9b59b6' className='bg-[#9b59b6] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'>
-                                        {color == '#9b59b6' ?
-                                            '✖' :
-                                            null}
-                                    </div>
-                                    <div onClick={() => {
-                                        setColor('#000000')
-                                        document.getElementById('select-color')?.click()
-                                    }} title='#000000' className='bg-[#000000] w-5 h-5 border border-zinc-400 text-zinc-400 flex justify-center items-center cursor-pointer'>
-                                        {color == '#000000' ?
-                                            '✖' :
-                                            null}
-                                    </div>
-                                    <div onClick={() => {
-                                        setColor('#f2354b')
-                                        document.getElementById('select-color')?.click()
-                                    }} title='#f2354b' className='bg-[#f2354b] w-5 h-5 border border-zinc-400 text-zinc-900 flex justify-center items-center cursor-pointer'>
-                                        {color == '#f2354b' ?
-                                            '✖' :
-                                            null}
-                                    </div>
+                                <section className="grid grid-cols-6 absolute top-full bg-white p-2 gap-4 w-52 rounded-xl">
+                                    {[
+                                        '#ffffff', '#bdc3c7', '#f1c40f', '#f39c12', '#e74c3c',
+                                        '#1abc9c', '#17d9fd', '#0000ff', '#2980b9', '#9b59b6',
+                                        '#000000', '#f2354b', '#ff9ff3', '#00d2d3', '#ff6b6b',
+                                        '#48dbfb', '#feca57', '#5f27cd', '#2e86de', '#d980fa',
+                                        '#10ac84', '#ff9f43', '#576574', '#8395a7'
+                                    ].map(colorHex => (
+                                        <div
+                                            key={colorHex}
+                                            onClick={() => {
+                                                setColor(colorHex);
+                                                document.getElementById('select-color')?.click();
+                                            }}
+                                            title={colorHex}
+                                            style={{ backgroundColor: colorHex }}
+                                            className="w-5 h-5 border border-zinc-400 flex justify-center items-center cursor-pointer"
+                                        >
+                                            {color === colorHex ? '✖' : null}
+                                        </div>
+                                    ))}
                                 </section>
+
+
                             </details>
                         </label>
                         <button

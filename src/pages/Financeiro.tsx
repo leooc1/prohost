@@ -12,14 +12,14 @@ interface Movimentacao {
     acomodacao: { id: number | null, nome: string | null }
     categoria_financeiro: { id: number | null, nome: string | null, cor: string }
     data: string
-    canal_reserva: { id: number | null }
+    canal_reserva: { id: number | null, cor: string, nome: string }
     nome: string
     saas: { id: number | null }
     valor: string
     valor_liq: number
     valor_prop: number
     valor_gestor: number
-    reserva: { id: number | null }
+    reserva: { id: number | null, continuidade: number | null }
     pago: boolean
     receita: boolean
     recebedor: null | string
@@ -49,6 +49,7 @@ interface Acomodacao {
 export default function Financeiro() {
     const { dataToken } = useContext(SideBarContext)
     const [loaded, setLoaded] = useState(false)
+
     function formatarMoedaBrasileira(valorStr: string) {
         const valor = parseFloat(valorStr);
         if (isNaN(valor)) {
@@ -56,6 +57,72 @@ export default function Financeiro() {
         }
         return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
+
+    function agruparMovimentacoes(dados: Movimentacao[]) {
+        const agrupados = {};
+
+        dados.forEach((item) => {
+            const reservaId = item.reserva?.id;
+            const continuidadeId = item.reserva?.continuidade;
+
+            // Identificar chave de agrupamento (reserva ou continuidade)
+            const chave = continuidadeId || reservaId;
+
+            if (!agrupados[chave]) {
+                agrupados[chave] = {
+                    id: item.id,
+                    data: item.data,
+                    nome: item.nome.split("•")[0].trim(),
+                    tipo_despesa: item.tipo_despesa,
+                    obs: item.obs,
+                    recebedor: item.recebedor,
+                    valor: 0.0,
+                    valor_liq: 0.0,
+                    valor_prop: 0.0,
+                    valor_gestor: 0.0,
+                    pago: item.pago,
+                    receita: item.receita,
+                    acomodacao: item.acomodacao,
+                    categoria_financeiro: item.categoria_financeiro,
+                    reserva: item.reserva,
+                    canal_reserva: item.canal_reserva,
+                };
+            }
+
+            // Somar os valores
+            agrupados[chave].valor += parseFloat(String(item.valor));
+            agrupados[chave].valor_liq += parseFloat(String(item.valor_liq));
+            agrupados[chave].valor_prop += parseFloat(String(item.valor_prop));
+            agrupados[chave].valor_gestor += parseFloat(String(item.valor_gestor));
+        });
+
+        const arrayAgroup = Object.values(agrupados) as Movimentacao[]
+        return arrayAgroup.map(item => {
+            if (item.categoria_financeiro) {
+                return {
+                    ...item,
+                    nome: "Outras Receitas",
+                    categoria_financeiro: {
+                        ...item.categoria_financeiro,
+                        nome: "Outras Receitas",
+                        cor: "#0000ff", // Cor padrão para "Outras Receitas"
+                    },
+                };
+            } else {
+                return {
+                    ...item,
+                    categoria_financeiro: {
+                        id: null,
+                        cor: item.canal_reserva ? item.canal_reserva.cor : "#000000", // Cor padrão se não tiver canal_reserva
+                        editavel: true,
+                        receita: true,
+                        nome: item.canal_reserva ? item.canal_reserva.nome : "Desconhecido",
+                    },
+                };
+            }
+        })
+    }
+
     const [novaReceita, setNovaReceita] = useState(false)
     const [novaDespesa, setNovaDespesa] = useState(false)
     const [vz, setVz] = useState(true)
@@ -384,7 +451,6 @@ export default function Financeiro() {
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Filtrar por tipo</p>
                                     <label htmlFor="despesas" className={`mt-2`}>
                                         <select name="despesas" id="despesas" className={`border border-zinc-300 rounded-md px-2 py-1 h-7 outline-none text-md font-normal`} onChange={(e) => {
-                                            console.log(movimentacoes)
                                             if (e.target.value != 'all')
                                                 setShowMovimentacao(movimentacoes.filter(mov => mov.tipo_despesa == e.target.value))
                                             else
@@ -416,7 +482,7 @@ export default function Financeiro() {
                     {session == 1 && listagem && <ListaMovimentacoes movimentacoes={
                         vz ?
                             showMovimentacao.filter(m => m.receita) :
-                            showMovimentacao
+                            agruparMovimentacoes(showMovimentacao.filter(m => m.receita))
                     } />}
                     {session == 2 && listagem && <div>
                         <label htmlFor="despesa" className="flex flex-col relative w-fit translate-y-5">
