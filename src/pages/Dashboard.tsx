@@ -283,7 +283,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/ocupacao-semana/${dataBW[0]}/${dataBW[1]}`, {
+      await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/ocupacao-semana/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -346,7 +346,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/ocupacao-semana/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/ocupacao-semana/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
