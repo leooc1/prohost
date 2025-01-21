@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReservaCardView from '../ReservaCardView';
 
-export default function Calendario({ acomodacoes, reservas }:
+export default function Calendario({ acomodacoes, reservas, initialDate }:
   {
     acomodacoes: { id: string, title: string, image: string }[],
     reservas: {
       resourceId: string, title: string, start: string, end: string,
       hospedes: number, color: string, id: string, tipo: string, obs: string,
       bruto: number, liquido: number, comissao: number,
-    }[]
+    }[],
+    initialDate: null | string
   }) {
   const iframeRef = useRef(null);
   const altura = 200 + (60 * (acomodacoes.length - 1));
@@ -16,12 +17,14 @@ export default function Calendario({ acomodacoes, reservas }:
   const [dados, setDados] = useState<{ event: { id: string } } | null>(null)
 
   useEffect(() => {
+    localStorage.removeItem('ph-cld-initial-date')
     const iframe = iframeRef.current as HTMLIFrameElement | null
     if (iframe) {
       const handleLoad = () => {
         const data = {
           resources: acomodacoes,
           events: reservas,
+          initialDate: initialDate
         };
         if (iframe.contentWindow)
           iframe.contentWindow.postMessage(data, '*');
@@ -32,6 +35,7 @@ export default function Calendario({ acomodacoes, reservas }:
         iframe.removeEventListener('load', handleLoad);
       };
     }
+    
   }, []);
 
   return (

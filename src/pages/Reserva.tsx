@@ -120,6 +120,16 @@ export default function Reserva() {
     return (`${ano}-${mes < 10 ? '0' + mes : mes}-${dia < 10 ? '0' + dia : dia}T${hr < 10 ? '0' + hr : hr}:${min < 10 ? '0' + min : min}:${seg < 10 ? '0' + seg : seg}Z`)
   }
 
+  function initial(): string | null {
+    const dataInicial = localStorage.getItem('ph-cld-initial-date')
+    if (dataInicial?.split(' ')[0].length == 10) {
+      return dataInicial?.split(' ')[0] as string
+    }
+    else return null
+  }
+
+
+
   useEffect(() => {
     calendar()
   }, [calendario, dataToken])
@@ -171,6 +181,7 @@ export default function Reserva() {
               "liquido": r.valor_liq,
               "comissao": r.comissao_ota
             }))}
+            initialDate={initial()}
           />
             : <ListaReserva
               ids={ids}

@@ -135,6 +135,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
             .then(data => data.json())
             .then((data) => {
                 if (data.id) {
+                    localStorage.setItem('ph-cld-initial-date', pbody.check_in)
                     alert('CRIADO!')
                     close()
                     location.reload()

@@ -101,7 +101,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function deleteReserva(id: number) {
-        await fetch(`https://api.prohost.net.br/reserva/${id}`, {
+        await fetch(`http://localhost:3000/reserva/${id}`, {
             method: 'DELETE'
         })
             .then(data => data.json())
@@ -230,10 +230,6 @@ export default function ReservaCardView(props: propsReserva) {
                     {reserva?.tipo_reserva != 'Indisponibilidade' && reserva?.tipo_reserva != 'Continuidade' ? <div className="flex justify-between mt-3">
                         <button
                             onClick={() => {
-                                /* const confirma = confirm('Tem certeza que deseja excluir esta reserva?')
-                                if (confirma) {
-                                    deleteReserva(Number(props.id))
-                                } */
                                 setCancelamento(true)
                             }}
                             className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md">Cancelar Reserva</button>
@@ -251,10 +247,6 @@ export default function ReservaCardView(props: propsReserva) {
                     {reserva?.tipo_reserva == 'Continuidade' ? <div className="flex justify-between mt-3">
                         <button
                             onClick={() => {
-                                /* const confirma = confirm('Tem certeza que deseja excluir esta reserva?')
-                                if (confirma) {
-                                    deleteReserva(Number(props.id))
-                                } */
                                 setCancelamento(true)
                             }}
                             className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md">Cancelar Continuidade</button>
@@ -262,7 +254,7 @@ export default function ReservaCardView(props: propsReserva) {
                     {reserva?.tipo_reserva == 'Indisponibilidade' ? <div className="flex justify-between mt-3">
                         <button
                             onClick={() => {
-                                const confirma = confirm('Tem certeza que deseja excluir esta reserva?')
+                                const confirma = confirm('Tem certeza que deseja excluir esta indisponibilidade?')
                                 if (confirma) {
                                     deleteReserva(Number(props.id))
                                 }
