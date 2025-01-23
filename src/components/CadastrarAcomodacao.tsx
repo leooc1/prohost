@@ -15,12 +15,12 @@ interface Acomodacao {
     desativado: boolean
     saas: { id: number }
 }
-//const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function CadastrarAcomodacao({ close }: { close: () => void }) {
     const { dataToken } = useContext(SideBarContext)
     const [qtdMaxHospede, setQtdMaxHospede] = useState(1)
     const [tipo, setTipo] = useState('')
+    const [autoComplete, setAutoComplete] = useState([])
     async function createAcomodacao(pbody: Acomodacao) {
         await fetch(`https://api.prohost.net.br/acomodacao/`, {
             method: 'POST',
@@ -36,6 +36,20 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                     close()
                     location.reload()
                 }
+            })
+            .catch(err => console.log(err))
+    }
+
+    async function enderecaoComplete(input: string) {
+        await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(input)}&limit=5`)
+            .then(data => data.json())
+            .then(data => {
+                setAutoComplete(data.features.map((feature:any) => ({
+                    name: feature.properties.name,
+                    city: feature.properties.city || "",
+                    state: feature.properties.state || "",
+                    country: feature.properties.country,
+                })))
             })
             .catch(err => console.log(err))
     }
@@ -78,9 +92,34 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                     </label>
                 </div>
                 <div className="grid gap-4 items-center" style={{ gridTemplateColumns: '2fr 1fr' }}>
-                    <label htmlFor="endereco" className="flex flex-col">
+                    <label htmlFor="endereco" className="flex flex-col relative">
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Endereço</span>
-                        <input type="text" name="endereco" id="endereco" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                        <input type="text" name="endereco" id="endereco" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" autoComplete="off"
+                            onChange={(e) => {
+                                if (e.target.value.length > 3) {
+                                    enderecaoComplete(e.target.value)
+                                }
+                                else setAutoComplete([])
+                            }} />
+                        <ul className="absolute bg-white top-14 max-h-52 w-96 overflow-y-scroll z-50">
+                            {autoComplete.filter(
+                                (end: any, index, self) =>
+                                    index ===
+                                    self.findIndex(
+                                        (e: any) =>
+                                            e.name === end.name &&
+                                            e.city === end.city &&
+                                            e.state === end.state &&
+                                            e.country === end.country
+                                    )
+                            ).map((end: any) => <li
+                                onClick={() => {
+                                    const endereco = document.getElementById('endereco') as HTMLInputElement
+                                    endereco.value = `${end.name}, ${end.city}, ${end.state}, ${end.country}`
+                                    setAutoComplete([])
+                                }}
+                                className="border border-black px-2 py-1 cursor-pointer">{end.name}, {end.city}, {end.state}, {end.country}</li>)}
+                        </ul>
                     </label>
                     <label htmlFor="valor-imovel" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Valor do Imóvel
@@ -115,7 +154,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                             <span className='text-red-500 font-bold'> *</span>
                         </span>
                         <select name="padrao-checkout" id="padrao-checkout"
-                        className="border border-zinc-300 rounded-md px-2 py-1 outline-none">
+                            className="border border-zinc-300 rounded-md px-2 py-1 outline-none">
                             <option value="00:00:00">00:00</option>
                             <option value="00:30:00">00:30</option>
                             <option value="01:00:00">01:00</option>
@@ -169,7 +208,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                             <span className='text-red-500 font-bold'> *</span>
                         </span>
                         <select name="padrao-checkin" id="padrao-checkin"
-                        className="border border-zinc-300 rounded-md px-2 py-1 outline-none">
+                            className="border border-zinc-300 rounded-md px-2 py-1 outline-none">
                             <option value="00:00:00">00:00</option>
                             <option value="00:30:00">00:30</option>
                             <option value="01:00:00">01:00</option>
