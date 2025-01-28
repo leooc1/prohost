@@ -12,6 +12,9 @@ interface Hospede {
 }
 
 export default function Hospede() {
+    useEffect(() => { document.title = `Hóspedes | Prohost` }, [])
+
+
     const { dataToken } = useContext(SideBarContext)
     const [loaded, setLoaded] = useState(false)
     const [cadastrarHospede, setCadastrarHospede] = useState(false)

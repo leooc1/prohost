@@ -47,6 +47,9 @@ interface Acomodacao {
 //const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function Financeiro() {
+    useEffect(() => { document.title = `Financeiro | Prohost` }, [])
+
+
     const { dataToken } = useContext(SideBarContext)
     const [loaded, setLoaded] = useState(false)
 
@@ -60,13 +63,13 @@ export default function Financeiro() {
 
     function agruparMovimentacoes(dados: Movimentacao[]) {
         const agrupados: { [key: string]: any } = {};
-    
+
         dados.forEach((item) => {
             const reservaId = item.reserva?.id;
             const continuidadeId = item.reserva?.continuidade;
-    
+
             const chave = String(continuidadeId || reservaId);
-    
+
             if (!agrupados[chave]) {
                 agrupados[chave] = {
                     id: item.id,
@@ -87,15 +90,15 @@ export default function Financeiro() {
                     canal_reserva: item.canal_reserva,
                 };
             }
-    
+
             agrupados[chave].valor += parseFloat(String(item.valor));
             agrupados[chave].valor_liq += parseFloat(String(item.valor_liq));
             agrupados[chave].valor_prop += parseFloat(String(item.valor_prop));
             agrupados[chave].valor_gestor += parseFloat(String(item.valor_gestor));
         });
-    
+
         const arrayAgroup = Object.values(agrupados) as Movimentacao[];
-    
+
         return arrayAgroup.map((item) => {
             if (item.categoria_financeiro) {
                 return {
@@ -122,7 +125,7 @@ export default function Financeiro() {
             }
         });
     }
-    
+
 
     const [novaReceita, setNovaReceita] = useState(false)
     const [novaDespesa, setNovaDespesa] = useState(false)

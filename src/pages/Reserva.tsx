@@ -44,6 +44,9 @@ interface Reserva {
 }
 
 export default function Reserva() {
+  useEffect(() => { document.title = 'Reservas | Prohost' }, [])
+
+
   const { dataToken } = useContext(SideBarContext)
   const [loaded, setLoaded] = useState(false)
   const [render, setRender] = useState(false)

@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TopBar from "../components/TopBar";
 
 export default function Config() {
+    useEffect(() => { document.title = `Assinatura | Prohost` }, [])
+
+
     const [session, setSession] = useState(0)
     const [qtdAcomodacao, setQtdAcomodacao] = useState('1')
     const [assinatura, setAssinatura] = useState(true)

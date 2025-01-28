@@ -30,6 +30,7 @@ interface Acomodacao {
 }
 
 export default function AcomodacoesDetalhes() {
+
     const { dataToken } = useContext(SideBarContext)
     const [loaded, setLoaded] = useState(false)
     const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
@@ -84,6 +85,7 @@ export default function AcomodacoesDetalhes() {
     const { id } = useParams()
 
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
+    useEffect(() => { document.title = `${acomodacao[0]?.nome} | Prohost` }, [acomodacao])
 
     async function getAcomodacao() {
 

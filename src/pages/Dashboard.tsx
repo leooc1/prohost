@@ -29,6 +29,8 @@ interface Acomodacao {
 
 
 export default function Dashboard() {
+  useEffect(()=>{document.title = 'Dashboard | Prohost'},[])
+
   const { dataToken } = useContext(SideBarContext)
   const [loaded, setLoaded] = useState(false)
   function formatarMoedaBrasileira(valorStr: string) {
@@ -189,6 +191,14 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
+      await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/comparativo-result-ac/${dataBW[0]}/${dataBW[1]}`, {
+        method: 'GET'
+      })
+        .then(data => data.json())
+        .then((data) => {
+          console.log(data)
+        })
+        .catch(err => console.log(err))
     }
     else {
       await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/fat-canal/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
@@ -228,6 +238,15 @@ export default function Dashboard() {
             setResultadoAcomodacoes(data)
         })
         .catch(err => console.log(err))
+
+      await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/comparativo-result-ac/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+        method: 'GET'
+      })
+        .then(data => data.json())
+        .then((data) => {
+          console.log(data)
+        })
+        .catch(err => console.log(err))
     }
 
     setResAc(true)
@@ -242,6 +261,15 @@ export default function Dashboard() {
         .then((data) => {
           if (data.length > 0)
             setIndicadores(data[0])
+        })
+        .catch(err => console.log(err))
+
+      await fetch(`http://localhost:3000/reserva/${dataToken.id}/comparativo-ind-ope/${dataBW[0]}/${dataBW[1]}`, {
+        method: 'GET'
+      })
+        .then(data => data.json())
+        .then((data) => {
+          console.log(data)
         })
         .catch(err => console.log(err))
 
@@ -291,7 +319,7 @@ export default function Dashboard() {
           if (data.length > 0)
             setOcupacaoSemana(data.map((d: { dia_da_semana: string, total_dias_no_intervalo: string, total_movimentacoes: string, total_indisponibilidades: string }) => [
               d.dia_da_semana,
-              ((Number(d.total_dias_no_intervalo) * acomodacao.length) - Number(d.total_indisponibilidades)) > 0 ? Number(d.total_movimentacoes) / ((Number(d.total_dias_no_intervalo) * acomodacao.length) - Number(d.total_indisponibilidades))*100 : 0
+              ((Number(d.total_dias_no_intervalo) * acomodacao.length) - Number(d.total_indisponibilidades)) > 0 ? Number(d.total_movimentacoes) / ((Number(d.total_dias_no_intervalo) * acomodacao.length) - Number(d.total_indisponibilidades)) * 100 : 0
             ]))
         })
         .catch(err => console.log(err))
@@ -305,6 +333,15 @@ export default function Dashboard() {
         .then((data) => {
           if (data.length > 0)
             setIndicadores(data[0])
+        })
+        .catch(err => console.log(err))
+
+      await fetch(`http://localhost:3000/reserva/${dataToken.id}/comparativo-ind-ope/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+        method: 'GET'
+      })
+        .then(data => data.json())
+        .then((data) => {
+          console.log(data)
         })
         .catch(err => console.log(err))
 
@@ -371,6 +408,15 @@ export default function Dashboard() {
       .then(data => data.json())
       .then((data: []) => {
         setResultadoGestor(data)
+      })
+      .catch(err => console.log(err))
+
+    await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/comparativo-result-gestor/${dataBW[0]}/${dataBW[1]}`, {
+      method: 'GET'
+    })
+      .then(data => data.json())
+      .then((data: []) => {
+        console.log(data)
       })
       .catch(err => console.log(err))
 
@@ -524,7 +570,7 @@ export default function Dashboard() {
                 <p className="text-3xl text-center font-bold bottom-3 text-zinc-500 mb-4">{taxaOcupacao?.taxa_ocupacao ? taxaOcupacao.taxa_ocupacao.toFixed(1) : 0}%</p>
               </div>
             </div>
-            <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center">
+            <div className="bg-white border-zinc-300 border rounded-lg flex items-center">
               <div className="bg-[#E6E9FD] rounded-md w-fit py-2 px-2 ml-4">
                 <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#6279F2"><path d="M9 1V3H15V1H17V3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3H7V1H9ZM20 10H4V19H20V10ZM15.0355 11.136L16.4497 12.5503L11.5 17.5L7.96447 13.9645L9.37868 12.5503L11.5 14.6716L15.0355 11.136ZM7 5H4V8H20V5H17V6H15V5H9V6H7V5Z"></path></svg>
               </div>
@@ -541,7 +587,7 @@ export default function Dashboard() {
               <DesempenhoDiarias
                 dados={[desempenhoDiarias?.reservadas || 0, desempenhoDiarias?.ociosas || 0, desempenhoDiarias?.indisponiveis || 0]} />
             </div>
-            <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center" >
+            <div className="bg-white border-zinc-300 border rounded-lg flex items-center" >
               <div className="bg-[#E9F7FD] rounded-md w-fit py-2 px-2 ml-4">
                 <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#63C3F2"><path d="M22 11V20H20V17H4V20H2V4H4V14H12V7H18C20.2091 7 22 8.79086 22 11ZM8 13C6.34315 13 5 11.6569 5 10C5 8.34315 6.34315 7 8 7C9.65685 7 11 8.34315 11 10C11 11.6569 9.65685 13 8 13Z"></path></svg>
               </div>
@@ -572,7 +618,7 @@ export default function Dashboard() {
                 <p className="text-end">{Number(ocupacaoSemana[0][1]).toFixed(1)}%</p>
               </section>
             </div>
-            <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center" >
+            <div className="bg-white border-zinc-300 border rounded-lg flex items-center" >
               <div className="bg-[#F7D3AB] rounded-md w-fit py-2 px-2 ml-4">
                 <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FEB158"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM13 12H17V14H11V7H13V12Z"></path></svg>            </div>
               <div className="flex flex-col ml-4">
@@ -587,7 +633,7 @@ export default function Dashboard() {
               <p className="flex flex-col text-zinc-400 font-medium text-sm">Reservas por Canal</p>
               <ReservasCanal labels={reservaCanal.length > 0 ? reservaCanal.map(r => r.nome) : []} dados={reservaCanal.length > 0 ? reservaCanal.map(r => Number(r.num_reserva)) : []} colors={reservaCanal.length > 0 ? reservaCanal.map(r => r.cor) : []} />
             </div>
-            <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center" >
+            <div className="bg-white border-zinc-300 border rounded-lg flex items-center" >
               <div className="bg-[#FDE3E4] rounded-md w-fit py-2 px-2 ml-4">
                 <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ED3E44"><path d="M9 3V1H7V3H3C2.44772 3 2 3.44772 2 4V20C2 20.5523 2.44772 21 3 21H21C21.5523 21 22 20.5523 22 20V4C22 3.44772 21.5523 3 21 3H17V1H15V3H9ZM4 10H20V19H4V10ZM4 5H7V6H9V5H15V6H17V5H20V8H4V5ZM9.87862 10.9644L12 13.0858L14.1212 10.9644L15.5355 12.3785L13.4142 14.5001L15.5354 16.6212L14.1213 18.0354L12 15.9143L9.87855 18.0354L8.46442 16.6211L10.5857 14.5001L8.46436 12.3785L9.87862 10.9644Z"></path></svg>
               </div>
@@ -633,10 +679,10 @@ export default function Dashboard() {
                 dadosPassado={faturamento.map(fat => Number(fat.despesa))} mes={date.getMonth() == 0 ? 11 : date.getMonth() - 1} /> : null}
               {periodo == 'a-atual' ? <FaturamentoxDespesa
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.despesa))} mes={11} /> : null}
+                dadosPassado={faturamento.map(fat => Number(fat.despesa))} mes={0} /> : null}
               {periodo == 'a-passado' ? <FaturamentoxDespesa
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.despesa))} mes={11} /> : null}
+                dadosPassado={faturamento.map(fat => Number(fat.despesa))} mes={0} /> : null}
               {periodo == 'personalizado' ? <FaturamentoxDespesa
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
                 dadosPassado={faturamento.map(fat => Number(fat.despesa))} mes={date.getMonth()} /> : null}
@@ -645,7 +691,7 @@ export default function Dashboard() {
               <div className="bg-[#D8D8D8] rounded-md w-fit py-2 px-2 ml-4">
                 <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#898989"><path d="M20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C13.6418 20 15.1681 19.5054 16.4381 18.6571L17.5476 20.3214C15.9602 21.3818 14.0523 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12V13.5C22 15.433 20.433 17 18.5 17C17.2958 17 16.2336 16.3918 15.6038 15.4659C14.6942 16.4115 13.4158 17 12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7C13.1258 7 14.1647 7.37209 15.0005 8H17V13.5C17 14.3284 17.6716 15 18.5 15C19.3284 15 20 14.3284 20 13.5V12ZM12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9Z"></path></svg>            </div>
               <div className="flex flex-col ml-4">
-                <p className="flex flex-col text-zinc-400 font-medium text-sm">Rentabilidade o Imóvel</p>
+                <p className="flex flex-col text-zinc-400 font-medium text-sm">Rentabilidade do Imóvel</p>
                 <div className="flex items-end gap-4">
                   <span className="text-nowrap text-xl">{Number(resultadoAcomodacoes[0].rentabilidade_imovel).toFixed(2)} %</span>
                   <Comparativo number={0} />
@@ -685,10 +731,10 @@ export default function Dashboard() {
                 dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={date.getMonth() == 0 ? 11 : date.getMonth() - 1} /> : null}
               {periodo == 'a-atual' ? <FaturamentoLiquido
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={11} /> : null}
+                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={0} /> : null}
               {periodo == 'a-passado' ? <FaturamentoLiquido
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={11} /> : null}
+                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={0} /> : null}
               {periodo == 'personalizado' ? <FaturamentoLiquido
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
                 dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={date.getMonth()} /> : null}
@@ -751,7 +797,7 @@ export default function Dashboard() {
             gridTemplateColumns: '1fr 0.8fr 0fr 1fr 1fr 1fr',
             gridTemplateRows: '1fr 1fr 1fr 1fr'
           }}>
-            <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center" style={{ gridArea: 'lap' }}>
+            <div className="bg-white border-zinc-300 border rounded-lg flex items-center" style={{ gridArea: 'lap' }}>
               <div className="bg-[#D1F0FF] rounded-md w-fit py-2 px-2 ml-4">
                 <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#01AAFE"><path d="M2 20H22V22H2V20ZM4 12H6V19H4V12ZM9 12H11V19H9V12ZM13 12H15V19H13V12ZM18 12H20V19H18V12ZM2 7L12 2L22 7V11H2V7ZM12 8C12.5523 8 13 7.55228 13 7C13 6.44772 12.5523 6 12 6C11.4477 6 11 6.44772 11 7C11 7.55228 11.4477 8 12 8Z"></path></svg>
               </div>
@@ -763,7 +809,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center" style={{ gridArea: 'cat' }}>
+            <div className="bg-white border-zinc-300 border rounded-lg flex items-center" style={{ gridArea: 'cat' }}>
               <div className="bg-[#D1F0FF] rounded-md w-fit py-2 px-2 ml-4">
                 <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#6279F2"><path d="M17.5049 21.0027C15.5719 21.0027 14.0049 19.4357 14.0049 17.5027C14.0049 15.5697 15.5719 14.0027 17.5049 14.0027C19.4379 14.0027 21.0049 15.5697 21.0049 17.5027C21.0049 19.4357 19.4379 21.0027 17.5049 21.0027ZM17.5049 19.0027C18.3333 19.0027 19.0049 18.3312 19.0049 17.5027C19.0049 16.6743 18.3333 16.0027 17.5049 16.0027C16.6765 16.0027 16.0049 16.6743 16.0049 17.5027C16.0049 18.3312 16.6765 19.0027 17.5049 19.0027ZM6.50488 10.0027C4.57189 10.0027 3.00488 8.43574 3.00488 6.50275C3.00488 4.56975 4.57189 3.00275 6.50488 3.00275C8.43788 3.00275 10.0049 4.56975 10.0049 6.50275C10.0049 8.43574 8.43788 10.0027 6.50488 10.0027ZM6.50488 8.00275C7.33331 8.00275 8.00488 7.33117 8.00488 6.50275C8.00488 5.67432 7.33331 5.00275 6.50488 5.00275C5.67646 5.00275 5.00488 5.67432 5.00488 6.50275C5.00488 7.33117 5.67646 8.00275 6.50488 8.00275ZM19.076 3.51747L20.4902 4.93168L4.93382 20.488L3.5196 19.0738L19.076 3.51747Z"></path></svg>
               </div>
@@ -775,7 +821,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center" style={{ gridArea: 'dn' }}>
+            <div className="bg-white border-zinc-300 border rounded-lg flex items-center" style={{ gridArea: 'dn' }}>
               <div className="bg-[#F8DCDC] rounded-md w-fit py-2 px-2 ml-4">
                 <svg className="w-6 fill-[#D94D52]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M24 0C10.7 0 0 10.7 0 24S10.7 48 24 48l45.5 0c3.8 0 7.1 2.7 7.9 6.5l51.6 271c6.5 34 36.2 58.5 70.7 58.5L488 384c13.3 0 24-10.7 24-24s-10.7-24-24-24l-288.3 0c-11.5 0-21.4-8.2-23.6-19.5L170.7 288l288.5 0c32.6 0 61.1-21.8 69.5-53.3l41-152.3C576.6 57 557.4 32 531.1 32L360 32l0 102.1 23-23c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-64 64c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l23 23L312 32 120.1 32C111 12.8 91.6 0 69.5 0L24 0zM176 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm336-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0z" /></svg>
               </div>
@@ -786,7 +832,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center" style={{ gridArea: 'lg' }}>
+            <div className="bg-white border-zinc-300 border rounded-lg flex items-center" style={{ gridArea: 'lg' }}>
               <div className="bg-[#E0FEEA] rounded-md w-fit py-2 px-2 ml-4">
                 <svg className="w-6 h-fit" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 484.184 484.184" ><g><path d="M309.43 219.944c-19-10.5-39.2-18.5-59.2-26.8-11.6-4.8-22.7-10.4-32.5-18.2-19.3-15.4-15.6-40.4 7-50.3 6.4-2.8 13.1-3.7 19.9-4.1 26.2-1.4 51.1 3.4 74.8 14.8 11.8 5.7 15.7 3.9 19.7-8.4 4.2-13 7.7-26.2 11.6-39.3 2.6-8.8-.6-14.6-8.9-18.3-15.2-6.7-30.8-11.5-47.2-14.1-21.4-3.3-21.4-3.4-21.5-24.9-.1-30.3-.1-30.3-30.5-30.3-4.4 0-8.8-.1-13.2 0-14.2.4-16.6 2.9-17 17.2-.2 6.4 0 12.8-.1 19.3-.1 19-.2 18.7-18.4 25.3-44 16-71.2 46-74.1 94-2.6 42.5 19.6 71.2 54.5 92.1 21.5 12.9 45.3 20.5 68.1 30.6 8.9 3.9 17.4 8.4 24.8 14.6 21.9 18.1 17.9 48.2-8.1 59.6-13.9 6.1-28.6 7.6-43.7 5.7-23.3-2.9-45.6-9-66.6-19.9-12.3-6.4-15.9-4.7-20.1 8.6-3.6 11.5-6.8 23.1-10 34.7-4.3 15.6-2.7 19.3 12.2 26.6 19 9.2 39.3 13.9 60 17.2 16.2 2.6 16.7 3.3 16.9 20.1.1 7.6.1 15.3.2 22.9.1 9.6 4.7 15.2 14.6 15.4 11.2.2 22.5.2 33.7-.1 9.2-.2 13.9-5.2 13.9-14.5 0-10.4.5-20.9.1-31.3-.5-10.6 4.1-16 14.3-18.8 23.5-6.4 43.5-19 58.9-37.8 42.8-52 26.5-128.1-34.1-161.6z" fill="#61C365" opacity="1" data-original="#000000" ></path></g></svg>
               </div>

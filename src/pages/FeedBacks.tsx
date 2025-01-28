@@ -1,7 +1,10 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import FeedBack from "../components/FeedBack"
 
 export default function FeedBacks() {
+    useEffect(() => { document.title = `Feedbacks | Prohost` }, [])
+
+
     const [novoFeedBack, setNovoFeedBack] = useState(true)
     return (
         <div className="flex w-full min-h-screen h-full flex-col px-8">

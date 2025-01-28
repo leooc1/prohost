@@ -6,7 +6,6 @@ Chart.register(LineController, LineElement, PointElement, CategoryScale, LinearS
 
 export default function FaturamentoDespesas({ mes, ano, dadosLucros, dadosDespesas }: { mes: number, ano: number, dadosLucros:number[], dadosDespesas:number[] }) {
     const chartRef = useRef<HTMLCanvasElement>(null);
-
     function Meses(numero: number) {
         const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
         const indiceInicio = (numero + 1) % meses.length;

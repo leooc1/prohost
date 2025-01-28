@@ -1,6 +1,8 @@
 import { InputMask } from "@react-input/mask"
 import { useContext, useState } from "react"
 import { AssinaturaContext } from "../../contexts/AssinaturaContext"
+import termos from '../../../public/termos-de-uso.pdf'
+import politica from '../../../public/politica-de-privacidade.pdf'
 
 const apiUrl = import.meta.env.VITE_baseURLAPI;
 
@@ -279,7 +281,12 @@ export default function Cadastro() {
                     >Avançar</button>
                     <label htmlFor="termos" className='flex gap-2 items-center font-light'>
                         <input type="checkbox" name="termos" id="termos" className='cursor-pointer' onChange={(e) => setButton(e.target.checked)} />
-                        Aceito os <a href="#" className='text-primary italic font-medium'>Termos de Uso</a>
+                        Aceito os <a href="#"
+                            onClick={()=>{
+                                window.open(termos, '_blank')
+                                window.open(politica, '_blank')
+                            }}
+                            className='text-primary italic font-medium'>Termos de Uso</a>
                     </label>
                 </section>
             </form >

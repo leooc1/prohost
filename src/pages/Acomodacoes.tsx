@@ -23,6 +23,9 @@ interface Acomodacao {
 //const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function Acomodacoes() {
+    useEffect(() => { document.title = 'Acomodações | Prohost' }, [])
+
+
     const { dataToken } = useContext(SideBarContext)
     const [loaded, setLoaded] = useState(false)
     const [cadastrarAcomodacao, setCadastrarAcomodacao] = useState(false)
@@ -64,7 +67,7 @@ export default function Acomodacoes() {
     }
     useEffect(() => {
         acomodacoes()
-        
+
     }, [dataToken])
 
     return (
