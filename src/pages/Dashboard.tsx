@@ -191,7 +191,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/comparativo-result-ac/${dataBW[0]}/${dataBW[1]}`, {
+      await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/comparativo-result-ac/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -239,7 +239,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/comparativo-result-ac/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/comparativo-result-ac/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -264,7 +264,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`http://localhost:3000/reserva/${dataToken.id}/comparativo-ind-ope/${dataBW[0]}/${dataBW[1]}`, {
+      await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/comparativo-ind-ope/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -336,7 +336,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`http://localhost:3000/reserva/${dataToken.id}/comparativo-ind-ope/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/comparativo-ind-ope/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -411,7 +411,7 @@ export default function Dashboard() {
       })
       .catch(err => console.log(err))
 
-    await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/comparativo-result-gestor/${dataBW[0]}/${dataBW[1]}`, {
+    await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/comparativo-result-gestor/${dataBW[0]}/${dataBW[1]}`, {
       method: 'GET'
     })
       .then(data => data.json())
