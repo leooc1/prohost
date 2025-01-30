@@ -6,6 +6,7 @@ import { AssinaturaContext } from '../contexts/AssinaturaContext';
 export default function Assinar() {
     const { setPlanoDTO } = useContext(AssinaturaContext)
     const navigate = useNavigate();
+    const [origin, setOrigin] = useState('')
     const [numAcomodacao, setNumAcomodacao] = useState<string>('')
     const preco = () => {
         const qtdAcomod = Number(numAcomodacao)
@@ -26,8 +27,8 @@ export default function Assinar() {
 
     useEffect(() => {
         const url = new URL(location.href);
-        if (location.search.slice(6).length > 0 && numAcomodacao == '') {
-            setNumAcomodacao(location.search.slice(6))
+        if (url.searchParams.get("acom") && numAcomodacao == '') {
+            setNumAcomodacao(url.searchParams.get("acom") || '')
         } else {
             const valor = numAcomodacao.length > 0 ? numAcomodacao : '1'
             url.searchParams.set("acom", valor);
@@ -38,6 +39,11 @@ export default function Assinar() {
             valor_ano: preco()
         })
     }, [numAcomodacao])
+
+    useEffect(() => {
+        const vURL = new URL(location.href).searchParams.get('origin') || ''
+        setOrigin(vURL)
+    }, [])
 
     return (
         <div className="flex w-full min-h-screen h-full">
@@ -76,14 +82,24 @@ export default function Assinar() {
                                     <p className='text-white'>Quantas acomodações você administra?</p>
                                     <label htmlFor="qtdAcomodacao" className='flex items-center gap-8'>
                                         <input id='qtdAcomodacao' type="range"
-                                            min={1} max={30} defaultValue={location.search.slice(6) || 1}
+                                            min={1} max={30} defaultValue={new URL(location.href).searchParams.get("acom") || 1}
                                             onChange={(e) => {
                                                 setNumAcomodacao(e.target.value)
                                             }} />
                                         <span className='text-secondary h-8 w-8 border border-zinc-400 flex justify-center items-center rounded-lg'>{numAcomodacao}</span>
                                     </label>
                                 </div>
-                                <div className='mt-5 text-zinc-100 flex items-center gap-4'>
+                                {origin == 'newStudents' &&
+                                    <div className='mt-5 text-zinc-100 flex items-center gap-4'>
+                                        <p className='text-2xl font-semibold'>Bem vindo(a) novo(a) aluno(a)!<br />
+                                            Você tem direito a 6 meses grátis de acesso ao sistema.</p>
+                                    </div>}
+                                {origin == 'newClassmates' &&
+                                    <div className='mt-5 text-zinc-100 flex items-center gap-4'>
+                                        <p className='text-2xl font-semibold'>Bem vindo(a) novo(a) aluno(a)!<br />
+                                            Você tem direito a 1 ano grátis de acesso ao sistema.</p>
+                                    </div>}
+                                <div className={`mt-5 text-zinc-100 flex items-center gap-4 ${origin != '' && 'hidden'}`} >
                                     <p className='text-4xl'>R$ {preco().toFixed(2).replace('.', ',')}</p>
                                     <p className='text-sm'>pago <br /> anualmente</p>
                                 </div>
@@ -106,6 +122,6 @@ export default function Assinar() {
                 </section>
                 <Outlet />
             </main>
-        </div>
+        </div >
     )
 }

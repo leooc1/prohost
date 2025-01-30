@@ -50,7 +50,7 @@ export default function FeedBack({ close }: { close: () => void }) {
                 <section className="flex gap-3 justify-end mt-2">
                     <button className="px-3 py-2 border border-zinc-300 rounded-lg" onClick={close}>Cancelar</button>
                     <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
-                    >Enviar feedback</button>
+                     onClick={close}>Enviar feedback</button>
                 </section>
             </form>
         </div>

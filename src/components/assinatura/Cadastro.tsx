@@ -4,9 +4,8 @@ import { AssinaturaContext } from "../../contexts/AssinaturaContext"
 import termos from '../../../public/termos-de-uso.pdf'
 import politica from '../../../public/politica-de-privacidade.pdf'
 
-const apiUrl = import.meta.env.VITE_baseURLAPI;
-
 export default function Cadastro() {
+
     const { planoDTO } = useContext(AssinaturaContext)
     const [button, setButton] = useState(false)
     const [ruas, setRuas] = useState<{ display_name: string }[]>([])
@@ -55,17 +54,37 @@ export default function Cadastro() {
 
 
         {
-            await fetch(`${apiUrl}/plano/${planoDTO.qtd_acomodacao}/${planoDTO.valor_ano}`, {
+            await fetch(`https://api.prohost.net.br/plano/${planoDTO.qtd_acomodacao}/${planoDTO.valor_ano}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
                 .then(data => data.json())
-                .then((data) => {
+                .then(async (data) => {
                     if (data.length > 0) {
                         getPlano = data[0]
                         getPlano = { ...getPlano, valor_ano: Number(getPlano.valor_ano), valor_mes: Number(getPlano.valor_mes), qtd_acomodacao: Number(getPlano.qtd_acomodacao) }
+                    }
+                    else {
+                        await fetch('https://api.prohost.net.br/plano/', {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            method: 'POST',
+                            body: JSON.stringify({
+                                "qtd_acomodacao": Number(planoDTO.qtd_acomodacao),
+                                "permicao": 1,
+                                "valor_mes": Number((Number(planoDTO.valor_ano) / 10).toFixed(2)),
+                                "valor_ano": Number(planoDTO.valor_ano)
+                            })
+                        })
+                            .then(data => data.json())
+                            .then(data => {
+                                getPlano = data
+                                getPlano = { ...getPlano, valor_ano: Number(getPlano.valor_ano), valor_mes: Number(getPlano.valor_mes), qtd_acomodacao: Number(getPlano.qtd_acomodacao) }
+                            })
+                            .catch(err => console.log(err))
                     }
                 })
         }
@@ -130,8 +149,13 @@ export default function Cadastro() {
                 })
                     .then(data => data.json())
                     .then((data) => {
+                        const origem = new URL(location.href).searchParams.get('origin') || ''
                         window.localStorage.setItem('ph_pay_acc', data)
-                        location.assign('/assinar/forma-pagamento')
+                        if (origem === 'newStudents' || origem === 'newClassmates') {
+                            location.assign('/auth')
+                        } else {
+                            location.assign('/assinar/forma-pagamento')
+                        }
                     })
             }
             else {
@@ -253,12 +277,22 @@ export default function Cadastro() {
                             const email = document.getElementById('email') as HTMLInputElement
                             const senha = document.getElementById('senha') as HTMLInputElement
                             if (celular.value.length > 0 && cpf_cnpj.value.length > 0 && end_rua.value.length > 0 && end_num.value.length > 0 && end_cep.value.length > 0 && nome.value.length > 0 && email.value.length > 0 && senha.value.length > 0 && button) {
+                                const origem = new URL(location.href).searchParams.get('origin') || ''
+                                const trial = new Date();
+                                if (origem === 'newStudents') {
+                                    trial.setMonth(trial.getMonth() + 6);
+                                } else if (origem === 'newClassmates') {
+                                    trial.setFullYear(trial.getFullYear() + 1);
+                                }
+                                else {
+                                    trial.setDate(trial.getDate() + 15);
+                                }
                                 criarConta({
                                     assinatura: null,
                                     master: email.value,
                                     nome: nome.value,
-                                    trial_end: "2025-11-01T12:00:00Z",
-                                    origin: ""
+                                    trial_end: trial.toISOString().split('T')[0],
+                                    origin: origem
                                 },
                                     {
                                         asaas_id: '',
@@ -282,7 +316,7 @@ export default function Cadastro() {
                     <label htmlFor="termos" className='flex gap-2 items-center font-light'>
                         <input type="checkbox" name="termos" id="termos" className='cursor-pointer' onChange={(e) => setButton(e.target.checked)} />
                         Aceito os <a href="#"
-                            onClick={()=>{
+                            onClick={() => {
                                 window.open(termos, '_blank')
                                 window.open(politica, '_blank')
                             }}

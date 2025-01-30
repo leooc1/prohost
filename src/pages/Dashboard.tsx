@@ -29,7 +29,7 @@ interface Acomodacao {
 
 
 export default function Dashboard() {
-  useEffect(()=>{document.title = 'Dashboard | Prohost'},[])
+  useEffect(() => { document.title = 'Dashboard | Prohost' }, [])
 
   const { dataToken } = useContext(SideBarContext)
   const [loaded, setLoaded] = useState(false)
@@ -151,6 +151,65 @@ export default function Dashboard() {
       .catch(err => console.log(err))
   }
 
+  const [comparativoRA, setComparativoRA] = useState<{
+    atual: {
+      "rentabilidade_imovel": number | null,
+      "faturamento_bruto": string | null,
+      "comissao_plataforma": string | null,
+      "faturamento_liquido": string | null,
+      "despesas": string | null,
+      "lucro": string | null,
+      "diaria_media": string | null,
+      "periodo": string | null
+    } | null,
+    passado: {
+      "rentabilidade_imovel": number | null,
+      "faturamento_bruto": string | null,
+      "comissao_plataforma": string | null,
+      "faturamento_liquido": string | null,
+      "despesas": string | null,
+      "lucro": string | null,
+      "diaria_media": string | null,
+      "periodo": string | null
+    } | null
+  }>({ atual: null, passado: null })
+
+  const [comparativoRG, setComparativoRG] = useState<{
+    atual: {
+      comissao_terceiros: string | null
+      despesas_negocio: string | null
+      lucro_acomodacoes: string | null
+      lucro_gestor: string | null
+      periodo: string | null
+    } | null,
+    passado: {
+      comissao_terceiros: string | null
+      despesas_negocio: string | null
+      lucro_acomodacoes: string | null
+      lucro_gestor: string | null
+      periodo: string | null
+    } | null
+  }>({ atual: null, passado: null })
+
+  const [comparativoIO, setComparativoIO] = useState<{
+    atual: {
+      duracao_media: string | null
+      periodo: string | null
+      total_diaria: string | null
+      total_hospede: string | null
+      total_indisponivel: string | null
+      total_reserva: string | null
+    } | null,
+    passado: {
+      duracao_media: string | null
+      periodo: string | null
+      total_diaria: string | null
+      total_hospede: string | null
+      total_indisponivel: string | null
+      total_reserva: string | null
+    } | null
+  }>({ atual: null, passado: null })
+
   async function resultAc() {
     if (filterAC == 'all') {
       await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/fat-canal/${dataBW[0]}/${dataBW[1]}`, {
@@ -196,7 +255,14 @@ export default function Dashboard() {
       })
         .then(data => data.json())
         .then((data) => {
-          console.log(data)
+          if (data.length > 0) {
+            const atual = data.filter((d: any) => d.periodo == 'atual')
+            const passado = data.filter((d: any) => d.periodo == 'ano_anterior')
+            setComparativoRA({
+              atual: atual[0],
+              passado: passado[0]
+            })
+          }
         })
         .catch(err => console.log(err))
     }
@@ -244,7 +310,14 @@ export default function Dashboard() {
       })
         .then(data => data.json())
         .then((data) => {
-          console.log(data)
+          if (data.length > 0) {
+            const atual = data.filter((d: any) => d.periodo == 'atual')
+            const passado = data.filter((d: any) => d.periodo == 'ano_anterior')
+            setComparativoRA({
+              atual: atual[0],
+              passado: passado[0]
+            })
+          }
         })
         .catch(err => console.log(err))
     }
@@ -269,7 +342,14 @@ export default function Dashboard() {
       })
         .then(data => data.json())
         .then((data) => {
-          console.log(data)
+          if (data.length > 0) {
+            const atual = data.filter((d: any) => d.periodo == 'atual')
+            const passado = data.filter((d: any) => d.periodo == 'ano_anterior')
+            setComparativoIO({
+              atual: atual[0],
+              passado: passado[0]
+            })
+          }
         })
         .catch(err => console.log(err))
 
@@ -341,7 +421,14 @@ export default function Dashboard() {
       })
         .then(data => data.json())
         .then((data) => {
-          console.log(data)
+          if (data.length > 0) {
+            const atual = data.filter((d: any) => d.periodo == 'atual')
+            const passado = data.filter((d: any) => d.periodo == 'ano_anterior')
+            setComparativoIO({
+              atual: atual[0],
+              passado: passado[0]
+            })
+          }
         })
         .catch(err => console.log(err))
 
@@ -416,7 +503,14 @@ export default function Dashboard() {
     })
       .then(data => data.json())
       .then((data: []) => {
-        console.log(data)
+        if (data.length > 0) {
+          const atual = data.filter((d: any) => d.periodo == 'atual')
+          const passado = data.filter((d: any) => d.periodo == 'ano_anterior')
+          setComparativoRG({
+            atual: atual[0],
+            passado: passado[0]
+          })
+        }
       })
       .catch(err => console.log(err))
 
@@ -578,7 +672,8 @@ export default function Dashboard() {
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Total de Reservas</p>
                 <div className="flex items-end gap-4">
                   <span className="text-3xl">{indicadores?.total_reserva}</span>
-                  <Comparativo number={0} />
+                  <Comparativo nome="TOTAL DE RESERVAS" data={dataBW} passado={comparativoIO.passado?.total_reserva ? Number(comparativoIO.passado?.total_reserva) : 0}
+                    atual={comparativoIO.atual?.total_reserva ? Number(comparativoIO.atual?.total_reserva) : 0}/>
                 </div>
               </div>
             </div>
@@ -595,7 +690,8 @@ export default function Dashboard() {
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Diárias reservadas</p>
                 <div className="flex items-end gap-4">
                   <span className="text-3xl">{indicadores?.total_diaria ? indicadores?.total_diaria : 0}</span>
-                  <Comparativo number={0} />
+                  <Comparativo nome="DIÁRIAS RESERVADAS" data={dataBW} passado={comparativoIO.passado?.total_diaria ? Number(comparativoIO.passado?.total_diaria) : 0}
+                    atual={comparativoIO.atual?.total_diaria ? Number(comparativoIO.atual?.total_diaria) : 0}/>
                 </div>
               </div>
             </div>
@@ -625,7 +721,8 @@ export default function Dashboard() {
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Duração Média das Reservas</p>
                 <div className="flex items-end gap-4">
                   <span className="text-3xl">{indicadores?.duracao_media ? Number(indicadores?.duracao_media).toFixed(1) : 0}</span>
-                  <Comparativo number={0} />
+                  <Comparativo nome="DURAÇÃO MÉDIA DAS RESERVAS" data={dataBW} passado={comparativoIO.passado?.duracao_media ? Number(comparativoIO.passado?.duracao_media) : 0}
+                    atual={comparativoIO.atual?.duracao_media ? Number(comparativoIO.atual?.duracao_media) : 0}/>
                 </div>
               </div>
             </div>
@@ -638,10 +735,11 @@ export default function Dashboard() {
                 <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ED3E44"><path d="M9 3V1H7V3H3C2.44772 3 2 3.44772 2 4V20C2 20.5523 2.44772 21 3 21H21C21.5523 21 22 20.5523 22 20V4C22 3.44772 21.5523 3 21 3H17V1H15V3H9ZM4 10H20V19H4V10ZM4 5H7V6H9V5H15V6H17V5H20V8H4V5ZM9.87862 10.9644L12 13.0858L14.1212 10.9644L15.5355 12.3785L13.4142 14.5001L15.5354 16.6212L14.1213 18.0354L12 15.9143L9.87855 18.0354L8.46442 16.6211L10.5857 14.5001L8.46436 12.3785L9.87862 10.9644Z"></path></svg>
               </div>
               <div className="flex flex-col ml-4">
-                <p className="flex flex-col text-zinc-400 font-medium text-sm">Reservas Indisponíveis</p>
+                <p className="flex flex-col text-zinc-400 font-medium text-sm">Diárias Indisponíveis</p>
                 <div className="flex items-end gap-4">
                   <span className="text-3xl">{indicadores?.total_indisponivel ? indicadores?.total_indisponivel : 0}</span>
-                  <Comparativo number={0} />
+                  <Comparativo nome="DIÁRIAS INDISPONÍVEIS" data={dataBW} passado={comparativoIO.passado?.total_indisponivel ? Number(comparativoIO.passado?.total_indisponivel) : 0}
+                    atual={comparativoIO.atual?.total_indisponivel ? Number(comparativoIO.atual?.total_indisponivel) : 0}/>
                 </div>
               </div>
             </div>
@@ -653,7 +751,8 @@ export default function Dashboard() {
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Total de Hóspedes</p>
                 <div className="flex items-end gap-4">
                   <span className="text-3xl">{indicadores?.total_hospede || 0}</span>
-                  <Comparativo number={0} />
+                  <Comparativo nome="TOTAL DE HÓSPEDES" data={dataBW} passado={comparativoIO.passado?.total_hospede ? Number(comparativoIO.passado?.total_hospede) : 0}
+                    atual={comparativoIO.atual?.total_hospede ? Number(comparativoIO.atual?.total_hospede) : 0}/>
                 </div>
               </div>
             </div>
@@ -694,7 +793,9 @@ export default function Dashboard() {
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Rentabilidade do Imóvel</p>
                 <div className="flex items-end gap-4">
                   <span className="text-nowrap text-xl">{Number(resultadoAcomodacoes[0].rentabilidade_imovel).toFixed(2)} %</span>
-                  <Comparativo number={0} />
+                  <Comparativo nome="RENTABILIDADE DO IMÓVEL" data={dataBW}
+                    passado={comparativoRA.passado?.rentabilidade_imovel ? Number(comparativoRA.passado?.rentabilidade_imovel) : 0}
+                    atual={comparativoRA.atual?.rentabilidade_imovel ? Number(comparativoRA.atual?.rentabilidade_imovel) : 0} />
                 </div>
               </div>
             </div>
@@ -706,7 +807,8 @@ export default function Dashboard() {
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Faturamento Bruto</p>
                 <div className="flex items-end gap-4">
                   <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].faturamento_bruto).toFixed(1))}</span>
-                  <Comparativo number={0} />
+                  <Comparativo nome="FATURAMENTO BRUTO" data={dataBW} passado={comparativoRA.passado?.faturamento_bruto ? Number(comparativoRA.passado?.faturamento_bruto) : 0}
+                    atual={comparativoRA.atual?.faturamento_bruto ? Number(comparativoRA.atual?.faturamento_bruto) : 0} />
                 </div>
               </div>
             </div>
@@ -747,7 +849,8 @@ export default function Dashboard() {
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Faturamento Líquido</p>
                 <div className="flex items-end gap-4">
                   <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].faturamento_liquido).toFixed(1))}</span>
-                  <Comparativo number={0} />
+                  <Comparativo nome="FATURAMENTO LÍQUIDO" data={dataBW} passado={comparativoRA.passado?.faturamento_liquido ? Number(comparativoRA.passado?.faturamento_liquido) : 0}
+                    atual={comparativoRA.atual?.faturamento_liquido ? Number(comparativoRA.atual?.faturamento_liquido) : 0} />
                 </div>
               </div>
             </div>
@@ -758,7 +861,8 @@ export default function Dashboard() {
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Despesas (exceto negócio)</p>
                 <div className="flex items-end gap-4">
                   <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].despesas).toFixed(1))}</span>
-                  <Comparativo number={0} />
+                  <Comparativo nome="DESPESAS" data={dataBW} passado={comparativoRA.passado?.despesas ? Number(comparativoRA.passado?.despesas) : 0}
+                    atual={comparativoRA.atual?.despesas ? Number(comparativoRA.atual?.despesas) : 0} />
                 </div>
               </div>
             </div>
@@ -770,7 +874,8 @@ export default function Dashboard() {
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Lucro das Acomodações</p>
                 <div className="flex items-end gap-4">
                   <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].lucro).toFixed(1))}</span>
-                  <Comparativo number={0} />
+                  <Comparativo nome="LUCRO DAS ACOMODAÇÕES" data={dataBW} passado={comparativoRA.passado?.lucro ? Number(comparativoRA.passado?.lucro) : 0}
+                    atual={comparativoRA.atual?.lucro ? Number(comparativoRA.atual?.lucro) : 0} />
                 </div>
               </div>
             </div>
@@ -782,7 +887,8 @@ export default function Dashboard() {
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Diária Média</p>
                 <div className="flex items-end gap-4">
                   <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].diaria_media).toFixed(1))}</span>
-                  <Comparativo number={0} />
+                  <Comparativo nome="DIÁRIA MÉDIA" data={dataBW} passado={comparativoRA.passado?.diaria_media ? Number(comparativoRA.passado?.diaria_media) : 0}
+                    atual={comparativoRA.atual?.diaria_media ? Number(comparativoRA.atual?.diaria_media) : 0} />
                 </div>
               </div>
             </div>
@@ -802,10 +908,11 @@ export default function Dashboard() {
                 <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#01AAFE"><path d="M2 20H22V22H2V20ZM4 12H6V19H4V12ZM9 12H11V19H9V12ZM13 12H15V19H13V12ZM18 12H20V19H18V12ZM2 7L12 2L22 7V11H2V7ZM12 8C12.5523 8 13 7.55228 13 7C13 6.44772 12.5523 6 12 6C11.4477 6 11 6.44772 11 7C11 7.55228 11.4477 8 12 8Z"></path></svg>
               </div>
               <div className="flex flex-col ml-4">
-                <p className="flex flex-col text-zinc-400 font-medium text-sm">Lucro das Acomodações Proprias</p>
+                <p className="flex flex-col text-zinc-400 font-medium text-sm">Lucro das Acomodações Próprias</p>
                 <div className="flex items-end gap-4">
                   <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoGestor[0].lucro_acomodacoes).toFixed(1))}</span>
-                  <Comparativo number={0} />
+                  <Comparativo nome="LUCRO DAS ACOMODAÇÕES PRÓPRIAS" data={dataBW} passado={comparativoRG.passado?.lucro_acomodacoes ? Number(comparativoRG.passado?.lucro_acomodacoes) : 0}
+                    atual={comparativoRG.atual?.lucro_acomodacoes ? Number(comparativoRG.atual?.lucro_acomodacoes) : 0} />
                 </div>
               </div>
             </div>
@@ -817,7 +924,8 @@ export default function Dashboard() {
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Comissão das Acomodações de Terceiros</p>
                 <div className="flex items-end gap-4">
                   <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoGestor[0].comissao_terceiros).toFixed(1))}</span>
-                  <Comparativo number={0} />
+                  <Comparativo nome="COMISSÃO DAS ACOMODAÇÕES TERCEIRAS" data={dataBW} passado={comparativoRG.passado?.comissao_terceiros ? Number(comparativoRG.passado?.comissao_terceiros) : 0}
+                    atual={comparativoRG.atual?.comissao_terceiros ? Number(comparativoRG.atual?.comissao_terceiros) : 0} />
                 </div>
               </div>
             </div>

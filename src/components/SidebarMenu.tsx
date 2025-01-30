@@ -1,8 +1,7 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import prohostLogo from '/prohost-logo.png'
 import { SideBarContext } from '../contexts/SideBarMenuContext'
 
-//const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function SidebarMenu({ route }: { route: string }) {
     const [refresh, setRefresh] = useState<boolean>(true)
@@ -33,7 +32,26 @@ export default function SidebarMenu({ route }: { route: string }) {
     if (refresh) {
         infoToken()
     }
-    const { active, setDataToken } = useContext(SideBarContext)
+    async function getSituation(id: string) {
+        await fetch(`https://api.prohost.net.br/saas/vp/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json())
+            .then(data => {
+                if (data.status != "CONFIRMED" && (new Date(data.trial_end) < new Date()))
+                    location.assign('/assinatura')
+                    setStatusData(data)
+            })
+            .catch(err => console.log(err))
+    }
+    const { active, setDataToken, dataToken, setStatusData } = useContext(SideBarContext)
+    useEffect(() => {
+        if (dataToken?.id)
+            getSituation(dataToken.id)
+    }, [dataToken])
     return (
         <nav className={`bg-primary sticky top-0 left-0 h-screen ${active ? 'w-56' : 'w-20'} flex flex-col justify-between`}>
             <div>

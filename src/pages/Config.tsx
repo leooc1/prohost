@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import TopBar from "../components/TopBar";
+import { SideBarContext } from "../contexts/SideBarMenuContext";
 
 export default function Config() {
     useEffect(() => { document.title = `Assinatura | Prohost` }, [])
 
-
+    const { statusData } = useContext(SideBarContext)
+    console.log(statusData)
     const [session, setSession] = useState(0)
     const [qtdAcomodacao, setQtdAcomodacao] = useState('1')
     const [assinatura, setAssinatura] = useState(true)
@@ -25,15 +27,28 @@ export default function Config() {
         else return [precosA[5], precosM[5]]
 
     }
+    function dateFormat(dataISO: string) {
+        if(dataISO == '')
+            return ''
+        const dataLimpa = dataISO.slice(0, 10)
+        const [ano, mes, dia] = dataLimpa.split("-");
 
+        return `${dia}/${mes}/${ano}`;
+    }
+    useEffect(() => {
+        if (statusData)
+            if (statusData?.status && statusData?.trial_end)
+                if (statusData?.status != "CONFIRMED" && (new Date(statusData?.trial_end) < new Date()))
+                    setAssinatura(false)
+    }, [statusData])
     return (
         <div className="flex flex-col w-full min-h-screen h-full">
             <TopBar>
                 <section className='ml-5 flex gap-5'>
                     <button onClick={() => setSession(0)} className={`h-full text-sm flex items-center gap-2 border-b-2 ${session == 0 ? 'border-primary' : 'border-transparent'} hover:border-primary px-2`}>
                         Meu plano</button>
-                    <button onClick={() => setSession(1)} className={`h-full text-sm flex items-center gap-2 border-b-2 ${session == 1 ? 'border-primary' : 'border-transparent'} hover:border-primary px-2`}>
-                        Gestão de usuários</button>
+                    {/* <button onClick={() => setSession(1)} className={`h-full text-sm flex items-center gap-2 border-b-2 ${session == 1 ? 'border-primary' : 'border-transparent'} hover:border-primary px-2`}>
+                        Gestão de usuários</button> */}
                     {/* frontend ta onde molindo?*/}
                     {/* esse é o front uai*/}
                 </section>
@@ -45,14 +60,14 @@ export default function Config() {
                 <h5 className="font-semibold text-2xl mb-2">Assinatura</h5>
 
                 {assinatura ? <div className="self-center bg-emerald-100 p-6 rounded-xl flex flex-col gap-3">
-                    <div onClick={() => setAssinatura(!assinatura)} className="flex items-center gap-2 text-primary font-semibold">
+                    <div /* onClick={() => setAssinatura(!assinatura)} */ className="flex items-center gap-2 text-primary font-semibold">
                         <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(60,209,169,1)"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM11.0026 16L6.75999 11.7574L8.17421 10.3431L11.0026 13.1716L16.6595 7.51472L18.0737 8.92893L11.0026 16Z"></path></svg>
                         Meu plano</div>
-                    <p className="text-primary text-2xl">Número de Acomodações: {5}</p>
-                    <p className="text-primary text-2xl">Data de Renovação: {'07/12/2025'}</p>
+                    <p className="text-primary text-2xl">Número de Acomodações: {statusData?.qtd_acomodacao || ''}</p>
+                    <p className="text-primary text-2xl">Data de Renovação: {dateFormat(statusData?.trial_end || '')}</p>
                 </div> :
                     <div className="self-center bg-red-100 p-6 rounded-xl flex flex-col gap-3">
-                        <div onClick={() => setAssinatura(!assinatura)} className="flex items-center gap-2 text-[rgba(237,62,68,1)] font-semibold">
+                        <div /* onClick={() => setAssinatura(!assinatura)} */ className="flex items-center gap-2 text-[rgba(237,62,68,1)] font-semibold">
                             <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(237,62,68,1)"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 10.5858L14.8284 7.75736L16.2426 9.17157L13.4142 12L16.2426 14.8284L14.8284 16.2426L12 13.4142L9.17157 16.2426L7.75736 14.8284L10.5858 12L7.75736 9.17157L9.17157 7.75736L12 10.5858Z"></path></svg>
                             Seu acesso está bloqueado</div>
                         <p className="text-primary text-3xl">Para desbloquear assine um plano abaixo</p>
@@ -93,7 +108,7 @@ export default function Config() {
                     </div>}
 
             </div>}
-            {session == 1 && <form onSubmit={(e) => { e.preventDefault() }}
+            {/* {session == 1 && <form onSubmit={(e) => { e.preventDefault() }}
                 style={{ width: '-webkit-fill-available' }}
                 className="flex rounded-md flex-col absolute px-4 pb-3 gap-4 top-1/2 right-1/2 min-w-72 translate-x-1/2 -translate-y-1/2 bg-white pt-2">
                 <h5 className="font-semibold text-2xl mb-2">Criar usuário filiado</h5>
@@ -136,7 +151,7 @@ export default function Config() {
                     <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
                     >Criar usuário</button>
                 </section>
-            </form>}
+            </form>} */}
         </div>
     );
 }
