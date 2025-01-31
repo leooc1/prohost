@@ -364,8 +364,8 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                 const checkoutDateTime = new Date(`${checkoutDate.value} ${checkoutHora.value}:00`);
 
                                 if (acomodacaoInput.value.length > 0 && canais.value.length > 0 && Number(qtdHospede.value) > 0 && checkinDate.value.length > 0 && checkinHora.value.length > 0 && checkoutDate.value.length > 0 && checkoutHora.value.length > 0 && Number(valorComissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) >= 0 && Number(valorBruto.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) >= 0 && Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) >= 0 && hospedeInput.value.length > 0 && (checkinDateTime < checkoutDateTime)) {
-                                    if (hospede.filter(h => h.nome == hospedeInput.value).length > 0)
-                                        hospedeId = (hospede.filter(h => h.nome == hospedeInput.value)[0].id) || 0
+                                    if (hospede.filter(h => h.nome.toLowerCase() == hospedeInput.value.toLowerCase()).length > 0)
+                                        hospedeId = (hospede.filter(h => h.nome.toLowerCase() == hospedeInput.value.toLowerCase())[0].id) || 0
                                     else
                                         hospedeId = await createHospede({
                                             nome: hospedeInput.value,

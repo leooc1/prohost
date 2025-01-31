@@ -313,9 +313,9 @@ export default function Financeiro() {
                                 Acomodação
                                 <select name="acomodacao" id="acomodacao" className={`border border-zinc-300 rounded-md px-2 py-1 h-9 outline-none text-base`}
                                     onChange={(e) => {
-                                        if (e.target.value != 'all')
+                                        if (e.target.value != 'all') {
                                             setShowMovimentacao(movimentacoes.filter(mov => mov?.acomodacao?.id == Number(e.target.value)))
-                                        else
+                                        } else
                                             setShowMovimentacao(movimentacoes)
                                     }}>
                                     <option value="all" selected>Todas</option>

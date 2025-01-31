@@ -660,8 +660,8 @@ export default function Dashboard() {
             <div className="relative bg-white border-zinc-300 border rounded-lg flex flex-col justify-between items-center row-span-2 py-1 h-full">
               <p className="flex flex-col text-zinc-400 font-medium text-sm">Taxa de Ocupação Média</p>
               <div className="">
-                {showTaxaOcu && <OcupacaoMedia dados={taxaOcupacao?.taxa_ocupacao ? [Number(taxaOcupacao?.taxa_ocupacao.toFixed(1))] : [0]} />}
-                <p className="text-3xl text-center font-bold bottom-3 text-zinc-500 mb-4">{taxaOcupacao?.taxa_ocupacao ? taxaOcupacao.taxa_ocupacao.toFixed(1) : 0}%</p>
+                {showTaxaOcu && <OcupacaoMedia dados={taxaOcupacao?.taxa_ocupacao ? [Number(taxaOcupacao?.taxa_ocupacao).toFixed(1)] : [0]} />}
+                <p className="text-3xl text-center font-bold bottom-3 text-zinc-500 mb-4">{taxaOcupacao?.taxa_ocupacao ? Number(taxaOcupacao?.taxa_ocupacao).toFixed(1) : 0}%</p>
               </div>
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg flex items-center">
@@ -673,7 +673,7 @@ export default function Dashboard() {
                 <div className="flex items-end gap-4">
                   <span className="text-3xl">{indicadores?.total_reserva}</span>
                   <Comparativo nome="TOTAL DE RESERVAS" data={dataBW} passado={comparativoIO.passado?.total_reserva ? Number(comparativoIO.passado?.total_reserva) : 0}
-                    atual={comparativoIO.atual?.total_reserva ? Number(comparativoIO.atual?.total_reserva) : 0}/>
+                    atual={comparativoIO.atual?.total_reserva ? Number(comparativoIO.atual?.total_reserva) : 0} />
                 </div>
               </div>
             </div>
@@ -691,7 +691,7 @@ export default function Dashboard() {
                 <div className="flex items-end gap-4">
                   <span className="text-3xl">{indicadores?.total_diaria ? indicadores?.total_diaria : 0}</span>
                   <Comparativo nome="DIÁRIAS RESERVADAS" data={dataBW} passado={comparativoIO.passado?.total_diaria ? Number(comparativoIO.passado?.total_diaria) : 0}
-                    atual={comparativoIO.atual?.total_diaria ? Number(comparativoIO.atual?.total_diaria) : 0}/>
+                    atual={comparativoIO.atual?.total_diaria ? Number(comparativoIO.atual?.total_diaria) : 0} />
                 </div>
               </div>
             </div>
@@ -722,7 +722,7 @@ export default function Dashboard() {
                 <div className="flex items-end gap-4">
                   <span className="text-3xl">{indicadores?.duracao_media ? Number(indicadores?.duracao_media).toFixed(1) : 0}</span>
                   <Comparativo nome="DURAÇÃO MÉDIA DAS RESERVAS" data={dataBW} passado={comparativoIO.passado?.duracao_media ? Number(comparativoIO.passado?.duracao_media) : 0}
-                    atual={comparativoIO.atual?.duracao_media ? Number(comparativoIO.atual?.duracao_media) : 0}/>
+                    atual={comparativoIO.atual?.duracao_media ? Number(comparativoIO.atual?.duracao_media) : 0} />
                 </div>
               </div>
             </div>
@@ -739,7 +739,7 @@ export default function Dashboard() {
                 <div className="flex items-end gap-4">
                   <span className="text-3xl">{indicadores?.total_indisponivel ? indicadores?.total_indisponivel : 0}</span>
                   <Comparativo nome="DIÁRIAS INDISPONÍVEIS" data={dataBW} passado={comparativoIO.passado?.total_indisponivel ? Number(comparativoIO.passado?.total_indisponivel) : 0}
-                    atual={comparativoIO.atual?.total_indisponivel ? Number(comparativoIO.atual?.total_indisponivel) : 0}/>
+                    atual={comparativoIO.atual?.total_indisponivel ? Number(comparativoIO.atual?.total_indisponivel) : 0} />
                 </div>
               </div>
             </div>
@@ -752,7 +752,7 @@ export default function Dashboard() {
                 <div className="flex items-end gap-4">
                   <span className="text-3xl">{indicadores?.total_hospede || 0}</span>
                   <Comparativo nome="TOTAL DE HÓSPEDES" data={dataBW} passado={comparativoIO.passado?.total_hospede ? Number(comparativoIO.passado?.total_hospede) : 0}
-                    atual={comparativoIO.atual?.total_hospede ? Number(comparativoIO.atual?.total_hospede) : 0}/>
+                    atual={comparativoIO.atual?.total_hospede ? Number(comparativoIO.atual?.total_hospede) : 0} />
                 </div>
               </div>
             </div>

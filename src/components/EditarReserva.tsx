@@ -133,6 +133,7 @@ export default function EditarReserva(props: propsEdicao) {
         })
             .then(data => data.json())
             .then((data) => {
+                console.log(data)
                 if (data[0].affected == 1) {
                     alert('Atualizado!')
                     props.close()
