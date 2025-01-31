@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react"
 
-const apiUrl = import.meta.env.VITE_baseURLAPI;
 
 export default function Pix() {
     const [qr, setQr] = useState('')
     async function gerarQR(storage: string) {
         let pay = ''
-        await fetch(`${apiUrl}/assinatura/${storage}`, {
+        await fetch(`https://api.prohost.net.br/assinatura/${storage}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -14,7 +13,7 @@ export default function Pix() {
                 pay = data
             })
             .catch(err => console.error(err))
-        await fetch(`${apiUrl}/assinatura/pix/${pay}`, {
+        await fetch(`https://api.prohost.net.br/assinatura/pix/${pay}`, {
             method: 'GET'
         })
             .then(data => data.json())

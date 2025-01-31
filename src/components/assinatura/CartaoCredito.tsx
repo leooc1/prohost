@@ -1,12 +1,11 @@
 import { InputMask } from "@react-input/mask"
 
-const apiUrl = import.meta.env.VITE_baseURLAPI;
 
 export default function CartaoCredito() {
     async function pagamento(pbody: any) {
         const storage = window.localStorage.getItem('ph_pay_acc')
         let pay = ''
-        await fetch(`${apiUrl}/assinatura/${storage}`, {
+        await fetch(`https://api.prohost.net.br/assinatura/${storage}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -14,7 +13,7 @@ export default function CartaoCredito() {
                 pay = data
             })
             .catch(err => console.error(err))
-        await fetch(`${apiUrl}/assinatura/credit-card/${pay}`, {
+        await fetch(`https://api.prohost.net.br/assinatura/credit-card/${pay}`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {

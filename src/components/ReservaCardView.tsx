@@ -28,8 +28,27 @@ interface Reserva {
     obs: string | null
 }
 
-
-//const apiURl = import.meta.env.VITE_baseURLAPI;
+function formatedNumber(input: string) {
+    if (input.replace(/[.,]/gm, '').length <= 3)
+        return input.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})/gm, '$1,$2')
+    else if (input.replace(/[.,]/gm, '').length <= 4)
+        return input.replace(/[.,]/gm, '').replace(/(\d{2})(\d{2})/gm, '$1,$2')
+    else if (input.replace(/[.,]/gm, '').length <= 5)
+        return input.replace(/[.,]/gm, '').replace(/(\d{3})(\d{2})/gm, '$1,$2')
+    else if (input.replace(/[.,]/gm, '').length <= 6)
+        return input.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{2})/gm, '$1.$2,$3')
+    else if (input.replace(/[.,]/gm, '').length <= 7)
+        return input.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{2})/gm, '$1.$2,$3')
+    else if (input.replace(/[.,]/gm, '').length <= 8)
+        return input.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{2})/gm, '$1.$2,$3')
+    else if (input.replace(/[.,]/gm, '').length <= 9)
+        return input.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+    else if (input.replace(/[.,]/gm, '').length <= 10)
+        return input.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+    else if (input.replace(/[.,]/gm, '').length <= 11)
+        return input.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+    else return '0,00'
+}
 
 export default function ReservaCardView(props: propsReserva) {
     const { dataToken } = useContext(SideBarContext)
@@ -101,7 +120,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function deleteReserva(id: number) {
-        await fetch(`http://localhost:3000/reserva/${id}`, {
+        await fetch(`https://api.prohost.net.br/reserva/${id}`, {
             method: 'DELETE'
         })
             .then(data => data.json())
@@ -133,6 +152,7 @@ export default function ReservaCardView(props: propsReserva) {
             />}
 
             {editar && <EditarReserva
+                saas={dataToken.id}
                 id={reserva?.id || 0}
                 close={() => setEditar(false)}
                 acomodacaoID={reserva?.acomodacao.id || 0}
@@ -204,7 +224,7 @@ export default function ReservaCardView(props: propsReserva) {
                         <div className="border border-zinc-300 rounded-md px-3 py-2 flex flex-col justify-center relative pl-12">
                             <svg className="absolute w-8 h-fit left-2 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 105.78"><defs></defs><title>scissors</title><path d="M95.36,19.84c11-5.17,20.18-5.08,27.52-.1l-65,37.45a12.92,12.92,0,0,1-7.22,3c-2.42.13-3.29-.56-5.39-.95a7.22,7.22,0,0,0-5.4,1l-1.71,1.56c-1.53,1.39-3.37,2.6-3.07,5,.2,1.58,1.55,2.91,3.69,4.06A15.4,15.4,0,0,1,42.56,76,17.92,17.92,0,0,1,44,82.5c-.39,7.55-3.92,14.07-12.41,19-9.68,6-17.86,5.27-25.18.86C2,98.93,0,94.82,0,90.16,0,83,3.41,77.26,8.73,72.78A73.68,73.68,0,0,1,20.66,65.1l14-10.95.25.85L95.36,19.84Zm0,66.1c11,5.17,20.18,5.08,27.52.1L69.16,55.09,55.53,62.78,95.36,85.94ZM42.29,46.56a7.4,7.4,0,0,1-2.41-1L38.17,44c-1.53-1.39-3.37-2.6-3.07-5,.2-1.59,1.55-2.92,3.69-4.06a15.44,15.44,0,0,0,3.77-5.2A17.86,17.86,0,0,0,44,23.29c-.39-7.55-3.92-14.08-12.41-19C21.93-1.63,13.75-.95,6.43,3.46,2,6.85,0,11,0,15.63,0,22.74,3.41,28.53,8.73,33a73,73,0,0,0,11.93,7.68L34.24,51.31l.6-.35.06-.18.12.08,7.27-4.3ZM32.85,30.43c3.91-2.55,4.31-6.85,2.87-10.95C34.57,16.19,32.1,13.35,28.4,11A21.36,21.36,0,0,0,15.88,7.77c-8.44.77-10,8.29-6.35,14.86a17.07,17.07,0,0,0,7.37,6.92A24.19,24.19,0,0,0,24.44,32a12.16,12.16,0,0,0,8.41-1.56ZM55.08,53.11a3.58,3.58,0,1,1-3.57-3.58,3.57,3.57,0,0,1,3.57,3.58ZM32.85,75.36c3.91,2.55,4.31,6.84,2.87,10.94-1.15,3.3-3.62,6.13-7.32,8.53A21.44,21.44,0,0,1,15.88,98c-8.44-.78-10-8.3-6.35-14.87a17,17,0,0,1,7.37-6.91,23.94,23.94,0,0,1,7.54-2.45,12.16,12.16,0,0,1,8.41,1.57Z" fill="#6279f2" /></svg>
                             <span className="text-zinc-500 font-medium mb-1 text-sm">Comissão</span>
-                            {reserva?.tipo_reserva != 'Continuidade' && <p className="font-semibold text-sm">R$ {Number(reserva?.comissao_ota).toFixed(2)}</p>}
+                            {reserva?.tipo_reserva != 'Continuidade' && <p className="font-semibold text-sm">R$ {formatedNumber(Number(reserva?.comissao_ota).toFixed(2))}</p>}
                         </div>
                     </div>}
                     {reserva?.tipo_reserva == 'Indisponibilidade' ? null : <div className="grid gap-4"
@@ -212,12 +232,12 @@ export default function ReservaCardView(props: propsReserva) {
                         <div className="border border-zinc-300 rounded-md px-3 py-2 flex flex-col justify-center relative pl-12">
                             <svg className="absolute w-8 h-fit left-2 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 484.184 484.184" ><g><path d="M309.43 219.944c-19-10.5-39.2-18.5-59.2-26.8-11.6-4.8-22.7-10.4-32.5-18.2-19.3-15.4-15.6-40.4 7-50.3 6.4-2.8 13.1-3.7 19.9-4.1 26.2-1.4 51.1 3.4 74.8 14.8 11.8 5.7 15.7 3.9 19.7-8.4 4.2-13 7.7-26.2 11.6-39.3 2.6-8.8-.6-14.6-8.9-18.3-15.2-6.7-30.8-11.5-47.2-14.1-21.4-3.3-21.4-3.4-21.5-24.9-.1-30.3-.1-30.3-30.5-30.3-4.4 0-8.8-.1-13.2 0-14.2.4-16.6 2.9-17 17.2-.2 6.4 0 12.8-.1 19.3-.1 19-.2 18.7-18.4 25.3-44 16-71.2 46-74.1 94-2.6 42.5 19.6 71.2 54.5 92.1 21.5 12.9 45.3 20.5 68.1 30.6 8.9 3.9 17.4 8.4 24.8 14.6 21.9 18.1 17.9 48.2-8.1 59.6-13.9 6.1-28.6 7.6-43.7 5.7-23.3-2.9-45.6-9-66.6-19.9-12.3-6.4-15.9-4.7-20.1 8.6-3.6 11.5-6.8 23.1-10 34.7-4.3 15.6-2.7 19.3 12.2 26.6 19 9.2 39.3 13.9 60 17.2 16.2 2.6 16.7 3.3 16.9 20.1.1 7.6.1 15.3.2 22.9.1 9.6 4.7 15.2 14.6 15.4 11.2.2 22.5.2 33.7-.1 9.2-.2 13.9-5.2 13.9-14.5 0-10.4.5-20.9.1-31.3-.5-10.6 4.1-16 14.3-18.8 23.5-6.4 43.5-19 58.9-37.8 42.8-52 26.5-128.1-34.1-161.6z" fill="#6279f2" opacity="1" data-original="#000000" ></path></g></svg>
                             <span className="text-zinc-500 font-medium mb-1 text-sm">Valor Bruto</span>
-                            <p className="font-semibold text-sm">R$ {Number(reserva?.valor).toFixed(2)}</p>
+                            <p className="font-semibold text-sm">R$ {formatedNumber(Number(reserva?.valor).toFixed(2))}</p>
                         </div>
                         <div className="border border-zinc-300 rounded-md px-3 py-2 flex flex-col justify-center relative pl-12">
                             <svg className="absolute w-9 h-fit left-2 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 100 100" ><g><path d="m93.9 29.7-.6-.1v-.4c-.1-1.1-.6-2-1.4-2.7s-1.8-1-2.9-.9L72.9 27l-60.8-7.7c-2.2-.3-4.2 1.3-4.5 3.5L6.3 33.1c-.9.2-1.7.6-2.3 1.3-.7.8-1 1.9-.9 2.9l1.1 12.1-1.6 13c-.1 1.1.2 2.1.8 3 .6.8 1.4 1.3 2.4 1.5L6.7 77c.2 2.1 1.9 3.6 4 3.6h.4l61-5.5 15.9 2h.5c2 0 3.7-1.5 4-3.5l.1-.4.8-.1c1.1-.1 2-.6 2.7-1.4s1-1.9.9-2.9L95.4 51l2.1-17c.2-2-1.4-4-3.6-4.3zM9.6 23.1c.1-1 1-1.8 2-1.8h.3l51.8 6.5-55.3 5zM5 64.1c-.3-.4-.5-1-.4-1.5l.5-3.8.5 5.8c-.2-.1-.4-.3-.6-.5zm83.2 11.1-6.8-.9 9.1-.8c-.2 1.1-1.2 1.8-2.3 1.7zm6.2-4.6c-.3.4-.8.7-1.3.7h-.3l-2 .2-18.6 1.7-9.5.8-51.9 4.6c-1.1.1-2.1-.7-2.2-1.8L7.7 67l-.2-2-1.3-15.5-.8-9.4-.3-3c0-.5.1-1 .5-1.5.1-.2.3-.3.4-.4.3-.1.6-.2.9-.2l1.2-.1 64.8-5.8 9.3-.8 7-.6h.2c.5 0 .9.2 1.3.5s.7.8.7 1.3l.2 2 1.8 19.7.8 9.4.8 8.7c-.1.3-.2.9-.6 1.3zm1-36.7-1 7.9-.9-10.1h.2c1.1.1 1.9 1.1 1.7 2.2z" fill="#6279f2" opacity="1" data-original="#000000"></path><path d="M86.1 38.7c-1.5.1-3-.3-4.2-1.3s-1.9-2.3-2-3.9c0-.3-.2-.5-.4-.7s-.5-.3-.7-.2l-30.5 2.7L18 38c-.5.1-1 .5-.9 1.1.1 1.5-.3 3-1.3 4.2s-2.4 1.9-3.9 2c-.3 0-.5.2-.7.4s-.2.4-.2.7l1.7 19.3.1 1c0 .5.5 1 1.1.9 1.1-.1 2.2.1 3.1.6 1.7.9 2.9 2.5 3.1 4.6 0 .3.2.5.4.7s.4.2.6.2h.1L44 71.6l7.6-.7 1.7-.1L82 68.2c.3 0 .5-.2.7-.3.2-.2.3-.5.2-.7-.1-1.5.3-3 1.3-4.2s2.4-1.9 3.9-2c.3 0 .5-.2.7-.4s.3-.5.2-.7l-1.8-20.3c-.1-.6-.5-1-1.1-.9zm-3.4 23c-1.1 1.3-1.7 2.9-1.8 4.6L51.4 69l-7.3.7-9.3.8L22 71.6c-.2-1.1-.7-2.1-1.4-2.9-.8-1-1.8-1.9-3-2.4-.9-.4-1.9-.7-2.9-.7l-1.6-18.4c3.4-.8 5.9-3.7 6-7.2l29.5-2.7L78 34.6c.4 1.7 1.3 3.1 2.6 4.3 1.3 1.1 2.9 1.7 4.6 1.8l1.7 18.4c-1.6.4-3.1 1.3-4.2 2.6z" fill="#6279f2" opacity="1" data-original="#000000"></path><path d="M49.9 52.1c-.5.1-1-.1-1.4-.5-.4-.3-.7-.8-.7-1.3s.1-1 .5-1.4c.3-.4.8-.7 1.3-.7s1 .1 1.4.5c.4.3.7.8.7 1.3s.5 1 1.1.9c.6 0 1-.5.9-1.1-.1-1.1-.6-2-1.4-2.7-.5-.5-1.2-.7-1.9-.9l-.1-1.1c0-.5-.5-1-1.1-.9-.5 0-1 .5-.9 1.1l.1 1.1c-.7.2-1.2.6-1.7 1.2-.7.8-1 1.8-.9 2.9s.6 2 1.4 2.7 1.9 1 2.9.9c1.1-.1 2 .7 2.1 1.8 0 .5-.1 1-.5 1.4-.3.4-.8.7-1.3.7-.5.1-1-.1-1.4-.5-.4-.3-.7-.8-.7-1.3 0-.6-.5-1-1.1-.9-.6 0-1 .5-.9 1.1.1 1.1.6 2 1.4 2.7.6.5 1.2.8 1.9.9l.1 1.1c0 .5.5.9 1 .9h.1c.5 0 1-.5.9-1.1l-.1-1.1c.7-.2 1.2-.6 1.7-1.2.7-.8 1-1.8.9-2.9s-.6-2-1.4-2.7c-.8-.6-1.8-1-2.9-.9z" fill="#6279f2" opacity="1" data-original="#000000"></path><path d="M58.7 42.7c-2.8-2.3-6.3-3.4-9.9-3.1-7.5.7-13 7.3-12.3 14.8.3 3.6 2 6.9 4.8 9.2 2.5 2.1 5.5 3.2 8.7 3.2.4 0 .8 0 1.2-.1 7.1-.6 12.4-6.6 12.4-13.5V52c-.4-3.7-2.1-7-4.9-9.3zm-7.7 22c-3 .3-6.1-.7-8.4-2.7s-3.8-4.8-4.1-7.9c-.6-6.4 4.2-12 10.5-12.6h1.1c2.7 0 5.3.9 7.4 2.7 1.2 1 2.2 2.2 2.8 3.5.7 1.3 1.1 2.8 1.3 4.3.5 6.5-4.2 12.1-10.6 12.7zM20.9 50c-1.9 0-3.5 1.6-3.5 3.5S19 57 20.9 57s3.5-1.6 3.5-3.5c-.1-1.9-1.6-3.5-3.5-3.5zm0 5c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5c-.1.8-.7 1.5-1.5 1.5zM79.1 50c-1.9 0-3.5 1.6-3.5 3.5s1.6 3.5 3.5 3.5 3.5-1.6 3.5-3.5S81 50 79.1 50zm0 5c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5S80 55 79.1 55z" fill="#6279f2" opacity="1" data-original="#000000"></path></g></svg>
                             <span className="text-zinc-500 font-medium mb-1 text-sm">Valor Líquido</span>
-                            <p className="font-semibold text-sm">R$ {Number(reserva?.valor_liq).toFixed(2)}</p>
+                            <p className="font-semibold text-sm">R$ {formatedNumber(Number(reserva?.valor_liq).toFixed(2))}</p>
                         </div>
                     </div>}
                     {reserva?.obs ? <div className="grid gap-4">

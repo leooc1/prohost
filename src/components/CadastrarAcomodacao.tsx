@@ -101,7 +101,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                                 }
                                 else setAutoComplete([])
                             }} />
-                        <ul className="absolute bg-white top-14 max-h-52 w-96 overflow-y-scroll z-50">
+                        <ul className="absolute bg-white rounded-2xl overflow-hidden top-14 w-max z-50 shadow-xl shadow-zinc-400">
                             {autoComplete.filter(
                                 (end: any, index, self) =>
                                     index ===
@@ -118,7 +118,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                                     endereco.value = `${end.name}, ${end.city}, ${end.state}, ${end.country}`
                                     setAutoComplete([])
                                 }}
-                                className="border border-black px-2 py-1 cursor-pointer">{end.name}, {end.city}, {end.state}, {end.country}</li>)}
+                                className="border-y border-zinc-400 px-2 py-1 cursor-pointer">{end.name}, {end.city}, {end.state}, {end.country}</li>)}
                         </ul>
                     </label>
                     <label htmlFor="valor-imovel" className="flex flex-col">

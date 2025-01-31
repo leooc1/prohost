@@ -63,9 +63,30 @@ interface propsEdicao {
     comissao: number
     valorLiq: number
     obs: string
+    saas: number
 }
 
-//const apiURl = import.meta.env.VITE_baseURLAPI;
+function formatedNumber(input: string) {
+    if (input.replace(/[.,]/gm, '').length <= 3)
+        return input.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})/gm, '$1,$2')
+    else if (input.replace(/[.,]/gm, '').length <= 4)
+        return input.replace(/[.,]/gm, '').replace(/(\d{2})(\d{2})/gm, '$1,$2')
+    else if (input.replace(/[.,]/gm, '').length <= 5)
+        return input.replace(/[.,]/gm, '').replace(/(\d{3})(\d{2})/gm, '$1,$2')
+    else if (input.replace(/[.,]/gm, '').length <= 6)
+        return input.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{2})/gm, '$1.$2,$3')
+    else if (input.replace(/[.,]/gm, '').length <= 7)
+        return input.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{2})/gm, '$1.$2,$3')
+    else if (input.replace(/[.,]/gm, '').length <= 8)
+        return input.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{2})/gm, '$1.$2,$3')
+    else if (input.replace(/[.,]/gm, '').length <= 9)
+        return input.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+    else if (input.replace(/[.,]/gm, '').length <= 10)
+        return input.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+    else if (input.replace(/[.,]/gm, '').length <= 11)
+        return input.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+    else return '0,00'
+}
 
 export default function EditarReserva(props: propsEdicao) {
     const { dataToken } = useContext(SideBarContext)
@@ -133,7 +154,6 @@ export default function EditarReserva(props: propsEdicao) {
         })
             .then(data => data.json())
             .then((data) => {
-                console.log(data)
                 if (data[0].affected == 1) {
                     alert('Atualizado!')
                     props.close()
@@ -144,7 +164,7 @@ export default function EditarReserva(props: propsEdicao) {
     }
 
     async function getAcomodacoes() {
-        await fetch('https://api.prohost.net.br/acomodacao/1', {
+        await fetch(`https://api.prohost.net.br/acomodacao/${props.saas}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -155,7 +175,7 @@ export default function EditarReserva(props: propsEdicao) {
     }
 
     async function getCanais() {
-        await fetch('https://api.prohost.net.br/canal_reserva/1', {
+        await fetch(`https://api.prohost.net.br/canal_reserva/${props.saas}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -166,7 +186,7 @@ export default function EditarReserva(props: propsEdicao) {
     }
 
     async function getHospede() {
-        await fetch('https://api.prohost.net.br/hospede/1', {
+        await fetch(`https://api.prohost.net.br/hospede/${props.saas}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -255,78 +275,75 @@ export default function EditarReserva(props: propsEdicao) {
                     <div className="grid gap-4 grid-cols-3">
                         <label htmlFor="tot" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Valor Total</span>
-                            <input defaultValue={props.valorTotal} type="number" placeholder="R$" step="0.01" name="tot" id="tot" className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
-                                onInput={() => {
-                                    const total = document.getElementById('tot') as HTMLInputElement
-                                    const comissao = document.getElementById('com') as HTMLInputElement
-                                    const liquido = document.getElementById('liq') as HTMLInputElement
-
-                                    if (comissao.value.length == 0 && liquido.value.length == 0) {
-                                        liquido.value = String(Number(total.value) - Number(comissao.value));
-                                    } else if (comissao.value.length == 0 && liquido.value.length > 0) {
-                                        comissao.value = String(Number(total.value) - Number(liquido.value));
-                                    } else if (comissao.value.length > 0 && liquido.value.length == 0) {
-                                        liquido.value = String(Number(total.value) - Number(comissao.value));
-                                    } else {
-                                        liquido.value = String(Number(total.value) - Number(comissao.value));
-                                    }
-
-                                    total.value = (Number(total.value).toFixed(2));
-                                    comissao.value = (Number(comissao.value).toFixed(2));
-                                    liquido.value = (Number(liquido.value).toFixed(2));
-
-                                    checkNegativeAndApplyStyle();
-                                }} />
+                            <div className="flex items-center gap-2">
+                                R$<input defaultValue={formatedNumber(String(props.valorTotal))} type="text" placeholder="R$" step="0.01" name="tot" id="tot" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full"
+                                    onInput={() => {
+                                        const total = document.getElementById('tot') as HTMLInputElement
+                                        const comissao = document.getElementById('com') as HTMLInputElement
+                                        const liquido = document.getElementById('liq') as HTMLInputElement
+                                        if (comissao.value.length == 0 && liquido.value.length == 0) {
+                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        } else if (comissao.value.length == 0 && liquido.value.length > 0) {
+                                            comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        } else if (comissao.value.length > 0 && liquido.value.length == 0) {
+                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        } else {
+                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        }
+                                        total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                        comissao.value = formatedNumber(String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                        liquido.value = formatedNumber(String(Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                        checkNegativeAndApplyStyle();
+                                    }} />
+                            </div>
                         </label>
                         <label htmlFor="com" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Comissão</span>
-                            <input defaultValue={props.comissao} type="number" placeholder="R$" step="0.01" name="com" id="com" className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
-                                onInput={() => {
-                                    const total = document.getElementById('tot') as HTMLInputElement
-                                    const comissao = document.getElementById('com') as HTMLInputElement
-                                    const liquido = document.getElementById('liq') as HTMLInputElement
-
-                                    if (liquido.value.length == 0 && total.value.length == 0) {
-                                        return;
-                                    } else if (liquido.value.length == 0 && total.value.length > 0) {
-                                        liquido.value = String(Number(total.value) - Number(comissao.value));
-                                    } else if (liquido.value.length > 0 && total.value.length == 0) {
-                                        total.value = String(Number(comissao.value) + Number(liquido.value));
-                                    } else {
-                                        liquido.value = String(Number(total.value) - Number(comissao.value));
-                                    }
-
-                                    total.value = (Number(total.value).toFixed(2));
-                                    comissao.value = (Number(comissao.value).toFixed(2));
-                                    liquido.value = (Number(liquido.value).toFixed(2));
-
-                                    checkNegativeAndApplyStyle();
-                                }} />
+                            <div className="flex items-center gap-2">
+                                R$<input defaultValue={formatedNumber(String(props.comissao))} type="text" placeholder="R$" step="0.01" name="com" id="com" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full"
+                                    onInput={() => {
+                                        const total = document.getElementById('tot') as HTMLInputElement
+                                        const comissao = document.getElementById('com') as HTMLInputElement
+                                        const liquido = document.getElementById('liq') as HTMLInputElement
+                                        if (liquido.value.length == 0 && total.value.length == 0) {
+                                            return;
+                                        } else if (liquido.value.length == 0 && total.value.length > 0) {
+                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        } else if (liquido.value.length > 0 && total.value.length == 0) {
+                                            total.value = String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        } else {
+                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        }
+                                        total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                        comissao.value = formatedNumber(String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                        liquido.value = formatedNumber(String(Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                        checkNegativeAndApplyStyle();
+                                    }} />
+                            </div>
                         </label>
                         <label htmlFor="liq" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Valor Líquido</span>
-                            <input defaultValue={props.valorLiq} type="number" placeholder="R$" step="0.01" name="liq" id="liq" className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
-                                onInput={() => {
-                                    const total = document.getElementById('tot') as HTMLInputElement
-                                    const comissao = document.getElementById('com') as HTMLInputElement
-                                    const liquido = document.getElementById('liq') as HTMLInputElement
-
-                                    if (comissao.value.length == 0 && total.value.length == 0) {
-                                        total.value = String(Number(liquido.value) + Number(comissao.value));
-                                    } else if (comissao.value.length == 0 && total.value.length > 0) {
-                                        comissao.value = String(Number(total.value) - Number(liquido.value));
-                                    } else if (comissao.value.length > 0 && total.value.length == 0) {
-                                        total.value = String(Number(total.value) - Number(comissao.value));
-                                    } else {
-                                        comissao.value = String(Number(total.value) - Number(liquido.value));
-                                    }
-
-                                    total.value = (Number(total.value).toFixed(2));
-                                    comissao.value = (Number(comissao.value).toFixed(2));
-                                    liquido.value = (Number(liquido.value).toFixed(2));
-
-                                    checkNegativeAndApplyStyle();
-                                }} />
+                            <div className="flex items-center gap-2">
+                                R$<input defaultValue={formatedNumber(String(props.valorLiq))} type="text" placeholder="R$" step="0.01" name="liq" id="liq" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full"
+                                    onInput={() => {
+                                        const total = document.getElementById('tot') as HTMLInputElement
+                                        const comissao = document.getElementById('com') as HTMLInputElement
+                                        const liquido = document.getElementById('liq') as HTMLInputElement
+                                        if (comissao.value.length == 0 && total.value.length == 0) {
+                                            total.value = String(Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        } else if (comissao.value.length == 0 && total.value.length > 0) {
+                                            comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        } else if (comissao.value.length > 0 && total.value.length == 0) {
+                                            total.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        } else {
+                                            comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                        }
+                                        total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                        comissao.value = formatedNumber(String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                        liquido.value = formatedNumber(String(Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                        checkNegativeAndApplyStyle();
+                                    }} />
+                            </div>
                         </label>
                     </div>
                     {/*  */}
@@ -360,8 +377,8 @@ export default function EditarReserva(props: propsEdicao) {
                                 const checkoutDateTime = new Date(`${checkoutDate.value} ${checkoutHora.value}:00`);
 
                                 if (acomodacaoInput.value.length > 0 && canais.value.length > 0 && Number(qtdHospede.value) > 0 && checkinDate.value.length > 0 && checkinHora.value.length > 0 && checkoutDate.value.length > 0 && checkoutHora.value.length > 0 && Number(valorComissao.value) >= 0 && Number(valorBruto.value) >= 0 && Number(valorLiquido.value) >= 0 && hospedeInput.value.length > 0 && (checkinDateTime < checkoutDateTime)) {
-                                    if (hospede.filter(h => h.nome == hospedeInput.value).length > 0)
-                                        hospedeId = (hospede.filter(h => h.nome == hospedeInput.value)[0].id) || 0
+                                    if (hospede.filter(h => h.nome.toLowerCase() == hospedeInput.value.toLowerCase()).length > 0)
+                                        hospedeId = (hospede.filter(h => h.nome.toLowerCase() == hospedeInput.value.toLowerCase())[0].id) || 0
                                     else
                                         hospedeId = await createHospede({
                                             nome: hospedeInput.value,

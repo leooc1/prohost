@@ -68,15 +68,32 @@ export default function NovaContinuidade(props: propsContinuidade) {
                         <input type="date" name="checkout-date" id="checkout-date" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                     </label>
                     <label htmlFor="checkout-hour" className="flex flex-col justify-end w-fit">
-                        <input type="time" defaultValue={`0${new Date().getHours()}`.slice(-2)+':00'} name="checkout-hour" id="checkout-hour" className="border border-zinc-300 max-w-24 rounded-md px-2 py-1 outline-none" />
+                        <input type="time" defaultValue={`0${new Date().getHours()}`.slice(-2) + ':00'} name="checkout-hour" id="checkout-hour" className="border border-zinc-300 max-w-24 rounded-md px-2 py-1 outline-none" />
                     </label>
                     <label htmlFor="valor-total" className="flex flex-col justify-end w-fit">
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Valor total</span>
                         <input
                             onChange={(e) => {
-                                e.target.value = Number(e.target.value).toFixed(2)
+                                if (e.target.value.replace(/[.,]/gm, '').length <= 3)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})/gm, '$1,$2')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 4)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{2})/gm, '$1,$2')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 5)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{2})/gm, '$1,$2')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 6)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 7)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 8)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 9)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 10)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 11)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
                             }}
-                            type="number" step={0.01} name="valor-total" placeholder="R$" id="valor-total" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full" />
+                            type="text" name="valor-total" placeholder="R$" id="valor-total" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full" />
                     </label>
                 </div>
                 <label htmlFor="obs" className="flex flex-col">
@@ -100,11 +117,11 @@ export default function NovaContinuidade(props: propsContinuidade) {
                             let vProprietario: number = 0
                             let vGestor: number = 0
                             if (props.comissao) {
-                                vProprietario = ((100 - props.comissao) / 100) * Number(valorTotal.value)
-                                vGestor = (props.comissao / 100) * Number(valorTotal.value)
+                                vProprietario = ((100 - props.comissao) / 100) * Number(valorTotal.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
+                                vGestor = (props.comissao / 100) * Number(valorTotal.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
                             } else {
-                                vProprietario = Number(valorTotal.value)
-                                vGestor = Number(valorTotal.value)
+                                vProprietario = Number(valorTotal.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
+                                vGestor = Number(valorTotal.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
                             }
 
                             if (checkoutDate.value.length > 0 && checkoutTime.value.length > 0 && valorTotal.value.length > 0)
@@ -125,8 +142,8 @@ export default function NovaContinuidade(props: propsContinuidade) {
                                     "saas": {
                                         "id": dataToken.id
                                     },
-                                    "valor": Number(valorTotal.value),
-                                    "valor_liq": Number(valorTotal.value),
+                                    "valor": Number(valorTotal.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
+                                    "valor_liq": Number(valorTotal.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                     "valor_prop": vProprietario,
                                     "valor_gestor": vGestor,
                                     "obs": obs.value,

@@ -20,7 +20,6 @@ interface Acomodacao {
     saas: { id: number }
 }
 
-//const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function Acomodacoes() {
     useEffect(() => { document.title = 'Acomodações | Prohost' }, [])
@@ -80,6 +79,14 @@ export default function Acomodacoes() {
                         onClick={() => setCadastrarAcomodacao(true)}>Cadastrar Acomodação</button>
                     {cadastrarAcomodacao && <CadastrarAcomodacao close={() => setCadastrarAcomodacao(false)} />}
                 </div>
+                {(proprio.length == 0 &&
+                    terceiro.length == 0 &&
+                    desativados.length == 0) &&
+                    <section className="px-10 bg-zinc-200 rounded-xl py-10">
+                        <p className="text-3xl font-medium text-center ">Cadastre sua primeira acomodação e tenha total controle das suas reservas e ganhos. 🚀</p>
+                    </section>
+                }
+
                 {proprio.length ?
                     <section className="pt-3">
                         <p className="text-2xl font-medium">Próprias</p>

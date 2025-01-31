@@ -152,8 +152,8 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                                     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
                                 else if (e.target.value.replace(/[.,]/gm, '').length <= 10)
                                     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
-                                else if (e.target.value.replace(/[.,]/gm,'').length <= 11)
-                                    e.target.value = e.target.value.replace(/[.,]/gm,'').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 11)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
                             }}
                             type="text" name="valor" placeholder="R$" id="valor" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full" />
                     </label>
@@ -174,8 +174,8 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                             const observacaoInput = document.getElementById('observacao') as HTMLInputElement
                             let vProprietario: number = 0
                             let vGestor: number = 0
-                            if (acomodacaoInput.value != 'null' && acomodacao.filter(e => e.id == Number(acomodacaoInput.value))[0].comissao) {
-                                const comissao = acomodacao.filter(a => a.id == Number(acomodacaoInput.value))[0].comissao
+                            if (acomodacaoInput.value != 'null' && acomodacao.filter(e => e.id == Number(acomodacaoInput.value))[0]?.comissao) {
+                                const comissao = acomodacao.filter(a => a.id == Number(acomodacaoInput.value))[0]?.comissao
                                 vProprietario = ((100 - comissao) / 100) * Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
                                 vGestor = (comissao / 100) * Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
                             }
@@ -212,7 +212,10 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                                 })
                             }
                             else {
-                                alert('Preenchimento incorreto')
+                                if (!(categoriaInput?.htmlFor)) {
+                                    alert('Selecione uma categoria')
+                                } else
+                                    alert('Preenchimento incorreto')
                             }
                         }}
                     >Registrar Movimentação</button>

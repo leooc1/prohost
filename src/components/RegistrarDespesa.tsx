@@ -61,7 +61,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
             .catch(err => console.log(err))
     }
     async function getCategorias() {
-        await fetch('https://api.prohost.net.br/categoria_financeiro/'+dataToken.id, {
+        await fetch('https://api.prohost.net.br/categoria_financeiro/' + dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -166,8 +166,8 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
                                     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
                                 else if (e.target.value.replace(/[.,]/gm, '').length <= 10)
                                     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
-                                else if (e.target.value.replace(/[.,]/gm,'').length <= 11)
-                                    e.target.value = e.target.value.replace(/[.,]/gm,'').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 11)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
                             }}
                             type="text" name="valor" placeholder="R$" id="valor" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full" />
                     </label>
@@ -251,7 +251,10 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
                                 })
                             }
                             else {
-                                alert('Preenchimento incorreto')
+                                if (!(categoriaInput?.htmlFor)) {
+                                    alert('Selecione uma categoria')
+                                } else
+                                    alert('Preenchimento incorreto')
                             }
                         }}
                     >Registrar Movimentação</button>

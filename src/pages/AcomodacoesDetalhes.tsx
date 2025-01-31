@@ -89,7 +89,7 @@ export default function AcomodacoesDetalhes() {
 
     async function getAcomodacao() {
 
-        await fetch(`http://localhost:3000/acomodacao/${dataToken.id}/${id}`, {
+        await fetch(`https://api.prohost.net.br/acomodacao/${dataToken.id}/${id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -135,7 +135,7 @@ export default function AcomodacoesDetalhes() {
 
     async function dataDashs() {
         {
-            await fetch(`http://localhost:3000/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}/${id}`, {
+            await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}/${id}`, {
                 method: 'GET'
             })
                 .then(data => data.json())
@@ -151,7 +151,7 @@ export default function AcomodacoesDetalhes() {
                 .catch(err => console.log(err))
         }
         {
-            await fetch(`http://localhost:3000/reserva/${dataToken.id}/ind-ope/${dataBW[0]}/${dataBW[1]}/${id}`, {
+            await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/ind-ope/${dataBW[0]}/${dataBW[1]}/${id}`, {
                 method: 'GET'
             })
                 .then(data => data.json())
@@ -162,7 +162,7 @@ export default function AcomodacoesDetalhes() {
                 .catch(err => console.log(err))
         }
         {
-            await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/result-ac/${dataBW[0]}/${dataBW[1]}/${id}`, {
+            await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/result-ac/${dataBW[0]}/${dataBW[1]}/${id}`, {
                 method: 'GET'
             })
                 .then(data => data.json())
@@ -183,7 +183,7 @@ export default function AcomodacoesDetalhes() {
                 .catch(err => console.log(err))
         }
         {
-            await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/fat-canal/${dataBW[0]}/${dataBW[1]}/${id}`, {
+            await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/fat-canal/${dataBW[0]}/${dataBW[1]}/${id}`, {
                 method: 'GET'
             })
                 .then(data => data.json())
@@ -193,7 +193,7 @@ export default function AcomodacoesDetalhes() {
                 .catch(err => console.log(err))
         }
         {
-            await fetch(`http://localhost:3000/movimentacao/${dataToken.id}/fat-bar/${dataBar}/${id}`, {
+            await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/fat-bar/${dataBar}/${id}`, {
                 method: 'GET'
             })
                 .then(data => data.json())
@@ -206,7 +206,7 @@ export default function AcomodacoesDetalhes() {
     }
 
     async function updateAcomodacao(pbody: Acomodacao) {
-        await fetch(`http://localhost:3000/acomodacao/${id}`, {
+        await fetch(`https://api.prohost.net.br/acomodacao/${id}`, {
             method: 'PUT',
             body: JSON.stringify(pbody),
             headers: {
@@ -233,7 +233,7 @@ export default function AcomodacoesDetalhes() {
     const [qtdMaxHospede, setQtdMaxHospede] = useState<number>(-1)
 
     async function desativar(id: number, desativado: boolean) {
-        await fetch(`http://localhost:3000/acomodacao/${id}`, {
+        await fetch(`https://api.prohost.net.br/acomodacao/${id}`, {
             method: 'DELETE',
             body: JSON.stringify({ desativado: desativado }),
             headers: {
@@ -274,7 +274,6 @@ export default function AcomodacoesDetalhes() {
         tipo_reserva: string
         valor_liq: number
     }[]>([])
-
     useEffect(() => {
         getAcomodacao()
         const input = document.getElementById('input-file') as HTMLInputElement | null;
@@ -488,8 +487,8 @@ export default function AcomodacoesDetalhes() {
                             </div>
                             <div className="relative bg-white border-zinc-300 border rounded-lg flex flex-col h-56 justify-between items-center py-3">
                                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Taxa de Ocupação</p>
-                                <OcupacaoMedia dados={[Number(taxaOcupacao.toFixed(1))]} />
-                                <p className="absolute text-3xl font-bold bottom-3 text-zinc-500">{taxaOcupacao.toFixed(1)}%</p>
+                                <OcupacaoMedia dados={taxaOcupacao ? [Number(taxaOcupacao).toFixed(1)] : [0]} />
+                                <p className="text-3xl text-center font-bold bottom-3 text-zinc-500 mb-4">{taxaOcupacao ? Number(taxaOcupacao).toFixed(1) : 0}%</p>
                             </div>
                         </section>}
                         {graf && <section className='grid mt-4'>
