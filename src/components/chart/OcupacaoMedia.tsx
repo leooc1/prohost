@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 
 Chart.register(PieController, ArcElement, Tooltip, Legend, Title, ChartDataLabels);
 
-export default function OcupacaoMedia({ dados }: { dados: number[] }) {
+export default function OcupacaoMedia({ dados }: { dados: any[] }) {
     const chartRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
