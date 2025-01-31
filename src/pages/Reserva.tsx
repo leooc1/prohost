@@ -60,7 +60,7 @@ export default function Reserva() {
   const [ids, setIds] = useState<{ id: number, index: number }[]>([])
 
   async function getReserva() {
-    await fetch(`http://localhost:3000/reserva/${dataToken.id}`, {
+    await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}`, {
       method: 'GET'
     })
       .then(data => data.json())
@@ -72,7 +72,7 @@ export default function Reserva() {
   }
 
   async function getAcomodacoes() {
-    await fetch(`http://localhost:3000/acomodacao/${dataToken.id}`, {
+    await fetch(`https://api.prohost.net.br/acomodacao/${dataToken.id}`, {
       method: 'GET'
     })
       .then(data => data.json())
@@ -83,7 +83,7 @@ export default function Reserva() {
   }
 
   async function getCanais() {
-    await fetch(`http://localhost:3000/canal_reserva/${dataToken.id}`, {
+    await fetch(`https://api.prohost.net.br/canal_reserva/${dataToken.id}`, {
       method: 'GET'
     })
       .then(data => data.json())
@@ -94,7 +94,7 @@ export default function Reserva() {
   }
 
   async function getAll(saas: number) {
-    await fetch(`http://localhost:3000/reserva/index/${saas}`, {
+    await fetch(`https://api.prohost.net.br/reserva/index/${saas}`, {
       method: 'GET',
     })
       .then(data => data.json())
