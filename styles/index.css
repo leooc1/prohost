@@ -46,12 +46,12 @@
     }
 }
 
-.input-number[type="number"]::-webkit-inner-spin-button,
-.input-number[type="number"]::-webkit-outer-spin-button {
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-.input-number[type="number"] {
+input[type="number"] {
   -moz-appearance: textfield; /* Para navegadores Firefox */
 }
