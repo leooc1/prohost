@@ -124,11 +124,11 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
                 <div className="grid gap-4 grid-cols-2">
                     <label htmlFor="descricao" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Descrição</span>
-                        <input placeholder="Ex: Sofá usado" type="text" name="descricao" id="descricao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                        <input placeholder="Ex: Manutenção preventiva ar condicionado" type="text" name="descricao" id="descricao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                     </label>
                     <label htmlFor="recebedor" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Recebedor</span>
-                        <input placeholder="Ex: Mercado Paulista" type="text" name="recebedor" id="recebedor" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                        <input placeholder="Ex: Empresa de Refrigeração" type="text" name="recebedor" id="recebedor" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                     </label>
                 </div>
                 <label htmlFor="acomodacaoReceita" className={`flex flex-col ${tipoDespesa == 'Despesas do Negócio' ? 'hidden' : null}`}>
