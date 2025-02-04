@@ -115,7 +115,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                 <div className="grid">
                     <label htmlFor="descricao" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Descrição</span>
-                        <input placeholder="Ex: Material de Limpeza" type="text" name="descricao" id="descricao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                        <input placeholder="Ex: Sofá usado" type="text" name="descricao" id="descricao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                     </label>
                 </div>
                 <label htmlFor="acomodacaoReceita" className={`flex flex-col`}>
