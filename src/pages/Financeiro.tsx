@@ -44,7 +44,6 @@ interface Acomodacao {
     saas: { id: number }
 }
 
-//const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function Financeiro() {
     useEffect(() => { document.title = `Financeiro | Prohost` }, [])
@@ -237,6 +236,7 @@ export default function Financeiro() {
         loadAll()
     }, [listagem, dataToken])
 
+
     return (
         loaded ?
             <div className='w-full'>
@@ -343,8 +343,8 @@ export default function Financeiro() {
                         </div>
                     </div>
                     {cadastrarCategoria && <CadastrarCategoria close={() => setCadastrarCategoria(false)} />}
-                    {novaDespesa && <RegistrarDespesa close={() => setNovaDespesa(false)} saas={dataToken.id} />}
-                    {novaReceita && <RegistrarReceita close={() => setNovaReceita(false)} saas={dataToken.id} />}
+                    {novaDespesa && <RegistrarDespesa close={() => setNovaDespesa(false)} saas={dataToken?.id? dataToken.id : '' } />}
+                    {novaReceita && <RegistrarReceita close={() => setNovaReceita(false)} saas={dataToken?.id? dataToken.id : '' } />}
                     {session == 0 &&
                         <div className='grid grid-cols-4 gap-4'>
                             <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center">
