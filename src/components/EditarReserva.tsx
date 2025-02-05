@@ -89,7 +89,7 @@ function formatedNumber(input: string) {
 }
 
 export default function EditarReserva(props: propsEdicao) {
-    const apiURL = 'http://localhost:3000'
+    const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
     const checkin = new Date(props.checkIn)
     const checkinDate = (`${checkin.getUTCFullYear()}-${('0' + (checkin.getUTCMonth() + 1)).slice(-2)}-${('0' + (checkin.getUTCDate())).slice(-2)}`)
