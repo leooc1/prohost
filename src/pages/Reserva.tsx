@@ -113,7 +113,7 @@ export default function Reserva() {
     setLoaded(true)
   }
 
-  function toDateBr(data: string) {
+  /* function toDateBr(data: string) {
     const checkIn = new Date(data)
     const ano = (checkIn.getFullYear())
     const mes = (checkIn.getMonth() + 1)
@@ -122,7 +122,7 @@ export default function Reserva() {
     const min = (checkIn.getMinutes())
     const seg = (checkIn.getSeconds())
     return (`${ano}-${mes < 10 ? '0' + mes : mes}-${dia < 10 ? '0' + dia : dia}T${hr < 10 ? '0' + hr : hr}:${min < 10 ? '0' + min : min}:${seg < 10 ? '0' + seg : seg}Z`)
-  }
+  } */
 
   function initial(): string | null {
     const dataInicial = localStorage.getItem('ph-cld-initial-date')
