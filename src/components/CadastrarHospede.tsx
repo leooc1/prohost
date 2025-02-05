@@ -12,10 +12,11 @@ interface Hospede {
 //const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function CadastrarHospede({ close }: { close: () => void }) {
+    const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
 
     async function createHospede(pbody: Hospede) {
-        await fetch(`https://api.prohost.net.br/hospede/`, {
+        await fetch(`${apiURL}/hospede/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {

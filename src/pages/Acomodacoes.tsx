@@ -22,6 +22,7 @@ interface Acomodacao {
 
 
 export default function Acomodacoes() {
+    const apiURL = 'https://api.prohost.net.br'
     useEffect(() => { document.title = 'Acomodações | Prohost' }, [])
 
 
@@ -33,7 +34,7 @@ export default function Acomodacoes() {
     const [desativados, setDesativados] = useState<Acomodacao[]>([])
 
     async function acomodacoes() {
-        await fetch('https://api.prohost.net.br/acomodacao/' + dataToken.id, {
+        await fetch(`${apiURL}/acomodacao/` + dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -47,7 +48,7 @@ export default function Acomodacoes() {
     }
 
     async function desativar(id: number, desativado: boolean) {
-        await fetch(`https://api.prohost.net.br/acomodacao/${id}`, {
+        await fetch(`${apiURL}/acomodacao/${id}`, {
             method: 'DELETE',
             body: JSON.stringify({ desativado: desativado }),
             headers: {
@@ -58,7 +59,6 @@ export default function Acomodacoes() {
             .then((data) => {
                 if (data.affected == 1) {
                     desativado ? alert('DESATIVADO!') : alert('ATIVADO!');
-                    close()
                     location.reload()
                 }
             })

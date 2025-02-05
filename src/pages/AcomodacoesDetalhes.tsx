@@ -30,7 +30,7 @@ interface Acomodacao {
 }
 
 export default function AcomodacoesDetalhes() {
-
+    const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
     const [loaded, setLoaded] = useState(false)
     const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
@@ -89,7 +89,7 @@ export default function AcomodacoesDetalhes() {
 
     async function getAcomodacao() {
 
-        await fetch(`https://api.prohost.net.br/acomodacao/${dataToken.id}/${id}`, {
+        await fetch(`${apiURL}/acomodacao/${dataToken.id}/${id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -135,7 +135,7 @@ export default function AcomodacoesDetalhes() {
 
     async function dataDashs() {
         {
-            await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}/${id}`, {
+            await fetch(`${apiURL}/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}/${id}`, {
                 method: 'GET'
             })
                 .then(data => data.json())
@@ -151,7 +151,7 @@ export default function AcomodacoesDetalhes() {
                 .catch(err => console.log(err))
         }
         {
-            await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/ind-ope/${dataBW[0]}/${dataBW[1]}/${id}`, {
+            await fetch(`${apiURL}/reserva/${dataToken.id}/ind-ope/${dataBW[0]}/${dataBW[1]}/${id}`, {
                 method: 'GET'
             })
                 .then(data => data.json())
@@ -162,7 +162,7 @@ export default function AcomodacoesDetalhes() {
                 .catch(err => console.log(err))
         }
         {
-            await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/result-ac/${dataBW[0]}/${dataBW[1]}/${id}`, {
+            await fetch(`${apiURL}/movimentacao/${dataToken.id}/result-ac/${dataBW[0]}/${dataBW[1]}/${id}`, {
                 method: 'GET'
             })
                 .then(data => data.json())
@@ -183,7 +183,7 @@ export default function AcomodacoesDetalhes() {
                 .catch(err => console.log(err))
         }
         {
-            await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/fat-canal/${dataBW[0]}/${dataBW[1]}/${id}`, {
+            await fetch(`${apiURL}/movimentacao/${dataToken.id}/fat-canal/${dataBW[0]}/${dataBW[1]}/${id}`, {
                 method: 'GET'
             })
                 .then(data => data.json())
@@ -193,7 +193,7 @@ export default function AcomodacoesDetalhes() {
                 .catch(err => console.log(err))
         }
         {
-            await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/fat-bar/${dataBar}/${id}`, {
+            await fetch(`${apiURL}/movimentacao/${dataToken.id}/fat-bar/${dataBar}/${id}`, {
                 method: 'GET'
             })
                 .then(data => data.json())
@@ -206,7 +206,7 @@ export default function AcomodacoesDetalhes() {
     }
 
     async function updateAcomodacao(pbody: Acomodacao) {
-        await fetch(`https://api.prohost.net.br/acomodacao/${id}`, {
+        await fetch(`${apiURL}/acomodacao/${id}`, {
             method: 'PUT',
             body: JSON.stringify(pbody),
             headers: {
@@ -233,7 +233,7 @@ export default function AcomodacoesDetalhes() {
     const [qtdMaxHospede, setQtdMaxHospede] = useState<number>(-1)
 
     async function desativar(id: number, desativado: boolean) {
-        await fetch(`https://api.prohost.net.br/acomodacao/${id}`, {
+        await fetch(`${apiURL}/acomodacao/${id}`, {
             method: 'DELETE',
             body: JSON.stringify({ desativado: desativado }),
             headers: {

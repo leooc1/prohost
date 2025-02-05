@@ -25,6 +25,7 @@ interface Movimentacao {
 // const apiUrl = import.meta.env.VITE_baseURLAPI;
 
 export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: Movimentacao[] }) {
+    const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
     const [arrayMovimentacoes, setArrayMovimentacoes] = useState<Movimentacao[][]>([])
     const [page, setPage] = useState<number>(0)
@@ -49,7 +50,7 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
     }
     const [ids, setIds] = useState<{ id: number, index: number }[]>([])
     async function getAll(saas: number) {
-        await fetch(`https://api.prohost.net.br/reserva/index/${saas}`, {
+        await fetch(`${apiURL}/reserva/index/${saas}`, {
             method: 'GET',
         })
             .then(data => data.json())

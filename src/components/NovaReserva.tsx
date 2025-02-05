@@ -55,6 +55,7 @@ interface Reserva {
 //const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function NovaReserva({ close }: { close: () => void }) {
+    const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
     const [canais, setCanais] = useState<Canais[]>([])
@@ -108,7 +109,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
 
     async function createHospede(pbody: Hospede) {
         try {
-            const response = await fetch(`https://api.prohost.net.br/hospede/`, {
+            const response = await fetch(`${apiURL}/hospede/`, {
                 method: 'POST',
                 body: JSON.stringify(pbody),
                 headers: {
@@ -125,7 +126,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function createReserva(pbody: Reserva) {
-        await fetch(`https://api.prohost.net.br/reserva/`, {
+        await fetch(`${apiURL}/reserva/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {
@@ -148,7 +149,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getAcomodacoes() {
-        await fetch(`https://api.prohost.net.br/acomodacao/${dataToken.id}`, {
+        await fetch(`${apiURL}/acomodacao/${dataToken.id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -159,7 +160,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getCanais() {
-        await fetch(`https://api.prohost.net.br/canal_reserva/${dataToken.id}`, {
+        await fetch(`${apiURL}/canal_reserva/${dataToken.id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -170,7 +171,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getHospede() {
-        await fetch(`https://api.prohost.net.br/hospede/${dataToken.id}`, {
+        await fetch(`${apiURL}/hospede/${dataToken.id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -190,7 +191,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     useEffect(() => {
         getAll()
     }, [dataToken])
-
+    console.log(hospede)
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={close}></div>

@@ -10,12 +10,13 @@ interface Canais {
 //const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function CanaisDeReserva({ close }: { close: () => void }) {
+    const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
     const [canais, setCanais] = useState<Canais[]>([])
     const [color, setColor] = useState('#bdc3c7')
 
     async function getCanais() {
-        await fetch('https://api.prohost.net.br/canal_reserva/' + dataToken.id, {
+        await fetch(`${apiURL}/canal_reserva/` + dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -26,7 +27,7 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
     }
 
     async function updateCanais(id: number, pbody: { cor: string, nome: string }) {
-        await fetch(`https://api.prohost.net.br/canal_reserva/${id}`, {
+        await fetch(`${apiURL}/canal_reserva/${id}`, {
             method: 'PUT',
             body: JSON.stringify(pbody),
             headers: {
@@ -43,7 +44,7 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
     }
 
     async function createCanais(pbody: Canais) {
-        await fetch('https://api.prohost.net.br/canal_reserva/', {
+        await fetch(`${apiURL}/canal_reserva/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {
@@ -64,7 +65,7 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
     }
 
     async function deleteCanais(id: number) {
-        await fetch(`https://api.prohost.net.br/canal_reserva/${id}`, {
+        await fetch(`${apiURL}/canal_reserva/${id}`, {
             method: 'DELETE',
         })
             .then(data => data.json())

@@ -38,12 +38,13 @@ interface Reserva {
 //const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function NovaIndisponibilidade({ close }: { close: () => void }) {
+    const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
     const [render, setRender] = useState(false)
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
 
     async function getAcomodacoes() {
-        await fetch('https://api.prohost.net.br/acomodacao/'+dataToken.id, {
+        await fetch(`${apiURL}/acomodacao/`+dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -54,7 +55,7 @@ export default function NovaIndisponibilidade({ close }: { close: () => void }) 
     }
 
     async function createIndisponibilidade(pbody: Reserva) {
-        await fetch(`https://api.prohost.net.br/reserva/`, {
+        await fetch(`${apiURL}/reserva/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {

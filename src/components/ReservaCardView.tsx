@@ -51,6 +51,7 @@ function formatedNumber(input: string) {
 }
 
 export default function ReservaCardView(props: propsReserva) {
+    const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
     const [reserva, setReserva] = useState<Reserva>()
     const [idR, setIdR] = useState<number>(0)
@@ -63,10 +64,10 @@ export default function ReservaCardView(props: propsReserva) {
 
         const day = ("0" + date.getDate()).slice(-2);
         const monthNames = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
-        const month = monthNames[date.getMonth()];
-        const year = date.getFullYear();
-        const hours = ("0" + date.getHours()).slice(-2);
-        const minutes = ("0" + date.getMinutes()).slice(-2);
+        const month = monthNames[date.getUTCMonth()];
+        const year = date.getUTCFullYear();
+        const hours = ("0" + date.getUTCHours()).slice(-2);
+        const minutes = ("0" + date.getUTCMinutes()).slice(-2);
 
         return `${day} ${month} ${year} ${hours}:${minutes}`;
     }
@@ -83,7 +84,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function idContinuidade(idAcomodacao: number, idContinuidade: number) {
-        await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/${idAcomodacao}/ci/${idContinuidade}`, {
+        await fetch(`${apiURL}/reserva/${dataToken.id}/${idAcomodacao}/ci/${idContinuidade}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -94,7 +95,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function idReserva(idReserva: number, idAcomodacao: number) {
-        await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/${idReserva}/${idAcomodacao}`, {
+        await fetch(`${apiURL}/reserva/${dataToken.id}/${idReserva}/${idAcomodacao}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -105,7 +106,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function getReserva(id: string) {
-        await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}/${id}`, {
+        await fetch(`${apiURL}/reserva/${dataToken.id}/${id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -120,7 +121,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function deleteReserva(id: number) {
-        await fetch(`https://api.prohost.net.br/reserva/${id}`, {
+        await fetch(`${apiURL}/reserva/${id}`, {
             method: 'DELETE'
         })
             .then(data => data.json())

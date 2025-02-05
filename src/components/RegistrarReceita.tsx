@@ -28,6 +28,7 @@ interface CategoriaFinanceiro {
 //const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function RegistrarReceita({ close, saas }: { close: () => void, saas: string }) {
+    const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
 
     const setCategoria = () => {
@@ -50,7 +51,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
         })
     }
     async function getAcomodacoes() {
-        await fetch('https://api.prohost.net.br/acomodacao/' + dataToken.id, {
+        await fetch(`${apiURL}/acomodacao/` + dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -60,7 +61,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
             .catch(err => console.log(err))
     }
     async function getCategorias() {
-        await fetch('https://api.prohost.net.br/categoria_financeiro/' + dataToken.id, {
+        await fetch(`${apiURL}/categoria_financeiro/` + dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -70,7 +71,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
             .catch(err => console.log(err))
     }
     async function create(pbody: any) {
-        await fetch(`https://api.prohost.net.br/movimentacao/`, {
+        await fetch(`${apiURL}/movimentacao/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {

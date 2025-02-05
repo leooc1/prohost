@@ -11,6 +11,7 @@ interface Hospede {
 // const apiUrl = import.meta.env.VITE_baseURLAPI;
 
 export default function ListaHospede({ hospedes, atualizar, setAtualizar }: { hospedes: Hospede[], atualizar: [boolean, number], setAtualizar: Dispatch<SetStateAction<[boolean, number]>> }) {
+    const apiURL = 'https://api.prohost.net.br'
     const [lhospedes, setLHospedes] = useState<Hospede[]>([])
 
     function Perfil(nome: string) {
@@ -25,7 +26,7 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar }: { ho
     }
 
     async function excluir(idHospede: number) {
-        await fetch(`https://api.prohost.net.br/hospede/${idHospede}`,
+        await fetch(`${apiURL}/hospede/${idHospede}`,
             { method: 'DELETE' }
         )
             .then(data => data.json())

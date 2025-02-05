@@ -44,6 +44,7 @@ interface Reserva {
 }
 
 export default function Reserva() {
+  const apiURL = 'https://api.prohost.net.br'
   useEffect(() => { document.title = 'Reservas | Prohost' }, [])
 
 
@@ -60,7 +61,7 @@ export default function Reserva() {
   const [ids, setIds] = useState<{ id: number, index: number }[]>([])
 
   async function getReserva() {
-    await fetch(`https://api.prohost.net.br/reserva/${dataToken.id}`, {
+    await fetch(`${apiURL}/reserva/${dataToken.id}`, {
       method: 'GET'
     })
       .then(data => data.json())
@@ -72,7 +73,7 @@ export default function Reserva() {
   }
 
   async function getAcomodacoes() {
-    await fetch(`https://api.prohost.net.br/acomodacao/${dataToken.id}`, {
+    await fetch(`${apiURL}/acomodacao/${dataToken.id}`, {
       method: 'GET'
     })
       .then(data => data.json())
@@ -83,7 +84,7 @@ export default function Reserva() {
   }
 
   async function getCanais() {
-    await fetch(`https://api.prohost.net.br/canal_reserva/${dataToken.id}`, {
+    await fetch(`${apiURL}/canal_reserva/${dataToken.id}`, {
       method: 'GET'
     })
       .then(data => data.json())
@@ -94,7 +95,7 @@ export default function Reserva() {
   }
 
   async function getAll(saas: number) {
-    await fetch(`https://api.prohost.net.br/reserva/index/${saas}`, {
+    await fetch(`${apiURL}/reserva/index/${saas}`, {
       method: 'GET',
     })
       .then(data => data.json())
@@ -171,8 +172,8 @@ export default function Reserva() {
             reservas={reserva.map((r) => ({
               "resourceId": String(r.acomodacao ? r.acomodacao.id : null),
               "title": r.hospede?.nome || '',
-              "start": toDateBr(r.check_in),
-              "end": toDateBr(r.check_out),
+              "start": (r.check_in),
+              "end": (r.check_out),
               "hospedes": r.qtd_hospede,
               "color": r.tipo_reserva == 'Continuidade' ? '#30C46D'
                 : r.tipo_reserva == 'Indisponibilidade' ? '#353535'

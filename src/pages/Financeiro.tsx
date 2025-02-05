@@ -46,6 +46,7 @@ interface Acomodacao {
 
 
 export default function Financeiro() {
+    const apiURL = 'https://api.prohost.net.br'
     useEffect(() => { document.title = `Financeiro | Prohost` }, [])
 
 
@@ -143,6 +144,7 @@ export default function Financeiro() {
     const [movimentacoes, setMovimentacoes] = useState<Movimentacao[]>([])
     const [showMovimentacao, setShowMovimentacao] = useState<Movimentacao[]>([])
     const [lDespesa, setLDespesa] = useState<string>('')
+    const [filterAC, setFilterAC] = useState<string>('all')
 
     function getDaysInMonth(month: number, year: number) {
         switch (month) {
@@ -172,7 +174,7 @@ export default function Financeiro() {
     }
 
     async function acomodacoes() {
-        await fetch(`https://api.prohost.net.br/acomodacao/${dataToken.id}`, {
+        await fetch(`${apiURL}/acomodacao/${dataToken.id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -183,7 +185,7 @@ export default function Financeiro() {
     }
 
     async function getMovimentacao() {
-        await fetch(`https://api.prohost.net.br/movimentacao/${dataToken.id}/${dataBW[0]}/${dataBW[1]}`, {
+        await fetch(`${apiURL}/movimentacao/${dataToken.id}/${dataBW[0]}/${dataBW[1]}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -235,7 +237,6 @@ export default function Financeiro() {
     useEffect(() => {
         loadAll()
     }, [listagem, dataToken])
-
 
     return (
         loaded ?
@@ -311,12 +312,13 @@ export default function Financeiro() {
                             </> : null}
                             <label htmlFor="acomodacao" className={`flex flex-col text-zinc-600 font-medium text-sm`}>
                                 Acomodação
-                                <select name="acomodacao" id="acomodacao" className={`border border-zinc-300 rounded-md px-2 py-1 h-9 outline-none text-base`}
+                                <select name="acomodacao" id="acomodacao" className={`border border-zinc-300 rounded-md px-2 py-1 h-9 outline-none text-base`} value={filterAC}
                                     onChange={(e) => {
-                                        if (e.target.value != 'all') {
-                                            setShowMovimentacao(movimentacoes.filter(mov => mov?.acomodacao?.id == Number(e.target.value)))
-                                        } else
-                                            setShowMovimentacao(movimentacoes)
+                                        setFilterAC(e.target.value)
+                                        /*  if (e.target.value != 'all') {
+                                             setShowMovimentacao(movimentacoes.filter(mov => mov?.acomodacao?.id == Number(e.target.value)))
+                                         } else
+                                             setShowMovimentacao(movimentacoes) */
                                     }}>
                                     <option value="all" selected>Todas</option>
                                     {acomodacao.map(a => <option value={`${a.id}`}>{a.nome}</option>)}
@@ -343,8 +345,8 @@ export default function Financeiro() {
                         </div>
                     </div>
                     {cadastrarCategoria && <CadastrarCategoria close={() => setCadastrarCategoria(false)} />}
-                    {novaDespesa && <RegistrarDespesa close={() => setNovaDespesa(false)} saas={dataToken?.id? dataToken.id : '' } />}
-                    {novaReceita && <RegistrarReceita close={() => setNovaReceita(false)} saas={dataToken?.id? dataToken.id : '' } />}
+                    {novaDespesa && <RegistrarDespesa close={() => setNovaDespesa(false)} saas={dataToken?.id ? dataToken.id : ''} />}
+                    {novaReceita && <RegistrarReceita close={() => setNovaReceita(false)} saas={dataToken?.id ? dataToken.id : ''} />}
                     {session == 0 &&
                         <div className='grid grid-cols-4 gap-4'>
                             <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center">
@@ -354,7 +356,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Receita Bruta</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao.id === Number(filterAC))
                                             .map(mov => mov.valor)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
@@ -367,7 +369,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Receita Líquida</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao.id === Number(filterAC))
                                             .map(mov => mov.valor_liq)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
@@ -380,7 +382,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Despesas</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao.id === Number(filterAC))
                                             .map(mov => !mov.receita ? mov.valor_liq : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
@@ -393,7 +395,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Lucro</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao.id === Number(filterAC))
                                             .map(mov => mov.receita ? mov.valor_liq : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
@@ -428,7 +430,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Receita Bruta</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao.id === Number(filterAC))
                                             .map(mov => mov.valor)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
@@ -441,7 +443,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Receita Líquida</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao.id === Number(filterAC))
                                             .map(mov => mov.valor_liq)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
@@ -475,18 +477,18 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Total</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao.id === Number(filterAC))
                                             .map(mov => !mov.receita ? mov.valor_liq : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>}
-                    {session == 0 && listagem && <ListaMovimentacoes movimentacoes={showMovimentacao} />}
+                    {session == 0 && listagem && <ListaMovimentacoes movimentacoes={showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao.id === Number(filterAC))} />}
                     {session == 1 && listagem && <ListaMovimentacoes movimentacoes={
                         vz ?
-                            showMovimentacao.filter(m => m.receita) :
-                            agruparMovimentacoes(showMovimentacao.filter(m => m.receita))
+                            showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao.id === Number(filterAC)).filter(m => m.receita) :
+                            agruparMovimentacoes(showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao.id === Number(filterAC)).filter(m => m.receita))
                     } />}
                     {session == 2 && listagem && <div>
                         <label htmlFor="despesa" className="flex flex-col relative w-fit translate-y-5">
@@ -496,7 +498,12 @@ export default function Financeiro() {
                                     setLDespesa(e.target.value)
                                 }} />
                         </label>
-                        <ListaMovimentacoes movimentacoes={showMovimentacao.filter(m => !m.receita && m.nome.toLowerCase().includes(lDespesa.toLowerCase()))} />
+                        <ListaMovimentacoes movimentacoes={showMovimentacao.filter(a => {
+                            if (filterAC == 'all')
+                                return true
+                            else
+                                a.acomodacao.id == Number(filterAC)
+                        }).filter(m => !m.receita && m.nome.toLowerCase().includes(lDespesa.toLowerCase()))} />
                     </div>}
                 </div>
             </div> :

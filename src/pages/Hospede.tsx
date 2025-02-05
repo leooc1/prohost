@@ -12,6 +12,7 @@ interface Hospede {
 }
 
 export default function Hospede() {
+    const apiURL = 'https://api.prohost.net.br'
     useEffect(() => { document.title = `Hóspedes | Prohost` }, [])
 
 
@@ -23,7 +24,7 @@ export default function Hospede() {
 
     //const apiURl = import.meta.env.VITE_baseURLAPI;
     async function getHospede() {
-        await fetch(`https://api.prohost.net.br/hospede/${dataToken.id}`, {
+        await fetch(`${apiURL}/hospede/${dataToken.id}`, {
             method: 'GET'
         })
             .then(data => data.json())

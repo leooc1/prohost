@@ -9,15 +9,15 @@ interface Hospede {
     email: string | null;
 }
 
-//const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function AtualizarHospede({ close, id }: { close: () => void, id: number }) {
+    const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
     const [nome, setNome] = useState<string>()
     const [email, setEmail] = useState<string | null>()
     const [tel, setTel] = useState<string | null>()
     async function getHospede() {
-        await fetch(`https://api.prohost.net.br/hospede/1/${id}`, {
+        await fetch(`${apiURL}/hospede/1/${id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -30,7 +30,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
     }
 
     async function updateHospede(pbody: Hospede) {
-        await fetch(`https://api.prohost.net.br/hospede/${id}`, {
+        await fetch(`${apiURL}/hospede/${id}`, {
             method: 'PUT',
             body: JSON.stringify(pbody),
             headers: {

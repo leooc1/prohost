@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import FeedBack from "../components/FeedBack"
 
 export default function FeedBacks() {
+    
     useEffect(() => { document.title = `Feedbacks | Prohost` }, [])
 
 

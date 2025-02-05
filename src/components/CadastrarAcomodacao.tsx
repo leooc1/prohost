@@ -17,12 +17,13 @@ interface Acomodacao {
 }
 
 export default function CadastrarAcomodacao({ close }: { close: () => void }) {
+    const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
     const [qtdMaxHospede, setQtdMaxHospede] = useState(1)
     const [tipo, setTipo] = useState('')
     const [autoComplete, setAutoComplete] = useState([])
     async function createAcomodacao(pbody: Acomodacao) {
-        await fetch(`https://api.prohost.net.br/acomodacao/`, {
+        await fetch(`${apiURL}/acomodacao/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {
@@ -44,7 +45,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
         await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(input)}&limit=5`)
             .then(data => data.json())
             .then(data => {
-                setAutoComplete(data.features.map((feature:any) => ({
+                setAutoComplete(data.features.map((feature: any) => ({
                     name: feature.properties.name,
                     city: feature.properties.city || "",
                     state: feature.properties.state || "",
@@ -100,7 +101,8 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                                     enderecaoComplete(e.target.value)
                                 }
                                 else setAutoComplete([])
-                            }} />
+                            }} 
+                            onBlur={()=>setTimeout(()=>setAutoComplete([]),100)}/>
                         <ul className="absolute bg-white rounded-2xl overflow-hidden top-14 w-max z-50 shadow-xl shadow-zinc-400">
                             {autoComplete.filter(
                                 (end: any, index, self) =>
@@ -317,7 +319,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                             const foto = document.getElementById('preview') as HTMLImageElement
                             const qtdMaxHospede = document.getElementById('qtd-max-hospede') as HTMLInputElement
 
-                            if (status.value?.length && iniOpe.value?.length && endereco.value?.length && identificador.value?.length && valor.value) {
+                            if (status.value?.length && iniOpe.value?.length && identificador.value?.length && valor.value) {
                                 if (status.value == 'proprio')
                                     createAcomodacao({
                                         "tipo": status.value,
@@ -352,7 +354,8 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                                             "id": dataToken.id
                                         }
                                     })
-                            }
+                            } else
+                                alert('Erro ao cadastrar')
                         }}
                     >Cadastrar</button>
                 </section>

@@ -30,13 +30,13 @@ interface Reserva {
     continuidade: number | null
 }
 
-//const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function NovaContinuidade(props: propsContinuidade) {
+    const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
 
     async function createContinuidade(pbody: Reserva) {
-        await fetch(`https://api.prohost.net.br/reserva/`, {
+        await fetch(`${apiURL}/reserva/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {
@@ -50,12 +50,14 @@ export default function NovaContinuidade(props: propsContinuidade) {
                     props.close()
                     location.reload()
                 }
+                else
+                    alert('Erro ao criar continuidade')
             })
             .catch(err => console.log(err))
     }
     const checkin = new Date(props.checkinDate)
-    const checkinDate = (`${checkin.getFullYear()}-${('0' + (checkin.getMonth() + 1)).slice(-2)}-${('0' + (checkin.getDate())).slice(-2)}`)
-    const checkinTime = (`${('0' + (checkin.getHours())).slice(-2)}:${('0' + (checkin.getMinutes())).slice(-2)}:${('0' + (checkin.getSeconds())).slice(-2)}`)
+    const checkinDate = (`${checkin.getUTCFullYear()}-${('0' + (checkin.getUTCMonth() + 1)).slice(-2)}-${('0' + (checkin.getUTCDate())).slice(-2)}`)
+    const checkinTime = (`${('0' + (checkin.getUTCHours())).slice(-2)}:${('0' + (checkin.getUTCMinutes())).slice(-2)}:${('0' + (checkin.getUTCSeconds())).slice(-2)}`)
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={props.close}></div>
@@ -68,7 +70,7 @@ export default function NovaContinuidade(props: propsContinuidade) {
                         <input type="date" name="checkout-date" id="checkout-date" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                     </label>
                     <label htmlFor="checkout-hour" className="flex flex-col justify-end w-fit">
-                        <input type="time" defaultValue={`0${new Date().getHours()}`.slice(-2) + ':00'} name="checkout-hour" id="checkout-hour" className="border border-zinc-300 max-w-24 rounded-md px-2 py-1 outline-none" />
+                        <input type="time" defaultValue={`0${new Date().getUTCHours()}`.slice(-2) + ':00'} name="checkout-hour" id="checkout-hour" className="border border-zinc-300 max-w-24 rounded-md px-2 py-1 outline-none" />
                     </label>
                     <label htmlFor="valor-total" className="flex flex-col justify-end w-fit">
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Valor total</span>

@@ -89,14 +89,15 @@ function formatedNumber(input: string) {
 }
 
 export default function EditarReserva(props: propsEdicao) {
+    const apiURL = 'http://localhost:3000'
     const { dataToken } = useContext(SideBarContext)
     const checkin = new Date(props.checkIn)
-    const checkinDate = (`${checkin.getFullYear()}-${('0' + (checkin.getMonth() + 1)).slice(-2)}-${('0' + (checkin.getDate())).slice(-2)}`)
-    const checkinTime = (`${('0' + (checkin.getHours())).slice(-2)}:${('0' + (checkin.getMinutes())).slice(-2)}`)
+    const checkinDate = (`${checkin.getUTCFullYear()}-${('0' + (checkin.getUTCMonth() + 1)).slice(-2)}-${('0' + (checkin.getUTCDate())).slice(-2)}`)
+    const checkinTime = (`${('0' + (checkin.getUTCHours())).slice(-2)}:${('0' + (checkin.getUTCMinutes())).slice(-2)}`)
 
     const checkout = new Date(props.checkOut)
-    const checkoutDate = (`${checkout.getFullYear()}-${('0' + (checkout.getMonth() + 1)).slice(-2)}-${('0' + (checkout.getDate())).slice(-2)}`)
-    const checkoutTime = (`${('0' + (checkout.getHours())).slice(-2)}:${('0' + (checkout.getMinutes())).slice(-2)}`)
+    const checkoutDate = (`${checkout.getUTCFullYear()}-${('0' + (checkout.getUTCMonth() + 1)).slice(-2)}-${('0' + (checkout.getUTCDate())).slice(-2)}`)
+    const checkoutTime = (`${('0' + (checkout.getUTCHours())).slice(-2)}:${('0' + (checkout.getUTCMinutes())).slice(-2)}`)
 
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
     const [canais, setCanais] = useState<Canais[]>([])
@@ -128,7 +129,7 @@ export default function EditarReserva(props: propsEdicao) {
 
     async function createHospede(pbody: Hospede) {
         try {
-            const response = await fetch(`https://api.prohost.net.br/hospede/`, {
+            const response = await fetch(`${apiURL}/hospede/`, {
                 method: 'POST',
                 body: JSON.stringify(pbody),
                 headers: {
@@ -145,7 +146,7 @@ export default function EditarReserva(props: propsEdicao) {
     }
 
     async function updateReserva(pbody: Reserva) {
-        await fetch(`https://api.prohost.net.br/reserva/${props.id}`, {
+        await fetch(`${apiURL}/reserva/${props.id}`, {
             method: 'PUT',
             body: JSON.stringify(pbody),
             headers: {
@@ -154,17 +155,19 @@ export default function EditarReserva(props: propsEdicao) {
         })
             .then(data => data.json())
             .then((data) => {
-                if (data[0].affected == 1) {
+                console.log(data)
+                if (data[0]?.affected == 1) {
                     alert('Atualizado!')
-                    props.close()
+                    // props.close()
                     location.reload()
-                }
+                } else
+                    alert('Erro ao atualizar')
             })
             .catch(err => console.log(err))
     }
 
     async function getAcomodacoes() {
-        await fetch(`https://api.prohost.net.br/acomodacao/${props.saas}`, {
+        await fetch(`${apiURL}/acomodacao/${dataToken.id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -175,7 +178,7 @@ export default function EditarReserva(props: propsEdicao) {
     }
 
     async function getCanais() {
-        await fetch(`https://api.prohost.net.br/canal_reserva/${props.saas}`, {
+        await fetch(`${apiURL}/canal_reserva/${dataToken.id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -186,7 +189,7 @@ export default function EditarReserva(props: propsEdicao) {
     }
 
     async function getHospede() {
-        await fetch(`https://api.prohost.net.br/hospede/${props.saas}`, {
+        await fetch(`${apiURL}/hospede/${dataToken.id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -205,7 +208,7 @@ export default function EditarReserva(props: propsEdicao) {
 
     useEffect(() => {
         getAll()
-    }, [])
+    }, [dataToken])
 
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
@@ -376,7 +379,7 @@ export default function EditarReserva(props: propsEdicao) {
                                 const checkinDateTime = new Date(`${checkinDate.value} ${checkinHora.value}:00`);
                                 const checkoutDateTime = new Date(`${checkoutDate.value} ${checkoutHora.value}:00`);
 
-                                if (acomodacaoInput.value.length > 0 && canais.value.length > 0 && Number(qtdHospede.value) > 0 && checkinDate.value.length > 0 && checkinHora.value.length > 0 && checkoutDate.value.length > 0 && checkoutHora.value.length > 0 && Number(valorComissao.value) >= 0 && Number(valorBruto.value) >= 0 && Number(valorLiquido.value) >= 0 && hospedeInput.value.length > 0 && (checkinDateTime < checkoutDateTime)) {
+                                if (acomodacaoInput.value.length > 0 && canais.value.length > 0 && Number(qtdHospede.value) > 0 && checkinDate.value.length > 0 && checkinHora.value.length > 0 && checkoutDate.value.length > 0 && checkoutHora.value.length > 0 && Number(valorComissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) >= 0 && Number(valorBruto.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) >= 0 && Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) >= 0 && hospedeInput.value.length > 0 && (checkinDateTime < checkoutDateTime)) {
                                     if (hospede.filter(h => h.nome.toLowerCase() == hospedeInput.value.toLowerCase()).length > 0)
                                         hospedeId = (hospede.filter(h => h.nome.toLowerCase() == hospedeInput.value.toLowerCase())[0].id) || 0
                                     else
@@ -389,12 +392,12 @@ export default function EditarReserva(props: propsEdicao) {
 
                                     if (acomodacao.filter(a => a.id == Number(acomodacaoInput.value))[0].comissao) {
                                         const comissao = acomodacao.filter(a => a.id == Number(acomodacaoInput.value))[0].comissao
-                                        vProprietario = ((100 - comissao) / 100) * Number(valorLiquido.value)
-                                        vGestor = (comissao / 100) * Number(valorLiquido.value)
+                                        vProprietario = ((100 - comissao) / 100) * Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
+                                        vGestor = (comissao / 100) * Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
                                     }
                                     else {
-                                        vProprietario = Number(valorLiquido.value)
-                                        vGestor = Number(valorLiquido.value)
+                                        vProprietario = Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
+                                        vGestor = Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
                                     }
                                     await updateReserva({
                                         "acomodacao": {
@@ -405,7 +408,7 @@ export default function EditarReserva(props: propsEdicao) {
                                         "canal_reserva": {
                                             "id": Number(canais.value)
                                         },
-                                        "comissao_ota": Number(valorComissao.value),
+                                        "comissao_ota": Number(valorComissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                         "hospede": {
                                             "id": hospedeId
                                         },
@@ -413,8 +416,8 @@ export default function EditarReserva(props: propsEdicao) {
                                         "saas": {
                                             "id": dataToken.id
                                         },
-                                        "valor": Number(valorBruto.value),
-                                        "valor_liq": Number(valorLiquido.value),
+                                        "valor": Number(valorBruto.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
+                                        "valor_liq": Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                         "valor_prop": vProprietario,
                                         "valor_gestor": vGestor,
                                         "obs": obs.value,
@@ -422,7 +425,7 @@ export default function EditarReserva(props: propsEdicao) {
                                     })
                                 }
                                 else {
-                                    alert('Preenchimento incorreto incorreto')
+                                    alert('Preenchimento incorreto')
                                 }
                             }}
                             id="button-cadastrar" className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary">Salvar Alterações</button>

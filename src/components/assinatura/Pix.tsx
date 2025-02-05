@@ -2,10 +2,12 @@ import { useEffect, useState } from "react"
 
 
 export default function Pix() {
+        const apiURL = 'https://api.prohost.net.br'
+
     const [qr, setQr] = useState('')
     async function gerarQR(storage: string) {
         let pay = ''
-        await fetch(`https://api.prohost.net.br/assinatura/${storage}`, {
+        await fetch(`${apiURL}/assinatura/${storage}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -13,7 +15,7 @@ export default function Pix() {
                 pay = data
             })
             .catch(err => console.error(err))
-        await fetch(`https://api.prohost.net.br/assinatura/pix/${pay}`, {
+        await fetch(`${apiURL}/assinatura/pix/${pay}`, {
             method: 'GET'
         })
             .then(data => data.json())

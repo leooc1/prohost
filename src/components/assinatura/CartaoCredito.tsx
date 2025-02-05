@@ -2,10 +2,12 @@ import { InputMask } from "@react-input/mask"
 
 
 export default function CartaoCredito() {
+        const apiURL = 'https://api.prohost.net.br'
+
     async function pagamento(pbody: any) {
         const storage = window.localStorage.getItem('ph_pay_acc')
         let pay = ''
-        await fetch(`https://api.prohost.net.br/assinatura/${storage}`, {
+        await fetch(`${apiURL}/assinatura/${storage}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -13,7 +15,7 @@ export default function CartaoCredito() {
                 pay = data
             })
             .catch(err => console.error(err))
-        await fetch(`https://api.prohost.net.br/assinatura/credit-card/${pay}`, {
+        await fetch(`${apiURL}/assinatura/credit-card/${pay}`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {

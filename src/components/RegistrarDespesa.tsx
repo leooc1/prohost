@@ -27,6 +27,7 @@ interface CategoriaFinanceiro {
 
 
 export default function RegistrarDespesa({ close, saas }: { close: () => void, saas: string }) {
+    const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
 
     const [tipoDespesa, setTipoDespesa] = useState('')
@@ -50,7 +51,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
         })
     }
     async function getAcomodacoes() {
-        await fetch('https://api.prohost.net.br/acomodacao/' + dataToken.id, {
+        await fetch(`${apiURL}/acomodacao/` + dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -60,7 +61,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
             .catch(err => console.log(err))
     }
     async function getCategorias() {
-        await fetch('https://api.prohost.net.br/categoria_financeiro/' + dataToken.id, {
+        await fetch(`${apiURL}/categoria_financeiro/` + dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -70,7 +71,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
             .catch(err => console.log(err))
     }
     async function create(pbody: any) {
-        await fetch(`https://api.prohost.net.br/movimentacao/`, {
+        await fetch(`${apiURL}/movimentacao/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
             headers: {
@@ -124,7 +125,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
                 <div className="grid gap-4 grid-cols-2">
                     <label htmlFor="descricao" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Descrição</span>
-                        <input placeholder="Ex: Manutenção preventiva ar condicionado" type="text" name="descricao" id="descricao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                        <input placeholder="Ex: Manutenção ar condicionado" type="text" name="descricao" id="descricao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                     </label>
                     <label htmlFor="recebedor" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Recebedor</span>

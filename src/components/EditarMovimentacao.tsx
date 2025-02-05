@@ -39,9 +39,9 @@ interface propsEditar {
     close: () => void
 }
 
-//const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function EditarMovimentacao(props: propsEditar) {
+    const apiURL = 'https://api.prohost.net.br'
     const setCategoria = () => {
         const categorias = document.querySelectorAll('label:has(input[type="radio"])')
         categorias.forEach((e: any) => {
@@ -62,7 +62,7 @@ export default function EditarMovimentacao(props: propsEditar) {
         })
     }
     async function getAcomodacoes() {
-        await fetch('https://api.prohost.net.br/acomodacao/1', {
+        await fetch(`${apiURL}/acomodacao/${acomodacao}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -72,7 +72,7 @@ export default function EditarMovimentacao(props: propsEditar) {
             .catch(err => console.log(err))
     }
     async function getCategorias() {
-        await fetch('https://api.prohost.net.br/categoria_financeiro/1', {
+        await fetch(`${apiURL}/categoria_financeiro/${acomodacao}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -100,7 +100,7 @@ export default function EditarMovimentacao(props: propsEditar) {
         recebedor: string
         obs: string
     }) {
-        await fetch(`https://api.prohost.net.br/movimentacao/${props.id}`, {
+        await fetch(`${apiURL}/movimentacao/${props.id}`, {
             method: 'PUT',
             body: JSON.stringify(pbody),
             headers: {
@@ -119,7 +119,7 @@ export default function EditarMovimentacao(props: propsEditar) {
             .catch(err => console.log(err))
     }
     async function excluir(id: number) {
-        await fetch(`https://api.prohost.net.br/movimentacao/${id}`, {
+        await fetch(`${apiURL}/movimentacao/${id}`, {
             method: 'DELETE',
         })
             .then(data => data.json())
