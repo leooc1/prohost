@@ -35,7 +35,6 @@ interface Reserva {
     tipo_reserva: string
 }
 
-//const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function NovaIndisponibilidade({ close }: { close: () => void }) {
     const apiURL = 'https://api.prohost.net.br'
@@ -44,7 +43,7 @@ export default function NovaIndisponibilidade({ close }: { close: () => void }) 
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
 
     async function getAcomodacoes() {
-        await fetch(`${apiURL}/acomodacao/`+dataToken.id, {
+        await fetch(`${apiURL}/acomodacao/` + dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -67,8 +66,12 @@ export default function NovaIndisponibilidade({ close }: { close: () => void }) 
                 if (data.id) {
                     localStorage.setItem('ph-cld-initial-date', pbody.check_in)
                     alert('CRIADO!')
-                    close()
                     location.reload()
+                } else if (data.length > 0) {
+                    alert(data)
+                }
+                else {
+                    alert("Erro ao cadastrar.")                    
                 }
             })
             .catch(err => console.log(err))

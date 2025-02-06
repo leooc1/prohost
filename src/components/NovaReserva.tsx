@@ -140,9 +140,12 @@ export default function NovaReserva({ close }: { close: () => void }) {
                     alert('CRIADO!')
                     close()
                     location.reload()
+                } else if (data.length > 0) {
+                    alert(data)
                 }
-                else
-                    alert('Não foi possível cadastrar!')
+                else {
+                    alert("Erro ao cadastrar.")
+                }
 
             })
             .catch(err => console.log(err))

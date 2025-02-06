@@ -158,10 +158,13 @@ export default function EditarReserva(props: propsEdicao) {
                 console.log(data)
                 if (data[0]?.affected == 1) {
                     alert('Atualizado!')
-                    // props.close()
                     location.reload()
-                } else
-                    alert('Erro ao atualizar')
+                } else if (data.length > 0) {
+                    alert(data)
+                }
+                else {
+                    alert("Erro ao cadastrar.")
+                }
             })
             .catch(err => console.log(err))
     }

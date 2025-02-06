@@ -49,9 +49,12 @@ export default function NovaContinuidade(props: propsContinuidade) {
                     alert('CRIADO!')
                     props.close()
                     location.reload()
+                } else if (data.length > 0) {
+                    alert(data)
                 }
-                else
-                    alert('Erro ao criar continuidade')
+                else {
+                    alert("Erro ao cadastrar.")
+                }
             })
             .catch(err => console.log(err))
     }
