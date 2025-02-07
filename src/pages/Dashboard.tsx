@@ -361,7 +361,19 @@ export default function Dashboard() {
         .then((data) => {
           setShowTaxaOcu(false)
           if (data.length > 0)
-            setTaxaOcupacao(data[0])
+            if (acomodacao.length > 0) {
+              const dias_totais =
+                !isNaN(data[0].dias_totais) ? Number(data[0].dias_totais) : 0
+              const total_diaria =
+                !isNaN(data[0].total_diaria) ? Number(data[0].total_diaria) : 0
+              const total_indisponivel =
+                !isNaN(data[0].total_indisponivel) ? Number(data[0].total_indisponivel) : 0
+              const qtd_acomodacao = acomodacao.length
+              const taxa_de_ocupacao = ((total_diaria / ((dias_totais * qtd_acomodacao) - total_indisponivel)) * 100)
+              !isNaN(taxa_de_ocupacao) ? setTaxaOcupacao({ taxa_ocupacao: taxa_de_ocupacao }) : setTaxaOcupacao(data[0])
+            }
+            else
+              setTaxaOcupacao(data[0])
         })
         .catch(err => console.log(err))
 
