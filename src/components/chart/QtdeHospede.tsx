@@ -13,7 +13,7 @@ export default function QtdeHospede({ labels, dados, colors }: { labels: string[
 
             if (ctx) {
                 const data = {
-                    labels: labels.map((e)=>e.concat(' hospede(s)')),
+                    labels: labels.map((e) => e.concat(' hospede(s)')),
                     datasets: [
                         {
                             data: dados,
@@ -40,6 +40,9 @@ export default function QtdeHospede({ labels, dados, colors }: { labels: string[
                         tooltip: {
                             callbacks: {
                                 label: function (context: any) {
+                                    if (labels.length == 1 && labels[0] == '')
+                                        return `Nenhuma reserva`
+                                    else
                                     return `${context.raw} reservas`;
                                 },
                             },
@@ -48,7 +51,10 @@ export default function QtdeHospede({ labels, dados, colors }: { labels: string[
                             formatter: (value: number, context: any) => {
                                 const total = context.chart.data.datasets[0].data.reduce((acc: number, val: number) => acc + val, 0);
                                 const percentage = ((value / total) * 100).toFixed(1);
-                                return `${percentage}%`;
+                                if (labels.length == 1 && labels[0] == '')
+                                    return `0%`
+                                else
+                                    return `${percentage}%`;
                             },
                             color: '#000',
                             backgroundColor: '#E6ECEF',

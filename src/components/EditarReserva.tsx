@@ -66,28 +66,6 @@ interface propsEdicao {
     saas: number
 }
 
-function formatedNumber(input: string) {
-    if (input.replace(/[.,]/gm, '').length <= 3)
-        return input.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})/gm, '$1,$2')
-    else if (input.replace(/[.,]/gm, '').length <= 4)
-        return input.replace(/[.,]/gm, '').replace(/(\d{2})(\d{2})/gm, '$1,$2')
-    else if (input.replace(/[.,]/gm, '').length <= 5)
-        return input.replace(/[.,]/gm, '').replace(/(\d{3})(\d{2})/gm, '$1,$2')
-    else if (input.replace(/[.,]/gm, '').length <= 6)
-        return input.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{2})/gm, '$1.$2,$3')
-    else if (input.replace(/[.,]/gm, '').length <= 7)
-        return input.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{2})/gm, '$1.$2,$3')
-    else if (input.replace(/[.,]/gm, '').length <= 8)
-        return input.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{2})/gm, '$1.$2,$3')
-    else if (input.replace(/[.,]/gm, '').length <= 9)
-        return input.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
-    else if (input.replace(/[.,]/gm, '').length <= 10)
-        return input.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
-    else if (input.replace(/[.,]/gm, '').length <= 11)
-        return input.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
-    else return '0,00'
-}
-
 export default function EditarReserva(props: propsEdicao) {
     const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
@@ -95,6 +73,28 @@ export default function EditarReserva(props: propsEdicao) {
     const checkinDate = (`${checkin.getUTCFullYear()}-${('0' + (checkin.getUTCMonth() + 1)).slice(-2)}-${('0' + (checkin.getUTCDate())).slice(-2)}`)
     const checkinTime = (`${('0' + (checkin.getUTCHours())).slice(-2)}:${('0' + (checkin.getUTCMinutes())).slice(-2)}`)
 
+    function formatedNumber(input: string) {
+        if (input.replace(/[.,]/gm, '').length <= 3)
+            return input.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})/gm, '$1,$2')
+        else if (input.replace(/[.,]/gm, '').length <= 4)
+            return input.replace(/[.,]/gm, '').replace(/(\d{2})(\d{2})/gm, '$1,$2')
+        else if (input.replace(/[.,]/gm, '').length <= 5)
+            return input.replace(/[.,]/gm, '').replace(/(\d{3})(\d{2})/gm, '$1,$2')
+        else if (input.replace(/[.,]/gm, '').length <= 6)
+            return input.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{2})/gm, '$1.$2,$3')
+        else if (input.replace(/[.,]/gm, '').length <= 7)
+            return input.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{2})/gm, '$1.$2,$3')
+        else if (input.replace(/[.,]/gm, '').length <= 8)
+            return input.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{2})/gm, '$1.$2,$3')
+        else if (input.replace(/[.,]/gm, '').length <= 9)
+            return input.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+        else if (input.replace(/[.,]/gm, '').length <= 10)
+            return input.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+        else if (input.replace(/[.,]/gm, '').length <= 11)
+            return input.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+        else return '0,00'
+    }
+    
     const checkout = new Date(props.checkOut)
     const checkoutDate = (`${checkout.getUTCFullYear()}-${('0' + (checkout.getUTCMonth() + 1)).slice(-2)}-${('0' + (checkout.getUTCDate())).slice(-2)}`)
     const checkoutTime = (`${('0' + (checkout.getUTCHours())).slice(-2)}:${('0' + (checkout.getUTCMinutes())).slice(-2)}`)
@@ -220,7 +220,7 @@ export default function EditarReserva(props: propsEdicao) {
                 <form onSubmit={(e) => { e.preventDefault() }} className="flex rounded-md flex-col absolute min-w-80 px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white">
                     <h5 className="font-semibold text-2xl mb-2">Nova Reserva</h5>
                     <label htmlFor="acomodacao" className="flex flex-col">
-                        <span className="text-zinc-500 font-medium mb-1 text-xs">Acomodação</span>
+                        <span className="text-zinc-500 font-medium mb-1 text-xs">Acomodação<span className='text-red-500 font-bold'> *</span></span>
                         <select defaultValue={props.acomodacaoID} name="acomodacao" id="acomodacao" className="border border-zinc-300 rounded-md text-zinc-5 00 px-2 py-1 outline-none">
                             <option value="" selected disabled className="hidden">Selecione uma acomodação</option>
                             {acomodacao.length &&
@@ -229,7 +229,7 @@ export default function EditarReserva(props: propsEdicao) {
                     </label>
                     <div className="grid gap-4" style={{ gridTemplateColumns: '3fr 1fr' }}>
                         <label htmlFor="hospede" className="flex flex-col relative">
-                            <span className="text-zinc-500 font-medium mb-1 text-xs">Hóspede</span>
+                            <span className="text-zinc-500 font-medium mb-1 text-xs">Hóspede<span className='text-red-500 font-bold'> *</span></span>
                             <input defaultValue={props.hospedeNOME} onChange={(e) => {
                                 if (e.target.value.length == 0) {
                                     setShowH([])
@@ -249,20 +249,20 @@ export default function EditarReserva(props: propsEdicao) {
                             </section>}
                         </label>
                         <label htmlFor="qtd-hospedes" className="flex flex-col">
-                            <span className="text-zinc-500 font-medium mb-1 text-xs">Qtd. Hóspedes</span>
+                            <span className="text-zinc-500 font-medium mb-1 text-xs">Qtd. Hóspedes<span className='text-red-500 font-bold'> *</span></span>
                             <input type="number" defaultValue={props.qtdHospede} min={1} onChange={(e) => { if (e.target.value.length > 0 && Number(e.target.value) < 1) e.target.value = '1' }} name="qtd-hospedes" id="qtd-hospedes" className="border border-zinc-300 rounded-md px-2 py-1 text-center outline-none max-w-32" />
                         </label>
                     </div>
                     <div className="grid gap-4 grid-cols-4">
                         <label htmlFor="checkin-date" className="flex flex-col justify-end">
-                            <span className="text-zinc-500 font-medium mb-1 text-xs">Check-in</span>
+                            <span className="text-zinc-500 font-medium mb-1 text-xs">Check-in<span className='text-red-500 font-bold'> *</span></span>
                             <input defaultValue={checkinDate} type="date" name="checkin-date" id="checkin-date" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                         </label>
                         <label htmlFor="checkin-hour" className="flex flex-col justify-end w-fit">
                             <input defaultValue={checkinTime} type="time" name="checkin-hour" id="checkin-hour" className="border border-zinc-300 max-w-24 rounded-md px-2 py-1 outline-none" />
                         </label>
                         <label htmlFor="checkout-date" className="flex flex-col justify-end">
-                            <span className="text-zinc-500 font-medium mb-1 text-xs">Check-out</span>
+                            <span className="text-zinc-500 font-medium mb-1 text-xs">Check-out<span className='text-red-500 font-bold'> *</span></span>
                             <input defaultValue={checkoutDate} type="date" name="checkout-date" id="checkout-date" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                         </label>
                         <label htmlFor="checkout-hour" className="flex flex-col justify-end w-fit">
@@ -270,7 +270,7 @@ export default function EditarReserva(props: propsEdicao) {
                         </label>
                     </div>
                     <label htmlFor="canal-reserva" className="flex flex-col">
-                        <span className="text-zinc-500 font-medium mb-1 text-xs">Canal</span>
+                        <span className="text-zinc-500 font-medium mb-1 text-xs">Canal<span className='text-red-500 font-bold'> *</span></span>
                         <select defaultValue={props.canalID} name="canal-reserva" id="canal-reserva" className="border border-zinc-300 rounded-md text-zinc-5 00 px-2 py-1 outline-none">
                             <option value="" selected disabled className="hidden">Selecione um canal</option>
                             {canais.length &&
@@ -280,7 +280,7 @@ export default function EditarReserva(props: propsEdicao) {
                     {/*  */}
                     <div className="grid gap-4 grid-cols-3">
                         <label htmlFor="tot" className="flex flex-col">
-                            <span className="text-zinc-500 font-medium mb-1 text-xs">Valor Total</span>
+                            <span className="text-zinc-500 font-medium mb-1 text-xs">Valor Total<span className='text-red-500 font-bold'> *</span></span>
                             <div className="flex items-center gap-2">
                                 R$<input defaultValue={formatedNumber(String(props.valorTotal))} type="text" placeholder="R$" step="0.01" name="tot" id="tot" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full"
                                     onInput={() => {
@@ -304,7 +304,7 @@ export default function EditarReserva(props: propsEdicao) {
                             </div>
                         </label>
                         <label htmlFor="com" className="flex flex-col">
-                            <span className="text-zinc-500 font-medium mb-1 text-xs">Comissão</span>
+                            <span className="text-zinc-500 font-medium mb-1 text-xs">Comissão<span className='text-red-500 font-bold'> *</span></span>
                             <div className="flex items-center gap-2">
                                 R$<input defaultValue={formatedNumber(String(props.comissao))} type="text" placeholder="R$" step="0.01" name="com" id="com" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full"
                                     onInput={() => {
@@ -328,7 +328,7 @@ export default function EditarReserva(props: propsEdicao) {
                             </div>
                         </label>
                         <label htmlFor="liq" className="flex flex-col">
-                            <span className="text-zinc-500 font-medium mb-1 text-xs">Valor Líquido</span>
+                            <span className="text-zinc-500 font-medium mb-1 text-xs">Valor Líquido<span className='text-red-500 font-bold'> *</span></span>
                             <div className="flex items-center gap-2">
                                 R$<input defaultValue={formatedNumber(String(props.valorLiq))} type="text" placeholder="R$" step="0.01" name="liq" id="liq" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full"
                                     onInput={() => {

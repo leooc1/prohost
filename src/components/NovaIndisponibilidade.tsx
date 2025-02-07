@@ -93,7 +93,7 @@ export default function NovaIndisponibilidade({ close }: { close: () => void }) 
                 <form onSubmit={(e) => { e.preventDefault() }} className="flex rounded-md flex-col absolute max-w-96 min-w-80 px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white">
                     <h5 className="font-semibold text-2xl mb-2">Nova Indisponibilidade</h5>
                     <label htmlFor="acomodacao" className="flex flex-col">
-                        <span className="text-zinc-500 font-medium mb-1">Acomodação</span>
+                        <span className="text-zinc-500 font-medium mb-1">Acomodação<span className='text-red-500 font-bold'> *</span></span>
                         <select name="acomodacao" id="acomodacao" className="border border-zinc-300 rounded-md text-zinc-5 00 px-2 py-1 outline-none">
                             <option value="" selected disabled className="hidden">Selecione uma acomodação</option>
                             {acomodacao.length &&
@@ -105,7 +105,7 @@ export default function NovaIndisponibilidade({ close }: { close: () => void }) 
                     </label>
                     <div className="grid gap-4 grid-cols-2">
                         <label htmlFor="de" className="flex flex-col">
-                            <span className="text-zinc-500 font-medium mb-1">De</span>
+                            <span className="text-zinc-500 font-medium mb-1">De<span className='text-red-500 font-bold'> *</span></span>
                             <input type="date"
                                 onChange={(d) => {
                                     const otherDate = document.getElementById('ate') as HTMLInputElement
@@ -116,7 +116,7 @@ export default function NovaIndisponibilidade({ close }: { close: () => void }) 
                                 name="de" id="de" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                         </label>
                         <label htmlFor="ate" className="flex flex-col">
-                            <span className="text-zinc-500 font-medium mb-1">Até</span>
+                            <span className="text-zinc-500 font-medium mb-1">Até<span className='text-red-500 font-bold'> *</span></span>
                             <input type="date"
                                 onChange={(d) => {
                                     const otherDate = document.getElementById('de') as HTMLInputElement

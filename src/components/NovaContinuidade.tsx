@@ -69,14 +69,14 @@ export default function NovaContinuidade(props: propsContinuidade) {
 
                 <div className="flex gap-4">
                     <label htmlFor="checkout-date" className="flex flex-col justify-end">
-                        <span className="text-zinc-500 font-medium mb-1 text-xs">Nova data de Checkout</span>
+                        <span className="text-zinc-500 font-medium mb-1 text-xs">Nova data de Checkout<span className='text-red-500 font-bold'> *</span></span>
                         <input type="date" name="checkout-date" id="checkout-date" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                     </label>
                     <label htmlFor="checkout-hour" className="flex flex-col justify-end w-fit">
                         <input type="time" defaultValue={`0${new Date().getUTCHours()}`.slice(-2) + ':00'} name="checkout-hour" id="checkout-hour" className="border border-zinc-300 max-w-24 rounded-md px-2 py-1 outline-none" />
                     </label>
                     <label htmlFor="valor-total" className="flex flex-col justify-end w-fit">
-                        <span className="text-zinc-500 font-medium mb-1 text-xs">Valor total</span>
+                        <span className="text-zinc-500 font-medium mb-1 text-xs">Valor total<span className='text-red-500 font-bold'> *</span></span>
                         <input
                             onChange={(e) => {
                                 if (e.target.value.replace(/[.,]/gm, '').length <= 3)

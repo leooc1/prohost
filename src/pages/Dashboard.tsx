@@ -354,7 +354,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`${apiURL}/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}`, {
+      /* await fetch(`${apiURL}/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -375,7 +375,7 @@ export default function Dashboard() {
             else
               setTaxaOcupacao(data[0])
         })
-        .catch(err => console.log(err))
+        .catch(err => console.log(err)) */
 
       await fetch(`${apiURL}/reserva/${dataToken.id}/por-canal/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
@@ -400,7 +400,10 @@ export default function Dashboard() {
       })
         .then(data => data.json())
         .then((data) => {
+          const ociosas = data.ociosas
+          const reservadas = data.reservadas
           setDesempenhoDiarias(data)
+          setTaxaOcupacao({ taxa_ocupacao: (reservadas) / (reservadas + ociosas)*100 })
         })
         .catch(err => console.log(err))
 
@@ -445,7 +448,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`${apiURL}/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      /* await fetch(`${apiURL}/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -454,7 +457,7 @@ export default function Dashboard() {
           if (data.length > 0)
             setTaxaOcupacao(data[0])
         })
-        .catch(err => console.log(err))
+        .catch(err => console.log(err)) */
 
       await fetch(`${apiURL}/reserva/${dataToken.id}/por-canal/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
@@ -479,7 +482,10 @@ export default function Dashboard() {
       })
         .then(data => data.json())
         .then((data) => {
+          const ociosas = data.ociosas
+          const reservadas = data.reservadas
           setDesempenhoDiarias(data)
+          setTaxaOcupacao({ taxa_ocupacao: (reservadas) / (reservadas + ociosas)*100 })
         })
         .catch(err => console.log(err))
 
@@ -548,6 +554,7 @@ export default function Dashboard() {
     await indicaOpe()
     setLoaded(true)
   }
+
   const [dataBW, setDataBW] = useState<[string, string]>([`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`, `${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`])
   const [dataBar, setDataBar] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
 
@@ -741,7 +748,7 @@ export default function Dashboard() {
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-44 -translate-y-12 flex flex-col justify-between items-center py-1 row-span-2" >
               <p className="flex flex-col text-zinc-400 font-medium text-sm">Reservas por Canal</p>
-              <ReservasCanal labels={reservaCanal.length > 0 ? reservaCanal.map(r => r.nome) : []} dados={reservaCanal.length > 0 ? reservaCanal.map(r => Number(r.num_reserva)) : []} colors={reservaCanal.length > 0 ? reservaCanal.map(r => r.cor) : []} />
+              <ReservasCanal labels={reservaCanal.length > 0 ? reservaCanal.map(r => r.nome) : ['']} dados={reservaCanal.length > 0 ? reservaCanal.map(r => Number(r.num_reserva)) : [1]} colors={reservaCanal.length > 0 ? reservaCanal.map(r => r.cor) : ['#cccccc']} />
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg flex items-center" >
               <div className="bg-[#FDE3E4] rounded-md w-fit py-2 px-2 ml-4">
@@ -771,7 +778,7 @@ export default function Dashboard() {
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-44 -translate-y-24 flex flex-col justify-between items-center py-1" >
               <p className="flex flex-col text-zinc-400 font-medium text-sm">Quantidade de hospedes</p>
-              <QtdeHospede labels={qtdHospede.map(h => String(h.qtd_hospede))} dados={qtdHospede.map(h => Number(h.qtd_reserva))} colors={['#9cdcde', '#88a9bc', '#d99e9a', '#d9bcb8', '#f6e4b6', '#f3e589', '#e674bc', '#f9b4ed', '#d9bffe', '#96d7ff', '#f1e2b9', '#f2b9c8', '#b9d7f1', '#baf2e9', '#b0f2b4']} />
+              <QtdeHospede labels={qtdHospede.length > 0 ? qtdHospede.map(h => String(h.qtd_hospede)) : ['']} dados={qtdHospede.length > 0 ? qtdHospede.map(h => Number(h.qtd_reserva)) : [1]} colors={qtdHospede.length > 0 ? ['#9cdcde', '#88a9bc', '#d99e9a', '#d9bcb8', '#f6e4b6', '#f3e589', '#e674bc', '#f9b4ed', '#d9bffe', '#96d7ff', '#f1e2b9', '#f2b9c8', '#b9d7f1', '#baf2e9', '#b0f2b4'] : ['#cccccc']} />
             </div>
           </section> : null}
         {sessao == 1 && resAc ?
@@ -805,7 +812,7 @@ export default function Dashboard() {
               <div className="flex flex-col ml-4">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Rentabilidade do Imóvel</p>
                 <div className="flex items-end gap-4">
-                  <span className="text-nowrap text-xl">{Number(resultadoAcomodacoes[0].rentabilidade_imovel).toFixed(2)} %</span>
+                  <span className="text-nowrap text-xl">{(Number(resultadoAcomodacoes[0].rentabilidade_imovel)*100).toFixed(2)} %</span>
                   <Comparativo nome="RENTABILIDADE DO IMÓVEL" data={dataBW}
                     passado={comparativoRA.passado?.rentabilidade_imovel ? Number(comparativoRA.passado?.rentabilidade_imovel) : 0}
                     atual={comparativoRA.atual?.rentabilidade_imovel ? Number(comparativoRA.atual?.rentabilidade_imovel) : 0} />

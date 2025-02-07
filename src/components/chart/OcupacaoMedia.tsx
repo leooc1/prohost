@@ -29,7 +29,7 @@ export default function OcupacaoMedia({ dados }: { dados: any[] }) {
                     rotation: -90,
                     responsive: true,
                     maintainAspectRatio: false,
-                    cutout: '90%',
+                    cutout: '80%',
                     plugins: {
                         legend: {
                             display: false,

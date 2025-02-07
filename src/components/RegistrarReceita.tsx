@@ -102,7 +102,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                 <h5 className="font-semibold text-2xl mb-2">Registrar Receita</h5>
 
                 <section>
-                    <span className="text-zinc-500 font-medium">Categoria</span>
+                    <span className="text-zinc-500 font-medium">Categoria<span className='text-red-500 font-bold'> *</span></span>
                     <div className="mt-2 flex gap-2 flex-wrap">
                         {categoriaf.length > 0 &&
                             categoriaf.map(cat => <label htmlFor={String(cat.id)} onClick={() => setCategoria()} className="bg-slate-100 text-sm font-medium cursor-pointer flex items-center text-slate-500 rounded-2xl px-2 py-px">
@@ -115,7 +115,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                 </section>
                 <div className="grid">
                     <label htmlFor="descricao" className="flex flex-col">
-                        <span className="text-zinc-500 font-medium mb-1 text-sm">Descrição</span>
+                        <span className="text-zinc-500 font-medium mb-1 text-sm">Descrição<span className='text-red-500 font-bold'> *</span></span>
                         <input placeholder="Ex: Sofá usado" type="text" name="descricao" id="descricao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                     </label>
                 </div>
@@ -130,11 +130,11 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                 </label>
                 <div className="grid gap-3 items-center grid-cols-2">
                     <label htmlFor="data" className="flex flex-col">
-                        <span className="text-zinc-500 font-medium mb-1 text-sm">Data</span>
+                        <span className="text-zinc-500 font-medium mb-1 text-sm">Data<span className='text-red-500 font-bold'> *</span></span>
                         <input placeholder="dd/mm/aaaa" type="date" name="data" id="data" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                     </label>
                     <label htmlFor="valor" className="flex flex-col">
-                        <span className="text-zinc-500 font-medium mb-1 text-sm">Valor</span>
+                        <span className="text-zinc-500 font-medium mb-1 text-sm">Valor<span className='text-red-500 font-bold'> *</span></span>
                         <input
                             onChange={(e) => {
                                 if (e.target.value.replace(/[.,]/gm, '').length <= 3)

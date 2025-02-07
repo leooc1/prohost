@@ -151,7 +151,7 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
                     <h5 className="font-semibold text-xl mb-4">Cadastrar novo canal</h5>
                     <div className='flex gap-3 items-center'>
                         <label htmlFor="nome" className="flex flex-col">
-                            <span className="text-zinc-500 font-medium mb-1">Nome</span>
+                            <span className="text-zinc-500 font-medium mb-1">Nome<span className='text-red-500 font-bold'> *</span></span>
                             <input type="text" name="nome" id="nome" className="border border-zinc-300 w-full rounded-md px-2 py-1 outline-none" />
                         </label>
                         <label htmlFor="cor" className="flex flex-col">

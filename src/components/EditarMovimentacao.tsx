@@ -166,7 +166,7 @@ export default function EditarMovimentacao(props: propsEditar) {
                     </section>
                     <div className="grid gap-4 grid-cols-2">
                         <label htmlFor="descricao" className="flex flex-col">
-                            <span className="text-zinc-500 font-medium mb-1 text-sm">Descrição</span>
+                            <span className="text-zinc-500 font-medium mb-1 text-sm">Descrição<span className='text-red-500 font-bold'> *</span></span>
                             <input placeholder="Ex: Material de Limpeza" type="text" name="descricao" id="descricao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" defaultValue={props.descricao || ''} />
                         </label>
                         <label htmlFor="recebedor" className="flex flex-col">
@@ -185,11 +185,11 @@ export default function EditarMovimentacao(props: propsEditar) {
                     </label>
                     <div className="grid gap-3 items-center" style={{ gridTemplateColumns: '1fr 1fr 0.3fr' }}>
                         <label htmlFor="data" className="flex flex-col">
-                            <span className="text-zinc-500 font-medium mb-1 text-sm">Data</span>
+                            <span className="text-zinc-500 font-medium mb-1 text-sm">Data<span className='text-red-500 font-bold'> *</span></span>
                             <input placeholder="dd/mm/aaaa" type="date" name="data" id="data" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" defaultValue={props.data || ''} />
                         </label>
                         <label htmlFor="valor" className="flex flex-col">
-                            <span className="text-zinc-500 font-medium mb-1 text-sm">Valor</span>
+                            <span className="text-zinc-500 font-medium mb-1 text-sm">Valor<span className='text-red-500 font-bold'> *</span></span>
                             <input
                                 onChange={(e) => {
                                     e.target.value = Number(e.target.value).toFixed(2)
