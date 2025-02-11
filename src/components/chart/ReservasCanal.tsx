@@ -60,8 +60,8 @@ export default function ReservasCanal({ labels, dados, colors }: { labels: strin
                             backgroundColor: '#E6ECEF',
                             borderRadius: 3,
                             font: {
-                                weight: 'medium',
-                                size: 6
+                                weight: '',
+                                size: 12
                             },
                         },
                     },

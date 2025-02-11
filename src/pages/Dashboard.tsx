@@ -403,7 +403,7 @@ export default function Dashboard() {
           const ociosas = data.ociosas
           const reservadas = data.reservadas
           setDesempenhoDiarias(data)
-          setTaxaOcupacao({ taxa_ocupacao: (reservadas) / (reservadas + ociosas)*100 })
+          setTaxaOcupacao({ taxa_ocupacao: (reservadas) / (reservadas + ociosas) * 100 })
         })
         .catch(err => console.log(err))
 
@@ -485,7 +485,7 @@ export default function Dashboard() {
           const ociosas = data.ociosas
           const reservadas = data.reservadas
           setDesempenhoDiarias(data)
-          setTaxaOcupacao({ taxa_ocupacao: (reservadas) / (reservadas + ociosas)*100 })
+          setTaxaOcupacao({ taxa_ocupacao: (reservadas) / (reservadas + ociosas) * 100 })
         })
         .catch(err => console.log(err))
 
@@ -675,6 +675,9 @@ export default function Dashboard() {
             </select>
           </label>
         </div> : null}
+        {/*  */}
+        {/*  */}
+        {/*  */}
         {sessao == 0 && indiOpe ?
           <section className="grid gap-5 mb-24 grid-cols-3 grid-rows-5 h-[600px]">
             <div className="relative bg-white border-zinc-300 border rounded-lg flex flex-col justify-between items-center row-span-2 py-1 h-full">
@@ -812,7 +815,7 @@ export default function Dashboard() {
               <div className="flex flex-col ml-4">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Rentabilidade do Imóvel</p>
                 <div className="flex items-end gap-4">
-                  <span className="text-nowrap text-xl">{(Number(resultadoAcomodacoes[0].rentabilidade_imovel)*100).toFixed(2)} %</span>
+                  <span className="text-nowrap text-xl">{(Number(resultadoAcomodacoes[0].rentabilidade_imovel) * 100).toFixed(2)} %</span>
                   <Comparativo nome="RENTABILIDADE DO IMÓVEL" data={dataBW}
                     passado={comparativoRA.passado?.rentabilidade_imovel ? Number(comparativoRA.passado?.rentabilidade_imovel) : 0}
                     atual={comparativoRA.atual?.rentabilidade_imovel ? Number(comparativoRA.atual?.rentabilidade_imovel) : 0} />
@@ -990,7 +993,7 @@ export default function Dashboard() {
                 ano={Number(String(new Date().getFullYear()).slice(-2)) - 1}
                 dadosLucros={lucroXDespesa.map(d => Number(d.lucro_acomodacoes))} dadosDespesas={lucroXDespesa.map(d => Number(d.despesas_negocio))} /> : null}
               {periodo == 'personalizado' ? <EvolucaoNegocio
-                mes={new Date().getMonth()}
+                mes={11}
                 ano={Number(String(new Date().getFullYear()).slice(-2))}
                 dadosLucros={lucroXDespesa.map(d => Number(d.lucro_acomodacoes))} dadosDespesas={lucroXDespesa.map(d => Number(d.despesas_negocio))} /> : null}
             </div>

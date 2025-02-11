@@ -43,7 +43,7 @@ export default function QtdeHospede({ labels, dados, colors }: { labels: string[
                                     if (labels.length == 1 && labels[0] == '')
                                         return `Nenhuma reserva`
                                     else
-                                    return `${context.raw} reservas`;
+                                        return `${context.raw} reservas`;
                                 },
                             },
                         },
@@ -60,8 +60,8 @@ export default function QtdeHospede({ labels, dados, colors }: { labels: string[
                             backgroundColor: '#E6ECEF',
                             borderRadius: 3,
                             font: {
-                                weight: 'medium',
-                                size: 6
+                                weight: '',
+                                size: 12
                             },
                         },
                     },

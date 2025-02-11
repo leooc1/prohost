@@ -44,14 +44,14 @@ export default function FaturamentoCanalAc({ labels, dados, colors }: { labels: 
                         tooltip: {
                             callbacks: {
                                 label: function (context: any) {
-                                    const percentage = (context.raw/total * 100).toFixed(2);
+                                    const percentage = (context.raw/total * 100).toFixed(0);
                                     return `${percentage}%`;
                                 },
                             },
                         },
                         datalabels: {
                             formatter: (value: number) => {
-                                return `R$ ${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)}`;
+                                return `R$ ${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)}`;
                             },
                             color: '#000',
                             backgroundColor: '#E6ECEF',

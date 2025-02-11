@@ -32,8 +32,8 @@ export default function DesempenhoDiarias({dados}:{dados:number[]}) {
               position: 'left',
               maxWidth: 200,
               labels: {
-                boxWidth: 15,
-                boxHeight: 15,
+                boxWidth: 20,
+                boxHeight: 20,
                 usePointStyle: true
               }
             },
@@ -52,10 +52,10 @@ export default function DesempenhoDiarias({dados}:{dados:number[]}) {
               },
               color: '#000',
               backgroundColor: '#E6ECEF',
-              borderRadius: 3,
+              borderRadius: 5,
               font: {
-                weight: 'medium',
-                size: 6
+                weight: '',
+                size: 12
               },
             },
           },

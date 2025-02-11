@@ -78,7 +78,7 @@ export default function EvolucaoNegocio({ mes, ano, dadosLucros, dadosDespesas }
                         tooltip: {
                             callbacks: {
                                 label: function (context: any) {
-                                    return `${context.raw}`;
+                                    return `R$ ${context.raw.toFixed(0)}`;
                                 },
                             },
                         },
@@ -87,7 +87,7 @@ export default function EvolucaoNegocio({ mes, ano, dadosLucros, dadosDespesas }
                                 return context.dataset.data[context.dataIndex] !== 0;
                             },
                             formatter: (value: number) => {
-                                return value.toString();
+                                return `R$ ${value.toFixed(0)}`;
                             },
                             color: '#000',
                             anchor: 'end',

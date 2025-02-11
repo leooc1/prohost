@@ -67,7 +67,7 @@ export default function FaturamentoxDespesa({mes, dadosAtuais, dadosPassado}:{me
                         tooltip: {
                             callbacks: {
                                 label: function (context: any) {
-                                    return `R$ ${context.raw}`;
+                                    return `R$ ${context.raw.toFixed(0)}`;
                                 },
                             },
                         },
@@ -76,7 +76,7 @@ export default function FaturamentoxDespesa({mes, dadosAtuais, dadosPassado}:{me
                                 return context.dataset.data[context.dataIndex] != 0;
                             },
                             formatter: (value: number) => {
-                                return value.toString();
+                                return `R$ ${value.toFixed(0)}`;
                             },
                             color: '#000',
                             anchor: 'end', 
