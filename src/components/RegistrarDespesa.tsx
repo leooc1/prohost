@@ -134,7 +134,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
                     </label>
                 </div>
                 <label htmlFor="acomodacaoReceita" className={`flex flex-col ${tipoDespesa == 'Despesas do Negócio' ? 'hidden' : null}`}>
-                    <span className="text-zinc-500 font-medium mb-1 text-sm">Acomodação (opicional)</span>
+                    <span className="text-zinc-500 font-medium mb-1 text-sm">Acomodação (opcional)</span>
                     <select name="acomodacaoReceita" id="acomodacaoReceita" className="border border-zinc-300 rounded-md text-zinc-5 00 px-2 py-1 outline-none">
                         <option value="" selected disabled className="hidden">Selecione uma acomodação</option>
                         <option value="null"></option>
