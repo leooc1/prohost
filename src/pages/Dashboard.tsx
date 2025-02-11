@@ -972,7 +972,7 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg flex flex-col px-2 items-center" style={{ gridArea: 'en' }}>
-              <p className="flex flex-col text-zinc-400 font-medium text-sm mb-14 mt-3">Evolução do Negócio</p>
+              <p className="flex flex-col text-zinc-400 font-medium text-sm mb-14 mt-3">Faturamento x Despesas do negócio</p>
               {periodo == 'm-atual' ? <EvolucaoNegocio
                 mes={new Date().getMonth()}
                 ano={Number(String(new Date().getFullYear()).slice(-2))}
