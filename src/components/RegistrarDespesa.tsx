@@ -91,6 +91,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
 
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
     const [categoriaf, setCategoriaF] = useState<CategoriaFinanceiro[]>([])
+    const [err, setErr] = useState<[boolean, boolean, boolean, boolean, boolean]>([false, false, false, false, false])
 
     useEffect(() => {
         getAcomodacoes()
@@ -103,7 +104,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
                 <h5 className="font-semibold text-2xl mb-2">Registrar Despesa</h5>
                 <label htmlFor="tipo-despesa" className="flex flex-col">
                     <span className="text-zinc-500 font-medium mb-1 text-sm">Tipo de Despesa<span className='text-red-500 font-bold'> *</span></span>
-                    <select name="tipo-despesa" id="tipo-despesa" className={`${tipoDespesa == '' ? 'text-zinc-400' : ''} font-medium border border-zinc-300 rounded-md text-zinc-5 00 px-2 py-1 outline-none`}
+                    <select name="tipo-despesa" id="tipo-despesa" className={`${tipoDespesa == '' ? 'text-zinc-400' : ''}  ${err[0] ? 'border-red-500' : 'border-zinc-300'} font-medium border rounded-md text-zinc-5 00 px-2 py-1 outline-none`}
                         onChange={(e: ChangeEvent<HTMLSelectElement>) => { setTipoDespesa(e.target.value) }}>
                         <option value="" selected disabled className="hidden">Padrão</option>
                         <option value="Despesas do Negócio" className="text-black">Despesas do Negócio</option>
@@ -112,7 +113,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
                     </select>
                 </label>
                 <section>
-                    <span className="text-zinc-500 font-medium">Categoria<span className='text-red-500 font-bold'> *</span></span>
+                    <span className={`${err[1] ? 'text-red-500' : 'text-zinc-500'} font-medium`}>Categoria<span className='text-red-500 font-bold'> *</span></span>
                     <div className="mt-2 flex gap-2 flex-wrap">
                         {categoriaf.length > 0 &&
                             categoriaf.map(cat => <label htmlFor={String(cat.id)} onClick={() => setCategoria()} className="bg-slate-100 text-sm font-medium cursor-pointer flex items-center text-slate-500 rounded-2xl px-2 py-px">
@@ -125,7 +126,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
                 <div className="grid gap-4 grid-cols-2">
                     <label htmlFor="descricao" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Descrição<span className='text-red-500 font-bold'> *</span></span>
-                        <input placeholder="Ex: Manutenção ar condicionado" type="text" name="descricao" id="descricao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                        <input placeholder="Ex: Manutenção ar condicionado" type="text" name="descricao" id="descricao" className={`border ${err[2] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none`} />
                     </label>
                     <label htmlFor="recebedor" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Recebedor</span>
@@ -144,7 +145,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
                 <div className="grid gap-3 items-center" style={{ gridTemplateColumns: '1fr 1fr 0.3fr' }}>
                     <label htmlFor="data" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Data<span className='text-red-500 font-bold'> *</span></span>
-                        <input placeholder="dd/mm/aaaa" type="date" name="data" id="data" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                        <input placeholder="dd/mm/aaaa" type="date" name="data" id="data" className={`border ${err[3] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none`} />
                     </label>
                     <label htmlFor="valor" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Valor<span className='text-red-500 font-bold'> *</span></span>
@@ -169,7 +170,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
                                 else if (e.target.value.replace(/[.,]/gm, '').length <= 11)
                                     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
                             }}
-                            type="text" name="valor" placeholder="R$" id="valor" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full" />
+                            type="text" name="valor" placeholder="R$" id="valor" className={`border ${err[4] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none w-full`} />
                     </label>
                     <div className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-2 text-sm">Pago?</span>
@@ -251,10 +252,39 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
                                 })
                             }
                             else {
+                                let error = err
+                                if (tipoDespesa.value.length == 0) {
+                                    error = (error.map((e, i) => i === 0 ? true : e) as [boolean, boolean, boolean, boolean, boolean]);
+                                }
+                                else {
+                                    error = (error.map((e, i) => i === 0 ? true : e) as [boolean, boolean, boolean, boolean, boolean]);
+                                }
                                 if (!(categoriaInput?.htmlFor)) {
-                                    alert('Selecione uma categoria')
-                                } else
-                                    alert('Preenchimento incorreto')
+                                    error = (error.map((e, i) => i === 1 ? true : e) as [boolean, boolean, boolean, boolean, boolean]);
+                                }
+                                else {
+                                    error = (error.map((e, i) => i === 1 ? true : e) as [boolean, boolean, boolean, boolean, boolean]);
+                                }
+                                if (descricaoInput.value.length == 0) {
+                                    error = (error.map((e, i) => i === 2 ? true : e) as [boolean, boolean, boolean, boolean, boolean]);
+                                }
+                                else {
+                                    error = (error.map((e, i) => i === 2 ? true : e) as [boolean, boolean, boolean, boolean, boolean]);
+                                }
+                                if (dataInput.value.length == 0) {
+                                    error = (error.map((e, i) => i === 3 ? true : e) as [boolean, boolean, boolean, boolean, boolean]);
+                                }
+                                else {
+                                    error = (error.map((e, i) => i === 3 ? true : e) as [boolean, boolean, boolean, boolean, boolean]);
+                                }
+                                if (valorInput.value.length == 0) {
+                                    error = (error.map((e, i) => i === 4 ? true : e) as [boolean, boolean, boolean, boolean, boolean]);
+                                }
+                                else {
+                                    error = (error.map((e, i) => i === 4 ? true : e) as [boolean, boolean, boolean, boolean, boolean]);
+                                }
+                                setErr(error)
+                                alert('Preenchimento incorreto')
                             }
                         }}
                     >Registrar Movimentação</button>

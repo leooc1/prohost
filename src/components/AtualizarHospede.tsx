@@ -13,11 +13,12 @@ interface Hospede {
 export default function AtualizarHospede({ close, id }: { close: () => void, id: number }) {
     const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
-    const [nome, setNome] = useState<string>()
+    const [nome, setNome] = useState<string>('')
     const [email, setEmail] = useState<string | null>()
     const [tel, setTel] = useState<string | null>()
+    const [err, setErr] = useState<boolean>(false)
     async function getHospede() {
-        await fetch(`${apiURL}/hospede/1/${id}`, {
+        await fetch(`${apiURL}/hospede/${dataToken.id}/${id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -41,7 +42,6 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
             .then((data) => {
                 if (data.affected == 1) {
                     alert('ATUALIZADO!')
-                    close()
                     location.reload()
                 }
             })
@@ -58,7 +58,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
             <div className="w-screen h-screen bg-black top-0 right-0 bg-opacity-20" onClick={close}></div>
             <form onSubmit={(e) => {
                 e.preventDefault()
-                if (nome?.length)
+                if (nome.length > 0) {
                     updateHospede({
                         "saas": {
                             "id": dataToken.id
@@ -67,13 +67,15 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
                         "telefone": tel?.length ? tel : null,
                         "email": email?.length ? email : null
                     })
+                }
+
             }} className="flex rounded-md flex-col absolute max-w-96 min-w-80 px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white">
                 <h5 className="font-semibold text-2xl mb-2">Atualizar Hóspede</h5>
                 <label htmlFor="nome" className="flex flex-col">
                     <span className="text-zinc-500 font-medium mb-1">Nome
                         <span className='text-red-500 font-bold'> *</span>
                     </span>
-                    <input type="text" name="nome" id="nome" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" placeholder="Hospede Exemplo" value={nome} onChange={(e) => setNome(e.target.value)} />
+                    <input type="text" name="nome" id="nome" className={`border ${err ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none`} placeholder="Hospede Exemplo" value={nome} onChange={(e) => setNome(e.target.value)} />
                 </label>
                 <label htmlFor="email" className="flex flex-col">
                     <span className="text-zinc-500 font-medium mb-1">E-mail</span>
@@ -85,7 +87,16 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
                 </label>
                 <section className="flex gap-3 justify-end mt-2">
                     <button type="button" className="px-3 py-2 border border-zinc-300 rounded-lg" onClick={close}>Cancelar</button>
-                    <button type='submit' className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary">Atualizar</button>
+                    <button type='submit'
+                        onClick={() => {
+                            if (nome.length > 0) {
+                                setErr(false)
+                            }
+                            else {
+                                setErr(true)
+                            }
+                        }}
+                        className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary">Atualizar</button>
                 </section>
             </form>
         </div>

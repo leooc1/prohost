@@ -88,7 +88,7 @@ export default function EditarMovimentacao(props: propsEditar) {
         data: string
         canal_reserva: { id: number | null }
         nome: string
-        saas: { id: number| null }
+        saas: { id: number | null }
         valor: number
         valor_liq: number
         valor_prop: number
@@ -96,7 +96,7 @@ export default function EditarMovimentacao(props: propsEditar) {
         reserva: { id: number | null }
         pago: boolean | null
         receita: boolean
-        tipo_despesa: string| null
+        tipo_despesa: string | null
         recebedor: string
         obs: string
     }) {
@@ -136,6 +136,7 @@ export default function EditarMovimentacao(props: propsEditar) {
     }
 
     const [loaded, setLoaded] = useState<boolean>(false)
+    const [err, setErr] = useState<[boolean, boolean, boolean]>([false, false, false])
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
     const [categoriaf, setCategoriaF] = useState<CategoriaFinanceiro[]>([])
     async function loadAll() {
@@ -147,6 +148,7 @@ export default function EditarMovimentacao(props: propsEditar) {
     useEffect(() => {
         loadAll()
     }, [])
+
     return (
         loaded ?
             <div className='w-screen h-screen fixed z-10 top-0 right-0'>
@@ -167,7 +169,7 @@ export default function EditarMovimentacao(props: propsEditar) {
                     <div className="grid gap-4 grid-cols-2">
                         <label htmlFor="descricao" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-sm">Descrição<span className='text-red-500 font-bold'> *</span></span>
-                            <input placeholder="Ex: Material de Limpeza" type="text" name="descricao" id="descricao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" defaultValue={props.descricao || ''} />
+                            <input placeholder="Ex: Material de Limpeza" type="text" name="descricao" id="descricao" className={`border ${err[0] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none`} defaultValue={props.descricao || ''} />
                         </label>
                         <label htmlFor="recebedor" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-sm">Recebedor</span>
@@ -186,7 +188,7 @@ export default function EditarMovimentacao(props: propsEditar) {
                     <div className="grid gap-3 items-center" style={{ gridTemplateColumns: '1fr 1fr 0.3fr' }}>
                         <label htmlFor="data" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-sm">Data<span className='text-red-500 font-bold'> *</span></span>
-                            <input placeholder="dd/mm/aaaa" type="date" name="data" id="data" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" defaultValue={props.data || ''} />
+                            <input placeholder="dd/mm/aaaa" type="date" name="data" id="data" className={`border ${err[1] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none`} defaultValue={props.data || ''} />
                         </label>
                         <label htmlFor="valor" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-sm">Valor<span className='text-red-500 font-bold'> *</span></span>
@@ -194,7 +196,7 @@ export default function EditarMovimentacao(props: propsEditar) {
                                 onChange={(e) => {
                                     e.target.value = Number(e.target.value).toFixed(2)
                                 }}
-                                type="number" step={0.01} name="valor" placeholder="R$" id="valor" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full" defaultValue={props.valor || ''} />
+                                type="number" step={0.01} name="valor" placeholder="R$" id="valor" className={`border ${err[2] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none w-full`} defaultValue={props.valor || ''} />
                         </label>
                         <div className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-2 text-sm">Pago?</span>
@@ -279,6 +281,26 @@ export default function EditarMovimentacao(props: propsEditar) {
                                     })
                                 }
                                 else {
+                                    let error = err
+                                    if (descricaoInput.value.length == 0) {
+                                        error = (error.map((e, i) => i === 0 ? true : e) as [boolean, boolean, boolean]);
+                                    }
+                                    else {
+                                        error = (error.map((e, i) => i === 0 ? false : e) as [boolean, boolean, boolean]);
+                                    }
+                                    if (dataInput.value.length == 0) {
+                                        error = (error.map((e, i) => i === 1 ? true : e) as [boolean, boolean, boolean]);
+                                    }
+                                    else {
+                                        error = (error.map((e, i) => i === 1 ? false : e) as [boolean, boolean, boolean]);
+                                    }
+                                    if (valorInput.value.length == 0) {
+                                        error = (error.map((e, i) => i === 2 ? true : e) as [boolean, boolean, boolean]);
+                                    }
+                                    else {
+                                        error = (error.map((e, i) => i === 2 ? false : e) as [boolean, boolean, boolean]);
+                                    }
+                                    setErr(error)
                                     alert('Preenchimento incorreto')
                                 }
                             }}

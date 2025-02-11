@@ -60,7 +60,7 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
             .catch(err => console.log(err))
     }
     useEffect(() => {
-        getAll(dataToken.id)
+        getAll(dataToken?.id)
         const grupos = [];
         for (let i = 0; i < movimentacoes.length; i += 10) {
             grupos.push(movimentacoes.slice(i, i + 10));
@@ -131,7 +131,7 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
                                                         {e.categoria_financeiro ? e.categoria_financeiro.nome :
                                                             e.nome.split(' ')[0] == 'Continuidade' ? 'Continuidade' : e.nome.includes('Cancelamento') ? 'Cancelamento' : 'Diária'}
                                                     </td>
-                                                    <td className="text-center text-xs font-normal">{e.reserva ? e.nome.replace(e.nome.split('Reserva ')[1].split(' ')[0], String(ids.filter(i => i.id == Number(e.nome.split('Reserva ')[1].split(' ')[0]))[0].index)) : e.nome}</td>
+                                                    <td className="text-center text-xs font-normal">{e.reserva ? e.nome.replace(e.nome.split('Reserva ')[1].split(' ')[0], String(ids.filter(i => i?.id == Number(e.nome.split('Reserva ')[1].split(' ')[0]))[0].index)) : e.nome}</td>
                                                     <td className="text-center text-xs font-normal">{e.acomodacao?.nome || ''}</td>
                                                     <td className="text-center text-xs font-normal">{formatarMoedaBrasileira(String(e.valor))}</td>
                                                     <td className="text-center text-xs font-normal">{formatarMoedaBrasileira(String(e.valor_liq))}</td>

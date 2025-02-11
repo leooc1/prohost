@@ -22,7 +22,6 @@ export default function Hospede() {
     const [atualizarHospede, setAtualizarHospede] = useState<[boolean, number]>([false, 0])
     const [hospede, setHospede] = useState<Hospede[]>([])
 
-    //const apiURl = import.meta.env.VITE_baseURLAPI;
     async function getHospede() {
         await fetch(`${apiURL}/hospede/${dataToken.id}`, {
             method: 'GET'

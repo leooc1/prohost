@@ -22,6 +22,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
     const [qtdMaxHospede, setQtdMaxHospede] = useState(1)
     const [tipo, setTipo] = useState('')
     const [autoComplete, setAutoComplete] = useState([])
+    const [err, setErr] = useState<[boolean, boolean, boolean, boolean, boolean, boolean, boolean]>([false, false, false, false, false, false, false])
     async function createAcomodacao(pbody: Acomodacao) {
         await fetch(`${apiURL}/acomodacao/`, {
             method: 'POST',
@@ -64,14 +65,14 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                     <span className="text-zinc-500 font-medium mb-1 text-xs">Identificador
                         <span className='text-red-500 font-bold'> *</span>
                     </span>
-                    <input placeholder="Ex: Apartamento Guarujá" type="text" name="identificador" id="identificador" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                    <input placeholder="Ex: Apartamento Guarujá" type="text" name="identificador" id="identificador" className={`border ${err[0] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none`} />
                 </label>
                 <div className={`grid gap-4 items-center ${tipo == 'terceiro' ? 'grid-cols-6' : 'grid-cols-3'}`}>
                     <label htmlFor="status" className={`flex flex-col ${tipo == 'terceiro' ? 'col-span-3' : 'col-span-2'}`}>
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Status
                             <span className='text-red-500 font-bold'> *</span>
                         </span>
-                        <select name="status" id="status" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" value={tipo} onChange={(e) => setTipo(e.target.value)}>
+                        <select name="status" id="status" className={`border ${err[1] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none`} value={tipo} onChange={(e) => setTipo(e.target.value)}>
                             <option value="proprio">Próprio</option>
                             <option value="terceiro">Terceiro</option>
                         </select>
@@ -89,13 +90,13 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Início de Operação
                             <span className='text-red-500 font-bold'> *</span>
                         </span>
-                        <input type="date" name="inicio-operacao" id="inicio-operacao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                        <input type="date" name="inicio-operacao" id="inicio-operacao" className={`border ${err[2] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none`} />
                     </label>
                 </div>
                 <div className="grid gap-4 items-center" style={{ gridTemplateColumns: '2fr 1fr' }}>
                     <label htmlFor="endereco" className="flex flex-col relative">
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Endereço</span>
-                        <input type="text" name="endereco" id="endereco" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" autoComplete="off"
+                        <input type="text" name="endereco" id="endereco" className={`border ${err[4] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none`} autoComplete="off"
                             onChange={(e) => {
                                 if (e.target.value.length > 3) {
                                     enderecaoComplete(e.target.value)
@@ -128,7 +129,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Valor do Imóvel
                             <span className='text-red-500 font-bold'> *</span>
                         </span>
-                        <input type="text" name="valor-imovel" id="valor-imovel" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" placeholder="R$"
+                        <input type="text" name="valor-imovel" id="valor-imovel" className={`border ${err[3] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none`} placeholder="R$"
                             onChange={(e) => {
                                 if (e.target.value.replace(/[.,]/gm, '').length <= 3)
                                     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})/gm, '$1,$2')
@@ -157,7 +158,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                             <span className='text-red-500 font-bold'> *</span>
                         </span>
                         <select name="padrao-checkout" id="padrao-checkout"
-                            className="border border-zinc-300 rounded-md px-2 py-1 outline-none" defaultValue={'11:00:00'}>
+                            className={`border ${err[6] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none`} defaultValue={'11:00:00'}>
                             <option value="00:00:00">00:00</option>
                             <option value="00:30:00">00:30</option>
                             <option value="01:00:00">01:00</option>
@@ -211,7 +212,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                             <span className='text-red-500 font-bold'> *</span>
                         </span>
                         <select name="padrao-checkin" id="padrao-checkin"
-                            className="border border-zinc-300 rounded-md px-2 py-1 outline-none" defaultValue={'15:00:00'}>
+                            className={`border ${err[5] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none`} defaultValue={'15:00:00'}>
                             <option value="00:00:00">00:00</option>
                             <option value="00:30:00">00:30</option>
                             <option value="01:00:00">01:00</option>
@@ -355,9 +356,37 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                                             "id": dataToken.id
                                         }
                                     })
-                            } else
+                            } else {
+                                let error = err
+                                if (identificador.value.length == 0) {
+                                    error = (error.map((e, i) => i === 0 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
+                                }
+                                else {
+                                    error = (error.map((e, i) => i === 0 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
+                                }
+                                if (status.value.length == 0) {
+                                    error = (error.map((e, i) => i === 1 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
+                                }
+                                else {
+                                    error = (error.map((e, i) => i === 1 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
+                                }
+                                if (iniOpe.value.length == 0) {
+                                    error = (error.map((e, i) => i === 2 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
+                                }
+                                else {
+                                    error = (error.map((e, i) => i === 2 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
+                                }
+                                if (valor.value.length == 0) {
+                                    error = (error.map((e, i) => i === 3 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
+                                }
+                                else {
+                                    error = (error.map((e, i) => i === 3 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
+                                }
+                                setErr(error)
                                 alert('Erro ao cadastrar')
-                        }}
+                            }
+                        }
+                        }
                     >Cadastrar</button>
                 </section>
             </form>
