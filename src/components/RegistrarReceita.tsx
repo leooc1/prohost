@@ -219,25 +219,25 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                                     error = (error.map((e, i) => i === 0 ? true : e) as [boolean, boolean, boolean, boolean]);
                                 }
                                 else {
-                                    error = (error.map((e, i) => i === 0 ? true : e) as [boolean, boolean, boolean, boolean]);
+                                    error = (error.map((e, i) => i === 0 ? false : e) as [boolean, boolean, boolean, boolean]);
                                 }
                                 if (descricaoInput.value.length == 0) {
                                     error = (error.map((e, i) => i === 1 ? true : e) as [boolean, boolean, boolean, boolean]);
                                 }
                                 else {
-                                    error = (error.map((e, i) => i === 1 ? true : e) as [boolean, boolean, boolean, boolean]);
+                                    error = (error.map((e, i) => i === 1 ? false : e) as [boolean, boolean, boolean, boolean]);
                                 }
                                 if (dataInput.value.length == 0) {
                                     error = (error.map((e, i) => i === 2 ? true : e) as [boolean, boolean, boolean, boolean]);
                                 }
                                 else {
-                                    error = (error.map((e, i) => i === 2 ? true : e) as [boolean, boolean, boolean, boolean]);
+                                    error = (error.map((e, i) => i === 2 ? false : e) as [boolean, boolean, boolean, boolean]);
                                 }
                                 if (valorInput.value.length == 0) {
                                     error = (error.map((e, i) => i === 3 ? true : e) as [boolean, boolean, boolean, boolean]);
                                 }
                                 else {
-                                    error = (error.map((e, i) => i === 3 ? true : e) as [boolean, boolean, boolean, boolean]);
+                                    error = (error.map((e, i) => i === 3 ? false : e) as [boolean, boolean, boolean, boolean]);
                                 }
                                 setErr(error)
                                 alert('Preenchimento incorreto')
