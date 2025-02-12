@@ -71,7 +71,7 @@ export default function NovaIndisponibilidade({ close }: { close: () => void }) 
                     alert(data)
                 }
                 else {
-                    alert("Erro ao cadastrar.")                    
+                    alert("Erro ao cadastrar.")
                 }
             })
             .catch(err => console.log(err))
@@ -135,17 +135,19 @@ export default function NovaIndisponibilidade({ close }: { close: () => void }) 
                         <button className="px-3 py-2 border border-zinc-300 rounded-lg" onClick={close}>Cancelar</button>
                         <button
                             onClick={() => {
-                                const acomodacao = document.getElementById('acomodacao') as HTMLSelectElement
+                                const acomodacaoo = document.getElementById('acomodacao') as HTMLSelectElement
                                 const dataini = document.getElementById('de') as HTMLInputElement
                                 const datafim = document.getElementById('ate') as HTMLInputElement
                                 const motivo = document.getElementById('motivo') as HTMLInputElement
-                                if (acomodacao.value.length && dataini.value.length && datafim.value.length)
+                                if (acomodacaoo.value.length && dataini.value.length && datafim.value.length) {
+                                    const ci = acomodacao.filter(e => e.id == Number(acomodacaoo.value))[0].check_in_p
+                                    const co = acomodacao.filter(e => e.id == Number(acomodacaoo.value))[0].check_out_p
                                     createIndisponibilidade({
                                         "acomodacao": {
-                                            "id": Number(acomodacao.value)
+                                            "id": Number(acomodacaoo.value)
                                         },
-                                        "check_in": dataini.value + ' 00:00:00',
-                                        "check_out": datafim.value + ' 23:59:59',
+                                        "check_in": dataini.value + ' ' + ci,
+                                        "check_out": datafim.value + ' ' + co,
                                         "canal_reserva": {
                                             "id": null
                                         },
@@ -164,6 +166,7 @@ export default function NovaIndisponibilidade({ close }: { close: () => void }) 
                                         "obs": motivo.value,
                                         "tipo_reserva": "Indisponibilidade"
                                     })
+                                }
                                 else alert('Dados obrigatórios nao estão preenchidos')
                             }}
                             className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary">Cadastrar</button>
@@ -171,6 +174,6 @@ export default function NovaIndisponibilidade({ close }: { close: () => void }) 
                 </form>
             }
 
-        </div>
+        </div >
     )
 }

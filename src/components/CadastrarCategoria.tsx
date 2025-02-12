@@ -19,7 +19,7 @@ export default function CadastrarCategoria({ close }: { close: () => void }) {
     const [despesas, setDespesas] = useState<CategoriaFinanceiro[]>([])
 
     async function getCategorias() {
-        await fetch(`${apiURL}/categoria_financeiro/`+dataToken.id, {
+        await fetch(`${apiURL}/categoria_financeiro/` + dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())

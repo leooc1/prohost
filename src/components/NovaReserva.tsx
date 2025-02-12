@@ -60,6 +60,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
     const [canais, setCanais] = useState<Canais[]>([])
     const [render, setRender] = useState(false)
+    const [err, setErr] = useState<[boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean]>([false, false, false, false, false, false, false, false, false])
     const [hospede, setHospede] = useState<Hospede[]>([])
     const [showH, setShowH] = useState<Hospede[]>([])
 
@@ -202,7 +203,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                     <h5 className="font-semibold text-2xl mb-2">Nova Reserva</h5>
                     <label htmlFor="acomodacao" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Acomodação<span className='text-red-500 font-bold'> *</span></span>
-                        <select name="acomodacao" id="acomodacao" className="border border-zinc-300 rounded-md text-zinc-5 00 px-2 py-1 outline-none"
+                        <select name="acomodacao" id="acomodacao" className={`border ${err[0] ? 'border-red-500' : 'border-zinc-300'}  rounded-md text-zinc-5 00 px-2 py-1 outline-none`}
                             onChange={(ac) => {
                                 const cIN = document.getElementById('checkin-hour') as HTMLInputElement
                                 const cOUT = document.getElementById('checkout-hour') as HTMLInputElement
@@ -224,41 +225,41 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                 else {
                                     setShowH(hospede.filter((h) => h.nome.toLowerCase().includes(e.target.value.toLowerCase())))
                                 }
-                            }} type="text" placeholder="Selecione um hóspede" name="hospede" id="hospede" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                            }} type="text" placeholder="Selecione um hóspede" name="hospede" id="hospede" className={`border ${err[1] ? 'border-red-500' : 'border-zinc-300'}  rounded-md px-2 py-1 outline-none`} />
                             {showH.length > 0 && <section className="absolute bg-white top-full w-full">
                                 <ul className="flex flex-col w-full gap-1">
                                     {showH.map(h => <li id={`${h.id}`} onClick={() => {
                                         const hInput = document.getElementById('hospede') as HTMLInputElement
                                         hInput.value = h.nome
                                         setShowH([])
-                                    }} className="cursor-pointer border border-zinc-400 rounded-md px-1">{h.nome}</li>)}
+                                    }} className={`cursor-pointer border border-zinc-400 rounded-md px-1`}>{h.nome}</li>)}
                                 </ul>
                             </section>}
                         </label>
                         <label htmlFor="qtd-hospedes" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Qtd. Hóspedes<span className='text-red-500 font-bold'> *</span></span>
-                            <input type="number" defaultValue={1} min={1} onChange={(e) => { if (e.target.value.length > 0 && Number(e.target.value) < 1) e.target.value = '1' }} name="qtd-hospedes" id="qtd-hospedes" className="border border-zinc-300 rounded-md px-2 py-1 text-center outline-none max-w-32" />
+                            <input type="number" defaultValue={1} min={1} onChange={(e) => { if (e.target.value.length > 0 && Number(e.target.value) < 1) e.target.value = '1' }} name="qtd-hospedes" id="qtd-hospedes" className={`border ${err[2] ? 'border-red-500' : 'border-zinc-300'}  rounded-md px-2 py-1 text-center outline-none max-w-32`} />
                         </label>
                     </div>
                     <div className="grid gap-4 grid-cols-4">
                         <label htmlFor="checkin-date" className="flex flex-col justify-end">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Check-in<span className='text-red-500 font-bold'> *</span></span>
-                            <input type="date" name="checkin-date" id="checkin-date" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                            <input type="date" name="checkin-date" id="checkin-date" className={`border ${err[3] ? 'border-red-500' : 'border-zinc-300'}  rounded-md px-2 py-1 outline-none`} />
                         </label>
                         <label htmlFor="checkin-hour" className="flex flex-col justify-end w-fit">
-                            <input type="time" name="checkin-hour" defaultValue={`0${new Date().getHours()}`.slice(-2) + ':00'} id="checkin-hour" className="border border-zinc-300 max-w-24 rounded-md px-2 py-1 outline-none" />
+                            <input type="time" name="checkin-hour" defaultValue={`0${new Date().getHours()}`.slice(-2) + ':00'} id="checkin-hour" className={`border ${err[3] ? 'border-red-500' : 'border-zinc-300'}  max-w-24 rounded-md px-2 py-1 outline-none`} />
                         </label>
                         <label htmlFor="checkout-date" className="flex flex-col justify-end">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Check-out<span className='text-red-500 font-bold'> *</span></span>
-                            <input type="date" name="checkout-date" id="checkout-date" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
+                            <input type="date" name="checkout-date" id="checkout-date" className={`border ${err[4] ? 'border-red-500' : 'border-zinc-300'}  rounded-md px-2 py-1 outline-none`} />
                         </label>
                         <label htmlFor="checkout-hour" className="flex flex-col justify-end w-fit">
-                            <input type="time" name="checkout-hour" defaultValue={`0${new Date().getHours()}`.slice(-2) + ':00'} id="checkout-hour" className="border border-zinc-300 max-w-24 rounded-md px-2 py-1 outline-none" />
+                            <input type="time" name="checkout-hour" defaultValue={`0${new Date().getHours()}`.slice(-2) + ':00'} id="checkout-hour" className={`border ${err[4] ? 'border-red-500' : 'border-zinc-300'}  max-w-24 rounded-md px-2 py-1 outline-none`} />
                         </label>
                     </div>
                     <label htmlFor="canal-reserva" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Canal<span className='text-red-500 font-bold'> *</span></span>
-                        <select name="canal-reserva" id="canal-reserva" className="border border-zinc-300 rounded-md text-zinc-5 00 px-2 py-1 outline-none">
+                        <select name="canal-reserva" id="canal-reserva" className={`border ${err[5] ? 'border-red-500' : 'border-zinc-300'}  rounded-md text-zinc-5 00 px-2 py-1 outline-none`}>
                             <option value="" selected disabled className="hidden">Selecione um canal</option>
                             {canais.length &&
                                 canais.map(c => <option value={c.id}>{c.nome}</option>)}
@@ -269,7 +270,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                         <label htmlFor="tot" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Valor Total<span className='text-red-500 font-bold'> *</span></span>
                             <div className="flex items-center gap-2">
-                                R$<input type="text" placeholder="R$" step="0.01" name="tot" id="tot" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full"
+                                R$<input type="text" placeholder="R$" step="0.01" name="tot" id="tot" className={`border ${err[6] ? 'border-red-500' : 'border-zinc-300'}  rounded-md px-2 py-1 outline-none w-full`}
                                     onInput={() => {
                                         const total = document.getElementById('tot') as HTMLInputElement
                                         const comissao = document.getElementById('com') as HTMLInputElement
@@ -293,7 +294,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                         <label htmlFor="com" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Comissão<span className='text-red-500 font-bold'> *</span></span>
                             <div className="flex items-center gap-2">
-                                R$<input type="text" placeholder="R$" step="0.01" name="com" id="com" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full"
+                                R$<input type="text" placeholder="R$" step="0.01" name="com" id="com" className={`border ${err[7] ? 'border-red-500' : 'border-zinc-300'}  rounded-md px-2 py-1 outline-none w-full`}
                                     onInput={() => {
                                         const total = document.getElementById('tot') as HTMLInputElement
                                         const comissao = document.getElementById('com') as HTMLInputElement
@@ -317,7 +318,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                         <label htmlFor="liq" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Valor Líquido<span className='text-red-500 font-bold'> *</span></span>
                             <div className="flex items-center gap-2">
-                                R$<input type="text" placeholder="R$" step="0.01" name="liq" id="liq" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full"
+                                R$<input type="text" placeholder="R$" step="0.01" name="liq" id="liq" className={`border ${err[8] ? 'border-red-500' : 'border-zinc-300'}  rounded-md px-2 py-1 outline-none w-full`}
                                     onInput={() => {
                                         const total = document.getElementById('tot') as HTMLInputElement
                                         const comissao = document.getElementById('com') as HTMLInputElement
@@ -416,6 +417,62 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                     })
                                 }
                                 else {
+                                    let error = err
+                                    if (acomodacaoInput.value.length == 0) {
+                                        error = (error.map((e, i) => i === 0 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
+                                    }
+                                    else {
+                                        error = (error.map((e, i) => i === 0 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
+                                    }
+                                    if (hospedeInput.value.length == 0) {
+                                        error = (error.map((e, i) => i === 1 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
+                                    }
+                                    else {
+                                        error = (error.map((e, i) => i === 1 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
+                                    }
+                                    if (Number(qtdHospede.value) <= 0) {
+                                        error = (error.map((e, i) => i === 2 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
+                                    }
+                                    else {
+                                        error = (error.map((e, i) => i === 2 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
+                                    }
+                                    if (checkinDate.value.length == 0 || checkinHora.value.length == 0) {
+                                        error = (error.map((e, i) => i === 3 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
+                                    }
+                                    else {
+                                        error = (error.map((e, i) => i === 3 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
+                                    }
+                                    if (checkoutDate.value.length == 0 || checkoutHora.value.length == 0) {
+                                        error = (error.map((e, i) => i === 4 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
+                                    }
+                                    else {
+                                        error = (error.map((e, i) => i === 4 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
+                                    }
+                                    if (canais.value.length == 0) {
+                                        error = (error.map((e, i) => i === 5 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
+                                    }
+                                    else {
+                                        error = (error.map((e, i) => i === 5 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
+                                    }
+                                    if (Number(valorBruto.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) < 0 || valorBruto.value.length == 0) {
+                                        error = (error.map((e, i) => i === 6 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
+                                    }
+                                    else {
+                                        error = (error.map((e, i) => i === 6 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
+                                    }
+                                    if (Number(valorComissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) < 0 || valorComissao.value.length == 0) {
+                                        error = (error.map((e, i) => i === 7 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
+                                    }
+                                    else {
+                                        error = (error.map((e, i) => i === 7 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
+                                    }
+                                    if (Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) < 0 || valorLiquido.value.length == 0) {
+                                        error = (error.map((e, i) => i === 8 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
+                                    }
+                                    else {
+                                        error = (error.map((e, i) => i === 8 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
+                                    }
+                                    setErr(error)
                                     alert('Preenchimento incorreto')
                                 }
                             }}
