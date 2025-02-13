@@ -3,6 +3,7 @@ import NovaContinuidade from "./NovaContinuidade"
 import EditarReserva from "./EditarReserva"
 import CardCancelamento from "./CardCancelamento"
 import { SideBarContext } from "../contexts/SideBarMenuContext"
+import EditarContinuidade from "./EditarContinuidade"
 
 interface propsReserva {
     id: string
@@ -57,6 +58,7 @@ export default function ReservaCardView(props: propsReserva) {
     const [idR, setIdR] = useState<number>(0)
     const [continuidade, setContinuidade] = useState(false)
     const [editar, setEditar] = useState(false)
+    const [editarContinuidade, setEditarContinuidade] = useState(false)
     const [cancelamento, setCancelamento] = useState(false)
 
     function formatDate(isoDateStr: string) {
@@ -167,6 +169,11 @@ export default function ReservaCardView(props: propsReserva) {
                 valorLiq={reserva?.valor_liq || 0}
                 valorTotal={reserva?.valor || 0}
             />}
+            {editarContinuidade && <EditarContinuidade
+                saas={dataToken.id}
+                id={reserva?.id || 0}
+                close={() => setEditarContinuidade(false)}
+            />}
             <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={props.close}></div>
             <div className="flex rounded-md flex-col absolute min-w-80 px-4 pb-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white max-h-[calc(100vh-40px)] overflow-y-scroll scroll-default">
                 <section className="flex items-center mt-2 gap-5">
@@ -271,6 +278,12 @@ export default function ReservaCardView(props: propsReserva) {
                                 setCancelamento(true)
                             }}
                             className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md">Cancelar Continuidade</button>
+
+                        <button
+                            onClick={() => {
+                                setEditarContinuidade(true)
+                            }}
+                            className="px-2 py-1 text-sm font-medium bg-blue-100 text-blue-500 rounded-md">Editar Continuidade</button>
                     </div> : null}
                     {reserva?.tipo_reserva == 'Indisponibilidade' ? <div className="flex justify-between mt-3">
                         <button

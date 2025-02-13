@@ -218,7 +218,7 @@ export default function EditarReserva(props: propsEdicao) {
             <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={props.close}></div>
             {render &&
                 <form onSubmit={(e) => { e.preventDefault() }} className="flex rounded-md flex-col absolute min-w-80 px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white">
-                    <h5 className="font-semibold text-2xl mb-2">Nova Reserva</h5>
+                    <h5 className="font-semibold text-2xl mb-2">Editar Reserva</h5>
                     <label htmlFor="acomodacao" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Acomodação<span className='text-red-500 font-bold'> *</span></span>
                         <select defaultValue={props.acomodacaoID} name="acomodacao" id="acomodacao" className="border border-zinc-300 rounded-md text-zinc-5 00 px-2 py-1 outline-none">

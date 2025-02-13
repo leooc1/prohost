@@ -354,28 +354,17 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      /* await fetch(`${apiURL}/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}`, {
+      await fetch(`${apiURL}/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
         .then((data) => {
           setShowTaxaOcu(false)
-          if (data.length > 0)
-            if (acomodacao.length > 0) {
-              const dias_totais =
-                !isNaN(data[0].dias_totais) ? Number(data[0].dias_totais) : 0
-              const total_diaria =
-                !isNaN(data[0].total_diaria) ? Number(data[0].total_diaria) : 0
-              const total_indisponivel =
-                !isNaN(data[0].total_indisponivel) ? Number(data[0].total_indisponivel) : 0
-              const qtd_acomodacao = acomodacao.length
-              const taxa_de_ocupacao = ((total_diaria / ((dias_totais * qtd_acomodacao) - total_indisponivel)) * 100)
-              !isNaN(taxa_de_ocupacao) ? setTaxaOcupacao({ taxa_ocupacao: taxa_de_ocupacao }) : setTaxaOcupacao(data[0])
-            }
-            else
-              setTaxaOcupacao(data[0])
+          const ociosas = data.ociosas
+          const reservadas = data.reservadas
+          setTaxaOcupacao({ taxa_ocupacao: (reservadas) / (reservadas + ociosas) * 100 })
         })
-        .catch(err => console.log(err)) */
+        .catch(err => console.log(err))
 
       await fetch(`${apiURL}/reserva/${dataToken.id}/por-canal/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
@@ -400,10 +389,7 @@ export default function Dashboard() {
       })
         .then(data => data.json())
         .then((data) => {
-          const ociosas = data.ociosas
-          const reservadas = data.reservadas
           setDesempenhoDiarias(data)
-          setTaxaOcupacao({ taxa_ocupacao: (reservadas) / (reservadas + ociosas) * 100 })
         })
         .catch(err => console.log(err))
 
@@ -448,16 +434,17 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      /* await fetch(`${apiURL}/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      await fetch(`${apiURL}/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
         .then((data) => {
           setShowTaxaOcu(false)
-          if (data.length > 0)
-            setTaxaOcupacao(data[0])
+          const ociosas = data.ociosas
+          const reservadas = data.reservadas
+          setTaxaOcupacao({ taxa_ocupacao: (reservadas) / (reservadas + ociosas) * 100 })
         })
-        .catch(err => console.log(err)) */
+        .catch(err => console.log(err))
 
       await fetch(`${apiURL}/reserva/${dataToken.id}/por-canal/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
@@ -482,10 +469,7 @@ export default function Dashboard() {
       })
         .then(data => data.json())
         .then((data) => {
-          const ociosas = data.ociosas
-          const reservadas = data.reservadas
           setDesempenhoDiarias(data)
-          setTaxaOcupacao({ taxa_ocupacao: (reservadas) / (reservadas + ociosas) * 100 })
         })
         .catch(err => console.log(err))
 
@@ -781,7 +765,8 @@ export default function Dashboard() {
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-44 -translate-y-24 flex flex-col justify-between items-center py-1" >
               <p className="flex flex-col text-zinc-400 font-medium text-sm">Quantidade de hospedes</p>
-              <QtdeHospede labels={qtdHospede.length > 0 ? qtdHospede.map(h => String(h.qtd_hospede)) : ['']} dados={qtdHospede.length > 0 ? qtdHospede.map(h => Number(h.qtd_reserva)) : [1]} colors={qtdHospede.length > 0 ? ['#9cdcde', '#88a9bc', '#d99e9a', '#d9bcb8', '#f6e4b6', '#f3e589', '#e674bc', '#f9b4ed', '#d9bffe', '#96d7ff', '#f1e2b9', '#f2b9c8', '#b9d7f1', '#baf2e9', '#b0f2b4'] : ['#cccccc']} />
+              <QtdeHospede labels={qtdHospede.length > 0 ? qtdHospede.map(h => String(h.qtd_hospede)) : ['']} dados={qtdHospede.length > 0 ? qtdHospede.map(h => Number(h.qtd_reserva)) : [1]} colors={qtdHospede.length > 0 ? ['#5ec8de', '#5c89b4', '#e36a5f', '#e59b96', '#f5cf69', '#f1d334', '#da2e97', '#f46bd6', '#c169fe', '#43b9ff', '#efc25d', '#f06788', '#69b2f0', '#5ef1db', '#51e853']
+                : ['#cccccc']} />
             </div>
           </section> : null}
         {sessao == 1 && resAc ?
