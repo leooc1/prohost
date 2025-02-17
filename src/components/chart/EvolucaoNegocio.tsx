@@ -78,7 +78,10 @@ export default function EvolucaoNegocio({ mes, ano, dadosLucros, dadosDespesas }
                         tooltip: {
                             callbacks: {
                                 label: function (context: any) {
-                                    return `R$ ${context.raw.toFixed(0)}`;
+                                    return `R$ ${new Intl.NumberFormat('pt-BR', { 
+                                        minimumFractionDigits: 0, 
+                                        maximumFractionDigits: 0 
+                                    }).format(context.raw)}`;
                                 },
                             },
                         },
@@ -87,7 +90,7 @@ export default function EvolucaoNegocio({ mes, ano, dadosLucros, dadosDespesas }
                                 return context.dataset.data[context.dataIndex] !== 0;
                             },
                             formatter: (value: number) => {
-                                return `R$ ${value.toFixed(0)}`;
+                                return `R$ ${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)}`;
                             },
                             color: '#000',
                             anchor: 'end',

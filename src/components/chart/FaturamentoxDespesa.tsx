@@ -4,9 +4,9 @@ import { useEffect, useRef } from 'react';
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend, Title, ChartDataLabels);
 
-export default function FaturamentoxDespesa({mes, dadosAtuais, dadosPassado}:{mes:number, dadosAtuais:number[], dadosPassado:number[]}) {
+export default function FaturamentoxDespesa({ mes, dadosAtuais, dadosPassado }: { mes: number, dadosAtuais: number[], dadosPassado: number[] }) {
     const chartRef = useRef<HTMLCanvasElement>(null);
-    function ordenarMeses(numero:number) {
+    function ordenarMeses(numero: number) {
         const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
         const indiceInicio = (numero) % meses.length;
         const primeiraParte = meses.slice(indiceInicio);
@@ -67,7 +67,10 @@ export default function FaturamentoxDespesa({mes, dadosAtuais, dadosPassado}:{me
                         tooltip: {
                             callbacks: {
                                 label: function (context: any) {
-                                    return `R$ ${context.raw.toFixed(0)}`;
+                                    return `R$ ${new Intl.NumberFormat('pt-BR', { 
+                                        minimumFractionDigits: 0, 
+                                        maximumFractionDigits: 0 
+                                    }).format(context.raw)}`;
                                 },
                             },
                         },
@@ -76,11 +79,11 @@ export default function FaturamentoxDespesa({mes, dadosAtuais, dadosPassado}:{me
                                 return context.dataset.data[context.dataIndex] != 0;
                             },
                             formatter: (value: number) => {
-                                return `R$ ${value.toFixed(0)}`;
+                                return `R$ ${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)}`;
                             },
                             color: '#000',
-                            anchor: 'end', 
-                            align: 'bottom',  
+                            anchor: 'end',
+                            align: 'bottom',
                             backgroundColor: '#E6ECEF',
                             borderRadius: 2,
                             font: {
