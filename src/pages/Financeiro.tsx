@@ -49,7 +49,6 @@ export default function Financeiro() {
     const apiURL = 'https://api.prohost.net.br'
     useEffect(() => { document.title = `Financeiro | Prohost` }, [])
 
-
     const { dataToken } = useContext(SideBarContext)
     const [loaded, setLoaded] = useState(false)
 
@@ -126,7 +125,6 @@ export default function Financeiro() {
         });
     }
 
-
     const [novaReceita, setNovaReceita] = useState(false)
     const [novaDespesa, setNovaDespesa] = useState(false)
     const [vz, setVz] = useState(true)
@@ -145,6 +143,12 @@ export default function Financeiro() {
     const [showMovimentacao, setShowMovimentacao] = useState<Movimentacao[]>([])
     const [lDespesa, setLDespesa] = useState<string>('')
     const [filterAC, setFilterAC] = useState<string>('all')
+
+    const updateQueryParam = (key: string, value: string) => {
+        const url = new URL(window.location.href);
+        url.searchParams.set(key, value);
+        window.history.replaceState({}, "", url);
+    };
 
     function getDaysInMonth(month: number, year: number) {
         switch (month) {
@@ -208,26 +212,41 @@ export default function Financeiro() {
         if (periodo == 'm-atual') {
             const de = `${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`
             const ate = `${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`
+            updateQueryParam("datade", de);
+            updateQueryParam("dataate", ate);
+            updateQueryParam("acfil", filterAC);
             setDataBW([de, ate])
         }
         else if (periodo == 'm-passado') {
             const de = `${date.getMonth() == 0 ? date.getFullYear() - 1 : date.getFullYear()}-${date.getMonth() == 0 ? 12 : (`0${date.getMonth()}`).slice(-2)}-01`
             const ate = `${date.getMonth() == 0 ? date.getFullYear() - 1 : date.getFullYear()}-${date.getMonth() == 0 ? 12 : (`0${date.getMonth()}`).slice(-2)}-${getDaysInMonth(date.getMonth() == 0 ? 12 : date.getMonth(), date.getFullYear())}`
+            updateQueryParam("datade", de);
+            updateQueryParam("dataate", ate);
+            updateQueryParam("acfil", filterAC);
             setDataBW([de, ate])
         }
         else if (periodo == 'a-atual') {
             const de = `${date.getFullYear()}-01-01`
             const ate = `${date.getFullYear()}-12-31`
+            updateQueryParam("datade", de);
+            updateQueryParam("dataate", ate);
+            updateQueryParam("acfil", filterAC);
             setDataBW([de, ate])
         }
         else if (periodo == 'a-passado') {
             const de = `${date.getFullYear() - 1}-01-01`
             const ate = `${date.getFullYear() - 1}-12-31`
+            updateQueryParam("datade", de);
+            updateQueryParam("dataate", ate);
+            updateQueryParam("acfil", filterAC);
             setDataBW([de, ate])
         }
         else {
             const de = deData
             const ate = ateData
+            updateQueryParam("datade", de);
+            updateQueryParam("dataate", ate);
+            updateQueryParam("acfil", filterAC);
             setDataBW([de, ate])
         }
         setListagem(false)
@@ -237,6 +256,13 @@ export default function Financeiro() {
     useEffect(() => {
         loadAll()
     }, [listagem, dataToken])
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const acfil = params.get("acfil") || 'all';
+        if (filterAC == 'all' && acfil != 'all')
+            setFilterAC(acfil)
+    }, [])
 
     return (
         loaded ?

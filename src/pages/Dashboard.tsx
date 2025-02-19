@@ -542,37 +542,60 @@ export default function Dashboard() {
   const [dataBW, setDataBW] = useState<[string, string]>([`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`, `${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`])
   const [dataBar, setDataBar] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
 
+  const updateQueryParam = (key: string, value: string) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set(key, value);
+    window.history.replaceState({}, "", url);
+  };
+
   useEffect(() => {
     if (periodo == 'm-atual') {
       const de = `${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`
       const ate = `${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`
+      updateQueryParam("datade", de);
+      updateQueryParam("dataate", ate);
+      updateQueryParam("acfil", filterAC);
       setDataBW([de, ate])
       setDataBar(ate)
     }
     else if (periodo == 'm-passado') {
       const de = `${date.getMonth() == 0 ? date.getFullYear() - 1 : date.getFullYear()}-${date.getMonth() == 0 ? 12 : (`0${date.getMonth()}`).slice(-2)}-01`
       const ate = `${date.getMonth() == 0 ? date.getFullYear() - 1 : date.getFullYear()}-${date.getMonth() == 0 ? 12 : (`0${date.getMonth()}`).slice(-2)}-${getDaysInMonth(date.getMonth() == 0 ? 12 : date.getMonth(), date.getFullYear())}`
+      updateQueryParam("datade", de);
+      updateQueryParam("dataate", ate);
+      updateQueryParam("acfil", filterAC);
       setDataBW([de, ate])
       setDataBar(ate)
     }
     else if (periodo == 'a-atual') {
       const de = `${date.getFullYear()}-01-01`
       const ate = `${date.getFullYear()}-12-31`
+      updateQueryParam("datade", de);
+      updateQueryParam("dataate", ate);
+      updateQueryParam("acfil", filterAC);
       setDataBW([de, ate])
       setDataBar(ate)
     }
     else if (periodo == 'a-passado') {
       const de = `${date.getFullYear() - 1}-01-01`
       const ate = `${date.getFullYear() - 1}-12-31`
+      updateQueryParam("datade", de);
+      updateQueryParam("dataate", ate);
+      updateQueryParam("acfil", filterAC);
       setDataBW([de, ate])
       setDataBar(ate)
     }
     else {
       const de = deData
       const ate = ateData
+      updateQueryParam("datade", de);
+      updateQueryParam("dataate", ate);
+      updateQueryParam("acfil", filterAC);
       setDataBW([de, ate])
       setDataBar(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
     }
+
+
 
     setIndiOpe(false)
     setResAc(false)
@@ -580,16 +603,47 @@ export default function Dashboard() {
   }, [periodo, deData, ateData, filterAC])
 
   useEffect(() => {
-    if (location.search) {
-      const ss = Number(location.search.replace('?ss=', ''))
-      setSessao(ss)
-    }
+    const params = new URLSearchParams(window.location.search);
+    const ss = Number(params.get("ss"));
+    if (!isNaN(ss)) {
+      setSessao(ss);
+    } else setSessao(0)
     loadAll()
   }, [resAc, indiOpe, resGestor, dataToken])
 
   useEffect(() => {
     setShowTaxaOcu(true)
   }, [taxaOcupacao])
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const acfil = params.get("acfil") || 'all';
+    if (filterAC == 'all' && acfil != 'all')
+      setFilterAC(acfil)
+  }, [])
+
+  function ordenarGraf(numero: number, fat: {
+    mes: string
+    receita: string
+    despesa: string
+    receita_ano_anterior: string
+  }[]) {
+    fat.sort((a, b) => Number(a.mes) - Number(b.mes))
+    const indiceInicio = (numero) % fat.length;
+    const primeiraParte = fat.slice(indiceInicio);
+    const segundaParte = fat.slice(0, indiceInicio);
+    const dataGraf = primeiraParte.concat(segundaParte).map(f => {
+      if (periodo != 'm-atual' && periodo != 'm-passado')
+        return f
+      return {
+        mes: f.mes,
+        receita: Number(f.mes) == (numero + 1) ? f.receita : "0",
+        despesa: Number(f.mes) == (numero + 1) ? f.despesa : "0",
+        receita_ano_anterior: f.receita_ano_anterior,
+      }
+    });
+    return dataGraf;
+  }
 
   return (
     loaded ?
@@ -636,9 +690,9 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="flex flex-wrap gap-6 mb-6">
-          <button className={`hover:bg-slate-200 hover:text-blue-700 font-medium px-4 py-1 rounded-3xl text-lg transition-all ${sessao == 0 ? 'bg-slate-200 text-blue-700' : 'text-zinc-700'}`} onClick={() => { setSessao(0); location.search = 'ss=0' }}>Indicadores Operacionais</button>
-          <button className={`hover:bg-slate-200 hover:text-blue-700 font-medium px-4 py-1 rounded-3xl text-lg transition-all ${sessao == 1 ? 'bg-slate-200 text-blue-700' : 'text-zinc-700'}`} onClick={() => { setSessao(1); location.search = 'ss=1' }}>Resultados das Acomodações</button>
-          <button className={`hover:bg-slate-200 hover:text-blue-700 font-medium px-4 py-1 rounded-3xl text-lg transition-all ${sessao == 2 ? 'bg-slate-200 text-blue-700' : 'text-zinc-700'}`} onClick={() => { setSessao(2); location.search = 'ss=2' }}>Resultados do Gestor</button>
+          <button className={`hover:bg-slate-200 hover:text-blue-700 font-medium px-4 py-1 rounded-3xl text-lg transition-all ${sessao == 0 ? 'bg-slate-200 text-blue-700' : 'text-zinc-700'}`} onClick={() => { setSessao(0); updateQueryParam("ss", "0") }}>Indicadores Operacionais</button>
+          <button className={`hover:bg-slate-200 hover:text-blue-700 font-medium px-4 py-1 rounded-3xl text-lg transition-all ${sessao == 1 ? 'bg-slate-200 text-blue-700' : 'text-zinc-700'}`} onClick={() => { setSessao(1); updateQueryParam("ss", "1") }}>Resultados das Acomodações</button>
+          <button className={`hover:bg-slate-200 hover:text-blue-700 font-medium px-4 py-1 rounded-3xl text-lg transition-all ${sessao == 2 ? 'bg-slate-200 text-blue-700' : 'text-zinc-700'}`} onClick={() => { setSessao(2); updateQueryParam("ss", "2") }}>Resultados do Gestor</button>
         </div>
         <h4 className="text-2xl font-semibold mb-6">
           {sessao == 0 ? 'Indicadores Operacionais' : null}
@@ -648,10 +702,11 @@ export default function Dashboard() {
         {sessao != 2 ? <div>
           <label htmlFor="acomodacao" className={`flex flex-col w-fit mb-8`}>
             <select name="acomodacao" id="acomodacao" className={`border border-zinc-300 rounded-md text-zinc-5 00 px-2 py-1 outline-none`}
+              defaultValue={filterAC}
               onChange={(e) => {
                 setFilterAC(e.target.value)
               }}>
-              <option value="all" selected>Todas acomodações</option>
+              <option value="all">Todas acomodações</option>
               {acomodacao.length ?
                 acomodacao.map(e => <option value={`${e.id}`}>{e.nome}</option>)
                 : null
@@ -779,20 +834,25 @@ export default function Dashboard() {
             <div className="bg-white border-zinc-300 border rounded-lg flex flex-col items-center h-full row-span-5">
               <p className="flex flex-col text-zinc-400 font-medium text-sm mb-16 mt-3">Faturamento X Despesas</p>
               {periodo == 'm-atual' ? <FaturamentoxDespesa
-                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.despesa))} mes={date.getMonth()} /> : null}
+                dadosAtuais={ordenarGraf(date.getMonth(), faturamento).map(fat => Number(fat.receita))}
+                dadosPassado={ordenarGraf(date.getMonth(), faturamento).map(fat => Number(fat.despesa))}
+                mes={date.getMonth()} /> : null}
               {periodo == 'm-passado' ? <FaturamentoxDespesa
-                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.despesa))} mes={date.getMonth() == 0 ? 11 : date.getMonth() - 1} /> : null}
+                dadosAtuais={ordenarGraf(date.getMonth() == 0 ? 11 : date.getMonth() - 1, faturamento).map(fat => Number(fat.receita))}
+                dadosPassado={ordenarGraf(date.getMonth() == 0 ? 11 : date.getMonth() - 1, faturamento).map(fat => Number(fat.despesa))}
+                mes={date.getMonth() == 0 ? 11 : date.getMonth() - 1} /> : null}
               {periodo == 'a-atual' ? <FaturamentoxDespesa
-                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.despesa))} mes={0} /> : null}
+                dadosAtuais={ordenarGraf(0, faturamento).map(fat => Number(fat.receita))}
+                dadosPassado={ordenarGraf(0, faturamento).map(fat => Number(fat.despesa))}
+                mes={0} /> : null}
               {periodo == 'a-passado' ? <FaturamentoxDespesa
-                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.despesa))} mes={0} /> : null}
+                dadosAtuais={ordenarGraf(0, faturamento).map(fat => Number(fat.receita))}
+                dadosPassado={ordenarGraf(0, faturamento).map(fat => Number(fat.despesa))}
+                mes={0} /> : null}
               {periodo == 'personalizado' ? <FaturamentoxDespesa
-                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.despesa))} mes={date.getMonth()} /> : null}
+                dadosAtuais={ordenarGraf(0, faturamento).map(fat => Number(fat.receita))}
+                dadosPassado={ordenarGraf(0, faturamento).map(fat => Number(fat.despesa))}
+                mes={0} /> : null}
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center">
               <div className="bg-[#D8D8D8] rounded-md w-fit py-2 px-2 ml-4">
@@ -834,20 +894,20 @@ export default function Dashboard() {
             <div className="bg-white border-zinc-300 border rounded-lg flex flex-col items-center h-full row-span-5">
               <p className="flex flex-col text-zinc-400 font-medium text-sm mb-16 mt-3">Comparativo de Faturamento Líquido</p>
               {periodo == 'm-atual' ? <FaturamentoLiquido
-                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={date.getMonth()} /> : null}
+                dadosAtuais={ordenarGraf(date.getMonth(), faturamento).map(fat => Number(fat.receita))}
+                dadosPassado={ordenarGraf(date.getMonth(), faturamento).map(fat => Number(fat.receita_ano_anterior))} mes={date.getMonth()} /> : null}
               {periodo == 'm-passado' ? <FaturamentoLiquido
-                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={date.getMonth() == 0 ? 11 : date.getMonth() - 1} /> : null}
+                dadosAtuais={ordenarGraf(date.getMonth() == 0 ? 11 : date.getMonth() - 1, faturamento).map(fat => Number(fat.receita))}
+                dadosPassado={ordenarGraf(date.getMonth() == 0 ? 11 : date.getMonth() - 1, faturamento).map(fat => Number(fat.receita_ano_anterior))} mes={date.getMonth() == 0 ? 11 : date.getMonth() - 1} /> : null}
               {periodo == 'a-atual' ? <FaturamentoLiquido
-                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={0} /> : null}
+                dadosAtuais={ordenarGraf(0, faturamento).map(fat => Number(fat.receita))}
+                dadosPassado={ordenarGraf(0, faturamento).map(fat => Number(fat.receita_ano_anterior))} mes={0} /> : null}
               {periodo == 'a-passado' ? <FaturamentoLiquido
-                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={0} /> : null}
+                dadosAtuais={ordenarGraf(0, faturamento).map(fat => Number(fat.receita))}
+                dadosPassado={ordenarGraf(0, faturamento).map(fat => Number(fat.receita_ano_anterior))} mes={0} /> : null}
               {periodo == 'personalizado' ? <FaturamentoLiquido
-                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={date.getMonth()} /> : null}
+                dadosAtuais={ordenarGraf(0, faturamento).map(fat => Number(fat.receita))}
+                dadosPassado={ordenarGraf(0, faturamento).map(fat => Number(fat.receita_ano_anterior))} mes={0} /> : null}
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center">
               <div className="bg-[#D1F0FF] rounded-md w-fit py-2 px-2 ml-4">

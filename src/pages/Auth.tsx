@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import prohostLogo from '/prohost-logo.png'
 
-//const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function Auth() {
     const apiURL = 'https://api.prohost.net.br'
@@ -22,6 +21,7 @@ export default function Auth() {
                 else return null
             })
             .then((data) => {
+                console.log(data)
                 if (data) {
                     window.localStorage.setItem('ph_token_acc', data)
                     window.location.assign('/')
