@@ -4,8 +4,9 @@ import { useEffect, useRef } from 'react';
 
 Chart.register(PieController, ArcElement, Tooltip, Legend, Title, ChartDataLabels);
 
-export default function DesempenhoDiarias({dados}:{dados:number[]}) {
+export default function DesempenhoDiarias({ dados }: { dados: number[] }) {
   const chartRef = useRef<HTMLCanvasElement>(null);
+  const verify = dados.every((d) => d === 0)
 
   useEffect(() => {
     if (chartRef.current) {
@@ -16,9 +17,9 @@ export default function DesempenhoDiarias({dados}:{dados:number[]}) {
           labels: ['Reservadas', 'Ociosas (sem reserva)', 'Indisponíveis'],
           datasets: [
             {
-              data: dados,
-              backgroundColor: ['#2CCCA1', '#F24158', '#585555'],
-              hoverBackgroundColor: ['#2CCCA1', '#F24158', '#585555'],
+              data: verify ? [1] : dados,
+              backgroundColor: verify ? ['#CCCCCC'] : ['#2CCCA1', '#F24158', '#585555'],
+              hoverBackgroundColor: verify ? ['#CCCCCC'] : ['#2CCCA1', '#F24158', '#585555'],
             },
           ],
         };
@@ -40,7 +41,7 @@ export default function DesempenhoDiarias({dados}:{dados:number[]}) {
             tooltip: {
               callbacks: {
                 label: function (context: any) {
-                  return `${context.raw} diárias`;
+                  return `${verify ? 0 : context.raw} diárias`;
                 },
               },
             },
@@ -48,7 +49,7 @@ export default function DesempenhoDiarias({dados}:{dados:number[]}) {
               formatter: (value: number, context: any) => {
                 const total = context.chart.data.datasets[0].data.reduce((acc: number, val: number) => acc + val, 0);
                 const percentage = ((value / total) * 100).toFixed(1);
-                return `${percentage}%`;
+                return `${verify ? 0 : percentage}%`;
               },
               color: '#000',
               backgroundColor: '#E6ECEF',

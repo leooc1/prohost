@@ -31,25 +31,8 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
     const { dataToken } = useContext(SideBarContext)
 
     const [tipoDespesa, setTipoDespesa] = useState('')
-    const setCategoria = () => {
-        const categorias = document.querySelectorAll('label:has(input[type="radio"])')
-        categorias.forEach((e: any) => {
-            if (e.children[1].checked) {
-                e.classList.add('outline')
-                e.classList.add('outline-2')
-                e.classList.add('outline-slate-700')
-                e.classList.add('bg-slate-300')
-                e.classList.remove('bg-slate-100')
-            }
-            else {
-                e.classList.remove('outline')
-                e.classList.remove('outline-2')
-                e.classList.remove('outline-slate-700')
-                e.classList.remove('bg-slate-300')
-                e.classList.add('bg-slate-100')
-            }
-        })
-    }
+    const [categoria, setCategoria] = useState(['', '#000000'])
+
     async function getAcomodacoes() {
         await fetch(`${apiURL}/acomodacao/` + dataToken.id, {
             method: 'GET'
@@ -97,6 +80,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
         getAcomodacoes()
         getCategorias()
     }, [dataToken])
+
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black fixed top-0 right-0 bg-opacity-20" onClick={close}></div>
@@ -113,14 +97,25 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
                     </select>
                 </label>
                 <section>
-                    <span className={`${err[1] ? 'text-red-500' : 'text-zinc-500'} font-medium`}>Categoria<span className='text-red-500 font-bold'> *</span></span>
+                    <span className={`text-zinc-500 font-medium`}>Categoria<span className='text-red-500 font-bold'> *</span></span>
                     <div className="mt-2 flex gap-2 flex-wrap">
-                        {categoriaf.length > 0 &&
-                            categoriaf.map(cat => <label htmlFor={String(cat.id)} onClick={() => setCategoria()} className="bg-slate-100 text-sm font-medium cursor-pointer flex items-center text-slate-500 rounded-2xl px-2 py-px">
-                                <div className={`w-2 h-2 rounded-full mr-2 bg-[${cat.cor}]`}></div>
-                                {cat.nome}
-                                <input type="radio" name="categoria" id={String(cat.id)} className="hidden" />
-                            </label>)}
+                        <select name="categoria" id="categoria"
+                            className={`${err[1] ? 'border-red-500' : 'border-zinc-300'} font-medium border rounded-md px-2 py-1 outline-none`} style={{ color: categoria[1] }} defaultValue={categoria[0]}
+                            onChange={(e) => {
+                                const cat = categoriaf.find((c) => String(c.id) === e.target.value);
+                                if (cat) {
+                                    setCategoria([String(cat.id), cat.cor !== '#FFFFFF' ? cat.cor : '#000000']);
+                                }
+                            }}>
+                            <option value="" className="hidden" disabled selected></option>
+                            {categoriaf.length > 0 &&
+                                categoriaf.map(cat =>
+                                    <option value={String(cat.id)} id={String(cat.id)}
+                                        style={{ color: cat.cor != '#FFFFFF' ? cat.cor : '#000000' }}>
+                                        {cat.nome}
+                                    </option>
+                                )}
+                        </select>
                     </div>
                 </section>
                 <div className="grid gap-4 grid-cols-2">
@@ -135,7 +130,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
                 </div>
                 <label htmlFor="acomodacaoReceita" className={`flex flex-col ${tipoDespesa == 'Despesas do Negócio' ? 'hidden' : null}`}>
                     <span className="text-zinc-500 font-medium mb-1 text-sm">Acomodação (opcional)</span>
-                    <select name="acomodacaoReceita" id="acomodacaoReceita" className="border border-zinc-300 rounded-md text-zinc-5 00 px-2 py-1 outline-none">
+                    <select name="acomodacaoReceita" id="acomodacaoReceita" className="border border-zinc-300 rounded-md text-zinc-500 px-2 py-1 outline-none">
                         <option value="" selected disabled className="hidden">Selecione uma acomodação</option>
                         <option value="null"></option>
                         {acomodacao?.length > 0 &&
@@ -201,7 +196,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
                     <button className="px-3 py-2 border border-zinc-300 rounded-lg" onClick={close}>Cancelar</button>
                     <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
                         onClick={async () => {
-                            const categoriaInput = document.querySelectorAll('label:has(input[type="radio"]:checked)')[0] as HTMLLabelElement
+                            const categoriaInput = document.getElementById('categoria') as HTMLSelectElement
                             const descricaoInput = document.getElementById('descricao') as HTMLInputElement
                             const acomodacaoInput = document.getElementById('acomodacaoReceita') as HTMLInputElement
                             const tipoDespesa = document.getElementById('tipo-despesa') as HTMLInputElement
@@ -221,13 +216,13 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
                                 vProprietario = Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
                                 vGestor = Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
                             }
-                            if ((Boolean(categoriaInput?.htmlFor) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && tipoDespesa.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) > 0)) {
+                            if ((Boolean(categoriaInput.value.length > 0) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && tipoDespesa.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) > 0)) {
                                 await create({
                                     "acomodacao": {
                                         "id": tipoDespesa.value == 'Despesas do Negócio' ? null : Number(acomodacaoInput.value) || null
                                     },
                                     "categoria_financeiro": {
-                                        "id": categoriaInput.htmlFor
+                                        "id": categoriaInput.value
                                     },
                                     "data": dataInput.value,
                                     "canal_reserva": {
@@ -259,7 +254,7 @@ export default function RegistrarDespesa({ close, saas }: { close: () => void, s
                                 else {
                                     error = (error.map((e, i) => i === 0 ? false : e) as [boolean, boolean, boolean, boolean, boolean]);
                                 }
-                                if (!(categoriaInput?.htmlFor)) {
+                                if (!(categoriaInput.value.length > 0)) {
                                     error = (error.map((e, i) => i === 1 ? true : e) as [boolean, boolean, boolean, boolean, boolean]);
                                 }
                                 else {

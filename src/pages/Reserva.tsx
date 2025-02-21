@@ -155,10 +155,16 @@ export default function Reserva() {
             onClick={() => setCanaisReserva(true)}>Canais de Reserva</button>
           {canaisReserva && <CanaisDeReserva close={() => setCanaisReserva(false)} />}
           <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#F45C61] hover:bg-[#ED3E44] hover:shadow-md shadow-black'
-            onClick={() => setNovaIndisponibilidade(true)}>Nova Indisponibilidade</button>
+            onClick={() => {
+              if (acomodacao.length == 0) location.assign('/acomodacoes')
+                setNovaIndisponibilidade(true)
+            }}>Nova Indisponibilidade</button>
           {novaIndisponibilidade && <NovaIndisponibilidade close={() => setNovaIndisponibilidade(false)} />}
           <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#003447] hover:bg-[#325B6A] hover:shadow-md shadow-black'
-            onClick={() => setNovaReserva(true)}>Nova Reserva</button>
+            onClick={() => {
+              if (acomodacao.length == 0) location.assign('/acomodacoes')
+                setNovaReserva(true)
+            }}>Nova Reserva</button>
           {novaReserva && <NovaReserva close={() => setNovaReserva(false)} />}
         </div>
         {render ?
