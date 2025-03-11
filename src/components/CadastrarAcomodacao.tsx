@@ -10,6 +10,8 @@ interface Acomodacao {
     check_out_p: string | null
     foto: string | null
     nome: string
+    modelo: number
+    taxa_limpeza: number
     numero_hospedes: number
     valor_imovel: number
     desativado: boolean
@@ -21,8 +23,9 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
     const { dataToken } = useContext(SideBarContext)
     const [qtdMaxHospede, setQtdMaxHospede] = useState(1)
     const [tipo, setTipo] = useState('')
+    const [modelo, setModelo] = useState('')
     const [autoComplete, setAutoComplete] = useState([])
-    const [err, setErr] = useState<[boolean, boolean, boolean, boolean, boolean, boolean, boolean]>([false, false, false, false, false, false, false])
+    const [err, setErr] = useState<[boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean]>([false, false, false, false, false, false, false, false])
     async function createAcomodacao(pbody: Acomodacao) {
         await fetch(`${apiURL}/acomodacao/`, {
             method: 'POST',
@@ -58,8 +61,8 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
 
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
-            <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={close}></div>
-            <form onSubmit={(e) => { e.preventDefault() }} className="flex flex-col absolute min-w-80 max-w-[520px] px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white rounded-md">
+            <div className="w-screen h-screen bg-black absolute top-0 right-0 bg-opacity-20" onClick={close}></div>
+            <form onSubmit={(e) => { e.preventDefault() }} className="flex flex-col  max-h-screen overflow-scroll scroll-default absolute min-w-80 max-w-[520px] px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white rounded-md">
                 <h5 className="font-semibold text-2xl mb-2">Cadastrar Acomodação</h5>
                 <label htmlFor="identificador" className="flex flex-col">
                     <span className="text-zinc-500 font-medium mb-1 text-xs">Identificador
@@ -93,6 +96,46 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                         <input type="date" name="inicio-operacao" id="inicio-operacao" className={`border ${err[2] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none`} />
                     </label>
                 </div>
+                {/*  */}
+                <div className={`grid gap-4 items-center w-full ${modelo == 'separado' ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                    <label htmlFor="modelo-negocio" className={`flex flex-col ${tipo == 'terceiro' ? 'col-span-1' : 'col-span-1'}`}>
+                        <span className="text-zinc-500 font-medium mb-1 text-xs">Modelo {tipo == 'terceiro' ? 'da Comissão' : 'de Negócio'}
+                            <span className='text-red-500 font-bold'> *</span>
+                        </span>
+                        <select name="modelo-negocio" id="modelo-negocio" className={`border border-zinc-300 rounded-md px-2 py-1 outline-none`} value={modelo} onChange={(e) => { setModelo(e.target.value) }}>
+                            <option value="incluso">Taxa de limpeza inclusa</option>
+                            <option value="separado">Taxa de limpeza à parte</option>
+                        </select>
+                    </label>
+                    {modelo == 'separado' && <label htmlFor="taxa-limpeza" className={`flex flex-col col-span-1`}>
+                        <span className="text-zinc-500 font-medium mb-1 text-xs">Taxa Limpeza
+                            <span className='text-red-500 font-bold'> *</span>
+                        </span>
+                        <input type="text" name="taxa-limpeza" id="taxa-limpeza" className={`border ${err[7] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none`} placeholder="R$"
+                            onChange={(e) => {
+                                if (e.target.value.replace(/[.,]/gm, '').length <= 3)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})/gm, '$1,$2')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 4)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{2})/gm, '$1,$2')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 5)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{2})/gm, '$1,$2')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 6)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 7)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 8)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 9)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 10)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 11)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                            }} />
+                    </label>}
+                </div>
+
+                {/*  */}
                 <div className="grid gap-4 items-center" style={{ gridTemplateColumns: '2fr 1fr' }}>
                     <label htmlFor="endereco" className="flex flex-col relative">
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Endereço</span>
@@ -319,6 +362,8 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                             const valor = document.getElementById('valor-imovel') as HTMLInputElement
                             const comissao = document.getElementById('comissao') as HTMLInputElement
                             const foto = document.getElementById('preview') as HTMLImageElement
+                            const modelo = document.getElementById('modelo-negocio') as HTMLInputElement
+                            const taxaLimpeza = document.getElementById('taxa-limpeza') as HTMLInputElement
                             const qtdMaxHospede = document.getElementById('qtd-max-hospede') as HTMLInputElement
 
                             if (status.value?.length && iniOpe.value?.length && identificador.value?.length && valor.value) {
@@ -331,7 +376,9 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                                         "check_in_p": pdCI.value,
                                         "check_out_p": pdCO.value,
                                         "foto": foto.classList.contains('hidden') ? null : foto.src,
+                                        "modelo": modelo.value == 'separado' ? 2 : 1,
                                         "nome": identificador.value,
+                                        "taxa_limpeza": taxaLimpeza.value.length > 0 ? Number(taxaLimpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) : 0,
                                         "numero_hospedes": Number(qtdMaxHospede.value),
                                         "valor_imovel": Number(valor.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                         "desativado": false,
@@ -348,7 +395,9 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                                         "check_in_p": pdCI.value,
                                         "check_out_p": pdCO.value,
                                         "foto": foto.classList.contains('hidden') ? null : foto.src,
+                                        "modelo": modelo.value == 'separado' ? 2 : 1,
                                         "nome": identificador.value,
+                                        "taxa_limpeza": taxaLimpeza.value.length > 0 ? Number(taxaLimpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) : 0,
                                         "numero_hospedes": Number(qtdMaxHospede.value),
                                         "valor_imovel": Number(valor.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                         "desativado": false,
@@ -359,28 +408,34 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                             } else {
                                 let error = err
                                 if (identificador.value.length == 0) {
-                                    error = (error.map((e, i) => i === 0 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
+                                    error = (error.map((e, i) => i === 0 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
                                 }
                                 else {
-                                    error = (error.map((e, i) => i === 0 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
+                                    error = (error.map((e, i) => i === 0 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
                                 }
                                 if (status.value.length == 0) {
-                                    error = (error.map((e, i) => i === 1 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
+                                    error = (error.map((e, i) => i === 1 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
                                 }
                                 else {
-                                    error = (error.map((e, i) => i === 1 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
+                                    error = (error.map((e, i) => i === 1 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
                                 }
                                 if (iniOpe.value.length == 0) {
-                                    error = (error.map((e, i) => i === 2 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
+                                    error = (error.map((e, i) => i === 2 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
                                 }
                                 else {
-                                    error = (error.map((e, i) => i === 2 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
+                                    error = (error.map((e, i) => i === 2 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
                                 }
                                 if (valor.value.length == 0) {
-                                    error = (error.map((e, i) => i === 3 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
+                                    error = (error.map((e, i) => i === 3 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
                                 }
                                 else {
-                                    error = (error.map((e, i) => i === 3 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
+                                    error = (error.map((e, i) => i === 3 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
+                                }
+                                if (modelo.value == 'separado' && taxaLimpeza.value.length == 0) {
+                                    error = (error.map((e, i) => i === 7 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
+                                }
+                                else {
+                                    error = (error.map((e, i) => i === 7 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
                                 }
                                 setErr(error)
                                 alert('Erro ao cadastrar')

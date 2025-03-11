@@ -11,6 +11,8 @@ interface Acomodacao {
     check_in_p: string
     check_out_p: string
     foto: string
+    modelo: number
+    taxa_limpeza: number
     nome: string
     numero_hospedes: number
     valor_imovel: number
@@ -42,10 +44,12 @@ interface Reserva {
     hospede: { id: number | null }
     qtd_hospede: number
     saas: { id: number }
+    taxa_limpeza: number
     valor: number
     valor_liq: number
     valor_prop: number
     valor_gestor: number
+    valor_liq_calculado: number
     obs: string
     tipo_reserva: string
     continuidade: number | null
@@ -62,6 +66,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     const [render, setRender] = useState(false)
     const [err, setErr] = useState<[boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean]>([false, false, false, false, false, false, false, false, false])
     const [hospede, setHospede] = useState<Hospede[]>([])
+    const [showTaxaLimpeza, setShowTaxaLimpeza] = useState<[boolean, number]>([false, 0])
     const [showH, setShowH] = useState<Hospede[]>([])
 
     function checkNegativeAndApplyStyle() {
@@ -199,7 +204,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={close}></div>
             {render &&
-                <form onSubmit={(e) => { e.preventDefault() }} className="flex rounded-md flex-col absolute min-w-80 px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white">
+                <form onSubmit={(e) => { e.preventDefault() }} className="flex rounded-md flex-col max-h-screen overflow-scroll scroll-default absolute min-w-80 px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white">
                     <h5 className="font-semibold text-2xl mb-2">Nova Reserva</h5>
                     <label htmlFor="acomodacao" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Acomodação<span className='text-red-500 font-bold'> *</span></span>
@@ -207,12 +212,17 @@ export default function NovaReserva({ close }: { close: () => void }) {
                             onChange={(ac) => {
                                 const cIN = document.getElementById('checkin-hour') as HTMLInputElement
                                 const cOUT = document.getElementById('checkout-hour') as HTMLInputElement
+
                                 cIN.value = (acomodacao.filter(a => a.id == Number(ac.target.value))[0].check_in_p).slice(0, 5)
                                 cOUT.value = (acomodacao.filter(a => a.id == Number(ac.target.value))[0].check_out_p).slice(0, 5)
+
+                                setShowTaxaLimpeza([(acomodacao.filter(a => a.id == Number(ac.target.value))[0].modelo) == 2, (acomodacao.filter(a => a.id == Number(ac.target.value))[0].taxa_limpeza)])
                             }}>
                             <option value="" selected disabled className="hidden">Selecione uma acomodação</option>
                             {acomodacao.length &&
-                                acomodacao.map(a => <option value={a.id}>{a.nome}</option>)}
+                                acomodacao.map(a => <option value={a.id}>
+                                    {a.nome}
+                                </option>)}
                         </select>
                     </label>
                     <div className="grid gap-4" style={{ gridTemplateColumns: '3fr 1fr' }}>
@@ -341,6 +351,18 @@ export default function NovaReserva({ close }: { close: () => void }) {
                         </label>
                     </div>
                     {/*  */}
+                    {showTaxaLimpeza[0] && <label htmlFor="taxa_limpeza" className="flex flex-col">
+                        <span className="text-zinc-500 font-medium mb-1 text-xs">Taxa de Limpeza<span className='text-red-500 font-bold'> *</span></span>
+                        <div className="flex items-center gap-2">
+                            R$<input type="text" placeholder="R$" step="0.01" name="taxa_limpeza" id="taxa_limpeza"
+                                defaultValue={showTaxaLimpeza[1]} className={`border ${err[8] ? 'border-red-500' : 'border-zinc-300'}  rounded-md px-2 py-1 outline-none w-full`}
+                                onChange={(e) => {
+                                    e.target.value = formatedNumber(String(Number(e.target.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                    checkNegativeAndApplyStyle();
+                                }} />
+                        </div>
+                    </label>}
+                    {/*  */}
                     <label htmlFor="obs" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Observação</span>
                         <input type="text" name="obs" id="obs" placeholder="Opcional" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
@@ -354,6 +376,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                 const qtdHospede = document.getElementById('qtd-hospedes') as HTMLInputElement
                                 const checkinDate = document.getElementById('checkin-date') as HTMLInputElement
                                 const checkinHora = document.getElementById('checkin-hour') as HTMLInputElement
+                                const taxaLimpeza = document.getElementById('taxa_limpeza') as HTMLInputElement
                                 const checkoutDate = document.getElementById('checkout-date') as HTMLInputElement
                                 const checkoutHora = document.getElementById('checkout-hour') as HTMLInputElement
 
@@ -369,7 +392,13 @@ export default function NovaReserva({ close }: { close: () => void }) {
 
                                 const checkinDateTime = new Date(`${checkinDate.value} ${checkinHora.value}:00`);
                                 const checkoutDateTime = new Date(`${checkoutDate.value} ${checkoutHora.value}:00`);
-
+                                // 
+                                let valorLiqCalculado = 0
+                                if (taxaLimpeza) {
+                                    const calculado = (Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) - (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')) - ((Number(valorComissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) / Number(valorBruto.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))) * Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')))))
+                                    valorLiqCalculado = Number(calculado.toFixed(2))
+                                }
+                                // 
                                 if (acomodacaoInput.value.length > 0 && canais.value.length > 0 && Number(qtdHospede.value) > 0 && checkinDate.value.length > 0 && checkinHora.value.length > 0 && checkoutDate.value.length > 0 && checkoutHora.value.length > 0 && Number(valorComissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) >= 0 && Number(valorBruto.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) >= 0 && Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) >= 0 && hospedeInput.value.length > 0 && (checkinDateTime < checkoutDateTime)) {
                                     if (hospede.filter(h => h.nome.toLowerCase() == hospedeInput.value.toLowerCase()).length > 0)
                                         hospedeId = (hospede.filter(h => h.nome.toLowerCase() == hospedeInput.value.toLowerCase())[0].id) || 0
@@ -396,6 +425,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                         },
                                         "check_in": `${checkinDate.value} ${checkinHora.value}:00`,
                                         "check_out": `${checkoutDate.value} ${checkoutHora.value}:00`,
+                                        "taxa_limpeza": taxaLimpeza ? Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')) : 0,
                                         "canal_reserva": {
                                             "id": Number(canais.value)
                                         },
@@ -411,6 +441,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                         "valor_liq": Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                         "valor_prop": vProprietario,
                                         "valor_gestor": vGestor,
+                                        "valor_liq_calculado": valorLiqCalculado,
                                         "obs": obs.value,
                                         "tipo_reserva": "Reserva",
                                         "continuidade": null

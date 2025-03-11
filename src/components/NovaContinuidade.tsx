@@ -21,10 +21,12 @@ interface Reserva {
     hospede: { id: number | null }
     qtd_hospede: number
     saas: { id: number }
+    taxa_limpeza: number
     valor: number
     valor_liq: number
     valor_prop: number
     valor_gestor: number
+    valor_liq_calculado: number
     obs: string
     tipo_reserva: string
     continuidade: number | null
@@ -149,6 +151,8 @@ export default function NovaContinuidade(props: propsContinuidade) {
                                     },
                                     "valor": Number(valorTotal.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                     "valor_liq": Number(valorTotal.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
+                                    "taxa_limpeza": 0,
+                                    "valor_liq_calculado": 0,
                                     "valor_prop": vProprietario,
                                     "valor_gestor": vGestor,
                                     "obs": obs.value,

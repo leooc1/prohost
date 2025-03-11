@@ -18,12 +18,14 @@ interface Acomodacao {
     tipo: string
     comissao: number | null
     data_ini_ope: string
-    endereco: string
+    endereco: string | null
     check_in_p: string | null
     check_out_p: string | null
     foto: string | null
     nome: string
     numero_hospedes: number
+    modelo: number
+    taxa_limpeza: number
     valor_imovel: number
     desativado: boolean
     saas: { id: number }
@@ -97,6 +99,12 @@ export default function AcomodacoesDetalhes() {
                 setAcomodacao(data)
                 if (!identificador)
                     setIdentificador(data[0].nome)
+
+                if (!modelo)
+                    setModelo(data[0].modelo)
+
+                if (!taxaLimpeza)
+                    setTaxaLimpeza(data[0].taxa_limpeza)
 
                 if (!status)
                     setStatus(data[0].tipo)
@@ -240,6 +248,8 @@ export default function AcomodacoesDetalhes() {
     const [pdCI, setPdCI] = useState<string | null>(null)
     const [endereco, setEndereco] = useState<string | null>(null)
     const [valor, setValor] = useState<number | null>(null)
+    const [modelo, setModelo] = useState<number | null>(null)
+    const [taxaLimpeza, setTaxaLimpeza] = useState<number | null>(null)
     const [comissao, setComissao] = useState<number | null>(null)
     const [foto, setFoto] = useState<string | null>(null)
     const [qtdMaxHospede, setQtdMaxHospede] = useState<number>(-1)
@@ -530,150 +540,150 @@ export default function AcomodacoesDetalhes() {
                             </div>
                         </section>}
                     </section>}
-                {/* 
-                    {sessao == 1 &&
-                    <section className="my-10">
-                        <div className='flex justify-between items-start'>
-                            <h5 className="font-semibold text-2xl mb-2 px-4 pb-7">Calendário da Acomodação</h5>
-                            <div className='flex gap-5'>
-                                <button className='px-3 py-2 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#003447] hover:bg-[#325B6A] hover:shadow-md shadow-black'
-                                    onClick={() => setNovaReserva(true)}>Nova Reserva</button>
-                                {novaReserva && <NovaReserva close={() => setNovaReserva(false)} />}
-                                <button className='px-3 py-2 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#F45C61] hover:bg-[#ED3E44] hover:shadow-md shadow-black'
-                                    onClick={() => setNovaIndisponibilidade(true)}>Nova Indisponibilidade</button>
-                                {novaIndisponibilidade && <NovaIndisponibilidade close={() => setNovaIndisponibilidade(false)} />}
+                {
+                    /*{sessao == 1 &&
+                        <section className="my-10">
+                            <div className='flex justify-between items-start'>
+                                <h5 className="font-semibold text-2xl mb-2 px-4 pb-7">Calendário da Acomodação</h5>
+                                <div className='flex gap-5'>
+                                    <button className='px-3 py-2 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#003447] hover:bg-[#325B6A] hover:shadow-md shadow-black'
+                                        onClick={() => setNovaReserva(true)}>Nova Reserva</button>
+                                    {novaReserva && <NovaReserva close={() => setNovaReserva(false)} />}
+                                    <button className='px-3 py-2 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#F45C61] hover:bg-[#ED3E44] hover:shadow-md shadow-black'
+                                        onClick={() => setNovaIndisponibilidade(true)}>Nova Indisponibilidade</button>
+                                    {novaIndisponibilidade && <NovaIndisponibilidade close={() => setNovaIndisponibilidade(false)} />}
+                                </div>
+                            </div>
+                            <div className="mx-4 mt-4 pt-2 border border-zinc-200 rounded-md">
+                                <FullCalendar
+                                    headerToolbar={{
+                                        start: '',
+                                        center: 'title',
+                                        end: 'today prev,next'
+                                    }}
+                                    plugins={[dayGridPlugin, timeGridPlugin]}
+                                    initialView="dayGridMonth"
+                                    locale={ptBrLocale}
+        
+                                    //reservas que buscaria do banco
+                                    events={[
+                                        {
+                                            resourceId: '1',
+                                            title: 'leonardo',
+                                            start: '2024-10-01T12:00:00',
+                                            end: '2024-10-05T10:00:00',
+                                            hospedes: 3,
+                                            color: '#3B82F6',
+                                            id: '1',
+                                            tipo: 'Reserva',
+                                            obs: '',
+                                            bruto: 200.00,
+                                            liquido: 150.00,
+                                            comissao: 50.00
+                                        },
+                                        {
+                                            resourceId: '1',
+                                            title: 'leonardo',
+                                            start: '2024-10-06T12:00:00',
+                                            end: '2024-10-08T12:00:00',
+                                            hospedes: 1,
+                                            color: '#30C46D',
+                                            id: '2',
+                                            tipo: 'Continuidade',
+                                            obs: '',
+                                            bruto: 50.00,
+                                            liquido: 50.00,
+                                            comissao: 0.00
+                                        },
+                                        {
+                                            resourceId: '1',
+                                            title: 'adm',
+                                            start: '2024-10-09T12:00:00',
+                                            end: '2024-10-12T12:00:00',
+                                            hospedes: 1,
+                                            color: '#353535',
+                                            id: '3',
+                                            tipo: 'Indisponibilidade',
+                                            obs: 'Problema de infiltração',
+                                            bruto: 0.00,
+                                            liquido: 0.00,
+                                            comissao: 0.00
+                                        }
+                                    ]}
+                                    eventClick={(e) => {
+                                        setReservaView(true);
+                                        serEvento(e);
+                                    }}
+                                    eventContent={function (arg) {
+                                        const title = arg.event.title;
+                                        const numGuests = arg.event.extendedProps.hospedes;
+                                        const tipo = arg.event.extendedProps.tipo;
+                                        const obs = arg.event.extendedProps.obs;
+        
+                                        if (tipo === 'Continuidade') {
+                                            return {
+                                                html: `
+                        <div class='flex overflow-hidden items-center flex-nowrap p-1 h-full relative gap-4'>
+                            <svg class="w-5 h-fit" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 2.54 2.54" fill-rule="#000000">
+                                <g>
+                                    <circle cx="1.27" cy="1.27" r="1.27" fill="#ffffff" opacity="1" data-original="#ffffff"></circle>
+                                    <g fill="#000">
+                                        <path d="M1.143 1.944V.674a.127.127 0 0 1 .254 0v1.27a.127.127 0 0 1-.254 0z" fill="#30C46D" opacity="1" data-original="#30C46D"></path>
+                                        <path d="M.635 1.182h1.27a.127.127 0 0 1 0 .254H.635a.127.127 0 0 1 0-.254z" fill="#30C46D" opacity="1" data-original="#30C46D"></path>
+                                    </g>
+                                </g>
+                            </svg>
+                            <div class='gs-event-title'>${tipo}</div>
+                        </div>
+                        `
+                                            };
+                                        } else if (tipo === 'Indisponibilidade') {
+                                            return {
+                                                html: `
+                        <div class='flex overflow-hidden items-center flex-nowrap p-1 h-full relative gap-4'>
+                            <svg class="w-5 h-fit" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 426.667 426.667" style="enable-background:new 0 0 512 512" xml:space="preserve">
+                                <g>
+                                    <path d="M213.333 0C95.467 0 0 95.467 0 213.333s95.467 213.333 213.333 213.333S426.667 331.2 426.667 213.333 331.2 0 213.333 0zM42.667 213.333c0-94.293 76.373-170.667 170.667-170.667 39.467 0 75.627 13.547 104.533 35.947L78.613 317.867c-22.4-28.907-35.946-65.067-35.946-104.534zM213.333 384c-39.467 0-75.627-13.547-104.533-35.947L348.053 108.8C370.453 137.707 384 173.867 384 213.333 384 307.627 307.627 384 213.333 384z" fill="#ffffff" opacity="1" data-original="#000000"></path>
+                                </g>
+                            </svg>
+                            <div class='gs-event-title'>${obs}</div>
+                        </div>
+                        `
+                                            };
+                                        } else {
+                                            return {
+                                                html: `
+                        <div class='flex overflow-hidden justify-between items-center flex-nowrap py-1 px-2 h-full relative gap-4'>
+                            <div class='gs-event-title'>${title}</div>
+                            <div class='flex'>
+                                <svg class="w-5 h-fit" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF">
+                                    <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/>
+                                </svg>${numGuests}
                             </div>
                         </div>
-                        <div className="mx-4 mt-4 pt-2 border border-zinc-200 rounded-md">
-                            <FullCalendar
-                                headerToolbar={{
-                                    start: '',
-                                    center: 'title',
-                                    end: 'today prev,next'
-                                }}
-                                plugins={[dayGridPlugin, timeGridPlugin]}
-                                initialView="dayGridMonth"
-                                locale={ptBrLocale}
-    
-                                //reservas que buscaria do banco
-                                events={[
-                                    {
-                                        resourceId: '1',
-                                        title: 'leonardo',
-                                        start: '2024-10-01T12:00:00',
-                                        end: '2024-10-05T10:00:00',
-                                        hospedes: 3,
-                                        color: '#3B82F6',
-                                        id: '1',
-                                        tipo: 'Reserva',
-                                        obs: '',
-                                        bruto: 200.00,
-                                        liquido: 150.00,
-                                        comissao: 50.00
-                                    },
-                                    {
-                                        resourceId: '1',
-                                        title: 'leonardo',
-                                        start: '2024-10-06T12:00:00',
-                                        end: '2024-10-08T12:00:00',
-                                        hospedes: 1,
-                                        color: '#30C46D',
-                                        id: '2',
-                                        tipo: 'Continuidade',
-                                        obs: '',
-                                        bruto: 50.00,
-                                        liquido: 50.00,
-                                        comissao: 0.00
-                                    },
-                                    {
-                                        resourceId: '1',
-                                        title: 'adm',
-                                        start: '2024-10-09T12:00:00',
-                                        end: '2024-10-12T12:00:00',
-                                        hospedes: 1,
-                                        color: '#353535',
-                                        id: '3',
-                                        tipo: 'Indisponibilidade',
-                                        obs: 'Problema de infiltração',
-                                        bruto: 0.00,
-                                        liquido: 0.00,
-                                        comissao: 0.00
-                                    }
-                                ]}
-                                eventClick={(e) => {
-                                    setReservaView(true);
-                                    serEvento(e);
-                                }}
-                                eventContent={function (arg) {
-                                    const title = arg.event.title;
-                                    const numGuests = arg.event.extendedProps.hospedes;
-                                    const tipo = arg.event.extendedProps.tipo;
-                                    const obs = arg.event.extendedProps.obs;
-    
-                                    if (tipo === 'Continuidade') {
-                                        return {
-                                            html: `
-                    <div class='flex overflow-hidden items-center flex-nowrap p-1 h-full relative gap-4'>
-                        <svg class="w-5 h-fit" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 2.54 2.54" fill-rule="#000000">
-                            <g>
-                                <circle cx="1.27" cy="1.27" r="1.27" fill="#ffffff" opacity="1" data-original="#ffffff"></circle>
-                                <g fill="#000">
-                                    <path d="M1.143 1.944V.674a.127.127 0 0 1 .254 0v1.27a.127.127 0 0 1-.254 0z" fill="#30C46D" opacity="1" data-original="#30C46D"></path>
-                                    <path d="M.635 1.182h1.27a.127.127 0 0 1 0 .254H.635a.127.127 0 0 1 0-.254z" fill="#30C46D" opacity="1" data-original="#30C46D"></path>
-                                </g>
-                            </g>
-                        </svg>
-                        <div class='gs-event-title'>${tipo}</div>
-                    </div>
-                    `
-                                        };
-                                    } else if (tipo === 'Indisponibilidade') {
-                                        return {
-                                            html: `
-                    <div class='flex overflow-hidden items-center flex-nowrap p-1 h-full relative gap-4'>
-                        <svg class="w-5 h-fit" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 426.667 426.667" style="enable-background:new 0 0 512 512" xml:space="preserve">
-                            <g>
-                                <path d="M213.333 0C95.467 0 0 95.467 0 213.333s95.467 213.333 213.333 213.333S426.667 331.2 426.667 213.333 331.2 0 213.333 0zM42.667 213.333c0-94.293 76.373-170.667 170.667-170.667 39.467 0 75.627 13.547 104.533 35.947L78.613 317.867c-22.4-28.907-35.946-65.067-35.946-104.534zM213.333 384c-39.467 0-75.627-13.547-104.533-35.947L348.053 108.8C370.453 137.707 384 173.867 384 213.333 384 307.627 307.627 384 213.333 384z" fill="#ffffff" opacity="1" data-original="#000000"></path>
-                            </g>
-                        </svg>
-                        <div class='gs-event-title'>${obs}</div>
-                    </div>
-                    `
-                                        };
-                                    } else {
-                                        return {
-                                            html: `
-                    <div class='flex overflow-hidden justify-between items-center flex-nowrap py-1 px-2 h-full relative gap-4'>
-                        <div class='gs-event-title'>${title}</div>
-                        <div class='flex'>
-                            <svg class="w-5 h-fit" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF">
-                                <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/>
-                            </svg>${numGuests}
-                        </div>
-                    </div>
-                    `
-                                        };
-                                    }
-                                }}
-                            />
-                            {
-                                reservaView &&
-                                <ReservaCardView
-                                    close={() => setReservaView(false)}
-                                    hospede={evento.event.title}
-                                    qtdhospede={evento.event.extendedProps.hospedes}
-                                    chegada={String(evento.event.start)}
-                                    partida={String(evento.event.end)}
-                                    bruto={evento.event.extendedProps.bruto}
-                                    liquido={evento.event.extendedProps.liquido}
-                                    comissao={evento.event.extendedProps.comissao}
-                                    tipo={evento.event.extendedProps.tipo}
-                                    obs={evento.event.extendedProps.obs}
+                        `
+                                            };
+                                        }
+                                    }}
                                 />
-                            }
-                        </div>
-                    </section>} 
-                    */}
+                                {
+                                    reservaView &&
+                                    <ReservaCardView
+                                        close={() => setReservaView(false)}
+                                        hospede={evento.event.title}
+                                        qtdhospede={evento.event.extendedProps.hospedes}
+                                        chegada={String(evento.event.start)}
+                                        partida={String(evento.event.end)}
+                                        bruto={evento.event.extendedProps.bruto}
+                                        liquido={evento.event.extendedProps.liquido}
+                                        comissao={evento.event.extendedProps.comissao}
+                                        tipo={evento.event.extendedProps.tipo}
+                                        obs={evento.event.extendedProps.obs}
+                                    />
+                                }
+                            </div>
+                        </section>} */
+                }
 
                 {sessao == 2 &&
                     <section className="my-10">
@@ -730,10 +740,49 @@ export default function AcomodacoesDetalhes() {
                                         value={pdCI || ''} onChange={(e) => setPdCI(e.target.value)} />
                                 </label>
                             </div>
+                            {/*  */}
+                            <div className={`grid gap-4 items-center w-full ${modelo == 2 ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                                <label htmlFor="modelo-negocio" className={`flex flex-col ${status == 'terceiro' ? 'col-span-1' : 'col-span-1'}`}>
+                                    <span className="text-zinc-500 font-medium mb-1 text-xs">Modelo {status == 'terceiro' ? 'da Comissão' : 'de Negócio'}
+                                        <span className='text-red-500 font-bold'> *</span>
+                                    </span>
+                                    <select name="modelo-negocio" id="modelo-negocio" className={`border border-zinc-300 rounded-md px-2 py-1 outline-none`} value={String(modelo)} onChange={(e) => { setModelo(Number(e.target.value)) }}>
+                                        <option value="1">Taxa de limpeza inclusa</option>
+                                        <option value="2">Taxa de limpeza à parte</option>
+                                    </select>
+                                </label>
+                                {modelo == 2 && <label htmlFor="taxa-limpeza" className={`flex flex-col col-span-1`}>
+                                    <span className="text-zinc-500 font-medium mb-1 text-xs">Taxa Limpeza
+                                        <span className='text-red-500 font-bold'> *</span>
+                                    </span>
+                                    <input defaultValue={String(taxaLimpeza)} type="text" name="taxa-limpeza" id="taxa-limpeza" className={`border border-zinc-300 rounded-md px-2 py-1 outline-none`} placeholder="R$"
+                                        onChange={(e) => {
+                                            if (e.target.value.replace(/[.,]/gm, '').length <= 3)
+                                                e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})/gm, '$1,$2')
+                                            else if (e.target.value.replace(/[.,]/gm, '').length <= 4)
+                                                e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{2})/gm, '$1,$2')
+                                            else if (e.target.value.replace(/[.,]/gm, '').length <= 5)
+                                                e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{2})/gm, '$1,$2')
+                                            else if (e.target.value.replace(/[.,]/gm, '').length <= 6)
+                                                e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                            else if (e.target.value.replace(/[.,]/gm, '').length <= 7)
+                                                e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                            else if (e.target.value.replace(/[.,]/gm, '').length <= 8)
+                                                e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                            else if (e.target.value.replace(/[.,]/gm, '').length <= 9)
+                                                e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                            else if (e.target.value.replace(/[.,]/gm, '').length <= 10)
+                                                e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                            else if (e.target.value.replace(/[.,]/gm, '').length <= 11)
+                                                e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                            setTaxaLimpeza(Number(e.target.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) || 0)
+                                        }} />
+                                </label>}
+                            </div>
+                            {/*  */}
                             <div className="grid gap-4 items-center" style={{ gridTemplateColumns: '2fr 1fr' }}>
                                 <label htmlFor="endereco" className="flex flex-col">
                                     <span className="text-zinc-500 text-xs font-medium mb-1">Endereço
-                                        <span className='text-red-500 font-bold'> *</span>
                                     </span>
                                     <input type="text" name="endereco" id="endereco" className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
                                         value={endereco || ''} onChange={(e) => setEndereco(e.target.value)} />
@@ -795,7 +844,7 @@ export default function AcomodacoesDetalhes() {
                             <section className="flex gap-3 justify-between mt-2">
                                 <button
                                     onClick={() => {
-                                        if (status?.length && iniOpe?.length && endereco?.length && identificador?.length && valor) {
+                                        if (status?.length && iniOpe?.length && identificador?.length && valor) {
                                             const fotoi = document.getElementById('preview') as HTMLImageElement
                                             if (status == 'proprio')
                                                 updateAcomodacao({
@@ -803,6 +852,8 @@ export default function AcomodacoesDetalhes() {
                                                     "comissao": null,
                                                     "data_ini_ope": iniOpe,
                                                     "endereco": endereco,
+                                                    "taxa_limpeza": taxaLimpeza || 0,
+                                                    "modelo": modelo || 1,
                                                     "check_in_p": pdCI,
                                                     "check_out_p": pdCO,
                                                     "foto": fotoi.classList.contains('hidden') ? null : foto,
@@ -820,6 +871,8 @@ export default function AcomodacoesDetalhes() {
                                                     "comissao": comissao,
                                                     "data_ini_ope": iniOpe,
                                                     "endereco": endereco,
+                                                    "taxa_limpeza": taxaLimpeza || 0,
+                                                    "modelo": modelo || 1,
                                                     "check_in_p": pdCI,
                                                     "check_out_p": pdCO,
                                                     "foto": fotoi.classList.contains('hidden') ? null : foto,

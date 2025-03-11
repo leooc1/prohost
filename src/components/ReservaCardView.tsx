@@ -24,6 +24,7 @@ interface Reserva {
     valor: number
     valor_liq: number
     valor_prop: number
+    taxa_limpeza: number
     valor_gestor: number
     tipo_reserva: string
     obs: string | null
@@ -64,7 +65,7 @@ export default function ReservaCardView(props: propsReserva) {
     function formatDate(isoDateStr: string) {
         const date = new Date(isoDateStr);
 
-        const day = ("0" + date.getDate()).slice(-2);
+        const day = ("0" + date.getUTCDate()).slice(-2);
         const monthNames = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
         const month = monthNames[date.getUTCMonth()];
         const year = date.getUTCFullYear();
@@ -168,6 +169,7 @@ export default function ReservaCardView(props: propsReserva) {
                 qtdHospede={reserva?.qtd_hospede || 0}
                 valorLiq={reserva?.valor_liq || 0}
                 valorTotal={reserva?.valor || 0}
+                taxaLimpeza={reserva?.taxa_limpeza || 0}
             />}
             {editarContinuidade && <EditarContinuidade
                 saas={dataToken.id}

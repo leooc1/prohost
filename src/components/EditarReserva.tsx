@@ -10,6 +10,7 @@ interface Acomodacao {
     endereco: string
     check_in_p: string
     check_out_p: string
+    modelo: number
     foto: string
     nome: string
     numero_hospedes: number
@@ -42,10 +43,12 @@ interface Reserva {
     hospede: { id: number | null }
     qtd_hospede: number
     saas: { id: number }
+    taxa_limpeza: number
     valor: number
     valor_liq: number
     valor_prop: number
     valor_gestor: number
+    valor_liq_calculado: number
     obs: string
     tipo_reserva: string
 }
@@ -60,6 +63,7 @@ interface propsEdicao {
     checkOut: string
     canalID: number
     valorTotal: number
+    taxaLimpeza: number
     comissao: number
     valorLiq: number
     obs: string
@@ -94,7 +98,7 @@ export default function EditarReserva(props: propsEdicao) {
             return input.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
         else return '0,00'
     }
-    
+
     const checkout = new Date(props.checkOut)
     const checkoutDate = (`${checkout.getUTCFullYear()}-${('0' + (checkout.getUTCMonth() + 1)).slice(-2)}-${('0' + (checkout.getUTCDate())).slice(-2)}`)
     const checkoutTime = (`${('0' + (checkout.getUTCHours())).slice(-2)}:${('0' + (checkout.getUTCMinutes())).slice(-2)}`)
@@ -102,6 +106,7 @@ export default function EditarReserva(props: propsEdicao) {
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
     const [canais, setCanais] = useState<Canais[]>([])
     const [render, setRender] = useState(false)
+    const [showTaxaLimpeza, setShowTaxaLimpeza] = useState(false)
     const [hospede, setHospede] = useState<Hospede[]>([])
     const [showH, setShowH] = useState<Hospede[]>([])
 
@@ -155,7 +160,6 @@ export default function EditarReserva(props: propsEdicao) {
         })
             .then(data => data.json())
             .then((data) => {
-                console.log(data)
                 if (data[0]?.affected == 1) {
                     alert('Atualizado!')
                     location.reload()
@@ -176,6 +180,7 @@ export default function EditarReserva(props: propsEdicao) {
             .then(data => data.json())
             .then((data: Acomodacao[]) => {
                 setAcomodacao(data.filter((e => !e.desativado)))
+                setShowTaxaLimpeza((data.filter(a => a.id == props.acomodacaoID)[0].modelo) == 2)
             })
             .catch(err => console.log(err))
     }
@@ -221,7 +226,9 @@ export default function EditarReserva(props: propsEdicao) {
                     <h5 className="font-semibold text-2xl mb-2">Editar Reserva</h5>
                     <label htmlFor="acomodacao" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Acomodação<span className='text-red-500 font-bold'> *</span></span>
-                        <select defaultValue={props.acomodacaoID} name="acomodacao" id="acomodacao" className="border border-zinc-300 rounded-md text-zinc-5 00 px-2 py-1 outline-none">
+                        <select onChange={(ac) => {
+                            setShowTaxaLimpeza((acomodacao.filter(a => a.id == Number(ac.target.value))[0].modelo) == 2)
+                        }} defaultValue={props.acomodacaoID} name="acomodacao" id="acomodacao" className="border border-zinc-300 rounded-md text-zinc-5 00 px-2 py-1 outline-none">
                             <option value="" selected disabled className="hidden">Selecione uma acomodação</option>
                             {acomodacao.length &&
                                 acomodacao.map(a => <option value={a.id}>{a.nome}</option>)}
@@ -353,6 +360,18 @@ export default function EditarReserva(props: propsEdicao) {
                         </label>
                     </div>
                     {/*  */}
+                    {showTaxaLimpeza && <label htmlFor="taxa_limpeza" className="flex flex-col">
+                        <span className="text-zinc-500 font-medium mb-1 text-xs">Taxa de Limpeza<span className='text-red-500 font-bold'> *</span></span>
+                        <div className="flex items-center gap-2">
+                            R$<input type="text" placeholder="R$" step="0.01" name="taxa_limpeza" id="taxa_limpeza"
+                                defaultValue={props.taxaLimpeza} className={`border border-zinc-300  rounded-md px-2 py-1 outline-none w-full`}
+                                onChange={(e) => {
+                                    e.target.value = formatedNumber(String(Number(e.target.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
+                                    checkNegativeAndApplyStyle();
+                                }} />
+                        </div>
+                    </label>}
+                    {/*  */}
                     <label htmlFor="obs" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Observação</span>
                         <input defaultValue={props.obs} type="text" name="obs" id="obs" placeholder="Opcional" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
@@ -372,12 +391,17 @@ export default function EditarReserva(props: propsEdicao) {
                                 const valorComissao = document.getElementById('com') as HTMLInputElement
                                 const valorBruto = document.getElementById('tot') as HTMLInputElement
                                 const valorLiquido = document.getElementById('liq') as HTMLInputElement
-
+                                const taxaLimpeza = document.getElementById('taxa_limpeza') as HTMLInputElement
                                 const hospedeInput = document.getElementById('hospede') as HTMLInputElement
                                 const obs = document.getElementById('obs') as HTMLInputElement
                                 let hospedeId: number = 0
                                 let vProprietario: number = 0
                                 let vGestor: number = 0
+                                let valorLiqCalculado = 0
+                                if (taxaLimpeza) {
+                                    const calculado = (Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) - (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')) - ((Number(valorComissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) / Number(valorBruto.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))) * Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')))))
+                                    valorLiqCalculado = Number(calculado.toFixed(2))
+                                }
 
                                 const checkinDateTime = new Date(`${checkinDate.value} ${checkinHora.value}:00`);
                                 const checkoutDateTime = new Date(`${checkoutDate.value} ${checkoutHora.value}:00`);
@@ -419,10 +443,12 @@ export default function EditarReserva(props: propsEdicao) {
                                         "saas": {
                                             "id": dataToken.id
                                         },
+                                        "taxa_limpeza": taxaLimpeza ? Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')) : 0,
                                         "valor": Number(valorBruto.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                         "valor_liq": Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                         "valor_prop": vProprietario,
                                         "valor_gestor": vGestor,
+                                        "valor_liq_calculado": valorLiqCalculado,
                                         "obs": obs.value,
                                         "tipo_reserva": "Reserva"
                                     })

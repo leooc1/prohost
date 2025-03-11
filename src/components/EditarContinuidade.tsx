@@ -17,10 +17,12 @@ interface Reserva {
     hospede: { id: number | null }
     qtd_hospede: number
     saas: { id: number }
+    taxa_limpeza: number
     valor: number
     valor_liq: number
     valor_prop: number
     valor_gestor: number
+    valor_liq_calculado: number
     obs: string
     tipo_reserva: string
     continuidade: number | null
@@ -32,8 +34,12 @@ export default function EditarContinuidade(props: propsEdicao) {
     const { dataToken } = useContext(SideBarContext)
     const [reservaAtual, setReservaAtual] = useState<any>()
     const [valor, setValor] = useState<any>()
-
+    let isProcessing = false;
     async function createContinuidade(pbody: Reserva) {
+        if (isProcessing) {
+            return;
+        }
+        isProcessing = true;
         await fetch(`${apiURL}/reserva/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
@@ -54,6 +60,7 @@ export default function EditarContinuidade(props: propsEdicao) {
                 }
             })
             .catch(err => console.log(err))
+            .finally(() => isProcessing = false)
     }
 
     async function getReserva() {
@@ -185,6 +192,8 @@ export default function EditarContinuidade(props: propsEdicao) {
                                     "valor_liq": Number(valorTotal.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                     "valor_prop": vProprietario,
                                     "valor_gestor": vGestor,
+                                    "taxa_limpeza": 0,
+                                    "valor_liq_calculado": 0,
                                     "obs": obs.value,
                                     "tipo_reserva": "Continuidade",
                                     "continuidade": Number(reservaAtual.continuidade)
