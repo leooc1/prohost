@@ -37,7 +37,7 @@ export default function Dashboard() {
   function formatarMoedaBrasileira(valorStr: string) {
     const valor = parseFloat(valorStr);
     if (isNaN(valor)) {
-      return "Valor inválido";
+      return "R$ 0,00";
     }
     if (valor < 0)
       return (valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
