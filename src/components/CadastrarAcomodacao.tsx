@@ -378,7 +378,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                                         "foto": foto.classList.contains('hidden') ? null : foto.src,
                                         "modelo": modelo.value == 'separado' ? 2 : 1,
                                         "nome": identificador.value,
-                                        "taxa_limpeza": taxaLimpeza.value.length > 0 ? Number(taxaLimpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) : 0,
+                                        "taxa_limpeza": taxaLimpeza ? Number(taxaLimpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) : 0,
                                         "numero_hospedes": Number(qtdMaxHospede.value),
                                         "valor_imovel": Number(valor.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                         "desativado": false,
@@ -397,7 +397,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                                         "foto": foto.classList.contains('hidden') ? null : foto.src,
                                         "modelo": modelo.value == 'separado' ? 2 : 1,
                                         "nome": identificador.value,
-                                        "taxa_limpeza": taxaLimpeza.value.length > 0 ? Number(taxaLimpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) : 0,
+                                        "taxa_limpeza": taxaLimpeza ? Number(taxaLimpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) : 0,
                                         "numero_hospedes": Number(qtdMaxHospede.value),
                                         "valor_imovel": Number(valor.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                         "desativado": false,
@@ -431,7 +431,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                                 else {
                                     error = (error.map((e, i) => i === 3 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
                                 }
-                                if (modelo.value == 'separado' && taxaLimpeza.value.length == 0) {
+                                if (modelo.value == 'separado' && taxaLimpeza?.value.length == 0) {
                                     error = (error.map((e, i) => i === 7 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
                                 }
                                 else {
