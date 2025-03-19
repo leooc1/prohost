@@ -304,7 +304,7 @@ export default function Cadastro() {
                                         end_comp: complemento,
                                         end_cep: end_cep.value,
                                         nome: nome.value,
-                                        saas: { id: null },
+                                        saas: undefined,
                                         email: email.value,
                                         senha: senha.value
                                     }

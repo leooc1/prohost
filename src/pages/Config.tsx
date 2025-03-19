@@ -6,7 +6,6 @@ export default function Config() {
     useEffect(() => { document.title = `Assinatura | Prohost` }, [])
 
     const { statusData } = useContext(SideBarContext)
-    console.log(statusData)
     const [session, setSession] = useState(0)
     const [qtdAcomodacao, setQtdAcomodacao] = useState('1')
     const [assinatura, setAssinatura] = useState(true)
@@ -28,13 +27,28 @@ export default function Config() {
 
     }
     function dateFormat(dataISO: string) {
-        if(dataISO == '')
+        if (dataISO == '')
             return ''
         const dataLimpa = dataISO.slice(0, 10)
         const [ano, mes, dia] = dataLimpa.split("-");
 
         return `${dia}/${mes}/${ano}`;
     }
+
+    function diasFaltantes(dataFutura: string) {
+        if (dataFutura == '')
+            return ''
+        const hoje = new Date() as any;
+        const futura = new Date(dataFutura) as any;
+
+        hoje.setHours(0, 0, 0, 0);
+        futura.setHours(0, 0, 0, 0);
+
+        const diferenca = Math.ceil((futura - hoje) / (1000 * 60 * 60 * 24));
+
+        return diferenca;
+    }
+
     useEffect(() => {
         if (statusData)
             if (statusData?.status && statusData?.trial_end)
@@ -65,6 +79,7 @@ export default function Config() {
                         Meu plano</div>
                     <p className="text-primary text-2xl">Número de Acomodações: {statusData?.qtd_acomodacao || ''}</p>
                     <p className="text-primary text-2xl">Data de Renovação: {dateFormat(statusData?.trial_end || '')}</p>
+                    <p className="text-primary text-2xl">Dias Restantes: {diasFaltantes(statusData?.trial_end || '')}</p>
                 </div> :
                     <div className="self-center bg-red-100 p-6 rounded-xl flex flex-col gap-3">
                         <div /* onClick={() => setAssinatura(!assinatura)} */ className="flex items-center gap-2 text-[rgba(237,62,68,1)] font-semibold">
