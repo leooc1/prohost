@@ -398,9 +398,29 @@ export default function EditarReserva(props: propsEdicao) {
                                 let vProprietario: number = 0
                                 let vGestor: number = 0
                                 let valorLiqCalculado = 0
+
                                 if (taxaLimpeza) {
-                                    const calculado = (Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) - (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')) - ((Number(valorComissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) / Number(valorBruto.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))) * Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')))))
-                                    valorLiqCalculado = Number(calculado.toFixed(2))
+                                    const calculado = (
+                                        (
+                                            (Number(valorBruto.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')) + 
+                                            (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')))) - 
+                                            Number(valorComissao.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))
+                                        )//valor liquido 
+                                        - (
+                                            (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))) // limpeza 
+                                            - 
+                                            (
+                                                (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))) * 
+                                                (
+                                                    (Number(valorComissao.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))) / 
+                                                    (Number(valorBruto.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')) + 
+                                                    (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))))
+                                                )
+                                            )
+                                        )
+                                    );
+                                
+                                    valorLiqCalculado = Number(calculado.toFixed(2));
                                 }
 
                                 const checkinDateTime = new Date(`${checkinDate.value} ${checkinHora.value}:00`);

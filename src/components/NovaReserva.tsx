@@ -395,8 +395,27 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                 // 
                                 let valorLiqCalculado = 0
                                 if (taxaLimpeza) {
-                                    const calculado = (Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) - (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')) - ((Number(valorComissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) / Number(valorBruto.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))) * Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')))))
-                                    valorLiqCalculado = Number(calculado.toFixed(2))
+                                    const calculado = (
+                                        (
+                                            (Number(valorBruto.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')) + 
+                                            (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')))) - 
+                                            Number(valorComissao.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))
+                                        )//valor liquido 
+                                        - (
+                                            (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))) // limpeza 
+                                            - 
+                                            (
+                                                (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))) * 
+                                                (
+                                                    (Number(valorComissao.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))) / 
+                                                    (Number(valorBruto.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')) + 
+                                                    (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))))
+                                                )
+                                            )
+                                        )
+                                    );
+                                
+                                    valorLiqCalculado = Number(calculado.toFixed(2));
                                 }
                                 // 
                                 if (acomodacaoInput.value.length > 0 && canais.value.length > 0 && Number(qtdHospede.value) > 0 && checkinDate.value.length > 0 && checkinHora.value.length > 0 && checkoutDate.value.length > 0 && checkoutHora.value.length > 0 && Number(valorComissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) >= 0 && Number(valorBruto.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) >= 0 && Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) >= 0 && hospedeInput.value.length > 0 && (checkinDateTime < checkoutDateTime)) {
