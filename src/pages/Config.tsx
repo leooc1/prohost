@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import TopBar from "../components/TopBar";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
+import SemPermissao from "../components/SemPermissao";
 
 export default function Config() {
     useEffect(() => { document.title = `Assinatura | Prohost` }, [])
@@ -57,14 +58,13 @@ export default function Config() {
     }, [statusData])
     return (
         <div className="flex flex-col w-full min-h-screen h-full">
+            {/* <SemPermissao /> */}
             <TopBar>
                 <section className='ml-5 flex gap-5'>
                     <button onClick={() => setSession(0)} className={`h-full text-sm flex items-center gap-2 border-b-2 ${session == 0 ? 'border-primary' : 'border-transparent'} hover:border-primary px-2`}>
                         Meu plano</button>
                     {/* <button onClick={() => setSession(1)} className={`h-full text-sm flex items-center gap-2 border-b-2 ${session == 1 ? 'border-primary' : 'border-transparent'} hover:border-primary px-2`}>
                         Gestão de usuários</button> */}
-                    {/* frontend ta onde molindo?*/}
-                    {/* esse é o front uai*/}
                 </section>
             </TopBar>
 
@@ -125,7 +125,7 @@ export default function Config() {
             </div>}
             {/* {session == 1 && <form onSubmit={(e) => { e.preventDefault() }}
                 style={{ width: '-webkit-fill-available' }}
-                className="flex rounded-md flex-col absolute px-4 pb-3 gap-4 top-1/2 right-1/2 min-w-72 translate-x-1/2 -translate-y-1/2 bg-white pt-2">
+                className="flex rounded-md flex-col px-4 pb-3 gap-4 min-w-72 mb-20 bg-white pt-2">
                 <h5 className="font-semibold text-2xl mb-2">Criar usuário filiado</h5>
 
                 <label htmlFor="nome" className="flex flex-col">
@@ -141,24 +141,66 @@ export default function Config() {
                     <input type="password" name="senha" id="senha" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                 </label>
                 <span className="text-zinc-500 font-medium text-sm">Permissões</span>
-                <section className="grid grid-cols-2">
-                    <label htmlFor="trem1" className="flex items-center gap-2">
-                        <input type="checkbox" name="trem1" id="trem1" /> Inserção
+                <section className="grid grid-cols-2 gap-4">
+                    <label htmlFor="dash-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
+                        Página Dashboard
+                        <select name="dash-permissao" id="dash-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
+                            <option value="0" className="text-black">Sem Visualização</option>
+                            <option value="1" className="text-black">Apenas Visualização</option>
+                            <option value="2" className="text-black">Visualização e Adição</option>
+                            <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                            <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                        </select>
                     </label>
-                    <label htmlFor="trem2" className="flex items-center gap-2">
-                        <input type="checkbox" name="trem2" id="trem2" /> Exclusão
+                    <label htmlFor="reserva-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
+                        Página Reserva
+                        <select name="reserva-permissao" id="reserva-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
+                            <option value="0" className="text-black">Sem Visualização</option>
+                            <option value="1" className="text-black">Apenas Visualização</option>
+                            <option value="2" className="text-black">Visualização e Adição</option>
+                            <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                            <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                        </select>
                     </label>
-                    <label htmlFor="trem3" className="flex items-center gap-2">
-                        <input type="checkbox" name="trem3" id="trem3" /> Edição
+                    <label htmlFor="acomodacao-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
+                        Página Acomodações
+                        <select name="acomodacao-permissao" id="acomodacao-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
+                            <option value="0" className="text-black">Sem Visualização</option>
+                            <option value="1" className="text-black">Apenas Visualização</option>
+                            <option value="2" className="text-black">Visualização e Adição</option>
+                            <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                            <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                        </select>
                     </label>
-                    <label htmlFor="trem4" className="flex items-center gap-2">
-                        <input type="checkbox" name="trem4" id="trem4" /> Visualizar dados da assinatura
+                    <label htmlFor="hospede-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
+                        Página Hóspedes
+                        <select name="hospede-permissao" id="hospede-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
+                            <option value="0" className="text-black">Sem Visualização</option>
+                            <option value="1" className="text-black">Apenas Visualização</option>
+                            <option value="2" className="text-black">Visualização e Adição</option>
+                            <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                            <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                        </select>
                     </label>
-                    <label htmlFor="trem5" className="flex items-center gap-2">
-                        <input type="checkbox" name="trem5" id="trem5" /> Visualizar dados de financeiro
+                    <label htmlFor="financeiro-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
+                        Página Financeiro
+                        <select name="financeiro-permissao" id="financeiro-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
+                            <option value="0" className="text-black">Sem Visualização</option>
+                            <option value="1" className="text-black">Apenas Visualização</option>
+                            <option value="2" className="text-black">Visualização e Adição</option>
+                            <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                            <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                        </select>
                     </label>
-                    <label htmlFor="trem6" className="flex items-center gap-2">
-                        <input type="checkbox" name="trem6" id="trem6" /> Gestão de usuários e permissões
+                    <label htmlFor="config-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
+                        Página Configurações
+                        <select name="config-permissao" id="config-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
+                            <option value="0" className="text-black">Sem Visualização</option>
+                            <option value="1" className="text-black">Apenas Visualização</option>
+                            <option value="2" className="text-black">Visualização e Adição</option>
+                            <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                            <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                        </select>
                     </label>
                 </section>
 
@@ -166,7 +208,7 @@ export default function Config() {
                     <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
                     >Criar usuário</button>
                 </section>
-            </form>} */}
+            </form> */}
         </div>
     );
 }

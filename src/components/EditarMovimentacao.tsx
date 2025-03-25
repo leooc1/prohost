@@ -62,7 +62,7 @@ export default function EditarMovimentacao(props: propsEditar) {
         })
     }
     async function getAcomodacoes() {
-        await fetch(`${apiURL}/acomodacao/${acomodacao}`, {
+        await fetch(`${apiURL}/acomodacao/${props.saas}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -72,7 +72,7 @@ export default function EditarMovimentacao(props: propsEditar) {
             .catch(err => console.log(err))
     }
     async function getCategorias() {
-        await fetch(`${apiURL}/categoria_financeiro/${acomodacao}`, {
+        await fetch(`${apiURL}/categoria_financeiro/${props.saas}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -158,13 +158,24 @@ export default function EditarMovimentacao(props: propsEditar) {
                     <section>
                         <span className="text-zinc-500 font-medium">Categoria</span>
                         <div className="mt-2 flex gap-2 flex-wrap">
+                        <select name="categoria" id="categoria"
+                            className={`${err[1] ? 'border-red-500' : 'border-zinc-300'} font-medium border rounded-md px-2 py-1 outline-none`} /* style={{ color: categoria[1] }} defaultValue={categoria[0]} */
+                            /* onChange={(e) => {
+                                const cat = categoriaf.find((c) => String(c.id) === e.target.value);
+                                if (cat) {
+                                    setCategoria([String(cat.id), cat.cor !== '#FFFFFF' ? cat.cor : '#000000']);
+                                }
+                            }} */>
+                            <option value="" className="hidden" disabled selected></option>
                             {categoriaf.length > 0 &&
-                                categoriaf.map(cat => <label htmlFor={String(cat.id)} onClick={() => setCategoria()} className={`${String(props.categoria) == String(cat.id) ? 'outline outline-2 outline-slate-700 bg-slate-300' : 'bg-slate-100'} bg-slate-100 text-sm font-medium cursor-pointer flex items-center text-slate-500 rounded-2xl px-2 py-px`}>
-                                    <div className={`w-2 h-2 rounded-full mr-2 bg-[${cat.cor}]`}></div>
-                                    {cat.nome}
-                                    <input type="radio" name="categoria" defaultChecked={String(props.categoria) == String(cat.id)} id={String(cat.id)} className="hidden" />
-                                </label>)}
-                        </div>
+                                categoriaf.map(cat =>
+                                    <option value={String(cat.id)} id={String(cat.id)}
+                                        style={{ color: cat.cor != '#FFFFFF' ? cat.cor : '#000000' }}>
+                                        {cat.nome}
+                                    </option>
+                                )}
+                        </select>
+                    </div>
                     </section>
                     <div className="grid gap-4 grid-cols-2">
                         <label htmlFor="descricao" className="flex flex-col">

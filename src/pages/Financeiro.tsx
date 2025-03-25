@@ -167,7 +167,7 @@ export default function Financeiro() {
                 return 30;
             case 2: // Fevereiro
                 // Verifica se o ano é bissexto
-                if ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)) {
+                if ((year % 4 == 0 && year % 100 !== 0) || (year % 400 == 0)) {
                     return 29;
                 } else {
                     return 28;
@@ -382,8 +382,8 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Receita Bruta</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao?.id === Number(filterAC))
-                                            .map(mov => mov.valor)
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC))
+                                            .map(mov => mov.receita ? Number(mov.valor) : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
                                 </div>
@@ -395,8 +395,8 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Receita Líquida</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao?.id === Number(filterAC))
-                                            .map(mov => mov.valor_liq)
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC))
+                                            .map(mov => mov.receita ? Number(mov.valor_liq) : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
                                 </div>
@@ -408,7 +408,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Despesas</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao?.id === Number(filterAC))
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC))
                                             .map(mov => !mov.receita ? mov.valor_liq : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
@@ -421,8 +421,8 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Lucro</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao?.id === Number(filterAC))
-                                            .map(mov => mov.receita ? mov.valor_liq : 0)
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC))
+                                            .map(mov => mov.receita ? mov.valor_liq : (mov.valor_liq * -1))
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
                                 </div>
@@ -456,8 +456,8 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Receita Bruta</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao?.id === Number(filterAC))
-                                            .map(mov => mov.valor)
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC))
+                                            .map(mov => mov.receita ? Number(mov.valor) : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
                                 </div>
@@ -469,8 +469,8 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Receita Líquida</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao?.id === Number(filterAC))
-                                            .map(mov => mov.valor_liq)
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC))
+                                            .map(mov => mov.receita ? Number(mov.valor_liq) : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
                                 </div>
@@ -503,18 +503,18 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Total</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao?.id === Number(filterAC))
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC))
                                             .map(mov => !mov.receita ? mov.valor_liq : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>}
-                    {session == 0 && listagem && <ListaMovimentacoes movimentacoes={showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao?.id === Number(filterAC))} />}
+                    {session == 0 && listagem && <ListaMovimentacoes movimentacoes={showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC))} />}
                     {session == 1 && listagem && <ListaMovimentacoes movimentacoes={
                         vz ?
-                            showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao?.id === Number(filterAC)).filter(m => m.receita) :
-                            agruparMovimentacoes(showMovimentacao.filter(a => filterAC === 'all' || a.acomodacao?.id === Number(filterAC)).filter(m => m.receita))
+                            showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC)).filter(m => m.receita) :
+                            agruparMovimentacoes(showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC)).filter(m => m.receita))
                     } />}
                     {session == 2 && listagem && <div>
                         <label htmlFor="despesa" className="flex flex-col relative w-fit translate-y-5">
@@ -524,12 +524,9 @@ export default function Financeiro() {
                                     setLDespesa(e.target.value)
                                 }} />
                         </label>
-                        <ListaMovimentacoes movimentacoes={showMovimentacao.filter(a => {
-                            if (filterAC == 'all')
-                                return true
-                            else
-                                a.acomodacao?.id == Number(filterAC)
-                        }).filter(m => !m.receita && m.nome.toLowerCase().includes(lDespesa.toLowerCase()))} />
+                        <ListaMovimentacoes movimentacoes={showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC))
+                            .filter(m => !m.receita && m.nome.toLowerCase().includes(lDespesa.toLowerCase()))
+                        } />
                     </div>}
                 </div>
             </div> :
