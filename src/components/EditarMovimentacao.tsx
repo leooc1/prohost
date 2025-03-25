@@ -42,25 +42,6 @@ interface propsEditar {
 
 export default function EditarMovimentacao(props: propsEditar) {
     const apiURL = 'https://api.prohost.net.br'
-    const setCategoria = () => {
-        const categorias = document.querySelectorAll('label:has(input[type="radio"])')
-        categorias.forEach((e: any) => {
-            if (e.children[1].checked) {
-                e.classList.add('outline')
-                e.classList.add('outline-2')
-                e.classList.add('outline-slate-700')
-                e.classList.add('bg-slate-300')
-                e.classList.remove('bg-slate-100')
-            }
-            else {
-                e.classList.remove('outline')
-                e.classList.remove('outline-2')
-                e.classList.remove('outline-slate-700')
-                e.classList.remove('bg-slate-300')
-                e.classList.add('bg-slate-100')
-            }
-        })
-    }
     async function getAcomodacoes() {
         await fetch(`${apiURL}/acomodacao/${props.saas}`, {
             method: 'GET'
@@ -159,13 +140,7 @@ export default function EditarMovimentacao(props: propsEditar) {
                         <span className="text-zinc-500 font-medium">Categoria</span>
                         <div className="mt-2 flex gap-2 flex-wrap">
                         <select name="categoria" id="categoria"
-                            className={`${err[1] ? 'border-red-500' : 'border-zinc-300'} font-medium border rounded-md px-2 py-1 outline-none`} /* style={{ color: categoria[1] }} defaultValue={categoria[0]} */
-                            /* onChange={(e) => {
-                                const cat = categoriaf.find((c) => String(c.id) === e.target.value);
-                                if (cat) {
-                                    setCategoria([String(cat.id), cat.cor !== '#FFFFFF' ? cat.cor : '#000000']);
-                                }
-                            }} */>
+                            className={`border-zinc-300 font-medium border rounded-md px-2 py-1 outline-none`} /* style={{ color: categoria[1] }}  */defaultValue={String(props.categoria)}>
                             <option value="" className="hidden" disabled selected></option>
                             {categoriaf.length > 0 &&
                                 categoriaf.map(cat =>
@@ -241,7 +216,7 @@ export default function EditarMovimentacao(props: propsEditar) {
                         }}>Excluir</button>
                         <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
                             onClick={async () => {
-                                const categoriaInput = document.querySelectorAll('label:has(input[type="radio"]:checked)')[0] as HTMLLabelElement
+                                const categoriaInput = document.getElementById('categoria') as HTMLInputElement
                                 const descricaoInput = document.getElementById('descricao') as HTMLInputElement
                                 const acomodacaoInput = document.getElementById('acomodacaoEdit') as HTMLInputElement
                                 const dataInput = document.getElementById('data') as HTMLInputElement
@@ -260,14 +235,14 @@ export default function EditarMovimentacao(props: propsEditar) {
                                     vProprietario = Number(valorInput.value)
                                     vGestor = Number(valorInput.value)
                                 }
-                                if ((Boolean(categoriaInput?.htmlFor) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value) > 0)) {
+                                if ((Boolean(categoriaInput.value.length) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value) > 0)) {
                                     await editar({
                                         "id": props.id,
                                         "acomodacao": {
                                             "id": Number(acomodacaoInput.value) || null
                                         },
                                         "categoria_financeiro": {
-                                            "id": Number(categoriaInput.htmlFor)
+                                            "id": Number(categoriaInput.value)
                                         },
                                         "data": dataInput.value,
                                         "canal_reserva": {

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import TopBar from "../components/TopBar";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
-import SemPermissao from "../components/SemPermissao";
+// import SemPermissao from "../components/SemPermissao";
 
 export default function Config() {
     useEffect(() => { document.title = `Assinatura | Prohost` }, [])
