@@ -49,11 +49,11 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
         await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(input)}&limit=5`)
             .then(data => data.json())
             .then(data => {
-                setAutoComplete(data.features.map((feature: any) => ({
-                    name: feature.properties.name,
-                    city: feature.properties.city || "",
-                    state: feature.properties.state || "",
-                    country: feature.properties.country,
+                setAutoComplete(data?.features.map((feature: any) => ({
+                    name: feature?.properties?.name,
+                    city: feature?.properties?.city || "",
+                    state: feature?.properties?.state || "",
+                    country: feature?.properties?.country,
                 })))
             })
             .catch(err => console.log(err))
@@ -153,10 +153,10 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                                     index ===
                                     self.findIndex(
                                         (e: any) =>
-                                            e.name === end.name &&
-                                            e.city === end.city &&
-                                            e.state === end.state &&
-                                            e.country === end.country
+                                            e.name === end?.name &&
+                                            e.city === end?.city &&
+                                            e.state === end?.state &&
+                                            e.country === end?.country
                                     )
                             ).map((end: any) => <li
                                 onMouseDown={(e) => e.preventDefault()}
