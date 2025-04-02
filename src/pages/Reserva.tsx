@@ -6,6 +6,7 @@ import Calendario from '../components/chart/Calendario'
 import ListaReserva from '../components/list/ListaReserva'
 import { SideBarContext } from '../contexts/SideBarMenuContext'
 import Loader from '../components/Loader'
+import SemPermissao from '../components/SemPermissao'
 
 interface Acomodacao {
   id: number
@@ -105,10 +106,28 @@ export default function Reserva() {
       .catch(err => console.log(err))
   }
 
+  const [permissao, setPermissao] = useState(0)
+  async function permissoes() {
+    await fetch(`${apiURL}/users/${dataToken.idUsu}`, {
+      method: 'GET'
+    })
+      .then(data => data.json())
+      .then(data => {
+        if (data.reserva) {
+          setPermissao(data.reserva)
+        }
+        else {
+          setPermissao(0)
+        }
+      })
+      .catch(err => console.log(err))
+  }
+
   async function calendar() {
     await getCanais()
     await getAcomodacoes()
     await getReserva()
+    await permissoes()
     setRender(true)
     setLoaded(true)
   }
@@ -141,6 +160,7 @@ export default function Reserva() {
   return (
     loaded ?
       <div className='w-full px-8'>
+        {permissao == 0 && <SemPermissao />}
         <div className='mb-7 pt-2 flex gap-5 flex-wrap'>
           <h3 className="text-3xl font-semibold">Reservas</h3>
           <div className='flex border border-zinc-300 rounded-md items-center bg-white'>
@@ -152,23 +172,28 @@ export default function Reserva() {
               Lista</button>
           </div>
           <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium  bg-[#FFFFFF] hover:shadow-md shadow-black'
-            onClick={() => setCanaisReserva(true)}>Canais de Reserva</button>
-          {canaisReserva && <CanaisDeReserva close={() => setCanaisReserva(false)} />}
+            onClick={() => setCanaisReserva(true)}
+            disabled={!(permissao >= 2)}>Canais de Reserva</button>
+          {canaisReserva && <CanaisDeReserva close={() => setCanaisReserva(false)}
+          permissao={permissao} />}
           <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#F45C61] hover:bg-[#ED3E44] hover:shadow-md shadow-black'
             onClick={() => {
               if (acomodacao.length == 0) location.assign('/acomodacoes')
-                setNovaIndisponibilidade(true)
-            }}>Nova Indisponibilidade</button>
+              setNovaIndisponibilidade(true)
+            }}
+            disabled={!(permissao >= 2)}>Nova Indisponibilidade</button>
           {novaIndisponibilidade && <NovaIndisponibilidade close={() => setNovaIndisponibilidade(false)} />}
           <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#003447] hover:bg-[#325B6A] hover:shadow-md shadow-black'
             onClick={() => {
               if (acomodacao.length == 0) location.assign('/acomodacoes')
-                setNovaReserva(true)
-            }}>Nova Reserva</button>
+              setNovaReserva(true)
+            }}
+            disabled={!(permissao >= 2)}>Nova Reserva</button>
           {novaReserva && <NovaReserva close={() => setNovaReserva(false)} />}
         </div>
         {render ?
           calendario ? <Calendario
+          permissao={permissao}
             acomodacoes={acomodacao.map((a) => ({
               id: String(a ? a.id : null),
               title: a.nome,

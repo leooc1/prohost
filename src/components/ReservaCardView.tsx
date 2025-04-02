@@ -6,6 +6,7 @@ import { SideBarContext } from "../contexts/SideBarMenuContext"
 import EditarContinuidade from "./EditarContinuidade"
 
 interface propsReserva {
+    permissao: number
     id: string
     close: () => void
 }
@@ -262,30 +263,33 @@ export default function ReservaCardView(props: propsReserva) {
                             onClick={() => {
                                 setCancelamento(true)
                             }}
-                            className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md">Cancelar Reserva</button>
+                            className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md" disabled={!(props.permissao >= 4)}>Cancelar Reserva</button>
                         <button
                             onClick={() => {
                                 setEditar(true)
                             }}
-                            className="px-2 py-1 text-sm font-medium bg-blue-100 text-blue-500 rounded-md">Editar Reserva</button>
+                            className="px-2 py-1 text-sm font-medium bg-blue-100 text-blue-500 rounded-md"
+                            disabled={!(props.permissao >= 3)}>Editar Reserva</button>
                         <button
                             onClick={() => {
                                 setContinuidade(true)
                             }}
-                            className="px-2 py-1 text-sm font-medium bg-green-100 text-green-500 rounded-md">Extender Reserva</button>
+                            className="px-2 py-1 text-sm font-medium bg-green-100 text-green-500 rounded-md"
+                            disabled={!(props.permissao >= 2)}>Extender Reserva</button>
                     </div> : null}
                     {reserva?.tipo_reserva == 'Continuidade' ? <div className="flex justify-between mt-3">
                         <button
                             onClick={() => {
                                 setCancelamento(true)
                             }}
-                            className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md">Cancelar Continuidade</button>
+                            className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md" disabled={!(props.permissao >= 4)}>Cancelar Continuidade</button>
 
                         <button
                             onClick={() => {
                                 setEditarContinuidade(true)
                             }}
-                            className="px-2 py-1 text-sm font-medium bg-blue-100 text-blue-500 rounded-md">Editar Continuidade</button>
+                            className="px-2 py-1 text-sm font-medium bg-blue-100 text-blue-500 rounded-md"
+                            disabled={!(props.permissao >= 3)}>Editar Continuidade</button>
                     </div> : null}
                     {reserva?.tipo_reserva == 'Indisponibilidade' ? <div className="flex justify-between mt-3">
                         <button
@@ -295,7 +299,7 @@ export default function ReservaCardView(props: propsReserva) {
                                     deleteReserva(Number(props.id))
                                 }
                             }}
-                            className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md">Excluir Indisponibilidade</button>
+                            className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md" disabled={!(props.permissao >= 4)}>Excluir Indisponibilidade</button>
                     </div> : null}
                 </section>
             </div >

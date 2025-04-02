@@ -6,6 +6,7 @@ import CadastrarCategoria from '../components/CadastrarCategoria'
 import ListaMovimentacoes from '../components/list/ListaMovimentacoes'
 import { SideBarContext } from '../contexts/SideBarMenuContext'
 import Loader from '../components/Loader'
+import SemPermissao from '../components/SemPermissao'
 
 interface Movimentacao {
     id?: number
@@ -202,9 +203,27 @@ export default function Financeiro() {
             .catch(err => console.log(err))
     }
 
+    const [permissao, setPermissao] = useState(0)
+    async function permissoes() {
+        await fetch(`${apiURL}/users/${dataToken.idUsu}`, {
+            method: 'GET'
+        })
+            .then(data => data.json())
+            .then(data => {
+                if (data.financeiro) {
+                    setPermissao(data.financeiro)
+                }
+                else {
+                    setPermissao(0)
+                }
+            })
+            .catch(err => console.log(err))
+    }
+
     async function loadAll() {
         await acomodacoes()
         await getMovimentacao()
+        await permissoes()
         setLoaded(true)
     }
 
@@ -267,6 +286,7 @@ export default function Financeiro() {
     return (
         loaded ?
             <div className='w-full'>
+                {permissao == 0 && <SemPermissao />}
                 <TopBar>
                     <section className='ml-5 flex gap-5'>
                         <button onClick={() => setSession(0)} className={`h-full text-sm flex items-center gap-2 border-b-2 ${session == 0 ? 'border-primary' : 'border-transparent'} hover:border-primary px-2`}>
@@ -285,33 +305,42 @@ export default function Financeiro() {
                         <h3 className="text-3xl font-semibold">Movimentações</h3>
                         <div className='flex gap-3'>
                             <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-black bg-white hover:shadow-md shadow-black'
-                                onClick={() => { setCadastrarCategoria(true) }}>Gerenciar Categorias</button>
+                                onClick={() => { setCadastrarCategoria(true) }}
+                                disabled={!(permissao >= 2)}>Gerenciar Categorias</button>
                             <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#35D15C] hover:shadow-md shadow-black'
-                                onClick={() => { setNovaReceita(true) }}>+ Nova Receita</button>
+                                onClick={() => { setNovaReceita(true) }}
+                                disabled={!(permissao >= 2)}>+ Nova Receita</button>
                             <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#F45C61] hover:bg-[#ED3E44] hover:shadow-md shadow-black'
-                                onClick={() => { setNovaDespesa(true) }}>+ Nova Despesa</button>
+                                onClick={() => { setNovaDespesa(true) }}
+                                disabled={!(permissao >= 2)}>+ Nova Despesa</button>
                         </div>
                     </div>}
                     {session == 1 && <div className='mb-7 pt-2 flex justify-between gap-5 flex-wrap'>
                         <h3 className="text-3xl font-semibold">Receitas</h3>
                         <div className='flex gap-3'>
                             <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-black bg-white hover:shadow-md shadow-black'
-                                onClick={() => { setCadastrarCategoria(true) }}>Gerenciar Categorias</button>
+                                onClick={() => { setCadastrarCategoria(true) }}
+                                disabled={!(permissao >= 2)}>Gerenciar Categorias</button>
                             <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#35D15C] hover:shadow-md shadow-black'
-                                onClick={() => { setNovaReceita(true) }}>+ Nova Receita</button>
+                                onClick={() => { setNovaReceita(true) }}
+                                disabled={!(permissao >= 2)}>+ Nova Receita</button>
                             <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#F45C61] hover:bg-[#ED3E44] hover:shadow-md shadow-black'
-                                onClick={() => { setNovaDespesa(true) }}>+ Nova Despesa</button>
+                                onClick={() => { setNovaDespesa(true) }}
+                                disabled={!(permissao >= 2)}>+ Nova Despesa</button>
                         </div>
                     </div>}
                     {session == 2 && <div className='mb-7 pt-2 flex justify-between gap-5 flex-wrap'>
                         <h3 className="text-3xl font-semibold">Despesas</h3>
                         <div className='flex gap-3'>
                             <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-black bg-white hover:shadow-md shadow-black'
-                                onClick={() => { setCadastrarCategoria(true) }}>Gerenciar Categorias</button>
+                                onClick={() => { setCadastrarCategoria(true) }}
+                                disabled={!(permissao >= 2)}>Gerenciar Categorias</button>
                             <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#35D15C] hover:shadow-md shadow-black'
-                                onClick={() => { setNovaReceita(true) }}>+ Nova Receita</button>
+                                onClick={() => { setNovaReceita(true) }}
+                                disabled={!(permissao >= 2)}>+ Nova Receita</button>
                             <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#F45C61] hover:bg-[#ED3E44] hover:shadow-md shadow-black'
-                                onClick={() => { setNovaDespesa(true) }}>+ Nova Despesa</button>
+                                onClick={() => { setNovaDespesa(true) }}
+                                disabled={!(permissao >= 2)}>+ Nova Despesa</button>
                         </div>
                     </div>}
                     <div className="flex flex-col gap-6 mb-8">
@@ -370,7 +399,8 @@ export default function Financeiro() {
                                 : null}
                         </div>
                     </div>
-                    {cadastrarCategoria && <CadastrarCategoria close={() => setCadastrarCategoria(false)} />}
+                    {cadastrarCategoria && <CadastrarCategoria close={() => setCadastrarCategoria(false)}
+                        permissao={permissao} />}
                     {novaDespesa && <RegistrarDespesa close={() => setNovaDespesa(false)} saas={dataToken?.id ? dataToken.id : ''} />}
                     {novaReceita && <RegistrarReceita close={() => setNovaReceita(false)} saas={dataToken?.id ? dataToken.id : ''} />}
                     {session == 0 &&
@@ -382,7 +412,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Receita Bruta</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC))
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
                                             .map(mov => mov.receita ? Number(mov.valor) : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
@@ -395,7 +425,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Receita Líquida</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC))
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
                                             .map(mov => mov.receita ? Number(mov.valor_liq) : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
@@ -408,7 +438,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Despesas</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC))
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
                                             .map(mov => !mov.receita ? mov.valor_liq : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
@@ -421,7 +451,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Lucro</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC))
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
                                             .map(mov => mov.receita ? mov.valor_liq : (mov.valor_liq * -1))
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
@@ -456,7 +486,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Receita Bruta</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC))
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
                                             .map(mov => mov.receita ? Number(mov.valor) : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
@@ -469,7 +499,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Receita Líquida</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC))
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
                                             .map(mov => mov.receita ? Number(mov.valor_liq) : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
@@ -503,18 +533,18 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Total</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC))
+                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
                                             .map(mov => !mov.receita ? mov.valor_liq : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>}
-                    {session == 0 && listagem && <ListaMovimentacoes movimentacoes={showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC))} />}
+                    {session == 0 && listagem && <ListaMovimentacoes movimentacoes={showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))} />}
                     {session == 1 && listagem && <ListaMovimentacoes movimentacoes={
                         vz ?
-                            showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC)).filter(m => m.receita) :
-                            agruparMovimentacoes(showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC)).filter(m => m.receita))
+                            showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC)).filter(m => m.receita) :
+                            agruparMovimentacoes(showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC)).filter(m => m.receita))
                     } />}
                     {session == 2 && listagem && <div>
                         <label htmlFor="despesa" className="flex flex-col relative w-fit translate-y-5">
@@ -524,7 +554,7 @@ export default function Financeiro() {
                                     setLDespesa(e.target.value)
                                 }} />
                         </label>
-                        <ListaMovimentacoes movimentacoes={showMovimentacao.filter(a => filterAC == 'all' || a.acomodacao.id == Number(filterAC))
+                        <ListaMovimentacoes movimentacoes={showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
                             .filter(m => !m.receita && m.nome.toLowerCase().includes(lDespesa.toLowerCase()))
                         } />
                     </div>}

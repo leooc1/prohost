@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReservaCardView from '../ReservaCardView';
 
-export default function Calendario({ acomodacoes, reservas, initialDate }:
+export default function Calendario({ acomodacoes, reservas, initialDate, permissao }:
   {
     acomodacoes: { id: string, title: string, image: string }[],
     reservas: {
@@ -9,7 +9,8 @@ export default function Calendario({ acomodacoes, reservas, initialDate }:
       hospedes: number, color: string, id: string, tipo: string, obs: string,
       bruto: number, liquido: number, comissao: number,
     }[],
-    initialDate: null | string
+    initialDate: null | string,
+    permissao: number
   }) {
   const iframeRef = useRef(null);
   const altura = 200 + (60 * (acomodacoes.length - 1));
@@ -35,7 +36,7 @@ export default function Calendario({ acomodacoes, reservas, initialDate }:
         iframe.removeEventListener('load', handleLoad);
       };
     }
-    
+
   }, []);
 
   return (
@@ -54,8 +55,9 @@ export default function Calendario({ acomodacoes, reservas, initialDate }:
       }}></button>
       {reservaView &&
         <ReservaCardView
+          permissao={permissao}
           close={() => setReservaView(false)}
-          id={dados?.event.id||'0'}
+          id={dados?.event.id || '0'}
         />}
     </>
   );

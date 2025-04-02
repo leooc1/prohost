@@ -9,7 +9,7 @@ interface Canais {
 
 //const apiURl = import.meta.env.VITE_baseURLAPI;
 
-export default function CanaisDeReserva({ close }: { close: () => void }) {
+export default function CanaisDeReserva({ close, permissao }: { close: () => void, permissao: number }) {
     const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
     const [canais, setCanais] = useState<Canais[]>([])
@@ -93,9 +93,12 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
                             canais.length ?
                                 canais.map((e) =>
                                     <li className="flex items-center border border-zinc-200 pr-2 py-1 rounded-md pl-6">
-                                        <details className="relative">
+                                        <details onClick={(e) => {
+                                            if (!(permissao >= 3))
+                                                e.preventDefault()
+                                        }} className="relative">
                                             <summary className="flex">
-                                                <div id={`cor-${e.id}`} title={e.cor} style={{backgroundColor: e.cor}} className={`cursor-pointer w-3 h-3 rounded-full mr-5`}></div>
+                                                <div id={`cor-${e.id}`} title={e.cor} style={{ backgroundColor: e.cor }} className={`cursor-pointer w-3 h-3 rounded-full mr-5`}></div>
                                             </summary>
 
                                             <section className="grid grid-cols-6 absolute top-full bg-white p-2 gap-4 w-52 rounded-xl">
@@ -124,7 +127,8 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
 
                                         </details>
 
-                                        <input type="text" id={`nome-${e.id}`} defaultValue={e.nome} className={`outline-none border-none bg-transparent focus:bg-zinc-200 rounded-md px-1`}
+                                        <input type="text" id={`nome-${e.id}`} defaultValue={e.nome}
+                                            disabled={!(permissao >= 3)} className={`outline-none border-none bg-transparent focus:bg-zinc-200 rounded-md px-1`}
                                             onBlur={(el) => {
                                                 if (el.target.value.length) {
                                                     const cor = document.getElementById(`cor-${e.id}`) as HTMLDivElement
@@ -137,6 +141,7 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
                                                 if (excluir)
                                                     deleteCanais(e.id || 0)
                                             }}
+                                            disabled={!(permissao >= 4)}
                                             className='px-1 py-1 rounded-md transition-all duration-200 hover:bg-red-100'>
                                             <svg className="w-5 h-fit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(255,109,109,1)"><path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 4V6H15V4H9Z"></path></svg>
                                         </button>
@@ -158,7 +163,7 @@ export default function CanaisDeReserva({ close }: { close: () => void }) {
                             <span className="text-zinc-500 font-medium mb-1">Cor</span>
                             <details name="color" id="color" className={`outline outline-zinc-300 border2 border-white max-w-20 rounded-md px-2 py-1 outline-none relative`}>
                                 <summary className="flex">
-                                    <div id="select-color" style={{backgroundColor: color}} className={`cursor-pointer w-6 h-6 border border-zinc-400 pl-7`}></div>
+                                    <div id="select-color" style={{ backgroundColor: color }} className={`cursor-pointer w-6 h-6 border border-zinc-400 pl-7`}></div>
                                 </summary>
 
                                 <section className="grid grid-cols-6 absolute top-full bg-white p-2 gap-4 w-52 rounded-xl">

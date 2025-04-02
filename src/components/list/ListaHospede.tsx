@@ -10,7 +10,7 @@ interface Hospede {
 
 // const apiUrl = import.meta.env.VITE_baseURLAPI;
 
-export default function ListaHospede({ hospedes, atualizar, setAtualizar }: { hospedes: Hospede[], atualizar: [boolean, number], setAtualizar: Dispatch<SetStateAction<[boolean, number]>> }) {
+export default function ListaHospede({ hospedes, atualizar, setAtualizar, permissao }: { hospedes: Hospede[], atualizar: [boolean, number], setAtualizar: Dispatch<SetStateAction<[boolean, number]>>, permissao: number }) {
     const apiURL = 'https://api.prohost.net.br'
     const [lhospedes, setLHospedes] = useState<Hospede[]>([])
 
@@ -31,7 +31,7 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar }: { ho
         )
             .then(data => data.json())
             .then(data => {
-                if (data.affected == 1){
+                if (data.affected == 1) {
                     alert('Excluído!')
                     location.reload()
                 }
@@ -77,6 +77,7 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar }: { ho
                                 <>
                                     {atualizar[0] && <AtualizarHospede id={atualizar[1]} close={() => setAtualizar([false, 0])} />}
                                     <tr onClick={() => {
+                                        if (!(permissao >= 3)) { return }
                                         setAtualizar([true, e.id])
                                     }} className="cursor-pointer text-sm bg-white h-12 border border-zinc-200 w-full hover:bg-[#FAFBFD]">
                                         <td className="flex h-12 items-center justify-center text-sm font-medium">
@@ -87,13 +88,13 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar }: { ho
                                         <td className="text-center text-sm font-medium">{e.telefone ? e.telefone : <span className="italic">Não Informado</span>}</td>
                                         <td className="text-center text-sm font-medium cursor-pointer hover:bg-red-200 rounded-xl transition-all duration-300"
                                             onClick={(ex) => {
+                                                if (!(permissao >= 4)) { return }
                                                 let confirmDelete = false
                                                 ex.stopPropagation()
                                                 confirmDelete = confirm("Deseja deletar este hóspede?")
                                                 if (confirmDelete)
                                                     excluir(e.id)
-                                            }}
-                                        >
+                                            }}>
                                             <svg className="h-fit w-5 m-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ED3E44"><path d="M4 8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8ZM7 5V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V5H22V7H2V5H7ZM9 4V5H15V4H9ZM9 12V18H11V12H9ZM13 12V18H15V12H13Z"></path></svg>
                                         </td>
                                     </tr>

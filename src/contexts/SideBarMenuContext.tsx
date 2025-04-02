@@ -9,8 +9,11 @@ export const SideBarProvider = ({ children }: { children: React.JSX.Element }) =
         qtd_acomodacao: number,
         status: string,
         trial_end: string
-    }|null>(null)
-    const [dataToken, setDataToken] = useState<{ id: number, nome: string } | null>(null)
+    } | null>(null)
+    const [dataToken, setDataToken] = useState<{
+        id: number,
+        nome: string
+    } | null>(null)
 
     return (
         <SideBarContext.Provider value={{

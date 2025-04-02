@@ -10,6 +10,7 @@ import QtdeHospede from "../components/chart/QtdeHospede";
 import FaturamentoxDespesa from "../components/chart/FaturamentoxDespesa";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 import Loader from "../components/Loader";
+import SemPermissao from "../components/SemPermissao";
 interface Acomodacao {
   id: number
   tipo: string
@@ -534,14 +535,33 @@ export default function Dashboard() {
 
     setResGestor(true)
   }
+  const [permissao, setPermissao] = useState(0)
+  async function permissoes() {
+    await fetch(`${apiURL}/users/${dataToken.idUsu}`, {
+      method: 'GET'
+    })
+      .then(data => data.json())
+      .then(data => {
+        if (data.dashboard) {
+          setPermissao(data.dashboard)
+        }
+        else {
+          setPermissao(0)
+        }
+      })
+      .catch(err => console.log(err))
+  }
 
   async function loadAll() {
     await acomodacoes()
     await resultAc()
     await resultGest()
     await indicaOpe()
+    await permissoes()
     setLoaded(true)
   }
+
+
 
   const [dataBW, setDataBW] = useState<[string, string]>([`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`, `${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`])
   const [dataBar, setDataBar] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
@@ -652,8 +672,10 @@ export default function Dashboard() {
   return (
     loaded ?
       <div className="w-full px-8">
+        {permissao == 0 && <SemPermissao />}
         <h3 className="text-3xl font-semibold mb-7 pt-2">Painel do Negócio</h3>
         <div className="flex flex-wrap gap-4 mb-8">
+          
           <label htmlFor="periodo" className="flex flex-col text-zinc-600 font-medium text-sm">
             Período de Análise
             <select name="periodo" id="periodo" onChange={(e) => { setPeriodo(e.target.value) }} className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base">

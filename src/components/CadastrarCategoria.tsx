@@ -10,7 +10,7 @@ interface CategoriaFinanceiro {
     saas: { id: number };
 }
 
-export default function CadastrarCategoria({ close }: { close: () => void }) {
+export default function CadastrarCategoria({ close, permissao }: { close: () => void, permissao: number }) {
     const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
     const [mov, setMov] = useState(false)
@@ -110,7 +110,10 @@ export default function CadastrarCategoria({ close }: { close: () => void }) {
                 <ul className="flex flex-col gap-1 ">
                     {!mov && receitas.length ?
                         receitas.map((e) => <li className="flex items-center border border-zinc-200 pr-2 py-1 rounded-md pl-6">
-                            <details className="relative">
+                            <details onClick={(e) => {
+                                if (!(permissao >= 3))
+                                    e.preventDefault()
+                            }} className="relative">
                                 <summary className="flex">
                                     <div id={`cor-${e.id}`} title={e.cor} className={`cursor-pointer w-3 h-3 rounded-full bg-[${e.cor}] mr-5`}></div>
                                 </summary>
@@ -192,14 +195,14 @@ export default function CadastrarCategoria({ close }: { close: () => void }) {
 
                             </details>
 
-                            <input type="text" id={`nome-${e.id}`} defaultValue={e.nome} disabled={!e.editavel} className={`outline-none border-none bg-transparent focus:bg-zinc-200 rounded-md px-1`}
+                            <input type="text" id={`nome-${e.id}`} defaultValue={e.nome} disabled={!e.editavel || !(permissao >= 3)} className={`outline-none border-none bg-transparent focus:bg-zinc-200 rounded-md px-1`}
                                 onBlur={(el) => {
                                     if (el.target.value.length) {
                                         const cor = document.getElementById(`cor-${e.id}`) as HTMLDivElement
                                         updateCategorias(e.id || 0, { cor: cor.title, nome: el.target.value })
                                     }
                                 }} />
-                            {e.editavel && <button
+                            {e.editavel && permissao >= 4 && <button
                                 onClick={() => {
                                     const excluir = confirm("Tem certeza que deseja excluir o canal?")
                                     if (excluir)
@@ -213,7 +216,10 @@ export default function CadastrarCategoria({ close }: { close: () => void }) {
                         null}
                     {mov && despesas.length ?
                         despesas.map((e) => <li className="flex items-center border border-zinc-200 pr-2 py-1 rounded-md pl-6">
-                            <details className="relative">
+                            <details onClick={(e) => {
+                                if (!(permissao >= 3))
+                                    e.preventDefault()
+                            }} className="relative">
                                 <summary className="flex">
                                     <div id={`cor-${e.id}`} title={e.cor} className={`cursor-pointer w-3 h-3 rounded-full bg-[${e.cor}] mr-5`}></div>
                                 </summary>
@@ -295,14 +301,14 @@ export default function CadastrarCategoria({ close }: { close: () => void }) {
 
                             </details>
 
-                            <input type="text" id={`nome-${e.id}`} defaultValue={e.nome} disabled={!e.editavel} className={`outline-none border-none bg-transparent focus:bg-zinc-200 rounded-md px-1`}
+                            <input type="text" id={`nome-${e.id}`} defaultValue={e.nome} disabled={!e.editavel || !(permissao >= 3)} className={`outline-none border-none bg-transparent focus:bg-zinc-200 rounded-md px-1`}
                                 onBlur={(el) => {
                                     if (el.target.value.length) {
                                         const cor = document.getElementById(`cor-${e.id}`) as HTMLDivElement
                                         updateCategorias(e.id || 0, { cor: cor.title, nome: el.target.value })
                                     }
                                 }} />
-                            {e.editavel && <button
+                            {e.editavel && permissao >= 4 && <button
                                 onClick={() => {
                                     const excluir = confirm("Tem certeza que deseja excluir o canal?")
                                     if (excluir)
