@@ -7,7 +7,34 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
     const [notify, setNotify] = useState(false)
     const [registrar, setRegistrar] = useState(false)
     const [recorrencia, setRecorrencia] = useState<any[]>([])
-    const [despesa, setDespesa] = useState<any[]>([])
+    const [despesa, setDespesa] = useState<null | {
+        acomodacao: {
+            id: number | null;
+        };
+        categoria_financeiro: {
+            id: number | string;
+        };
+        data: string;
+        canal_reserva: {
+            id: number | null;
+        };
+        nome: string;
+        saas: {
+            id: number;
+        };
+        valor: number;
+        valor_liq: number;
+        valor_prop: number;
+        valor_gestor: number;
+        reserva: {
+            id: number | null;
+        };
+        pago: boolean;
+        receita: boolean;
+        tipo_despesa: string;
+        recebedor: string;
+        obs: string;
+    }>(null)
 
     const apiURL = 'https://api.prohost.net.br'
     function Perfil(nome: string) {
@@ -102,8 +129,8 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
             </div>
             {registrar &&
                 <RegistrarDespesa saas={dataToken.id}
-                    close={() => setRegistrar(false)} 
-                    despesa={despesa}/>}
+                    close={() => setRegistrar(false)}
+                    despesa={despesa} />}
         </div>
     )
 }
