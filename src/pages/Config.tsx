@@ -240,24 +240,6 @@ export default function Config() {
                                 <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
                             </select>
                         </label>
-                        <label htmlFor="reserva-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
-                            Página Reserva
-                            <select name="reserva-permissao" id="reserva-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
-                                <option value="0" className="text-black">Sem Visualização</option>
-                                <option value="1" className="text-black">Apenas Visualização</option>
-                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                            </select>
-                        </label>
-                        <label htmlFor="acomodacao-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
-                            Página Acomodações
-                            <select name="acomodacao-permissao" id="acomodacao-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
-                                <option value="0" className="text-black">Sem Visualização</option>
-                                <option value="1" className="text-black">Apenas Visualização</option>
-                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                            </select>
-                        </label>
                         <label htmlFor="hospede-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
                             Página Hóspedes
                             <select name="hospede-permissao" id="hospede-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
@@ -267,9 +249,27 @@ export default function Config() {
                                 <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
                             </select>
                         </label>
+                        <label htmlFor="reserva-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
+                            Página Reserva
+                            <select name="reserva-permissao" id="reserva-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
+                                <option value="0" className="text-black">Sem Visualização</option>
+                                <option value="1" className="text-black">Apenas Visualização</option>
+                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                            </select>
+                        </label>
                         <label htmlFor="financeiro-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
                             Página Financeiro
                             <select name="financeiro-permissao" id="financeiro-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
+                                <option value="0" className="text-black">Sem Visualização</option>
+                                <option value="1" className="text-black">Apenas Visualização</option>
+                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                            </select>
+                        </label>
+                        <label htmlFor="acomodacao-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
+                            Página Acomodações
+                            <select name="acomodacao-permissao" id="acomodacao-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
                                 <option value="0" className="text-black">Sem Visualização</option>
                                 <option value="1" className="text-black">Apenas Visualização</option>
                                 <option value="3" className="text-black">Visualização, Adição e Edição</option>
@@ -358,25 +358,7 @@ export default function Config() {
                     <section className="grid grid-cols-2 gap-4">
                         <label className="flex flex-col text-zinc-600 font-medium text-sm">
                             Página Dashboard
-                            <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e)=>{setDashboardPInput(e.target.value)}} defaultValue={dashboardPInput}>
-                                <option value="0" className="text-black">Sem Visualização</option>
-                                <option value="1" className="text-black">Apenas Visualização</option>
-                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                            </select>
-                        </label>
-                        <label className="flex flex-col text-zinc-600 font-medium text-sm">
-                            Página Reserva
-                            <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e)=>{setReservaPInput(e.target.value)}} defaultValue={reservaPInput}>
-                                <option value="0" className="text-black">Sem Visualização</option>
-                                <option value="1" className="text-black">Apenas Visualização</option>
-                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                            </select>
-                        </label>
-                        <label className="flex flex-col text-zinc-600 font-medium text-sm">
-                            Página Acomodações
-                            <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e)=>{setAcomodacaoPInput(e.target.value)}} defaultValue={acomodacaoPInput}>
+                            <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setDashboardPInput(e.target.value) }} defaultValue={dashboardPInput}>
                                 <option value="0" className="text-black">Sem Visualização</option>
                                 <option value="1" className="text-black">Apenas Visualização</option>
                                 <option value="3" className="text-black">Visualização, Adição e Edição</option>
@@ -385,7 +367,7 @@ export default function Config() {
                         </label>
                         <label className="flex flex-col text-zinc-600 font-medium text-sm">
                             Página Hóspedes
-                            <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e)=>{setHospedePInput(e.target.value)}} defaultValue={hospedePInput}>
+                            <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setHospedePInput(e.target.value) }} defaultValue={hospedePInput}>
                                 <option value="0" className="text-black">Sem Visualização</option>
                                 <option value="1" className="text-black">Apenas Visualização</option>
                                 <option value="3" className="text-black">Visualização, Adição e Edição</option>
@@ -393,14 +375,32 @@ export default function Config() {
                             </select>
                         </label>
                         <label className="flex flex-col text-zinc-600 font-medium text-sm">
+                            Página Reserva
+                            <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setReservaPInput(e.target.value) }} defaultValue={reservaPInput}>
+                                <option value="0" className="text-black">Sem Visualização</option>
+                                <option value="1" className="text-black">Apenas Visualização</option>
+                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                            </select>
+                        </label>                                      
+                        <label className="flex flex-col text-zinc-600 font-medium text-sm">
                             Página Financeiro
-                            <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e)=>{setFinanceiroPInput(e.target.value)}} defaultValue={financeiroPInput}>
+                            <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setFinanceiroPInput(e.target.value) }} defaultValue={financeiroPInput}>
                                 <option value="0" className="text-black">Sem Visualização</option>
                                 <option value="1" className="text-black">Apenas Visualização</option>
                                 <option value="3" className="text-black">Visualização, Adição e Edição</option>
                                 <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
                             </select>
                         </label>
+                        <label className="flex flex-col text-zinc-600 font-medium text-sm">
+                            Página Acomodações
+                            <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setAcomodacaoPInput(e.target.value) }} defaultValue={acomodacaoPInput}>
+                                <option value="0" className="text-black">Sem Visualização</option>
+                                <option value="1" className="text-black">Apenas Visualização</option>
+                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                            </select>
+                        </label>  
                         <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
                             onClick={() => {
                                 if (dataToken.id) {

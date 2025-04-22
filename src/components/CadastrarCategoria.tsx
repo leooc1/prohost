@@ -7,6 +7,7 @@ interface CategoriaFinanceiro {
     editavel: boolean;
     nome: string;
     receita: boolean
+    tipo_despesa: string | null
     saas: { id: number };
 }
 
@@ -329,13 +330,15 @@ export default function CadastrarCategoria({ close, permissao }: { close: () => 
                             <span className="text-zinc-500 font-medium mb-1">Nome</span>
                             <input type="text" name="nome" id="nome" className="border border-zinc-300 max-w-40 rounded-md px-2 py-1 outline-none" />
                         </label>
-                        <label htmlFor="tipo" className="flex flex-col hidden">
+                        {mov && <label htmlFor="tipo-despesa" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1">Tipo</span>
-                            <select name="tipo" id="tipo" className={`outline outline-zinc-300 border2 border-white text-sm rounded-md px-1 py-1 outline-none`}>
-                                <option value="receitas" title='receitas' className='' selected={!mov} >Receita</option>
-                                <option value="despesas" title='despesas' className='' selected={mov} >Despesa</option>
+                            <select name="tipo-despesa" id="tipo-despesa" className={`outline outline-zinc-300 border2 border-white text-sm rounded-md px-1 py-1 outline-none`}>
+                                <option value={'null'} selected disabled className="hidden">Padrão</option>
+                                <option value="Despesas do Negócio" className="text-black">Despesas do Negócio</option>
+                                <option value="Despesas Fixas" className="text-black">Despesas Fixas</option>
+                                <option value="Despesas Variáveis" className="text-black">Despesas Variáveis</option>
                             </select>
-                        </label>
+                        </label>}
                         <label htmlFor="cor" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1">Cor</span>
                             <details name="color" id="color" className={`outline outline-zinc-300 border2 border-white max-w-20 rounded-md px-2 py-1 outline-none relative`}>
@@ -447,13 +450,14 @@ export default function CadastrarCategoria({ close, permissao }: { close: () => 
                     <button
                         onClick={() => {
                             const nome = document.getElementById('nome') as HTMLInputElement
-                            const tipo = document.getElementById('tipo') as HTMLSelectElement
+                            const tipoDespesa = document.getElementById('tipo-despesa') as HTMLInputElement
                             if (nome.value.length)
                                 createCategorias({
                                     "cor": color,
                                     "editavel": true,
-                                    "receita": tipo.value == 'receitas',
+                                    "receita": !mov,
                                     "nome": nome.value,
+                                    "tipo_despesa": (tipoDespesa?.value != 'null') ? tipoDespesa.value : null,
                                     "saas": {
                                         "id": dataToken.id
                                     }
