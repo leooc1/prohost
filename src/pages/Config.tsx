@@ -11,6 +11,7 @@ export default function Config() {
     const [session, setSession] = useState(0)
     const [qtdAcomodacao, setQtdAcomodacao] = useState('1')
     const [assinatura, setAssinatura] = useState(true)
+    const [edicao, setEdicao] = useState(false)
     const preco = () => {
         const qtdAcomod = Number(qtdAcomodacao)
         const precosA = [249.00, 399.00, 549.00, 799.00, 1299.00, 1799.00]
@@ -152,8 +153,6 @@ export default function Config() {
                         Meu plano</button>
                     <button onClick={() => setSession(1)} className={`h-full text-sm flex items-center gap-2 border-b-2 ${session == 1 ? 'border-primary' : 'border-transparent'} hover:border-primary px-2`}>
                         Gestão de usuários</button>
-                    <button className={`h-full text-sm flex items-center gap-2 border-b-2 ${session == 2 ? 'border-primary' : 'border-transparent'} px-2`}>
-                        Edição de usuário criado</button>
                 </section>
             </TopBar>
 
@@ -322,7 +321,7 @@ export default function Config() {
                     <ul className="flex flex-col gap-1">
                         {users.map(u =>
                             <li className="border-y border-zinc-400 px-2 py-1 cursor-pointer" onClick={() => {
-                                setSession(2)
+                                setEdicao(true)
                                 setIdEdit(Number(u.id))
                                 setNomeInput(u.nome)
                                 setEmailInput(u.email)
@@ -340,86 +339,89 @@ export default function Config() {
                 </section>
             </section>
             }
-            {session == 2 &&
-                <form onSubmit={(e) => { e.preventDefault() }}
-                    style={{ width: '-webkit-fill-available' }}
-                    className="flex rounded-md flex-col px-4 pb-3 gap-4 min-w-72 mb-20 bg-white pt-2">
-                    <h5 className="font-semibold text-2xl mb-2">Editar usuário filiado</h5>
-                    <label className="flex flex-col">
-                        <span className="text-zinc-500 font-medium mb-1 text-sm">Nome</span>
-                        <input disabled type="text" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" defaultValue={nomeInput} />
-                    </label>
-                    <label className="flex flex-col">
-                        <span className="text-zinc-500 font-medium mb-1 text-sm">E-mail
-                        </span>
-                        <input disabled type="email" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" defaultValue={emailInput} />
-                    </label>
-                    <span className="text-zinc-500 font-medium text-sm">Permissões</span>
-                    <section className="grid grid-cols-2 gap-4">
-                        <label className="flex flex-col text-zinc-600 font-medium text-sm">
-                            Página Dashboard
-                            <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setDashboardPInput(e.target.value) }} defaultValue={dashboardPInput}>
-                                <option value="0" className="text-black">Sem Visualização</option>
-                                <option value="1" className="text-black">Apenas Visualização</option>
-                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                            </select>
+            {edicao &&
+                <div className='w-screen h-screen fixed z-10 top-0 right-0'>
+                    <div className="w-screen h-screen bg-black fixed top-0 right-0 bg-opacity-20" onClick={()=>setEdicao(false)}></div>
+                    <form onSubmit={(e) => { e.preventDefault() }}
+                        style={{ width: 'max-content' }}
+                        className="flex rounded-md flex-col absolute min-w-80 px-4 pb-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white pt-2">
+                        <h5 className="font-semibold text-2xl mb-2">Editar usuário filiado</h5>
+                        <label className="flex flex-col">
+                            <span className="text-zinc-500 font-medium mb-1 text-sm">Nome</span>
+                            <input disabled type="text" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" defaultValue={nomeInput} />
                         </label>
-                        <label className="flex flex-col text-zinc-600 font-medium text-sm">
-                            Página Hóspedes
-                            <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setHospedePInput(e.target.value) }} defaultValue={hospedePInput}>
-                                <option value="0" className="text-black">Sem Visualização</option>
-                                <option value="1" className="text-black">Apenas Visualização</option>
-                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                            </select>
+                        <label className="flex flex-col">
+                            <span className="text-zinc-500 font-medium mb-1 text-sm">E-mail
+                            </span>
+                            <input disabled type="email" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" defaultValue={emailInput} />
                         </label>
-                        <label className="flex flex-col text-zinc-600 font-medium text-sm">
-                            Página Reserva
-                            <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setReservaPInput(e.target.value) }} defaultValue={reservaPInput}>
-                                <option value="0" className="text-black">Sem Visualização</option>
-                                <option value="1" className="text-black">Apenas Visualização</option>
-                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                            </select>
-                        </label>                                      
-                        <label className="flex flex-col text-zinc-600 font-medium text-sm">
-                            Página Financeiro
-                            <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setFinanceiroPInput(e.target.value) }} defaultValue={financeiroPInput}>
-                                <option value="0" className="text-black">Sem Visualização</option>
-                                <option value="1" className="text-black">Apenas Visualização</option>
-                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                            </select>
-                        </label>
-                        <label className="flex flex-col text-zinc-600 font-medium text-sm">
-                            Página Acomodações
-                            <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setAcomodacaoPInput(e.target.value) }} defaultValue={acomodacaoPInput}>
-                                <option value="0" className="text-black">Sem Visualização</option>
-                                <option value="1" className="text-black">Apenas Visualização</option>
-                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                            </select>
-                        </label>  
-                        <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
-                            onClick={() => {
-                                if (dataToken.id) {
-                                    editarUsuario(idEdit || 0,
-                                        {
-                                            nome: nomeInput,
-                                            permissao: {
-                                                dashboard: Number(dashboardPInput),
-                                                reserva: Number(reservaPInput),
-                                                acomodacoes: Number(acomodacaoPInput),
-                                                hospede: Number(hospedePInput),
-                                                financeiro: Number(financeiroPInput),
-                                                config: 0
-                                            },
-                                        })
-                                }
-                            }}>Editar usuário</button>
-                    </section>
-                </form>}
+                        <span className="text-zinc-500 font-medium text-sm">Permissões</span>
+                        <section className="grid grid-cols-2 gap-4">
+                            <label className="flex flex-col text-zinc-600 font-medium text-sm">
+                                Página Dashboard
+                                <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setDashboardPInput(e.target.value) }} defaultValue={dashboardPInput}>
+                                    <option value="0" className="text-black">Sem Visualização</option>
+                                    <option value="1" className="text-black">Apenas Visualização</option>
+                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                </select>
+                            </label>
+                            <label className="flex flex-col text-zinc-600 font-medium text-sm">
+                                Página Hóspedes
+                                <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setHospedePInput(e.target.value) }} defaultValue={hospedePInput}>
+                                    <option value="0" className="text-black">Sem Visualização</option>
+                                    <option value="1" className="text-black">Apenas Visualização</option>
+                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                </select>
+                            </label>
+                            <label className="flex flex-col text-zinc-600 font-medium text-sm">
+                                Página Reserva
+                                <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setReservaPInput(e.target.value) }} defaultValue={reservaPInput}>
+                                    <option value="0" className="text-black">Sem Visualização</option>
+                                    <option value="1" className="text-black">Apenas Visualização</option>
+                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                </select>
+                            </label>
+                            <label className="flex flex-col text-zinc-600 font-medium text-sm">
+                                Página Financeiro
+                                <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setFinanceiroPInput(e.target.value) }} defaultValue={financeiroPInput}>
+                                    <option value="0" className="text-black">Sem Visualização</option>
+                                    <option value="1" className="text-black">Apenas Visualização</option>
+                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                </select>
+                            </label>
+                            <label className="flex flex-col text-zinc-600 font-medium text-sm">
+                                Página Acomodações
+                                <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setAcomodacaoPInput(e.target.value) }} defaultValue={acomodacaoPInput}>
+                                    <option value="0" className="text-black">Sem Visualização</option>
+                                    <option value="1" className="text-black">Apenas Visualização</option>
+                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                </select>
+                            </label>
+                            <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
+                                onClick={() => {
+                                    if (dataToken.id) {
+                                        editarUsuario(idEdit || 0,
+                                            {
+                                                nome: nomeInput,
+                                                permissao: {
+                                                    dashboard: Number(dashboardPInput),
+                                                    reserva: Number(reservaPInput),
+                                                    acomodacoes: Number(acomodacaoPInput),
+                                                    hospede: Number(hospedePInput),
+                                                    financeiro: Number(financeiroPInput),
+                                                    config: 0
+                                                },
+                                            })
+                                    }
+                                }}>Editar usuário</button>
+                        </section>
+                    </form>
+                </div>}
         </div >
     );
 }
