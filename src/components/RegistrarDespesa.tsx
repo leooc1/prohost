@@ -27,10 +27,10 @@ interface CategoriaFinanceiro {
 }
 
 
-export default function RegistrarDespesa({ close, saas, despesa }: {
+export default function RegistrarDespesa({ close, saas, despesa, idNotify }: {
     close: () => void, saas: string, despesa?: null | {
         acomodacao: {
-            id: number | null;
+            id: string | null;
         };
         categoria_financeiro: {
             id: number | string;
@@ -55,7 +55,7 @@ export default function RegistrarDespesa({ close, saas, despesa }: {
         tipo_despesa: string;
         recebedor: string;
         obs: string;
-    }
+    }, idNotify?: string | null
 }) {
     const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
@@ -83,6 +83,12 @@ export default function RegistrarDespesa({ close, saas, despesa }: {
             })
             .catch(err => console.log(err))
     }
+
+    async function getAll() {
+        await getAcomodacoes()
+        await getCategorias()
+        setLoad(true)
+    }
     async function create(pbody: any) {
         const mesesRecorrencia = document.getElementById('meses-recorrencia') as HTMLSelectElement
         await fetch(`${apiURL}/movimentacao/`, {
@@ -97,10 +103,11 @@ export default function RegistrarDespesa({ close, saas, despesa }: {
                 if (data.id) {
                     alert('CRIADO!')
                     if (recorrencia) {
+                        const recorrencia = Number(mesesRecorrencia.value) > 0 ? Number(mesesRecorrencia.value) : 1
                         createRecorrencia({
                             despesa: data.id,
-                            meses_recorrencia: Number(mesesRecorrencia.value),
-                            data: new Date(new Date(data.data).setMonth(new Date(data.data).getMonth() + Number(mesesRecorrencia.value))).toISOString().split('T')[0]
+                            meses_recorrencia: recorrencia,
+                            data: new Date(new Date(data.data).setMonth(new Date(data.data).getMonth() + recorrencia)).toISOString().split('T')[0]
                         })
                     } else
                         location.reload()
@@ -125,20 +132,31 @@ export default function RegistrarDespesa({ close, saas, despesa }: {
             .catch(err => console.log(err))
     }
 
-    const [recorrencia, setRecorrencia] = useState<boolean>(false)
+    const [recorrencia, setRecorrencia] = useState<boolean>(despesa ? true : false)
+    const [load, setLoad] = useState<boolean>(false)
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
     const [categoriaf, setCategoriaF] = useState<CategoriaFinanceiro[]>([])
     const [err, setErr] = useState<[boolean, boolean, boolean, boolean, boolean]>([false, false, false, false, false])
 
+    async function deleteRecorrencia(id: number, pbody: any) {
+        await fetch(`${apiURL}/recorrencia/${id}`, {
+            method: 'DELETE',
+        })
+            .then(data => data.json())
+            .then(async (data) => {
+                if (data.affected) {
+                    await create(pbody)
+                }
+            })
+            .catch(err => console.log(err))
+    }
     useEffect(() => {
-        getAcomodacoes()
-        getCategorias()
+        getAll()
     }, [dataToken])
-    console.log(despesa)
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black fixed top-0 right-0 bg-opacity-20" onClick={close}></div>
-            <form onSubmit={(e) => { e.preventDefault() }} className="flex rounded-md flex-col absolute min-w-80 max-h-screen overflow-scroll scroll-default px-4 pb-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white pt-2">
+            {load && <form onSubmit={(e) => { e.preventDefault() }} className="flex rounded-md flex-col absolute min-w-80 max-h-screen overflow-scroll scroll-default px-4 pb-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white pt-2">
                 <h5 className="font-semibold text-2xl mb-2">Registrar Despesa</h5>
                 <label htmlFor="tipo-despesa" className="flex flex-col">
                     <span className="text-zinc-500 font-medium mb-1 text-sm">Tipo de Despesa<span className='text-red-500 font-bold'> *</span></span>
@@ -154,7 +172,7 @@ export default function RegistrarDespesa({ close, saas, despesa }: {
                     <span className={`text-zinc-500 font-medium`}>Categoria<span className='text-red-500 font-bold'> *</span></span>
                     <div className="mt-2 flex gap-2 flex-wrap">
                         <select name="categoria" id="categoria"
-                            className={`${err[1] ? 'border-red-500' : 'border-zinc-300'} font-medium border rounded-md px-2 py-1 outline-none`} style={{ color: categoria[1] }} defaultValue={categoria[0]}
+                            className={`${err[1] ? 'border-red-500' : 'border-zinc-300'} font-medium border rounded-md px-2 py-1 outline-none`} style={{ color: categoria[1] }} defaultValue={despesa?.categoria_financeiro.id}
                             onChange={(e) => {
                                 const cat = categoriaf.find((c) => String(c.id) === e.target.value);
                                 if (cat) {
@@ -179,7 +197,7 @@ export default function RegistrarDespesa({ close, saas, despesa }: {
                     <div className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-2 text-sm">Despesa recorrente?</span>
                         <label className="switch">
-                            <input type="checkbox" id="recorrencia" onChange={(e) => { setRecorrencia(e.target.checked) }} defaultChecked={false} />
+                            <input type="checkbox" id="recorrencia" onChange={(e) => { setRecorrencia(e.target.checked) }} defaultChecked={despesa ? true : false} />
                             <div className="slider">
                                 <div className="circle">
                                     <svg className="cross" viewBox="0 0 365.696 365.696" y="0" x="0" height="6" width="6" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -200,7 +218,7 @@ export default function RegistrarDespesa({ close, saas, despesa }: {
                         <span className="text-zinc-500 font-medium mb-2 text-sm">A cada</span>
                         <input type="number" name="meses-recorrencia" id="meses-recorrencia"
                             className={`border border-zinc-300 rounded-md px-2 py-1 outline-none w-12`} placeholder="1" />
-                        <span className="text-zinc-500 font-medium mb-2 text-sm">mês/meses</span>
+                        <span className="text-zinc-500 font-medium mb-2 text-sm">meses</span>
                     </div>}
                 </section>
                 <div className="grid gap-4 grid-cols-2">
@@ -213,9 +231,9 @@ export default function RegistrarDespesa({ close, saas, despesa }: {
                         <input placeholder="Ex: Empresa de Refrigeração" type="text" name="recebedor" id="recebedor" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" defaultValue={despesa?.recebedor} />
                     </label>
                 </div>
-                <label htmlFor="acomodacaoReceita" className={`flex flex-col ${tipoDespesa == 'Despesas do Negócio' ? 'hidden' : null}`}>
+                <label htmlFor="acomodacaoReceita" className={`flex flex-col ${(tipoDespesa == 'Despesas do Negócio') || despesa?.tipo_despesa == 'Despesas do Negócio' ? 'hidden' : null}`}>
                     <span className="text-zinc-500 font-medium mb-1 text-sm">Acomodação (opcional)</span>
-                    <select name="acomodacaoReceita" id="acomodacaoReceita" className="border border-zinc-300 rounded-md text-zinc-500 px-2 py-1 outline-none">
+                    <select name="acomodacaoReceita" id="acomodacaoReceita" className="border border-zinc-300 rounded-md text-zinc-500 px-2 py-1 outline-none" defaultValue={String(despesa?.acomodacao?.id)}>
                         <option value="" selected disabled className="hidden">Selecione uma acomodação</option>
                         <option value="null"></option>
                         {acomodacao?.length > 0 &&
@@ -225,14 +243,14 @@ export default function RegistrarDespesa({ close, saas, despesa }: {
                 <div className="grid gap-3 items-center" style={{ gridTemplateColumns: '1fr 1fr 0.3fr' }}>
                     <label htmlFor="data" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Data<span className='text-red-500 font-bold'> *</span></span>
-                        <input placeholder="dd/mm/aaaa" type="date" name="data" id="data" className={`border ${err[3] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none`} defaultValue={despesa?.data}/>
+                        <input placeholder="dd/mm/aaaa" type="date" name="data" id="data" className={`border ${err[3] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none`} defaultValue={despesa?.data} />
                     </label>
                     <label htmlFor="valor" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Valor<span className='text-red-500 font-bold'> *</span></span>
                         <input
                             onChange={(e) => {
                                 if (e.target.value.replace(/[.,]/gm, '').length <= 3)
-                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})/gm, '$1,$2')
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1,$2')
                                 else if (e.target.value.replace(/[.,]/gm, '').length <= 4)
                                     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{2})/gm, '$1,$2')
                                 else if (e.target.value.replace(/[.,]/gm, '').length <= 5)
@@ -276,7 +294,7 @@ export default function RegistrarDespesa({ close, saas, despesa }: {
                 </div>
                 <label htmlFor="observacao" className="flex flex-col">
                     <span className="text-zinc-500 font-medium mb-1 text-sm">Observação</span>
-                    <input placeholder="Opcional" type="text" name="observacao" id="observacao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" defaultValue={despesa?.obs}/>
+                    <input placeholder="Opcional" type="text" name="observacao" id="observacao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" defaultValue={despesa?.obs} />
                 </label>
                 <section className="flex gap-3 justify-end mt-2">
                     <button className="px-3 py-2 border border-zinc-300 rounded-lg" onClick={close}>Cancelar</button>
@@ -295,42 +313,72 @@ export default function RegistrarDespesa({ close, saas, despesa }: {
                             let vGestor: number = 0
                             if (acomodacaoInput.value != 'null' && acomodacaoInput.value != '' && acomodacao.filter(e => e.id == Number(acomodacaoInput.value))[0].comissao) {
                                 const comissao = acomodacao.filter(a => a.id == Number(acomodacaoInput.value))[0].comissao
-                                vProprietario = ((100 - comissao) / 100) * Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
-                                vGestor = (comissao / 100) * Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
+                                vProprietario = ((100 - comissao) / 100) * Number(valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2'))
+                                vGestor = (comissao / 100) * Number(valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2'))
                             }
                             else {
-                                vProprietario = Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
-                                vGestor = Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
+                                vProprietario = Number(valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2'))
+                                vGestor = Number(valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2'))
                             }
-                            if ((Boolean(categoriaInput.value.length > 0) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && tipoDespesa.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) > 0)) {
-                                await create({
-                                    "acomodacao": {
-                                        "id": tipoDespesa.value == 'Despesas do Negócio' ? null : Number(acomodacaoInput.value) || null
-                                    },
-                                    "categoria_financeiro": {
-                                        "id": categoriaInput.value
-                                    },
-                                    "data": dataInput.value,
-                                    "canal_reserva": {
-                                        "id": null
-                                    },
-                                    "nome": descricaoInput.value,
-                                    "saas": {
-                                        "id": saas
-                                    },
-                                    "valor": Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
-                                    "valor_liq": Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
-                                    "valor_prop": vProprietario,
-                                    "valor_gestor": vGestor,
-                                    "reserva": {
-                                        "id": null
-                                    },
-                                    "pago": pago.checked,
-                                    "receita": false,
-                                    "tipo_despesa": tipoDespesa.value,
-                                    "recebedor": recebedor.value,
-                                    "obs": observacaoInput.value
-                                })
+                            if ((Boolean(categoriaInput.value.length > 0) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && tipoDespesa.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2')) > 0)) {
+                                if (idNotify)
+                                    await deleteRecorrencia(Number(idNotify), {
+                                        "acomodacao": {
+                                            "id": tipoDespesa.value == 'Despesas do Negócio' ? null : Number(acomodacaoInput.value) || null
+                                        },
+                                        "categoria_financeiro": {
+                                            "id": categoriaInput.value
+                                        },
+                                        "data": dataInput.value,
+                                        "canal_reserva": {
+                                            "id": null
+                                        },
+                                        "nome": descricaoInput.value,
+                                        "saas": {
+                                            "id": saas
+                                        },
+                                        "valor": (valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2')),
+                                        "valor_liq": (valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2')),
+                                        "valor_prop": vProprietario,
+                                        "valor_gestor": vGestor,
+                                        "reserva": {
+                                            "id": null
+                                        },
+                                        "pago": pago.checked,
+                                        "receita": false,
+                                        "tipo_despesa": tipoDespesa.value,
+                                        "recebedor": recebedor.value,
+                                        "obs": observacaoInput.value
+                                    })
+                                else
+                                    await create({
+                                        "acomodacao": {
+                                            "id": tipoDespesa.value == 'Despesas do Negócio' ? null : Number(acomodacaoInput.value) || null
+                                        },
+                                        "categoria_financeiro": {
+                                            "id": categoriaInput.value
+                                        },
+                                        "data": dataInput.value,
+                                        "canal_reserva": {
+                                            "id": null
+                                        },
+                                        "nome": descricaoInput.value,
+                                        "saas": {
+                                            "id": saas
+                                        },
+                                        "valor": (valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2')),
+                                        "valor_liq": (valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2')),
+                                        "valor_prop": vProprietario,
+                                        "valor_gestor": vGestor,
+                                        "reserva": {
+                                            "id": null
+                                        },
+                                        "pago": pago.checked,
+                                        "receita": false,
+                                        "tipo_despesa": tipoDespesa.value,
+                                        "recebedor": recebedor.value,
+                                        "obs": observacaoInput.value
+                                    })
                             }
                             else {
                                 let error = err
@@ -370,7 +418,7 @@ export default function RegistrarDespesa({ close, saas, despesa }: {
                         }}
                     >Registrar Movimentação</button>
                 </section>
-            </form>
+            </form>}
         </div>
     )
 }

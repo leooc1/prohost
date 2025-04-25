@@ -457,7 +457,7 @@ export default function CadastrarCategoria({ close, permissao }: { close: () => 
                                     "editavel": true,
                                     "receita": !mov,
                                     "nome": nome.value,
-                                    "tipo_despesa": (tipoDespesa?.value != 'null') ? tipoDespesa.value : null,
+                                    "tipo_despesa": (tipoDespesa && tipoDespesa?.value != 'null') ? tipoDespesa.value : null,
                                     "saas": {
                                         "id": dataToken.id
                                     }
