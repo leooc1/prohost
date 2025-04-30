@@ -139,18 +139,18 @@ export default function EditarMovimentacao(props: propsEditar) {
                     <section>
                         <span className="text-zinc-500 font-medium">Categoria</span>
                         <div className="mt-2 flex gap-2 flex-wrap">
-                        <select name="categoria" id="categoria"
-                            className={`border-zinc-300 font-medium border rounded-md px-2 py-1 outline-none`} /* style={{ color: categoria[1] }}  */defaultValue={String(props.categoria)}>
-                            <option value="" className="hidden" disabled selected></option>
-                            {categoriaf.length > 0 &&
-                                categoriaf.map(cat =>
-                                    <option value={String(cat.id)} id={String(cat.id)}
-                                        style={{ color: cat.cor != '#FFFFFF' ? cat.cor : '#000000' }}>
-                                        {cat.nome}
-                                    </option>
-                                )}
-                        </select>
-                    </div>
+                            <select name="categoria" id="categoria"
+                                className={`border-zinc-300 font-medium border rounded-md px-2 py-1 outline-none`} /* style={{ color: categoria[1] }}  */ defaultValue={String(props.categoria)}>
+                                <option value="" className="hidden" disabled selected></option>
+                                {categoriaf.length > 0 &&
+                                    categoriaf.map(cat =>
+                                        <option value={String(cat.id)} id={String(cat.id)}
+                                            style={{ color: cat.cor != '#FFFFFF' ? cat.cor : '#000000' }}>
+                                            {cat.nome}
+                                        </option>
+                                    )}
+                            </select>
+                        </div>
                     </section>
                     <div className="grid gap-4 grid-cols-2">
                         <label htmlFor="descricao" className="flex flex-col">
@@ -180,9 +180,26 @@ export default function EditarMovimentacao(props: propsEditar) {
                             <span className="text-zinc-500 font-medium mb-1 text-sm">Valor<span className='text-red-500 font-bold'> *</span></span>
                             <input
                                 onChange={(e) => {
-                                    e.target.value = Number(e.target.value).toFixed(2)
+                                    if (e.target.value.replace(/[.,]/gm, '').length <= 3)
+                                        e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1,$2')
+                                    else if (e.target.value.replace(/[.,]/gm, '').length <= 4)
+                                        e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{2})/gm, '$1,$2')
+                                    else if (e.target.value.replace(/[.,]/gm, '').length <= 5)
+                                        e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{2})/gm, '$1,$2')
+                                    else if (e.target.value.replace(/[.,]/gm, '').length <= 6)
+                                        e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                    else if (e.target.value.replace(/[.,]/gm, '').length <= 7)
+                                        e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                    else if (e.target.value.replace(/[.,]/gm, '').length <= 8)
+                                        e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                    else if (e.target.value.replace(/[.,]/gm, '').length <= 9)
+                                        e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                    else if (e.target.value.replace(/[.,]/gm, '').length <= 10)
+                                        e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                    else if (e.target.value.replace(/[.,]/gm, '').length <= 11)
+                                        e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
                                 }}
-                                type="number" step={0.01} name="valor" placeholder="R$" id="valor" className={`border ${err[2] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none w-full`} defaultValue={props.valor || ''} />
+                                type="text" name="valor" placeholder="R$" id="valor" className={`border ${err[2] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none w-full`} defaultValue={props.valor || ''} />
                         </label>
                         <div className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-2 text-sm">Pago?</span>
@@ -228,14 +245,14 @@ export default function EditarMovimentacao(props: propsEditar) {
                                 let vGestor: number = 0
                                 if (acomodacaoInput.value != 'null' && acomodacaoInput.value != '' && acomodacao.filter(e => e.id == Number(acomodacaoInput.value))[0].comissao) {
                                     const comissao = acomodacao.filter(a => a.id == Number(acomodacaoInput.value))[0].comissao
-                                    vProprietario = ((100 - comissao) / 100) * Number(valorInput.value)
-                                    vGestor = (comissao / 100) * Number(valorInput.value)
+                                    vProprietario = ((100 - comissao) / 100) * Number(valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2'))
+                                    vGestor = (comissao / 100) * Number(valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2'))
                                 }
                                 else {
-                                    vProprietario = Number(valorInput.value)
-                                    vGestor = Number(valorInput.value)
+                                    vProprietario = Number(valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2'))
+                                    vGestor = Number(valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2'))
                                 }
-                                if ((Boolean(categoriaInput.value.length) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value) > 0)) {
+                                if ((Boolean(categoriaInput.value.length) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2')) > 0)) {
                                     await editar({
                                         "id": props.id,
                                         "acomodacao": {
@@ -252,8 +269,8 @@ export default function EditarMovimentacao(props: propsEditar) {
                                         "saas": {
                                             "id": props.saas
                                         },
-                                        "valor": Number(valorInput.value),
-                                        "valor_liq": Number(valorInput.value),
+                                        "valor": Number(valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2')),
+                                        "valor_liq": Number(valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2')),
                                         "valor_prop": vProprietario,
                                         "valor_gestor": vGestor,
                                         "reserva": {

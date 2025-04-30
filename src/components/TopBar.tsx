@@ -54,7 +54,6 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
         })
             .then(data => data.json())
             .then((data: []) => {
-                console.log(data)
                 setRecorrencia(data)
             })
             .catch(err => console.log(err))
@@ -95,13 +94,13 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
                             <table className="w-full border-collapse">
                                 <thead>
                                     <tr className="text-center border-b columns-5">
-                                        <th colSpan={5}>SUAS NOVAS DESPESAS RECORRENTES</th>
+                                        <th colSpan={5}>SUAS PRÓXIMAS DESPESAS RECORRENTES</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {recorrencia.map(r => {
                                         const data = new Date(r.data);
-                                        const dataFormatada = `${data.getDate().toString().padStart(2, '0')}/${(data.getMonth() + 1).toString().padStart(2, '0')}/${data.getFullYear()}`;
+                                        const dataFormatada = `${data.getDate().toString().padStart(2, '0')}/${(data.getMonth() + 1).toString().padStart(2, '0')}`;
 
                                         return (
                                             <tr key={r.id} className="border-b">
