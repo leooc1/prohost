@@ -52,6 +52,21 @@ export default function Config() {
         return diferenca;
     }
 
+    async function excluir(idUsers: number) {
+        await fetch(`${apiURL}/users/${idUsers}`,
+            { method: 'DELETE' }
+        )
+            .then(data => data.json())
+            .then(data => {
+                if (data.affected == 1) {
+                    alert('Excluído!')
+                    location.reload()
+                }
+            })
+            .catch(err => console.log(err))
+
+    }
+
     async function criarUsuario(body: any) {
         await fetch(`${apiURL}/users`, {
             method: 'POST',
@@ -334,8 +349,15 @@ export default function Config() {
                                 Nome: {u.nome}<br />
                                 Email: {u.email}
                                 <div
-                                    className="group relative">
-                                    <button onClick={() => { console.log() }}
+                                    className="group relative w-4/6 flex items-center justify-end">
+                                    <button onClick={(ex) => {
+                                                if (!(permissao >= 4)) { return }
+                                                let confirmDelete = false
+                                                ex.stopPropagation()
+                                                confirmDelete = confirm("Deseja deletar este usuário?")
+                                                if (confirmDelete)
+                                                    excluir(Number(u.id))
+                                            }}
                                         className="bg-red-200 w-10 h-10 flex justify-center items-center rounded-lg hover:translate-y-1 hover:duration-300 justify-self-end"
                                     >
                                         <svg className="h-fit w-5 m-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ED3E44"><path d="M4 8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8ZM7 5V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V5H22V7H2V5H7ZM9 4V5H15V4H9ZM9 12V18H11V12H9ZM13 12V18H15V12H13Z"></path></svg>
