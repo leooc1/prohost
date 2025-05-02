@@ -333,9 +333,9 @@ export default function Config() {
                 <hr />
                 <section className="top-full bg-white p-2 gap-4 rounded-xl">
                     <h5 className="font-semibold text-2xl mb-2">Usuários criados</h5>
-                    <ul className="flex flex-col gap-1">
+                    <ul className="flex flex-col gap-1 mb-20">
                         {users.map(u =>
-                            <li className="border-y border-zinc-400 px-2 py-1 cursor-pointer flex" onClick={() => {
+                            <li className="border-y border-zinc-400 px-2 py-1 cursor-pointer flex justify-between" onClick={() => {
                                 setEdicao(true)
                                 setIdEdit(Number(u.id))
                                 setNomeInput(u.nome)
@@ -349,7 +349,7 @@ export default function Config() {
                                 Nome: {u.nome}<br />
                                 Email: {u.email}
                                 <div
-                                    className="group relative w-4/6 flex items-center justify-end">
+                                    className="group relative flex items-center mr-20">
                                     <button onClick={(ex) => {
                                                 if (!(permissao >= 4)) { return }
                                                 let confirmDelete = false
