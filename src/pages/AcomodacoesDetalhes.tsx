@@ -350,7 +350,7 @@ export default function AcomodacoesDetalhes() {
 
     return (
         loaded ?
-            <div className="w-full px-8">
+            <div className="w-main px-8">
                 <div className="bg-white w-full p-5">
                     <a href="/acomodacoes" className="font-medium hover:text-blue-500">←  Voltar</a>
                     <div className="flex my-5">

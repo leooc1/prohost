@@ -105,7 +105,7 @@ export default function Acomodacoes() {
 
     return (
         loaded ?
-            <div className="w-full px-8">
+            <div className="w-main px-8">
                 {permissao == 0 && <SemPermissao />}
                 <div className='mb-7 pt-2 flex justify-between gap-5 flex-wrap'>
                     <h3 className="text-3xl font-semibold">Acomodações</h3>
@@ -127,7 +127,7 @@ export default function Acomodacoes() {
                     <section className="pt-3">
                         <p className="text-2xl font-medium">Próprias</p>
                         <ul className="border border-zinc-300 w-full mt-5 rounded-md pt-px pb-1 px-px flex overflow-x-scroll gap-10">
-                            {proprio.map((e) =>
+                            {[...proprio, ...Array(5).fill(proprio[0])].map((e) =>
                                 <li className="bg-white min-w-52 min-h-56 border border-zinc-200 rounded-md p-5 cursor-pointer"
                                     onClick={() => location.assign(`/acomodacoes/${e.id}`)}>
                                     <img src={e.foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'} className="object-cover h-24 w-48 rounded-md" />
