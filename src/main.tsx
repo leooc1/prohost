@@ -22,6 +22,7 @@ import JivoChat from './JivoChat.tsx'
 import Config from './pages/Config.tsx'
 import FeedBacks from './pages/FeedBacks.tsx'
 import Relatorio from './pages/Relatorio.tsx'
+import MinhaConta from './pages/MinhaConta.tsx'
 
 const router = createBrowserRouter([
   {
@@ -60,6 +61,10 @@ const router = createBrowserRouter([
       {
         path: "/feedback",
         element: <FeedBacks />,
+      },
+      {
+        path: "/minha-conta",
+        element: <MinhaConta />,
       },
     ],
   },
