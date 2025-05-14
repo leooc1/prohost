@@ -1,5 +1,6 @@
 import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { SideBarContext } from "../contexts/SideBarMenuContext"
+import Notify from "./notify/Notify"
 interface Acomodacao {
     id: number
     tipo: string
@@ -62,6 +63,8 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify }: {
 
     const [tipoDespesa, setTipoDespesa] = useState('')
     const [categoria, setCategoria] = useState(['', '#000000'])
+    const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
+    const [showNotify, setShowNotify] = useState<boolean>(false)
 
     async function getAcomodacoes() {
         await fetch(`${apiURL}/acomodacao/` + dataToken.id, {
@@ -101,7 +104,11 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify }: {
             .then(data => data.json())
             .then((data) => {
                 if (data.id) {
-                    alert('CRIADO!')
+                    setNotify({ type: 1, text: 'Criado!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
                     if (recorrencia) {
                         const recorrencia = Number(mesesRecorrencia.value) > 0 ? Number(mesesRecorrencia.value) : 1
                         createRecorrencia({
@@ -156,6 +163,7 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify }: {
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black fixed top-0 right-0 bg-opacity-20" onClick={close}></div>
+            {showNotify && <Notify type={notify.type} text={notify.text} />}
             {load && <form onSubmit={(e) => { e.preventDefault() }} className="flex rounded-md flex-col absolute min-w-80 max-h-screen overflow-scroll scroll-default px-4 pb-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white pt-2">
                 <h5 className="font-semibold text-2xl mb-2">Registrar Despesa</h5>
                 <label htmlFor="tipo-despesa" className="flex flex-col">
@@ -413,7 +421,11 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify }: {
                                     error = (error.map((e, i) => i === 4 ? false : e) as [boolean, boolean, boolean, boolean, boolean]);
                                 }
                                 setErr(error)
-                                alert('Preenchimento incorreto')
+                                setNotify({ type: 2, text: 'Preenchimento incorreto!' })
+                                setShowNotify(true)
+                                setTimeout(() => {
+                                    setShowNotify(false);
+                                }, 3000)
                             }
                         }}
                     >Registrar Movimentação</button>

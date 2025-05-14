@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import Loader from "../components/Loader"
 import { SideBarContext } from "../contexts/SideBarMenuContext"
+import Notify from "../components/notify/Notify"
 
 export default function MinhaConta() {
     const apiURL = 'https://api.prohost.net.br'
@@ -14,6 +15,8 @@ export default function MinhaConta() {
     const [user, setUser] = useState({ nome: '', email: '' })
     const [nome, setNome] = useState('')
     const [email, setEmail] = useState('')
+    const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
+    const [showNotify, setShowNotify] = useState<boolean>(false)
     function Perfil(nome: string) {
         const array = nome.split(' ')
         const pnome = array[0][0]
@@ -47,7 +50,14 @@ export default function MinhaConta() {
         })
             .then(data => data.json())
             .then((data) => {
-                alert(data)
+                if (data == 'Senha atual está incorreta')
+                    setNotify({ type: 2, text: data + '!' })
+                else
+                    setNotify({ type: 1, text: data + '!' })
+                setShowNotify(true)
+                setTimeout(() => {
+                    setShowNotify(false);
+                }, 3000)
             })
             .catch(err => console.log(err))
     }
@@ -61,6 +71,7 @@ export default function MinhaConta() {
                 <div className='mb-7 pt-2 flex justify-between gap-5 flex-wrap'>
                     <h3 className="text-3xl font-semibold">Minha conta</h3>
                 </div>
+                {showNotify && <Notify type={notify.type} text={notify.text} />}
                 <section className="w-full flex justify-center">
                     <form onSubmit={(e) => { e.preventDefault() }}
                         style={{ width: '-webkit-fill-available' }}
@@ -70,7 +81,7 @@ export default function MinhaConta() {
                         </div>
 
                         <label htmlFor="nome" className="flex flex-col">
-                            <span className="text-zinc-500 font-medium mb-1 text-sm flex items-center gap-10">Nome
+                            <span className="text-zinc-500 font-medium mb-1 text-sm flex items-center gap-4 ml-6">
                                 <label
                                     className="relative text-zinc-500 flex cursor-pointer items-center justify-center gap-[1em]"
                                     htmlFor="check-name"
@@ -100,13 +111,14 @@ export default function MinhaConta() {
                                         ></path>
                                     </svg>
                                 </label>
+                                Nome
                             </span>
                             <input type="text" name="nome" id="nome" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" autoComplete="off" defaultValue={user.nome}
                                 disabled={!fieldForm[0]} value={!fieldForm[0] ? user.nome : nome}
                                 onChange={(e) => { setNome(e.target.value) }} />
                         </label>
                         <label htmlFor="email" className="flex flex-col">
-                            <span className="text-zinc-500 font-medium mb-1 text-sm flex items-center gap-10">Email
+                            <span className="text-zinc-500 font-medium mb-1 text-sm flex items-center gap-4 ml-6">
                                 <label
                                     className="relative text-zinc-500 flex cursor-pointer items-center justify-center gap-[1em]"
                                     htmlFor="check-email"
@@ -135,17 +147,18 @@ export default function MinhaConta() {
                                         ></path>
                                     </svg>
                                 </label>
+                                Email
                             </span>
                             <input type="email" name="email" id="email" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" autoComplete="off" defaultValue={user.email} disabled={!fieldForm[1]} value={!fieldForm[1] ? user.email : email}
                                 onChange={(e) => { setEmail(e.target.value) }} />
                         </label>
                         {updateSenha && <label htmlFor="senha" className="flex flex-col">
-                            <span className="text-zinc-500 font-medium mb-1 text-sm flex items-center gap-10">Senha atual
+                            <span className="text-zinc-500 font-medium mb-1 text-sm flex items-center">Senha atual
                             </span>
                             <input type="password" name="senha" id="senha" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" autoComplete="off" placeholder="••••••••" />
                         </label>}
                         <label htmlFor="nova-senha" className="flex flex-col">
-                            <span className="text-zinc-500 font-medium mb-1 text-sm flex items-center gap-10">Nova senha
+                            <span className="text-zinc-500 font-medium mb-1 text-sm flex items-center gap-4 ml-6">
                                 <label
                                     className="relative text-zinc-500 flex cursor-pointer items-center justify-center gap-[1em]"
                                     htmlFor="check-senha"
@@ -174,6 +187,7 @@ export default function MinhaConta() {
                                         ></path>
                                     </svg>
                                 </label>
+                                Nova senha
                             </span>
                             <input onChange={(e) => {
                                 if (e.target.value.length > 0)
@@ -192,11 +206,21 @@ export default function MinhaConta() {
                                     if ((fieldForm[0] && !(nome.length > 0))
                                         || (fieldForm[1] && !(email.length > 0))
                                         || (fieldForm[2] && (!(senhaAtual.value.length > 0) || !(senhaNova.value.length > 0)))) {
-                                        alert('dados incorretos para edição do perfil')
+                                        setNotify({ type: 2, text: 'Dados incorretos para edição do perfil!' })
+                                        setShowNotify(true)
+                                        setTimeout(() => {
+                                            setShowNotify(false);
+                                        }, 3000)
                                     }
                                     else if (!fieldForm[0] &&
                                         !fieldForm[1] &&
-                                        !fieldForm[2]) { alert('nao há nada para ser editado') }
+                                        !fieldForm[2]) {
+                                        setNotify({ type: 2, text: 'Não há nada para ser editado!' })
+                                        setShowNotify(true)
+                                        setTimeout(() => {
+                                            setShowNotify(false);
+                                        }, 3000)
+                                    }
                                     else {
                                         updateUser({
                                             nome,

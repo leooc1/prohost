@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { SideBarContext } from '../contexts/SideBarMenuContext'
+import Notify from './notify/Notify'
 interface Canais {
     id?: number
     cor: string
@@ -14,6 +15,8 @@ export default function CanaisDeReserva({ close, permissao }: { close: () => voi
     const { dataToken } = useContext(SideBarContext)
     const [canais, setCanais] = useState<Canais[]>([])
     const [color, setColor] = useState('#bdc3c7')
+    const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
+    const [showNotify, setShowNotify] = useState<boolean>(false)
 
     async function getCanais() {
         await fetch(`${apiURL}/canal_reserva/` + dataToken.id, {
@@ -55,7 +58,11 @@ export default function CanaisDeReserva({ close, permissao }: { close: () => voi
             .then((data: Canais) => {
                 if (data.id) {
                     const nome = document.getElementById('nome') as HTMLInputElement
-                    alert('CRIADO!')
+                    setNotify({ type: 1, text: 'Criado!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
                     setColor('#bdc3c7')
                     nome.value = ''
                     getCanais()
@@ -71,7 +78,11 @@ export default function CanaisDeReserva({ close, permissao }: { close: () => voi
             .then(data => data.json())
             .then((data) => {
                 if (data.affected) {
-                    alert('DELETADO!')
+                    setNotify({ type: 1, text: 'Excluído!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
                     close()
                 }
             })
@@ -85,6 +96,7 @@ export default function CanaisDeReserva({ close, permissao }: { close: () => voi
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={close}> </div>
+            {showNotify && <Notify type={notify.type} text={notify.text} />}
             <section className="flex flex-col absolute min-w-80 max-w-[470px] px-4 gap-4 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-md py-4">
                 <section>
                     <h5 className="font-semibold text-2xl mb-2">Canais de Reserva</h5>

@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { SideBarContext } from "../contexts/SideBarMenuContext"
+import Notify from "./notify/Notify"
 interface Acomodacao {
     id: number
     tipo: string
@@ -29,7 +30,8 @@ interface CategoriaFinanceiro {
 export default function RegistrarReceita({ close, saas }: { close: () => void, saas: string }) {
     const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
-
+    const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
+    const [showNotify, setShowNotify] = useState<boolean>(false)
     const [categoria, setCategoria] = useState(['', '#000000'])
     async function getAcomodacoes() {
         await fetch(`${apiURL}/acomodacao/` + dataToken.id, {
@@ -62,9 +64,12 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
             .then(data => data.json())
             .then((data) => {
                 if (data.id) {
-                    alert('CRIADO!')
-                    close()
-                    location.reload()
+                    setNotify({ type: 1, text: 'Criado!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                        location.reload()
+                    }, 3000)
                 }
             })
             .catch(err => console.log(err))
@@ -80,6 +85,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black fixed top-0 right-0 bg-opacity-20" onClick={close}></div>
+            {showNotify && <Notify type={notify.type} text={notify.text} />}
             <form onSubmit={(e) => { e.preventDefault() }} className="flex rounded-md flex-col absolute max-w-96 min-w-80 px-4 pb-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white pt-2">
                 <h5 className="font-semibold text-2xl mb-2">Registrar Receita</h5>
 
@@ -232,7 +238,11 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                                     error = (error.map((e, i) => i === 3 ? false : e) as [boolean, boolean, boolean, boolean]);
                                 }
                                 setErr(error)
-                                alert('Preenchimento incorreto')
+                                setNotify({ type: 2, text: 'Preenchimento incorreto!' })
+                                setShowNotify(true)
+                                setTimeout(() => {
+                                    setShowNotify(false);
+                                }, 3000)
                             }
                         }}
                     >Registrar Movimentação</button>

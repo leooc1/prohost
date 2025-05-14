@@ -48,10 +48,35 @@
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 input[type="number"] {
-  -moz-appearance: textfield; /* Para navegadores Firefox */
+    -moz-appearance: textfield;
+    /* Para navegadores Firefox */
+}
+
+
+.notify {
+    animation: 3s popup ease;
+}
+
+@keyframes popup {
+    0% {
+        opacity: 0%;
+        transform: translateY(20px);
+    }
+
+    30% {
+        opacity: 100%;
+    }
+
+    70% {
+        opacity: 100%;
+    }
+
+    100% {
+        opacity: 0%;
+    }
 }

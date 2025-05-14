@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { SideBarContext } from "../contexts/SideBarMenuContext"
+import Notify from "./notify/Notify"
 
 interface Acomodacao {
     id: number
@@ -68,6 +69,8 @@ export default function NovaReserva({ close }: { close: () => void }) {
     const [hospede, setHospede] = useState<Hospede[]>([])
     const [showTaxaLimpeza, setShowTaxaLimpeza] = useState<[boolean, number]>([false, 0])
     const [showH, setShowH] = useState<Hospede[]>([])
+    const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
+    const [showNotify, setShowNotify] = useState<boolean>(false)
 
     function checkNegativeAndApplyStyle() {
         const total = document.getElementById('tot') as HTMLInputElement
@@ -143,14 +146,25 @@ export default function NovaReserva({ close }: { close: () => void }) {
             .then((data) => {
                 if (data.id) {
                     localStorage.setItem('ph-cld-initial-date', pbody.check_in)
-                    alert('CRIADO!')
-                    close()
-                    location.reload()
+                    setNotify({ type: 1, text: 'Criado!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                        location.reload()
+                    }, 3000)
                 } else if (data.length > 0) {
-                    alert(data)
+                    setNotify({ type: 1, text: data })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
                 }
                 else {
-                    alert("Erro ao cadastrar.")
+                    setNotify({ type: 2, text: 'Erro ao cadastrar!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
                 }
 
             })
@@ -203,6 +217,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={close}></div>
+            {showNotify && <Notify type={notify.type} text={notify.text} />}
             {render &&
                 <form onSubmit={(e) => { e.preventDefault() }} className="flex rounded-md flex-col max-h-screen overflow-scroll scroll-default absolute min-w-80 px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white">
                     <h5 className="font-semibold text-2xl mb-2">Nova Reserva</h5>
@@ -397,24 +412,24 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                 if (taxaLimpeza) {
                                     const calculado = (
                                         (
-                                            (Number(valorBruto.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')) + 
-                                            (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')))) - 
+                                            (Number(valorBruto.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')) +
+                                                (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')))) -
                                             Number(valorComissao.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))
                                         )//valor liquido 
                                         - (
                                             (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))) // limpeza 
-                                            - 
+                                            -
                                             (
-                                                (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))) * 
+                                                (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))) *
                                                 (
-                                                    (Number(valorComissao.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))) / 
-                                                    (Number(valorBruto.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')) + 
-                                                    (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))))
+                                                    (Number(valorComissao.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))) /
+                                                    (Number(valorBruto.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')) +
+                                                        (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))))
                                                 )
                                             )
                                         )
                                     );
-                                
+
                                     valorLiqCalculado = Number(calculado.toFixed(2));
                                 }
                                 // 
@@ -523,7 +538,11 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                         error = (error.map((e, i) => i === 8 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
                                     }
                                     setErr(error)
-                                    alert('Preenchimento incorreto')
+                                    setNotify({ type: 2, text: 'Preenchimento incorreto!' })
+                                    setShowNotify(true)
+                                    setTimeout(() => {
+                                        setShowNotify(false);
+                                    }, 3000)
                                 }
                             }}
                             id="button-cadastrar" className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary">Cadastrar</button>

@@ -1,5 +1,6 @@
 import { useContext } from "react"
 import { SideBarContext } from "../contexts/SideBarMenuContext"
+import Notify from "./notify/Notify"
 
 interface propsContinuidade {
     close: () => void
@@ -36,7 +37,8 @@ interface Reserva {
 export default function NovaContinuidade(props: propsContinuidade) {
     const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
-
+    const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
+    const [showNotify, setShowNotify] = useState<boolean>(false)
     async function createContinuidade(pbody: Reserva) {
         await fetch(`${apiURL}/reserva/`, {
             method: 'POST',
@@ -48,14 +50,25 @@ export default function NovaContinuidade(props: propsContinuidade) {
             .then(data => data.json())
             .then((data) => {
                 if (data.id) {
-                    alert('CRIADO!')
-                    props.close()
-                    location.reload()
+                    setNotify({ type: 1, text: 'Criado!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                        location.reload()
+                    }, 3000)
                 } else if (data.length > 0) {
-                    alert(data)
+                    setNotify({ type: 1, text: data })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
                 }
                 else {
-                    alert("Erro ao cadastrar.")
+                    setNotify({ type: 2, text: 'Erro ao cadastrar!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
                 }
             })
             .catch(err => console.log(err))
@@ -66,6 +79,7 @@ export default function NovaContinuidade(props: propsContinuidade) {
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={props.close}></div>
+            {showNotify && <Notify type={notify.type} text={notify.text} />}
             <form onSubmit={(e) => { e.preventDefault() }} className="flex rounded-md flex-col absolute min-w-80 w-[440px] px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white">
                 <h5 className="font-semibold text-2xl mb-2">Continuidade de Reserva</h5>
 
@@ -159,7 +173,13 @@ export default function NovaContinuidade(props: propsContinuidade) {
                                     "tipo_reserva": "Continuidade",
                                     "continuidade": Number(props.idReserva)
                                 })
-                            else alert('Dados obrigatórios nao estão preenchidos')
+                            else {
+                                setNotify({ type: 2, text: 'Dados obrigatórios não estão preenchidos!' })
+                                setShowNotify(true)
+                                setTimeout(() => {
+                                    setShowNotify(false);
+                                }, 3000)
+                            }
                         }}
                         className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary">Criar continuidade</button>
                 </section>

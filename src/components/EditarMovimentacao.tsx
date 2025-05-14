@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import Loader from "./Loader"
+import Notify from "./notify/Notify"
 interface Acomodacao {
     id: number
     tipo: string
@@ -91,9 +92,12 @@ export default function EditarMovimentacao(props: propsEditar) {
             .then(data => data.json())
             .then((data) => {
                 if (data.affected) {
-                    alert('Atualizado!')
-                    close()
-                    location.reload()
+                    setNotify({ type: 1, text: 'Atualizado!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                        location.reload()
+                    }, 3000)
                 }
 
             })
@@ -106,11 +110,19 @@ export default function EditarMovimentacao(props: propsEditar) {
             .then(data => data.json())
             .then((data) => {
                 if (data.affected) {
-                    alert('Excluído!')
-                    location.reload()
+                    setNotify({ type: 1, text: 'Excluído!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                        location.reload()
+                    }, 3000)
                 }
                 else {
-                    alert('Algo deu errado, tente novamente.')
+                    setNotify({ type: 2, text: 'Algo deu errado, tente novamente.' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
                 }
             })
             .catch(err => console.log(err))
@@ -120,6 +132,8 @@ export default function EditarMovimentacao(props: propsEditar) {
     const [err, setErr] = useState<[boolean, boolean, boolean]>([false, false, false])
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
     const [categoriaf, setCategoriaF] = useState<CategoriaFinanceiro[]>([])
+    const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
+    const [showNotify, setShowNotify] = useState<boolean>(false)
     async function loadAll() {
         await getAcomodacoes()
         await getCategorias()
@@ -134,6 +148,7 @@ export default function EditarMovimentacao(props: propsEditar) {
         loaded ?
             <div className='w-screen h-screen fixed z-10 top-0 right-0'>
                 <div className="w-screen h-screen bg-black fixed top-0 right-0 bg-opacity-20" onClick={props.close}></div>
+                {showNotify && <Notify type={notify.type} text={notify.text} />}
                 <form onSubmit={(e) => { e.preventDefault() }} className="flex rounded-md flex-col absolute min-w-80 px-4 pb-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white pt-2">
                     <h5 className="font-semibold text-2xl mb-2">Editar Movimentação</h5>
                     <section>
@@ -304,7 +319,11 @@ export default function EditarMovimentacao(props: propsEditar) {
                                         error = (error.map((e, i) => i === 2 ? false : e) as [boolean, boolean, boolean]);
                                     }
                                     setErr(error)
-                                    alert('Preenchimento incorreto')
+                                    setNotify({ type: 2, text: 'Preenchimento incorreto!' })
+                                    setShowNotify(true)
+                                    setTimeout(() => {
+                                        setShowNotify(false);
+                                    }, 3000)
                                 }
                             }}
                         >Salvar Alterações</button>

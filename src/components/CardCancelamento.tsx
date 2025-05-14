@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import nomoney from '/no-money.svg'
+import Notify from './notify/Notify'
 
 interface propsCancelamento {
     close: () => void
@@ -11,6 +12,8 @@ interface propsCancelamento {
 export default function CardCancelamento(props: propsCancelamento) {
     const apiURL = 'https://api.prohost.net.br'
     const [possuiTaxa, setPossuiTaxa] = useState<boolean>(false)
+    const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
+    const [showNotify, setShowNotify] = useState<boolean>(false)
 
     async function deleteReserva(id: number) {
         await fetch(`${apiURL}/reserva/${id}`, {
@@ -19,9 +22,12 @@ export default function CardCancelamento(props: propsCancelamento) {
             .then(data => data.json())
             .then((data) => {
                 if (data.affected == 1) {
-                    alert('EXCLUÍDO!')
-                    props.close()
-                    location.reload()
+                    setNotify({ type: 1, text: 'Excluído!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                        location.reload()
+                    }, 3000)
                 }
             })
             .catch(err => console.log(err))
@@ -35,9 +41,12 @@ export default function CardCancelamento(props: propsCancelamento) {
             .then(data => data.json())
             .then((data) => {
                 if (data.affected == 1) {
-                    alert('EXCLUÍDO!')
-                    props.close()
-                    location.reload()
+                    setNotify({ type: 1, text: 'Excluído!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                        location.reload()
+                    }, 3000)
                 }
             })
             .catch(err => console.log(err))
@@ -46,6 +55,7 @@ export default function CardCancelamento(props: propsCancelamento) {
     return (
         <div className='w-screen h-screen fixed z-20 top-0 right-0'>
             <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={props.close}> </div>
+            {showNotify && <Notify type={notify.type} text={notify.text} />}
             <section className="flex flex-col absolute min-w-80 max-w-[470px] px-4 gap-4 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-md py-4">
                 <h5 className="font-semibold text-2xl mb-2 text-center">A reserva possui taxa de cancelamento?</h5>
                 <div className="flex justify-center">

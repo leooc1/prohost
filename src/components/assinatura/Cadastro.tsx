@@ -3,19 +3,20 @@ import { useContext, useState } from "react"
 import { AssinaturaContext } from "../../contexts/AssinaturaContext"
 import termos from '../../../public/termos-de-uso.pdf'
 import politica from '../../../public/politica-de-privacidade.pdf'
+import Notify from "../notify/Notify"
 
 export default function Cadastro() {
     const apiURL = 'https://api.prohost.net.br'
     const { planoDTO } = useContext(AssinaturaContext)
     const [button, setButton] = useState(false)
+    const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
+    const [showNotify, setShowNotify] = useState<boolean>(false)
     const [ruas, setRuas] = useState<{ display_name: string }[]>([])
     const [cidade, setCidade] = useState<string>('')
     const [estado, setEstado] = useState<string>('')
     estado
     const [complemento, setComplemento] = useState<string>('')
-    complemento
     const [bairro, setBairro] = useState<string>('')
-    bairro
     const [maskCpfCnpj, setMaskCpfCnpj] = useState<string>("xxx.xxx.xxx-xx")
     async function buscarCEP(cep: string) {
         await fetch(`https://viacep.com.br/ws/${cep}/json/`, {
@@ -137,7 +138,11 @@ export default function Cadastro() {
                     .then(data => data.json())
                     .then((data) => {
                         if (data.id) {
-                            alert('Criado!')
+                            setNotify({ type: 1, text: 'Criado!' })
+                            setShowNotify(true)
+                            setTimeout(() => {
+                                setShowNotify(false);
+                            }, 3000)
                         }
                     })
                 await fetch(`${apiURL}/assinatura/crypto`, {
@@ -159,7 +164,11 @@ export default function Cadastro() {
                     })
             }
             else {
-                alert('Ops! Algo deu errado, esse email pode já estar sendo usado.')
+                setNotify({ type: 2, text: 'Ops! Algo deu errado, esse email pode já estar sendo usado.' })
+                setShowNotify(true)
+                setTimeout(() => {
+                    setShowNotify(false);
+                }, 3000)
             }
         }
 
@@ -168,6 +177,7 @@ export default function Cadastro() {
 
     return (
         <section className="bg-white flex flex-col justify-center h-full py-20 md:py-0 md:min-w-min">
+            {showNotify && <Notify type={notify.type} text={notify.text} />}
             <h2 className='text-3xl font-semibold mb-5 ml-10'>Registre-se</h2>
             <form action="" onSubmit={(e) => e.preventDefault()} className='mx-10 flex flex-col gap-2'>
                 <label className='w-full text-zinc-500 flex flex-col text-sm gap-2 relative'>

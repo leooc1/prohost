@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
+import Notify from "./notify/Notify";
 
 interface Hospede {
     id?: number;
@@ -17,6 +18,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
     const [email, setEmail] = useState<string | null>()
     const [tel, setTel] = useState<string | null>()
     const [err, setErr] = useState<boolean>(false)
+    const [showNotify, setShowNotify] = useState<boolean>(false)
     async function getHospede() {
         await fetch(`${apiURL}/hospede/${dataToken.id}/${id}`, {
             method: 'GET'
@@ -41,8 +43,11 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
             .then(data => data.json())
             .then((data) => {
                 if (data.affected == 1) {
-                    alert('ATUALIZADO!')
-                    location.reload()
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                        location.reload()
+                    }, 3000)
                 }
             })
             .catch(err => console.log(err))
@@ -56,6 +61,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black top-0 right-0 bg-opacity-20" onClick={close}></div>
+            {showNotify && <Notify type={1} text="Atualizado!" />}
             <form onSubmit={(e) => {
                 e.preventDefault()
                 if (nome.length > 0) {

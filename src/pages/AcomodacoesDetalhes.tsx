@@ -12,6 +12,7 @@ import FaturamentoCanalAc from '../components/chart/FaturamentoCanalAc';
 import FaturamentoDespesas from '../components/chart/FaturamentoDespesas';
 import OcupacaoMedia from '../components/chart/OcupacaoMedia';
 import { SideBarContext } from "../contexts/SideBarMenuContext";
+import Notify from "../components/notify/Notify";
 
 interface Acomodacao {
     id?: number
@@ -85,9 +86,12 @@ export default function AcomodacoesDetalhes() {
     const [sessao, setSessao] = useState(0)
     const [graf, setGraf] = useState(false)
     const { id } = useParams()
-
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
+    const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
+    const [showNotify, setShowNotify] = useState<boolean>(false)
+
     useEffect(() => { document.title = `${acomodacao[0]?.nome} | Prohost` }, [acomodacao])
+
 
     async function getAcomodacao() {
 
@@ -235,8 +239,13 @@ export default function AcomodacoesDetalhes() {
         })
             .then(data => data.json())
             .then((data) => {
-                if (data.affected == 1)
-                    alert('ATUALIZADO!')
+                if (data.affected == 1) {
+                    setNotify({ type: 1, text: 'Atualizado!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
+                }
             })
             .catch(err => console.log(err))
     }
@@ -265,8 +274,19 @@ export default function AcomodacoesDetalhes() {
             .then(data => data.json())
             .then((data) => {
                 if (data.affected == 1) {
-                    desativado ? alert('DESATIVADO!') : alert('ATIVADO!');
-                    close()
+                    if (desativado) {
+                        setNotify({ type: 1, text: 'Desativado!' })
+                        setShowNotify(true)
+                        setTimeout(() => {
+                            setShowNotify(false);
+                        }, 3000)
+                    } else {
+                        setNotify({ type: 1, text: 'Ativado!' })
+                        setShowNotify(true)
+                        setTimeout(() => {
+                            setShowNotify(false);
+                        }, 3000)
+                    }
                     location.assign('/acomodacoes')
                 }
             })
@@ -378,6 +398,7 @@ export default function AcomodacoesDetalhes() {
                             Dados de Acomodação</button>
                     </div>
                 </div>
+                {showNotify && <Notify type={notify.type} text={notify.text} />}
                 {sessao == 0 &&
                     <section className="my-10">
                         <h5 className="font-semibold text-2xl mb-2 px-4 pb-7">Painel de Resultados</h5>

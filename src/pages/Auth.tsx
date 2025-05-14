@@ -1,9 +1,14 @@
 import { useState } from 'react'
 import prohostLogo from '/prohost-logo.png'
+import Notify from '../components/notify/Notify'
 
 
 export default function Auth() {
     const apiURL = 'https://api.prohost.net.br'
+    const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
+    const [showNotify, setShowNotify] = useState<boolean>(false)
+    const [viewPW, setViewPW] = useState(false)
+
     async function logar(login: { email: string, senha: string }) {
         await fetch(`${apiURL}/users/auth`, {
             method: 'POST',
@@ -26,17 +31,20 @@ export default function Auth() {
                     window.location.assign('/')
                 }
                 else {
-                    alert('Dados incorretos!')
+                    setNotify({ type: 2, text: 'Dados incorretos!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
                 }
             })
             .catch(err => console.log(err))
     }
 
-    const [viewPW, setViewPW] = useState(false)
-
     return (
         <div className="flex w-full min-h-screen h-full">
             <main className="w-full min-h-screen h-full relative bg-zinc-100 flex flex-col md:grid md:grid-cols-3">
+                {showNotify && <Notify type={notify.type} text={notify.text} />}
                 <section className="bg-white flex flex-col justify-center h-full py-20 md:py-0">
                     <div className='flex gap-2 ml-10'>
                         <img src={prohostLogo} alt='Logo ProHost' width={32} height={32} />

@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { SideBarContext } from "../contexts/SideBarMenuContext"
+import Notify from "./notify/Notify"
 
 interface Acomodacao {
     id: number
@@ -109,6 +110,8 @@ export default function EditarReserva(props: propsEdicao) {
     const [showTaxaLimpeza, setShowTaxaLimpeza] = useState(false)
     const [hospede, setHospede] = useState<Hospede[]>([])
     const [showH, setShowH] = useState<Hospede[]>([])
+    const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
+    const [showNotify, setShowNotify] = useState<boolean>(false)
 
     function checkNegativeAndApplyStyle() {
         const total = document.getElementById('tot') as HTMLInputElement
@@ -161,13 +164,25 @@ export default function EditarReserva(props: propsEdicao) {
             .then(data => data.json())
             .then((data) => {
                 if (data[0]?.affected == 1) {
-                    alert('Atualizado!')
-                    location.reload()
+                    setNotify({ type: 1, text: 'Atualizado!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                        location.reload()
+                    }, 3000)
                 } else if (data.length > 0) {
-                    alert(data)
+                    setNotify({ type: 1, text: data })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
                 }
                 else {
-                    alert("Erro ao cadastrar.")
+                    setNotify({ type: 2, text: 'Erro ao cadastrar!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
                 }
             })
             .catch(err => console.log(err))
@@ -221,6 +236,7 @@ export default function EditarReserva(props: propsEdicao) {
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={props.close}></div>
+            {showNotify && <Notify type={notify.type} text={notify.text} />}
             {render &&
                 <form onSubmit={(e) => { e.preventDefault() }} className="flex rounded-md flex-col absolute min-w-80 px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white">
                     <h5 className="font-semibold text-2xl mb-2">Editar Reserva</h5>
@@ -402,24 +418,24 @@ export default function EditarReserva(props: propsEdicao) {
                                 if (taxaLimpeza) {
                                     const calculado = (
                                         (
-                                            (Number(valorBruto.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')) + 
-                                            (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')))) - 
+                                            (Number(valorBruto.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')) +
+                                                (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')))) -
                                             Number(valorComissao.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))
                                         )//valor liquido 
                                         - (
                                             (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))) // limpeza 
-                                            - 
+                                            -
                                             (
-                                                (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))) * 
+                                                (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))) *
                                                 (
-                                                    (Number(valorComissao.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))) / 
-                                                    (Number(valorBruto.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')) + 
-                                                    (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))))
+                                                    (Number(valorComissao.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))) /
+                                                    (Number(valorBruto.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')) +
+                                                        (Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2'))))
                                                 )
                                             )
                                         )
                                     );
-                                
+
                                     valorLiqCalculado = Number(calculado.toFixed(2));
                                 }
 
@@ -474,7 +490,11 @@ export default function EditarReserva(props: propsEdicao) {
                                     })
                                 }
                                 else {
-                                    alert('Preenchimento incorreto')
+                                    setNotify({ type: 2, text: 'Preenchimento incorreto!' })
+                                    setShowNotify(true)
+                                    setTimeout(() => {
+                                        setShowNotify(false);
+                                    }, 3000)
                                 }
                             }}
                             id="button-cadastrar" className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary">Salvar Alterações</button>

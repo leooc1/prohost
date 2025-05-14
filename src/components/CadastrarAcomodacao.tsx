@@ -1,5 +1,6 @@
 import { ChangeEvent, useContext, useState } from "react";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
+import Notify from "./notify/Notify";
 interface Acomodacao {
     id?: number
     tipo: string
@@ -25,6 +26,9 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
     const [tipo, setTipo] = useState('')
     const [modelo, setModelo] = useState('')
     const [autoComplete, setAutoComplete] = useState([])
+    const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
+    const [showNotify, setShowNotify] = useState<boolean>(false)
+
     const [err, setErr] = useState<[boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean]>([false, false, false, false, false, false, false, false])
     async function createAcomodacao(pbody: Acomodacao) {
         await fetch(`${apiURL}/acomodacao/`, {
@@ -37,9 +41,12 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
             .then(data => data.json())
             .then((data) => {
                 if (data.id) {
-                    alert('CRIADO COM SUCESSO!!')
-                    close()
-                    location.reload()
+                    setNotify({ type: 1, text: 'Criado!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                        location.reload()
+                    }, 3000)
                 }
             })
             .catch(err => console.log(err))
@@ -62,6 +69,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black absolute top-0 right-0 bg-opacity-20" onClick={close}></div>
+            {showNotify && <Notify type={notify.type} text={notify.text} />}
             <form onSubmit={(e) => { e.preventDefault() }} className="flex flex-col  max-h-screen overflow-scroll scroll-default absolute min-w-80 max-w-[520px] px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white rounded-md">
                 <h5 className="font-semibold text-2xl mb-2">Cadastrar Acomodação</h5>
                 <label htmlFor="identificador" className="flex flex-col">
@@ -438,7 +446,11 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                                     error = (error.map((e, i) => i === 7 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean]);
                                 }
                                 setErr(error)
-                                alert('Erro ao cadastrar')
+                                setNotify({ type: 2, text: 'Erro ao cadastrar!' })
+                                setShowNotify(true)
+                                setTimeout(() => {
+                                    setShowNotify(false);
+                                }, 3000)
                             }
                         }
                         }

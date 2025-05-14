@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { SideBarContext } from "../contexts/SideBarMenuContext";
+import Notify from "./notify/Notify";
 
 interface CategoriaFinanceiro {
     id?: number;
@@ -18,6 +19,8 @@ export default function CadastrarCategoria({ close, permissao }: { close: () => 
     const [color, setColor] = useState('#bdc3c7')
     const [receitas, setReceitas] = useState<CategoriaFinanceiro[]>([])
     const [despesas, setDespesas] = useState<CategoriaFinanceiro[]>([])
+    const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
+    const [showNotify, setShowNotify] = useState<boolean>(false)
 
     async function getCategorias() {
         await fetch(`${apiURL}/categoria_financeiro/` + dataToken.id, {
@@ -43,7 +46,12 @@ export default function CadastrarCategoria({ close, permissao }: { close: () => 
             .then((data: CategoriaFinanceiro) => {
                 if (data.id) {
                     const nome = document.getElementById('nome') as HTMLInputElement
-                    alert('CRIADO!')
+                    setNotify({ type: 1, text: 'Criado!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
+                    // location.reload()
                     setColor('#bdc3c7')
                     nome.value = ''
                     getCategorias()
@@ -59,8 +67,12 @@ export default function CadastrarCategoria({ close, permissao }: { close: () => 
             .then(data => data.json())
             .then((data) => {
                 if (data.affected) {
-                    alert('DELETADO!')
-                    close()
+                    setNotify({ type: 1, text: 'Exluído!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                        location.reload()
+                    }, 3000)
                 }
             })
             .catch(err => console.log(err))
@@ -90,6 +102,7 @@ export default function CadastrarCategoria({ close, permissao }: { close: () => 
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={close}> </div>
+            {showNotify && <Notify type={notify.type} text={notify.text} />}
             <section className="flex flex-col max-h-screen overflow-scroll scroll-default absolute min-w-80 max-w-[470px] px-4 gap-4 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-md py-4">
                 <h5 className="font-semibold text-2xl mb-2">Categorias</h5>
                 <section className="flex gap-5">

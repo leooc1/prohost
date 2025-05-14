@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import SemPermissao from "../components/SemPermissao";
 import TopBar from "../components/TopBar";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
+import Notify from "../components/notify/Notify";
+import MelhorarPlanos from "../components/MelhorarPlanos";
 
 export default function Config() {
     useEffect(() => { document.title = `Assinatura | Prohost` }, [])
@@ -12,6 +14,8 @@ export default function Config() {
     const [qtdAcomodacao, setQtdAcomodacao] = useState('1')
     const [assinatura, setAssinatura] = useState(true)
     const [edicao, setEdicao] = useState(false)
+    const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
+    const [showNotify, setShowNotify] = useState<boolean>(false)
     const preco = () => {
         const qtdAcomod = Number(qtdAcomodacao)
         const precosA = [249.00, 399.00, 549.00, 799.00, 1299.00, 1799.00]
@@ -59,8 +63,12 @@ export default function Config() {
             .then(data => data.json())
             .then(data => {
                 if (data.affected == 1) {
-                    alert('Excluído!')
-                    location.reload()
+                    setNotify({ type: 1, text: 'Excluído!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                        location.reload()
+                    }, 3000)
                 }
             })
             .catch(err => console.log(err))
@@ -78,8 +86,12 @@ export default function Config() {
             .then(data => data.json())
             .then(data => {
                 if (data.id) {
-                    alert('Usuário criado!')
-                    location.reload()
+                    setNotify({ type: 1, text: 'Usuário criado!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                        location.reload()
+                    }, 3000)
                 }
             })
             .catch(err => console.log(err))
@@ -96,8 +108,12 @@ export default function Config() {
             .then(data => data.json())
             .then(data => {
                 if (data.affected) {
-                    alert('Permissões atualizadas!')
-                    location.reload()
+                    setNotify({ type: 1, text: 'Permissões atualizadas!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                        location.reload()
+                    }, 3000)
                 }
             })
             .catch(err => console.log(err))
@@ -170,20 +186,24 @@ export default function Config() {
                         Gestão de usuários</button>
                 </section>
             </TopBar>
-
+            {showNotify && <Notify type={notify.type} text={notify.text} />}
 
             {session == 0 && <div
                 className="flex rounded-md flex-col px-4 pb-3 pt-2">
                 <h5 className="font-semibold text-2xl mb-2">Assinatura</h5>
 
-                {assinatura ? <div className="self-center bg-emerald-100 p-6 rounded-xl flex flex-col gap-3">
-                    <div /* onClick={() => setAssinatura(!assinatura)} */ className="flex items-center gap-2 text-primary font-semibold">
-                        <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(60,209,169,1)"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM11.0026 16L6.75999 11.7574L8.17421 10.3431L11.0026 13.1716L16.6595 7.51472L18.0737 8.92893L11.0026 16Z"></path></svg>
-                        Meu plano</div>
-                    <p className="text-primary text-2xl">Número de Acomodações: {statusData?.qtd_acomodacao || ''}</p>
-                    <p className="text-primary text-2xl">Data de Renovação: {dateFormat(statusData?.trial_end || '')}</p>
-                    <p className="text-primary text-2xl">Dias Restantes: {diasFaltantes(statusData?.trial_end || '')}</p>
-                </div> :
+                {assinatura ?
+                    <>
+                        <div className="self-center bg-emerald-100 p-6 rounded-xl flex flex-col gap-3">
+                            <div /* onClick={() => setAssinatura(!assinatura)} */ className="flex items-center gap-2 text-primary font-semibold">
+                                <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(60,209,169,1)"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM11.0026 16L6.75999 11.7574L8.17421 10.3431L11.0026 13.1716L16.6595 7.51472L18.0737 8.92893L11.0026 16Z"></path></svg>
+                                Meu plano</div>
+                            <p className="text-primary text-2xl">Número de Acomodações: {statusData?.qtd_acomodacao || ''}</p>
+                            <p className="text-primary text-2xl">Data de Renovação: {dateFormat(statusData?.trial_end || '')}</p>
+                            <p className="text-primary text-2xl">Dias Restantes: {diasFaltantes(statusData?.trial_end || '')}</p>
+                        </div>
+                        <MelhorarPlanos />
+                    </> :
                     <div className="self-center bg-red-100 p-6 rounded-xl flex flex-col gap-3">
                         <div /* onClick={() => setAssinatura(!assinatura)} */ className="flex items-center gap-2 text-[rgba(237,62,68,1)] font-semibold">
                             <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(237,62,68,1)"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 10.5858L14.8284 7.75736L16.2426 9.17157L13.4142 12L16.2426 14.8284L14.8284 16.2426L12 13.4142L9.17157 16.2426L7.75736 14.8284L10.5858 12L7.75736 9.17157L9.17157 7.75736L12 10.5858Z"></path></svg>
@@ -351,13 +371,13 @@ export default function Config() {
                                 <div
                                     className="group relative flex items-center mr-20">
                                     <button onClick={(ex) => {
-                                                if (!(permissao >= 4)) { return }
-                                                let confirmDelete = false
-                                                ex.stopPropagation()
-                                                confirmDelete = confirm("Deseja deletar este usuário?")
-                                                if (confirmDelete)
-                                                    excluir(Number(u.id))
-                                            }}
+                                        if (!(permissao >= 4)) { return }
+                                        let confirmDelete = false
+                                        ex.stopPropagation()
+                                        confirmDelete = confirm("Deseja deletar este usuário?")
+                                        if (confirmDelete)
+                                            excluir(Number(u.id))
+                                    }}
                                         className="bg-red-200 w-10 h-10 flex justify-center items-center rounded-lg hover:translate-y-1 hover:duration-300 justify-self-end"
                                     >
                                         <svg className="h-fit w-5 m-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ED3E44"><path d="M4 8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8ZM7 5V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V5H22V7H2V5H7ZM9 4V5H15V4H9ZM9 12V18H11V12H9ZM13 12V18H15V12H13Z"></path></svg>

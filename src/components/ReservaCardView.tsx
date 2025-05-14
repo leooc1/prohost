@@ -4,6 +4,7 @@ import EditarReserva from "./EditarReserva"
 import CardCancelamento from "./CardCancelamento"
 import { SideBarContext } from "../contexts/SideBarMenuContext"
 import EditarContinuidade from "./EditarContinuidade"
+import Notify from "./notify/Notify"
 
 interface propsReserva {
     permissao: number
@@ -62,6 +63,8 @@ export default function ReservaCardView(props: propsReserva) {
     const [editar, setEditar] = useState(false)
     const [editarContinuidade, setEditarContinuidade] = useState(false)
     const [cancelamento, setCancelamento] = useState(false)
+    const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
+    const [showNotify, setShowNotify] = useState<boolean>(false)
 
     function formatDate(isoDateStr: string) {
         const date = new Date(isoDateStr);
@@ -131,9 +134,12 @@ export default function ReservaCardView(props: propsReserva) {
             .then(data => data.json())
             .then((data) => {
                 if (data.affected == 1) {
-                    alert('EXCLUÍDO!')
-                    props.close()
-                    location.reload()
+                    setNotify({ type: 1, text: 'Excluído!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                        location.reload()
+                    }, 3000)
                 }
             })
             .catch(err => console.log(err))
@@ -178,6 +184,7 @@ export default function ReservaCardView(props: propsReserva) {
                 close={() => setEditarContinuidade(false)}
             />}
             <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={props.close}></div>
+            {showNotify && <Notify type={notify.type} text={notify.text} />}
             <div className="flex rounded-md flex-col absolute min-w-80 px-4 pb-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white max-h-[calc(100vh-40px)] overflow-y-scroll scroll-default">
                 <section className="flex items-center mt-2 gap-5">
                     <img className="w-14 h-14 rounded-full border-2 border-blue-600 object-cover" src={reserva?.acomodacao.foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'} />

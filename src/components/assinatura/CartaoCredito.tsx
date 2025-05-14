@@ -1,8 +1,12 @@
 import { InputMask } from "@react-input/mask"
+import { useState } from "react"
+import Notify from "../notify/Notify"
 
 
 export default function CartaoCredito() {
         const apiURL = 'https://api.prohost.net.br'
+        const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
+    const [showNotify, setShowNotify] = useState<boolean>(false)
 
     async function pagamento(pbody: any) {
         const storage = window.localStorage.getItem('ph_pay_acc')
@@ -25,16 +29,25 @@ export default function CartaoCredito() {
             .then(data => data.json())
             .then((data) => {
                 if (data.status == 'CONFIRMED') {
-                    alert('Feito!')
+                    setNotify({ type: 1, text: 'Feito!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
                     location.assign('/auth')
                 }
                 else {
-                    alert('Algo deu errado, tente novamente')
+                    setNotify({ type: 2, text: 'Algo deu errado, tente novamente!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
                 }
             })
     }
     return (
         <section className="bg-white flex flex-col py-20 h-full">
+            {showNotify && <Notify type={notify.type} text={notify.text} />}
             <h2 className='text-3xl font-semibold mb-5 ml-10'>Pagamento</h2>
             <hr className='mx-5 mb-10' />
             <form action="" onSubmit={(e) => e.preventDefault()} className='mx-10 flex flex-col gap-2'>
