@@ -6,7 +6,7 @@ import Notify from "./notify/Notify"
 export default function TopBar({ children }: { children?: React.JSX.Element }) {
     const { active, setActive, dataToken } = useContext(SideBarContext)
     const [notifyDespesas, setNotifyDespesas] = useState(false)
-    const [notifyMinhaConta, setNotifyMinhaConta] = useState(false)
+    // const [notifyMinhaConta, setNotifyMinhaConta] = useState(false)
     const [idNotify, setIdNotify] = useState<null | string>(null)
     const [registrar, setRegistrar] = useState(false)
     const [recorrencia, setRecorrencia] = useState<any[]>([])
