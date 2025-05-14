@@ -100,7 +100,7 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
                         <svg className="w-7 h-fit transition-all duration-75 hover:brightness-50" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 90 90"><g><path d="M55.434 72.521c0 3.712-1.979 6.553-5.193 8.41a10.37 10.37 0 0 1-10.379 0c-3.215-1.857-5.193-4.698-5.193-8.41M45.049 7.708c2.832 0 5.113 1.746 5.113 4.431 0 1.69.059 2.951 1.121 3.274 9.031 2.727 14.822 9.119 14.822 17.42v13.952c0 6.392 2.615 7.686 5.906 10.131 4.766 3.535 3.678 10.896-1.791 10.891H19.88c-5.469.005-6.557-7.356-1.791-10.891 3.287-2.445 5.906-3.739 5.906-10.131V32.833c0-8.301 5.791-14.693 14.822-17.42 1.059-.323 1.121-1.584 1.121-3.274.001-2.685 2.283-4.431 5.111-4.431z" fill="#37425A" opacity="1" data-original="#000000"></path></g></svg>
                     </button>
                     {notifyDespesas ?
-                        (recorrencia.length > 0 && <section className="absolute bg-[#37425A] text-white top-10 right-0 w-max rounded-xl p-4">
+                        (recorrencia.length > 0 && <section className="absolute bg-[#37425A] text-white top-10 right-0 w-max rounded-xl p-4 z-50">
                             <table className="w-full border-collapse">
                                 <thead>
                                     <tr className="text-center border-b columns-5">
