@@ -6,7 +6,7 @@ import Notify from "./notify/Notify"
 export default function TopBar({ children }: { children?: React.JSX.Element }) {
     const { active, setActive, dataToken } = useContext(SideBarContext)
     const [notifyDespesas, setNotifyDespesas] = useState(false)
-    // const [notifyMinhaConta, setNotifyMinhaConta] = useState(false)
+    const [notifyMinhaConta, setNotifyMinhaConta] = useState(false)
     const [idNotify, setIdNotify] = useState<null | string>(null)
     const [registrar, setRegistrar] = useState(false)
     const [recorrencia, setRecorrencia] = useState<any[]>([])
@@ -96,9 +96,26 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
             </div>
             <div className="flex items-center gap-7">
                 <section className="relative">
-                    <button onClick={() => setNotifyDespesas(!notifyDespesas)}>
+                    <button onClick={() => {
+                        setNotifyDespesas(!notifyDespesas)
+                        if (!notifyDespesas) setNotifyMinhaConta(false)
+                    }}>
                         <svg className="w-7 h-fit transition-all duration-75 hover:brightness-50" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 90 90"><g><path d="M55.434 72.521c0 3.712-1.979 6.553-5.193 8.41a10.37 10.37 0 0 1-10.379 0c-3.215-1.857-5.193-4.698-5.193-8.41M45.049 7.708c2.832 0 5.113 1.746 5.113 4.431 0 1.69.059 2.951 1.121 3.274 9.031 2.727 14.822 9.119 14.822 17.42v13.952c0 6.392 2.615 7.686 5.906 10.131 4.766 3.535 3.678 10.896-1.791 10.891H19.88c-5.469.005-6.557-7.356-1.791-10.891 3.287-2.445 5.906-3.739 5.906-10.131V32.833c0-8.301 5.791-14.693 14.822-17.42 1.059-.323 1.121-1.584 1.121-3.274.001-2.685 2.283-4.431 5.111-4.431z" fill="#37425A" opacity="1" data-original="#000000"></path></g></svg>
                     </button>
+                    {notifyMinhaConta && <ul className="absolute bg-[#37425A] text-white top-10 -right-16 w-max rounded-xl p-4 z-50">
+                        <li>
+                            <a href={'/minha-conta'} className={`flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover w-44`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24" width="24" fill="#ACDBFF"><path d="M12 2C17.52 2 22 6.48 22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2ZM6.02332 15.4163C7.49083 17.6069 9.69511 19 12.1597 19C14.6243 19 16.8286 17.6069 18.2961 15.4163C16.6885 13.9172 14.5312 13 12.1597 13C9.78821 13 7.63095 13.9172 6.02332 15.4163ZM12 11C13.6569 11 15 9.65685 15 8C15 6.34315 13.6569 5 12 5C10.3431 5 9 6.34315 9 8C9 9.65685 10.3431 11 12 11Z"></path></svg>
+                                {active && <p className='text-zinc-300'>Minha conta</p>}
+                            </a>
+                        </li>
+                        <li>
+                            <a href={'/assinatura'} className={`flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover w-44`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24" fill='#ACDBFF' viewBox="0 -960 960 960" width="24"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z" /></svg>
+                                {active && <p className='text-zinc-300'>Configurações</p>}
+                            </a>
+                        </li>
+                    </ul>}
                     {notifyDespesas ?
                         (recorrencia.length > 0 && <section className="absolute bg-[#37425A] text-white top-10 right-0 w-max rounded-xl p-4 z-50">
                             <table className="w-full border-collapse">
@@ -154,7 +171,10 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
                         </section>)
                     }
                 </section>
-                <div className="w-8 h-8 flex justify-center items-center rounded-full bg-[#B1C2D9] text-white font-medium">
+                <div onClick={() => {
+                    setNotifyMinhaConta(!notifyMinhaConta)
+                    if (!notifyMinhaConta) setNotifyDespesas(false)
+                }} className="cursor-pointer w-8 h-8 flex justify-center items-center rounded-full bg-[#B1C2D9] text-white font-medium">
                     {dataToken ? Perfil(dataToken.nome) : 'NOT'}
                 </div>
             </div>

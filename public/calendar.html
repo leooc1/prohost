@@ -9,14 +9,15 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
-    .button-calendar{
+    .button-calendar {
       border: 1px solid #b5b7b9;
       background-color: #fff;
       border-radius: 4px;
       display: inline-flex;
       justify-content: center;
       align-items: center;
-      &>svg{
+
+      &>svg {
         fill: #9FA2A8;
       }
     }
@@ -272,10 +273,18 @@
 <body>
   <div style="display: flex; justify-content: end; padding: 8px; gap: 12px;">
     <button class="button-calendar" id="navPrev">
-      <svg style="width: 25px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10.8284 12.0007L15.7782 16.9504L14.364 18.3646L8 12.0007L14.364 5.63672L15.7782 7.05093L10.8284 12.0007Z"></path></svg>
+      <svg style="width: 25px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path
+          d="M10.8284 12.0007L15.7782 16.9504L14.364 18.3646L8 12.0007L14.364 5.63672L15.7782 7.05093L10.8284 12.0007Z">
+        </path>
+      </svg>
     </button>
     <button class="button-calendar" id="navNext">
-      <svg style="width: 25px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M13.1717 12.0007L8.22192 7.05093L9.63614 5.63672L16.0001 12.0007L9.63614 18.3646L8.22192 16.9504L13.1717 12.0007Z"></path></svg>
+      <svg style="width: 25px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path
+          d="M13.1717 12.0007L8.22192 7.05093L9.63614 5.63672L16.0001 12.0007L9.63614 18.3646L8.22192 16.9504L13.1717 12.0007Z">
+        </path>
+      </svg>
     </button>
   </div>
   <div id='calendar' style="padding-bottom: 44px;"></div>
@@ -322,6 +331,7 @@
         resourceTimelineCustom: {
           type: 'resourceTimeline',
           eventContent: function (arg) {
+            var publicId = arg.event._def.publicId
             var title = arg.event.title;
             var numGuests = arg.event.extendedProps.hospedes;
             var tipo = arg.event.extendedProps.tipo;
@@ -329,7 +339,7 @@
             if (tipo === 'Continuidade') {
               return {
                 html: `
-                    <div class='gs-event-continuidade'>
+                    <div id='${tipo + "-" + publicId}' class='gs-event-continuidade'>
 <span class="material-symbols-outlined plus-continuidade">add_circle</span>
 <div class='gs-event-title'>${tipo}</div>       
                     </div>
@@ -338,7 +348,7 @@
             } else if (tipo === 'Indisponibilidade') {
               return {
                 html: `
-                    <div class='gs-event-wrapper'>
+                    <div id='${tipo + "-" + publicId}' class='gs-event-wrapper'>
 <span class="material-symbols-outlined">block</span>                        
 <div class='gs-event-title'>${obs}</div>
 </div>
@@ -347,7 +357,7 @@
             } else {
               return {
                 html: `
-                    <div class='gs-event-wrapper'>
+                    <div id='${tipo + "-" + publicId}' class='gs-event-wrapper'>
                         <div class='gs-event-title'>${title}</div>
                         <div class='gs-event-guests'>
                             <span class="material-symbols-outlined">person</span>${numGuests}

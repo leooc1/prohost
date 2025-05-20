@@ -447,7 +447,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                         <th className="text-center">Valor Líquido</th>
                     </tr>
                 </thead>
-                <tbody className="max-h-64 overflow-y-scroll block">
+                <tbody className="overflow-y-scroll block">
                     {
                         reservas.length > 0 ?
                             reservas

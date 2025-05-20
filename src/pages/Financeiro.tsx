@@ -543,8 +543,8 @@ export default function Financeiro() {
                     {session == 0 && listagem && <ListaMovimentacoes movimentacoes={showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))} />}
                     {session == 1 && listagem && <ListaMovimentacoes movimentacoes={
                         vz ?
-                            showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC)).filter(m => m.receita) :
-                            agruparMovimentacoes(showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC)).filter(m => m.receita))
+                            (showMovimentacao.length > 0 ? showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC)).filter(m => m.receita) : []) :
+                            (showMovimentacao.length > 0 ? agruparMovimentacoes(showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC)).filter(m => m.receita)) : [])
                     } />}
                     {session == 2 && listagem && <div>
                         <label htmlFor="despesa" className="flex flex-col relative w-fit translate-y-5">

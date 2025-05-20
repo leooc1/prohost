@@ -21,7 +21,7 @@ export default function CartaoCredito() {
             .catch(err => console.error(err))
         await fetch(`${apiURL}/assinatura/credit-card/${pay}`, {
             method: 'POST',
-            body: JSON.stringify(pbody),
+            body: JSON.stringify({cardForm:pbody}),
             headers: {
                 'Content-Type': 'application/json'
             }
