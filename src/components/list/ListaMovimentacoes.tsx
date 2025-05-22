@@ -1,8 +1,7 @@
-import * as XLSX from 'xlsx';
-import { useContext, useEffect, useState } from 'react'
-import image from '/none-result.svg'
-import { SideBarContext } from '../../contexts/SideBarMenuContext'
-import EditarMovimentacao from '../EditarMovimentacao'
+import { useContext, useEffect, useState } from 'react';
+import { SideBarContext } from '../../contexts/SideBarMenuContext';
+import EditarMovimentacao from '../EditarMovimentacao';
+import image from '/none-result.svg';
 interface Movimentacao {
     id?: number
     acomodacao: { id: number | null, nome: string | null }
@@ -121,7 +120,8 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
         document.body.removeChild(link);
     }
 
-    function gerarEbaixarExcelMovimentacoes(movimentacoes: any[]) {
+    async function gerarEbaixarExcelMovimentacoes(movimentacoes: any[]) {
+        const XLSX = await import('xlsx');
         const dados = movimentacoes.map((e: any) => {
             // Formata data (ex: 2024-04-30 → 30/04/2024)
             const dataFormatada = e.data?.length === 1 ? e.data :

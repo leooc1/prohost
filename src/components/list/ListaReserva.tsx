@@ -1,5 +1,4 @@
-import * as XLSX from 'xlsx';
-import { useState } from "react"
+import { useState } from "react";
 
 interface Reserva {
     id?: number
@@ -148,12 +147,13 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
         document.body.removeChild(link);
     }
 
-    function gerarEbaixarExcelReservas(
+    async function gerarEbaixarExcelReservas(
         reservas: any[],
         formatDate: (date: any) => string,
         calcularDias: (inicio: any, fim: any) => number,
         formatarMoeda: (valor: any) => string
     ) {
+        const XLSX = await import('xlsx');
         const dados = reservas.map((e, index) => {
             const isIndisp = e.tipo_reserva === 'Indisponibilidade';
             const isCont = e.tipo_reserva === 'Continuidade';

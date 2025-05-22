@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { SideBarContext } from "../contexts/SideBarMenuContext";
+import { InputMask } from "@react-input/mask";
 
 interface Plan {
     accommodations: number;
@@ -22,9 +24,19 @@ const formatCurrency = (value: number) => {
 };
 
 export default function MelhorarPlanos() {
+    const apiURL = 'https://api.prohost.net.br'
+    const { dataToken } = useContext(SideBarContext)
     const [isAnnual, setIsAnnual] = useState(false);
+    const [wait, setWait] = useState(false);
     const [selectedAccommodations, setSelectedAccommodations] = useState([1]);
     const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+    const [info, setInfo] = useState<{
+        qtd_acomodacao: number
+        valor_mes: string
+        valor_ano: string
+        cus: string
+        trial_end: string
+    } | null>(null);
 
     const getCurrentPlan = () => {
         return (
@@ -60,8 +72,146 @@ export default function MelhorarPlanos() {
         setSelectedAccommodations([closest.accommodations]);
     };
 
+    async function updateAssinatura(updateBody: {
+        saas: number, plano: {
+            qtd_acomodacao: number,
+            permicao: number,
+            valor_mes: number,
+            valor_ano: number,
+        },
+        assinatura: {
+            assinatura: string
+            pagamento: string
+            forma_pagamento: string
+            proxima_cobranca: string
+        }
+    }) {
+        await fetch(`${apiURL}/plano/upgrade`, {
+            method: 'POST',
+            body: JSON.stringify(updateBody),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json())
+            .then(data => {
+                setWait(false)
+                if (data.length > 1 && data[1] == 1)
+                    location.reload()
+                return data
+            })
+            .catch(err => console.log(err))
+    }
+
+    async function pagamentoCartao(pay: string, cartao: {
+        card: '',
+        date: '',
+        cvc: ''
+    }) {
+        await fetch(`${apiURL}/assinatura/credit-card/${pay}`, {
+            method: 'POST',
+            body: JSON.stringify({
+                cardForm: {
+                    holderName: dataToken.nome,
+                    number: cartao.card,
+                    expiryMonth: cartao.date.split(' / ')[0],
+                    expiryYear: cartao.date.split(' / ')[1],
+                    ccv: cartao.cvc
+                },
+                saas: dataToken.id
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json())
+            .then(async (data) => {
+                if (data.id) {
+                    await updateAssinatura({
+                        "saas": dataToken.id,
+                        "plano": {
+                            "qtd_acomodacao": selectedAccommodations[0],
+                            "permicao": 1,
+                            "valor_mes": Number(price.monthly),
+                            "valor_ano": Number(price.total)
+                        },
+                        "assinatura": {
+                            "assinatura": data.subscription,
+                            "pagamento": data.id,
+                            "forma_pagamento": data.billingType,
+                            "proxima_cobranca": data.dueDate
+                        }
+                    })
+                }
+            })
+            .catch(err => console.log(err))
+    }
+
+    async function gerarPagamento(cartao?: any) {
+        await fetch(`${apiURL}/assinatura/upgrade/`, {
+            method: 'POST',
+            body: JSON.stringify({
+                "saas": Number(dataToken.id),
+                "price": isAnnual ?
+                    ((Number(price.total) - Number(info?.valor_ano)) / 12) * mesesAteDataFutura(info?.trial_end || '')
+                    : Number(price.monthly),
+                "cycle": isAnnual ? 'YEARLY' : 'MONTHLY'
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json())
+            .then((data) => {
+                if (data.pagamento) {
+                    pagamentoCartao(data.pagamento, cartao)
+                }
+            })
+            .catch(err => console.log(err))
+    }
+
+    async function getInfo() {
+        await fetch(`${apiURL}/assinatura/upgrade/${dataToken.id}`, {
+            method: 'GET'
+        })
+            .then(data => data.json())
+            .then(data => {
+                setInfo(data)
+            })
+            .catch(err => console.log(err))
+    }
+
     const currentPlan = getCurrentPlan();
     const price = calculatePrice(currentPlan);
+
+    function mesesAteDataFutura(dataFuturaStr: string): number {
+        const hoje = new Date();
+        const dataFutura = new Date(dataFuturaStr);
+
+        const anoAtual = hoje.getFullYear();
+        const mesAtual = hoje.getMonth(); // 0 a 11
+
+        const anoFuturo = dataFutura.getFullYear();
+        const mesFuturo = dataFutura.getMonth();
+
+        const mesesTotais = (anoFuturo - anoAtual) * 12 + (mesFuturo - mesAtual);
+
+        if (dataFutura.getDate() < hoje.getDate()) {
+            return mesesTotais - 1;
+        }
+
+        return mesesTotais;
+    }
+
+
+    useEffect(() => {
+        if (isPaymentOpen) {
+            getInfo()
+        }
+        else {
+            setInfo(null)
+        }
+    }, [isPaymentOpen])
 
     return (
         <div className="min-h-screen bg-[#F4F4F5] p-8">
@@ -172,69 +322,127 @@ export default function MelhorarPlanos() {
                 </div>
             </div>
 
-            {isPaymentOpen && (
+            {isPaymentOpen && info && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-                    <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
-                        <h2 className="text-2xl font-bold text-[#0E3447] mb-6">
-                            Complete sua Compra
-                        </h2>
-
-                        <div className="mb-6">
-                            <div className="text-sm text-gray-600 mb-2">Plano Selecionado</div>
-                            <div className="text-[#0E3447] font-semibold">
-                                {currentPlan.accommodations}{" "}
-                                {currentPlan.accommodations === 1 ? "Acomodação" : "Acomodações"} -{" "}
-                                {isAnnual ? "Anual" : "Mensal"}
-                            </div>
-                            <div className="text-2xl font-bold text-[#0E3447] mt-2">
-                                {formatCurrency(Number(isAnnual ? price.total : price.monthly))}
-                            </div>
-                        </div>
-
-                        <div className="space-y-4 mb-6">
-                            <div>
-                                <label className="text-sm text-gray-600">Número do Cartão</label>
-                                <input
-                                    type="text"
-                                    placeholder="1234 5678 9012 3456"
-                                    className="w-full mt-1 px-3 py-2 border rounded-md"
-                                />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="text-sm text-gray-600">Data de Validade</label>
-                                    <input
-                                        type="text"
-                                        placeholder="MM/AA"
-                                        className="w-full mt-1 px-3 py-2 border rounded-md"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="text-sm text-gray-600">CVV</label>
-                                    <input
-                                        type="text"
-                                        placeholder="123"
-                                        className="w-full mt-1 px-3 py-2 border rounded-md"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex gap-4">
-                            <button
-                                className="flex-1 py-2 px-4 bg-[#76EAB7] hover:bg-[#79EECE] text-[#0E3447] rounded-lg font-semibold"
-                                onClick={() => setIsPaymentOpen(false)}
-                            >
-                                Pagar {formatCurrency(Number(isAnnual ? price.total : price.monthly))}
-                            </button>
+                    {currentPlan.accommodations <= info.qtd_acomodacao ?
+                        <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+                            <h2 className="text-2xl font-bold text-[#0E3447] mb-6">
+                                Seu plano atual é equivalente ou superior ao selecionado
+                            </h2>
                             <button
                                 className="flex-1 py-2 px-4 border rounded-lg"
-                                onClick={() => setIsPaymentOpen(false)}
+                                onClick={() => {
+                                    setIsPaymentOpen(false)
+                                    setWait(false)
+                                }}
                             >
                                 Cancelar
                             </button>
                         </div>
-                    </div>
+                        :
+                        <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+                            <h2 className="text-2xl font-bold text-[#0E3447] mb-6">
+                                Complete sua Compra
+                            </h2>
+
+                            <div className="mb-6">
+                                <div className="text-sm text-gray-600 mb-2">Plano Selecionado</div>
+                                <div className="text-[#0E3447] font-semibold">
+                                    {currentPlan.accommodations}{" "}
+                                    {currentPlan.accommodations === 1 ? "Acomodação" : "Acomodações"} -{" "}
+                                    {isAnnual ? "Anual" : "Mensal"}
+                                </div>
+                                <div className="text-2xl font-bold text-[#0E3447] mt-2">
+                                    {
+                                        formatCurrency(isAnnual ?
+                                            ((Number(price.total) - Number(info.valor_ano)) / 12) * mesesAteDataFutura(info.trial_end)
+                                            : Number(price.monthly))
+                                    }
+                                </div>
+                            </div>
+
+                            {wait ?
+                                <div className="space-y-4 mb-6 text-3xl text-center text-[#0E3447]">
+                                    Aguarde . . .
+                                </div> :
+                                <div className="space-y-4 mb-6">
+                                    <div>
+                                        <label className="text-sm text-gray-600">Número do Cartão</label>
+                                        <InputMask
+                                            placeholder="0000 0000 0000 0000"
+                                            mask="xxxx xxxx xxxx xxxx"
+                                            replacement={{ x: /\d/ }}
+                                            id='num-card' type="text"
+                                            className='w-full mt-1 px-3 py-2 border rounded-md' />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="text-sm text-gray-600">Data de Validade</label>
+                                            <InputMask
+                                                placeholder="MM / AAAA"
+                                                mask="xx / xxxx"
+                                                replacement={{ x: /\d/ }} id='data-expiracao' type="text"
+                                                className='w-full mt-1 px-3 py-2 border rounded-md' />
+                                        </div>
+                                        <div>
+                                            <label className="text-sm text-gray-600">CVC</label>
+                                            <InputMask
+                                                mask="xxx"
+                                                replacement={{ x: /\d/ }}
+                                                placeholder="000" id='cvc' type="text"
+                                                className="w-full mt-1 px-3 py-2 border rounded-md"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>}
+
+                            <div className="flex gap-4">
+                                <button
+                                    className="flex-1 py-2 px-4 bg-[#76EAB7] hover:bg-[#79EECE] text-[#0E3447] rounded-lg font-semibold"
+                                    onClick={async () => {
+                                        const numCard = document.getElementById('num-card') as HTMLInputElement
+                                        const dataValid = document.getElementById('data-expiracao') as HTMLInputElement
+                                        const cvc = document.getElementById('cvc') as HTMLInputElement
+
+                                        if (numCard.value.length == 19
+                                            && dataValid.value.length == 9
+                                            && cvc.value.length == 3
+                                        ) {
+                                            const card = {
+                                                card: numCard.value,
+                                                date: dataValid.value,
+                                                cvc: cvc.value
+                                            }
+                                            gerarPagamento(card)
+                                            setWait(true)
+                                        }
+                                    }}
+                                >
+                                    Pagar {isAnnual ?
+                                        formatCurrency(((Number(price.total) - Number(info?.valor_ano)) / 12) * mesesAteDataFutura(info?.trial_end || ''))
+                                        : formatCurrency(Number(price.monthly))}
+                                </button>
+                                <button
+                                    className="flex-1 py-2 px-4 border rounded-lg"
+                                    onClick={() => {
+                                        setIsPaymentOpen(false)
+                                        setWait(false)
+                                    }}
+                                >
+                                    Cancelar
+                                </button>
+                            </div>
+                            <section className="mt-4 -mb-4">
+                                <a href={`https://wa.me/5521995178020?text=${encodeURIComponent(`Olá!
+Desejo continuar com o upgrade do meu plano para ${selectedAccommodations[0]} acomodações com outra forma de pagamento.
+Poderia me ajudar?`)}`} target="_blank"
+                                    className="underline text-primary">
+                                    Deseja continuar com outra forma de pagamento?
+                                </a>
+                            </section>
+                        </div>
+                    }
+
                 </div>
             )}
         </div>

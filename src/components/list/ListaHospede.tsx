@@ -1,4 +1,3 @@
-import * as XLSX from 'xlsx';
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import AtualizarHospede from "../AtualizarHospede";
 import Notify from '../notify/Notify';
@@ -81,7 +80,8 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar, permis
         document.body.removeChild(link);
     }
 
-    function gerarEbaixarExcelHospedes(hospedes: any[]) {
+    async function gerarEbaixarExcelHospedes(hospedes: any[]) {
+        const XLSX = await import('xlsx');
         function gerarPerfil(nome: string): string {
             if (!nome) return "";
             const partes = nome.trim().split(/\s+/);
