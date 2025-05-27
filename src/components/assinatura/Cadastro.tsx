@@ -104,6 +104,13 @@ export default function Cadastro() {
                         assinatura = data
                         pay = data.pagamento
                     }
+                    else {
+                        setNotify({ type: 2, text: data })
+                        setShowNotify(true)
+                        setTimeout(() => {
+                            setShowNotify(false);
+                        }, 3000)
+                    }
                 })
         }
 

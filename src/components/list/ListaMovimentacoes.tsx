@@ -1,5 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
-import { SideBarContext } from '../../contexts/SideBarMenuContext';
+import { useEffect, useState } from 'react';
 import EditarMovimentacao from '../EditarMovimentacao';
 import image from '/none-result.svg';
 interface Movimentacao {
@@ -23,9 +22,7 @@ interface Movimentacao {
 }
 
 
-export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: Movimentacao[] }) {
-    const apiURL = 'https://api.prohost.net.br'
-    const { dataToken } = useContext(SideBarContext)
+export default function ListaMovimentacoes({ saas, movimentacoes, ids }: { saas: number, movimentacoes: Movimentacao[], ids: { id: number, index: number }[] }) {
     const [arrayMovimentacoes, setArrayMovimentacoes] = useState<Movimentacao[][]>([])
     const [page, setPage] = useState<number>(0)
     const [editavel, setEditavel] = useState<boolean>(false)
@@ -42,7 +39,6 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
 
     const [download, setDownload] = useState(false)
 
-
     function formatarMoedaBrasileira(valorStr: string) {
         const valor = parseFloat(valorStr);
         if (isNaN(valor)) {
@@ -50,28 +46,17 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
         }
         return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
-    const [ids, setIds] = useState<{ id: number, index: number }[]>([])
-    async function getAll(saas: number) {
-        await fetch(`${apiURL}/reserva/index/${saas}`, {
-            method: 'GET',
-        })
-            .then(data => data.json())
-            .then((data) => {
-                setIds(data)
-            })
-            .catch(err => console.log(err))
-    }
+
     useEffect(() => {
-        getAll(dataToken?.id)
         const grupos = [];
-        for (let i = 0; i < movimentacoes.length; i += 10) {
+        for (let i = 0; i < movimentacoes?.length; i += 10) {
             grupos.push(movimentacoes.slice(i, i + 10));
         }
-        if (grupos.length > 0)
+        if (grupos?.length > 0)
             setArrayMovimentacoes(grupos);
         else
             setArrayMovimentacoes([[]]);
-    }, [dataToken, movimentacoes])
+    }, [saas, movimentacoes])
 
     function gerarEbaixarCSVMovimentacoes(movimentacoes: any) {
         const headers = ["Data", "Categoria", "Descrição", "Acomodação", "Valor Bruto", "Valor Líquido"];
@@ -82,9 +67,9 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
 
             const categoria = m.categoria_financeiro
                 ? m.categoria_financeiro.nome
-                : m.nome?.startsWith("Continuidade")
+                : m.nome.startsWith("Continuidade")
                     ? "Continuidade"
-                    : m.nome?.includes("Cancelamento")
+                    : m.nome.includes("Cancelamento")
                         ? "Cancelamento"
                         : "Diária";
 
@@ -131,9 +116,9 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
             let categoria = '';
             if (e.categoria_financeiro) {
                 categoria = e.categoria_financeiro.nome;
-            } else if (e.nome?.startsWith('Continuidade')) {
+            } else if (e.nome.startsWith('Continuidade')) {
                 categoria = 'Continuidade';
-            } else if (e.nome?.includes('Cancelamento')) {
+            } else if (e.nome.includes('Cancelamento')) {
                 categoria = 'Cancelamento';
             } else {
                 categoria = 'Diária';
@@ -180,7 +165,7 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
     return (
         <>
             {
-                movimentacoes.length > 0 && ids.length > 0 ?
+                movimentacoes?.length > 0 && ids?.length > 0 ?
                     <section className="w-full min-h-56 border border-zinc-300 rounded-lg bg-white px-4 py-4 mt-8">
                         {editavel && <EditarMovimentacao
                             close={() => setEditavel(false)}
@@ -193,7 +178,7 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
                             tipo_despesa={tipoDespesa}
                             valor={ediValor}
                             pago={ediPago}
-                            saas={dataToken.id}
+                            saas={saas}
                             obs={ediObs} />}
                         <div
                             className="group relative flex items-end justify-end gap-5">
@@ -248,7 +233,7 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
                             </thead>
                             <tbody className="">
                                 {
-                                    arrayMovimentacoes[page].length > 0 ?
+                                    arrayMovimentacoes.length > page && arrayMovimentacoes[page]?.length > 0 ?
                                         arrayMovimentacoes[page].map((e) =>
                                             <>
                                                 <tr className={`text-xs bg-white h-12 border border-zinc-200 w-full hover:bg-[#FAFBFD]
@@ -256,29 +241,40 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
                                                     onClick={() => {
                                                         if (e.reserva == null && e.data != '-') {
                                                             setEditavel(true)
-                                                            setTipoDespesa(e?.tipo_despesa || null)
-                                                            setEdiID(e?.id || null)
-                                                            setEdiCategoria(e?.categoria_financeiro?.id || null)
-                                                            setEdiDescricao(e?.nome || null)
-                                                            setEdiRecebedor(e?.recebedor || null)
-                                                            setEdiAcomodacao(e?.acomodacao?.id || null)
-                                                            setEdiData(e?.data || null)
-                                                            setEdiValor(e?.valor || null)
-                                                            setEdiPago(e?.pago || null)
-                                                            setEdiObs(e?.obs || null)
+                                                            setTipoDespesa(e.tipo_despesa || null)
+                                                            setEdiID(e.id || null)
+                                                            setEdiCategoria(e.categoria_financeiro?.id || null)
+                                                            setEdiDescricao(e.nome || null)
+                                                            setEdiRecebedor(e.recebedor || null)
+                                                            setEdiAcomodacao(e.acomodacao?.id || null)
+                                                            setEdiData(e.data || null)
+                                                            setEdiValor(e.valor || null)
+                                                            setEdiPago(e.pago || null)
+                                                            setEdiObs(e.obs || null)
                                                         }
                                                     }}>
-                                                    <td className="text-center text-xs font-normal">{e.data.length == 1 ? e.data : e.data.split('-')[2] + '/' + e.data.split('-')[1] + '/' + e.data.split('-')[0]}</td>
+                                                    <td className="text-center text-xs font-normal">{e.data?.length == 1 ? e.data : e.data.split('-')[2] + '/' + e.data.split('-')[1] + '/' + e.data.split('-')[0]}</td>
                                                     <td className="text-xs font-normal capitalize flex items-center h-12 gap-3">
                                                         <div className="w-3 h-3 rounded-full" style={{
                                                             backgroundColor: e.categoria_financeiro ? e.categoria_financeiro.cor :
                                                                 e.nome.split(' ')[0] == 'Continuidade' ? '#3CA6FC' : e.nome.includes('Cancelamento') ? '#EC8C17' : '#566DE7'
                                                         }}></div>
-                                                        {e.categoria_financeiro ? e.categoria_financeiro.nome :
+                                                        {e.categoria_financeiro ? e.categoria_financeiro?.nome :
                                                             e.nome.split(' ')[0] == 'Continuidade' ? 'Continuidade' : e.nome.includes('Cancelamento') ? 'Cancelamento' : 'Diária'}
                                                     </td>
-                                                    <td className="text-center text-xs font-normal">{e.reserva ? e.nome.replace(e.nome.split('Reserva ')[1].split(' ')[0], String(ids.filter(i => i?.id == Number(e.nome.split('Reserva ')[1].split(' ')[0]))[0].index)) : e.nome}</td>
-                                                    <td className="text-center text-xs font-normal">{e.acomodacao?.nome || ''}</td>
+                                                    <td className="text-center text-xs font-normal">{e.reserva
+                                                        ? e.nome.replace(
+                                                            e.nome.split('Reserva ')[1].split(' ')[0],
+                                                            String(
+                                                                ids.find(i => {
+                                                                    return i?.id == Number(e.reserva?.id)
+                                                                }
+                                                                )?.index
+                                                            )
+                                                        )
+                                                        : e.nome}
+                                                    </td>
+                                                    <td className="text-center text-xs font-normal">{e.acomodacao ? e.acomodacao.nome : ''}</td>
                                                     <td className="text-center text-xs font-normal">{formatarMoedaBrasileira(String(e.valor))}</td>
                                                     <td className="text-center text-xs font-normal">{formatarMoedaBrasileira(String(e.valor_liq))}</td>
                                                 </tr >
@@ -288,30 +284,31 @@ export default function ListaMovimentacoes({ movimentacoes }: { movimentacoes: M
                             </tbody>
                             <tfoot className="text-xs bg-slate-50 h-12">
                                 <tr >
-                                    <td className="text-center">Mostrando {page != 0 ? page + '1' : '1'}-{(arrayMovimentacoes[page].length) >= 10 ? page + 1 + (arrayMovimentacoes[page].length).toString().slice(-1) :
-                                        (page == 0 ? '' : page) + (arrayMovimentacoes[page].length).toString().slice(-1)} de {movimentacoes.length} resultados</td>
+                                    <td className="text-center">
+                                        Mostrando {page != 0 ? page + '1' : '1'}-{(arrayMovimentacoes.length > page && (arrayMovimentacoes[page].length) >= 10) ? page + 1 + (arrayMovimentacoes.length > page ? arrayMovimentacoes[page].length : 0).toString().slice(-1) :
+                                            (page == 0 ? '' : page) + (arrayMovimentacoes.length > page ? arrayMovimentacoes[page].length : 0).toString().slice(-1)} de {movimentacoes?.length} resultados</td>
                                     <td className="text-center"></td>
                                     <td className="text-center"></td>
                                     <td className="text-center"></td>
                                     <td className="text-center"></td>
                                     <td className="text-center flex items-center h-12 gap-4">
-                                        <button disabled={!(arrayMovimentacoes.length > 1) || !((arrayMovimentacoes[page - 1]))}
+                                        <button disabled={!(arrayMovimentacoes?.length > 1) || !((arrayMovimentacoes[page - 1]))}
                                             onClick={() => {
                                                 if ((arrayMovimentacoes[page - 1])) {
                                                     setPage(page - 1)
                                                 }
                                             }}
-                                            className={`px-2 py-1 disabled:cursor-no-drop bg-slate-200 border border-slate-300 rounded-md h-fit w-fit ${(!(arrayMovimentacoes.length > 1) || !((arrayMovimentacoes[page - 1]))) && 'cursor-no-drop'}`}>&lt;</button>
+                                            className={`px-2 py-1 disabled:cursor-no-drop bg-slate-200 border border-slate-300 rounded-md h-fit w-fit ${(!(arrayMovimentacoes?.length > 1) || !((arrayMovimentacoes[page - 1]))) && 'cursor-no-drop'}`}>&lt;</button>
                                         <div className="px-2 py-1 bg-slate-200 border border-slate-300 rounded-md h-fit w-fit">
                                             {page + 1}
                                         </div>
-                                        <button disabled={!(arrayMovimentacoes.length > 1) || !((arrayMovimentacoes[page + 1]))}
+                                        <button disabled={!(arrayMovimentacoes?.length > 1) || !((arrayMovimentacoes[page + 1]))}
                                             onClick={() => {
                                                 if ((arrayMovimentacoes[page + 1])) {
                                                     setPage(page + 1)
                                                 }
                                             }}
-                                            className={`px-2 py-1 disabled:cursor-no-drop bg-slate-200 border border-slate-300 rounded-md h-fit w-fit ${(!(arrayMovimentacoes.length > 1) || !((arrayMovimentacoes[page + 1]))) && 'cursor-no-drop'}`}>&gt;</button>
+                                            className={`px-2 py-1 disabled:cursor-no-drop bg-slate-200 border border-slate-300 rounded-md h-fit w-fit ${(!(arrayMovimentacoes?.length > 1) || !((arrayMovimentacoes[page + 1]))) && 'cursor-no-drop'}`}>&gt;</button>
                                     </td>
                                 </tr>
                             </tfoot>

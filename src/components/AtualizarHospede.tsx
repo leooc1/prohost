@@ -18,16 +18,87 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
     const [email, setEmail] = useState<string | null>()
     const [tel, setTel] = useState<string | null>()
     const [err, setErr] = useState<boolean>(false)
+    const [reservas, setReservas] = useState<{
+        acomodacao: string
+        nome: string,
+        foto: string,
+        reservas: {
+            reserva: string
+            check_in: string
+            check_out: string
+            valor: string
+        }[]
+    }[]>([])
     const [showNotify, setShowNotify] = useState<boolean>(false)
+
+    function agruparPorAcomodacao(reservas: {
+        reserva: string
+        check_in: string
+        check_out: string
+        nome: string
+        valor: string
+        acomodacao: string
+        foto: string
+    }[]) {
+        const resultado: {
+            acomodacao: string
+            nome: string,
+            foto: string,
+            reservas: {
+                reserva: string
+                check_in: string
+                check_out: string
+                valor: string
+            }[]
+        }[] = [];
+
+        reservas.forEach(reserva => {
+            const acomodacaoId = reserva.acomodacao;
+            let acomodacao = resultado.find((a) => a.acomodacao === acomodacaoId);
+
+            if (!acomodacao) {
+                acomodacao = {
+                    acomodacao: acomodacaoId,
+                    nome: reserva.nome,
+                    foto: reserva.foto,
+                    reservas: []
+                };
+                resultado.push(acomodacao);
+            }
+
+            acomodacao.reservas.push({
+                reserva: reserva.reserva,
+                check_in: reserva.check_in,
+                check_out: reserva.check_out,
+                valor: reserva.valor
+            });
+        });
+
+        setReservas(resultado);
+        return resultado;
+    }
+
+
     async function getHospede() {
         await fetch(`${apiURL}/hospede/${dataToken.id}/${id}`, {
             method: 'GET'
         })
             .then(data => data.json())
-            .then((data: Hospede[]) => {
-                setNome(data[0].nome)
-                setEmail(data[0].email)
-                setTel(data[0].telefone)
+            .then((data: {
+                hospede: Hospede[], reservas: {
+                    reserva: string
+                    check_in: string
+                    nome: string
+                    check_out: string
+                    valor: string
+                    acomodacao: string
+                    foto: string
+                }[]
+            }) => {
+                setNome(data.hospede[0].nome)
+                setEmail(data.hospede[0].email)
+                setTel(data.hospede[0].telefone)
+                agruparPorAcomodacao(data.reservas)
             })
             .catch(err => console.log(err))
     }
@@ -75,7 +146,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
                     })
                 }
 
-            }} className="flex rounded-md flex-col absolute max-w-96 min-w-80 px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white">
+            }} className="flex rounded-md flex-col absolute max-w-96 min-w-80 px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white max-h-screen overflow-scroll scroll-default">
                 <h5 className="font-semibold text-2xl mb-2">Atualizar Hóspede</h5>
                 <label htmlFor="nome" className="flex flex-col">
                     <span className="text-zinc-500 font-medium mb-1">Nome
@@ -91,6 +162,34 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
                     <span className="text-zinc-500 font-medium mb-1">Telefone</span>
                     <input type="tel" name="tel" id="tel" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" placeholder="(00) 9 9999-9999" value={tel || ''} onChange={(e) => setTel(e.target.value)} />
                 </label>
+                <section className="flex flex-col gap-2">
+                    RESERVAS
+                    {reservas.length &&
+                        reservas.map(a =>
+                            <details className="border border-black rounded-lg overflow-hidden">
+                                <summary className="flex py-1 items-center bg-zinc-100 cursor-pointer">
+                                    <img className="size-10" src={a.foto} alt={a.nome} />
+                                    <p className="max-w-full overflow-hidden whitespace-nowrap text-ellipsis ml-5">{a.nome}</p>
+                                </summary>
+                                <ul>
+                                    {a.reservas.map(r => <>
+                                        <hr className="brightness-0" />
+                                        <li>
+                                            <p className="text-center">{r.check_in.split('T')[0].split('-')[2]}/
+                                                {r.check_in.split('T')[0].split('-')[1]}/
+                                                {r.check_in.split('T')[0].split('-')[0]} -&gt; {r.check_out.split('T')[0].split('-')[2]}/
+                                                {r.check_out.split('T')[0].split('-')[1]}/
+                                                {r.check_out.split('T')[0].split('-')[0]}
+                                            </p>
+                                            <p className="text-center">{r.check_in.split('T')[1].slice(0, 5)} -&gt; {r.check_out.split('T')[1].slice(0, 5)}</p>
+                                            <p className="text-center">R$ {r.valor}</p>
+                                        </li>
+                                    </>
+                                    )}
+                                </ul>
+                            </details>)
+                    }
+                </section>
                 <section className="flex gap-3 justify-end mt-2">
                     <button type="button" className="px-3 py-2 border border-zinc-300 rounded-lg" onClick={close}>Cancelar</button>
                     <button type='submit'

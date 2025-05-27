@@ -97,7 +97,7 @@ export default function CanaisDeReserva({ close, permissao }: { close: () => voi
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={close}> </div>
             {showNotify && <Notify type={notify.type} text={notify.text} />}
-            <section className="flex flex-col absolute min-w-80 max-w-[470px] px-4 gap-4 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-md py-4">
+            <section className="flex flex-col absolute min-w-80 max-w-[470px] px-4 gap-4 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-md py-4 max-h-screen overflow-scroll scroll-default">
                 <section>
                     <h5 className="font-semibold text-2xl mb-2">Canais de Reserva</h5>
                     <ul className="flex flex-col gap-1">

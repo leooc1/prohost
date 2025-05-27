@@ -93,6 +93,13 @@ export default function Config() {
                         location.reload()
                     }, 3000)
                 }
+                else {
+                    setNotify({ type: 2, text: data })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
+                }
             })
             .catch(err => console.log(err))
     }

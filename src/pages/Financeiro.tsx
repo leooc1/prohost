@@ -144,6 +144,7 @@ export default function Financeiro() {
     const [showMovimentacao, setShowMovimentacao] = useState<Movimentacao[]>([])
     const [lDespesa, setLDespesa] = useState<string>('')
     const [filterAC, setFilterAC] = useState<string>('all')
+    const [ids, setIds] = useState<{ id: number, index: number }[]>([])
 
     const updateQueryParam = (key: string, value: string) => {
         const url = new URL(window.location.href);
@@ -224,6 +225,15 @@ export default function Financeiro() {
         await acomodacoes()
         await getMovimentacao()
         await permissoes()
+        await fetch(`${apiURL}/reserva/index/${dataToken?.id}`, {
+            method: 'GET',
+        })
+            .then(data => data.json())
+            .then((data) => {
+                console.log()
+                setIds(data)
+            })
+            .catch(err => console.log(err))
         setLoaded(true)
     }
 
@@ -540,11 +550,11 @@ export default function Financeiro() {
                                 </div>
                             </div>
                         </div>}
-                    {session == 0 && listagem && <ListaMovimentacoes movimentacoes={showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))} />}
-                    {session == 1 && listagem && <ListaMovimentacoes movimentacoes={
+                    {session == 0 && listagem && <ListaMovimentacoes ids={ids} saas={dataToken?.id} movimentacoes={showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))} />}
+                    {session == 1 && listagem && <ListaMovimentacoes ids={ids} saas={dataToken?.id} movimentacoes={
                         vz ?
-                            (showMovimentacao.length > 0 ? showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC)).filter(m => m.receita) : []) :
-                            (showMovimentacao.length > 0 ? agruparMovimentacoes(showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC)).filter(m => m.receita)) : [])
+                            (showMovimentacao?.length > 0 ? showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC)).filter(m => m.receita) : []) :
+                            (showMovimentacao?.length > 0 ? agruparMovimentacoes(showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC)).filter(m => m.receita)) : [])
                     } />}
                     {session == 2 && listagem && <div>
                         <label htmlFor="despesa" className="flex flex-col relative w-fit translate-y-5">
@@ -554,7 +564,7 @@ export default function Financeiro() {
                                     setLDespesa(e.target.value)
                                 }} />
                         </label>
-                        <ListaMovimentacoes movimentacoes={showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
+                        <ListaMovimentacoes ids={ids} saas={dataToken?.id} movimentacoes={showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
                             .filter(m => !m.receita && m.nome.toLowerCase().includes(lDespesa.toLowerCase()))
                         } />
                     </div>}

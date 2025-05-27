@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { ChangeEvent, useContext, useEffect, useState } from "react"
 import Loader from "../components/Loader"
 import { SideBarContext } from "../contexts/SideBarMenuContext"
 import Notify from "../components/notify/Notify"
@@ -15,6 +15,7 @@ export default function MinhaConta() {
     const [user, setUser] = useState({ nome: '', email: '' })
     const [nome, setNome] = useState('')
     const [email, setEmail] = useState('')
+    const [foto, setFoto] = useState<null | string>(null)
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
     function Perfil(nome: string) {
@@ -76,9 +77,33 @@ export default function MinhaConta() {
                     <form onSubmit={(e) => { e.preventDefault() }}
                         style={{ width: '-webkit-fill-available' }}
                         className="flex rounded-md flex-col absolute px-4 pb-3 gap-4 top-1/2 right-1/2 min-w-72 translate-x-1/2 -translate-y-1/2 bg-white pt-2">
-                        <div className="m-auto w-16 h-16 flex justify-center items-center rounded-full bg-[#B1C2D9] text-white font-medium text-4xl">
-                            {dataToken ? Perfil(nome) : 'NOT'}
-                        </div>
+                        <label htmlFor="foto" className="cursor-pointer">
+                            {!foto ? <div className="m-auto w-16 h-16 flex justify-center items-center rounded-full bg-[#B1C2D9] text-white font-medium text-4xl">
+                                {dataToken ? Perfil(nome) : 'NOT'}
+                            </div>
+                                :
+                                <img className="m-auto w-16 h-16 flex justify-center items-center rounded-full bg-[#B1C2D9] text-white font-medium text-4xl" src={foto}/>
+
+                            }
+                            <input type="file" name="foto" id="foto" accept=".jpg, .jpeg, .jfif, .pjpeg, .pjp, .png, .gif, .bmp, .dib, .tif, .tiff, .webp, .heic, .heif, .svg, .ico, .cur, .apng" className="hidden"
+                                onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                                    const file = event.target.files?.[0];
+                                    if (file) {
+                                        const reader = new FileReader();
+                                        reader.onload = (e: ProgressEvent<FileReader>) => {
+                                            if (e.target?.result) {
+                                                const imageData = e.target.result as string;
+                                                setFoto(imageData);
+                                            }
+                                        };
+                                        reader.readAsDataURL(file);
+                                    }
+                                    else {
+                                        setFoto(null)
+                                    }
+                                }}
+                            />
+                        </label>
 
                         <label htmlFor="nome" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-sm flex items-center gap-4 ml-6">
