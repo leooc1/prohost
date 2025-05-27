@@ -23,6 +23,7 @@ import Config from './pages/Config.tsx'
 import FeedBacks from './pages/FeedBacks.tsx'
 import Relatorio from './pages/Relatorio.tsx'
 import MinhaConta from './pages/MinhaConta.tsx'
+import EsqueciSenha from './pages/EsqueciSenha.tsx'
 
 const router = createBrowserRouter([
   {
@@ -107,6 +108,10 @@ const router = createBrowserRouter([
     path: "/relatorio",
     element: <Relatorio />,
     errorElement: <NotFound />,
+  },
+  {
+    path: "/reset-senha",
+    element: <EsqueciSenha />,
   },
 ]);
 
