@@ -9,6 +9,8 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
     const [notifyMinhaConta, setNotifyMinhaConta] = useState(false)
     const [idNotify, setIdNotify] = useState<null | string>(null)
     const [registrar, setRegistrar] = useState(false)
+    const [foto, setFoto] = useState<null | string>(null)
+    const [nome, setNome] = useState<string>('')
     const [recorrencia, setRecorrencia] = useState<any[]>([])
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
@@ -53,6 +55,19 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
             return pnome + unome
 
     }
+
+    async function getInfo() {
+        await fetch(`${apiURL}/users/${dataToken.idUsu}/info`, {
+            method: 'GET'
+        })
+            .then(data => data.json())
+            .then((data: any[]) => {
+                setFoto(data[0].foto)
+                setNome(data[0].nome)
+            })
+            .catch(err => console.log(err))
+    }
+
     async function getNotify() {
         await fetch(`${apiURL}/recorrencia/` + dataToken.id, {
             method: 'GET'
@@ -63,6 +78,7 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
             })
             .catch(err => console.log(err))
     }
+    
     async function deleteRecorrencia(id: number) {
         await fetch(`${apiURL}/recorrencia/${id}`, {
             method: 'DELETE',
@@ -82,6 +98,7 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
     }
 
     useEffect(() => {
+        getInfo()
         getNotify()
     }, [dataToken])
 
@@ -171,20 +188,24 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
                         </section>)
                     }
                 </section>
-                <div onClick={() => {
+                {!foto ? <div onClick={() => {
                     setNotifyMinhaConta(!notifyMinhaConta)
                     if (!notifyMinhaConta) setNotifyDespesas(false)
                 }} className="cursor-pointer w-8 h-8 flex justify-center items-center rounded-full bg-[#B1C2D9] text-white font-medium">
-                    {dataToken ? Perfil(dataToken.nome) : 'NOT'}
-                </div>
-            </div>
+                    {nome ? Perfil(nome) : 'NOT'}
+                </div> :
+                    <img onClick={() => {
+                        setNotifyMinhaConta(!notifyMinhaConta)
+                        if (!notifyMinhaConta) setNotifyDespesas(false)
+                    }} src={foto} className="cursor-pointer w-8 h-8 flex justify-center items-center rounded-full bg-[#B1C2D9] text-white font-medium"/>}
+                    </div>
             {
-                registrar &&
-                <RegistrarDespesa saas={dataToken.id}
-                    close={() => setRegistrar(false)}
-                    despesa={despesa}
-                    idNotify={idNotify} />
-            }
-        </div >
-    )
+                    registrar &&
+                    <RegistrarDespesa saas={dataToken.id}
+                        close={() => setRegistrar(false)}
+                        despesa={despesa}
+                        idNotify={idNotify} />
+                }
+            </div >
+            )
 }

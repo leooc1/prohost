@@ -92,12 +92,17 @@ export default function EditarMovimentacao(props: propsEditar) {
             .then(data => data.json())
             .then((data) => {
                 if (data.affected) {
-                    setNotify({ type: 1, text: 'Atualizado!' })
-                    setShowNotify(true)
-                    setTimeout(() => {
-                        setShowNotify(false);
-                        location.reload()
-                    }, 3000)
+                    if (recorrencia) {
+                        editarRecorrencia(pbody.data)
+                    }
+                    else {
+                        setNotify({ type: 1, text: 'Atualizado!' })
+                        setShowNotify(true)
+                        setTimeout(() => {
+                            setShowNotify(false);
+                            location.reload()
+                        }, 3000)
+                    }
                 }
 
             })
@@ -134,14 +139,65 @@ export default function EditarMovimentacao(props: propsEditar) {
     const [categoriaf, setCategoriaF] = useState<CategoriaFinanceiro[]>([])
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
+    const [recorrencia, setRecorrencia] = useState<null | {
+        id: number
+        meses_recorrencia: number
+        data: string
+        despesa: {
+            id: number
+        }
+    }>(null)
     async function loadAll() {
         await getAcomodacoes()
         await getCategorias()
         setLoaded(true)
     }
 
+    async function getNotify() {
+        await fetch(`${apiURL}/recorrencia/` + props.id + '/despesa', {
+            method: 'GET'
+        })
+            .then(data => data.json())
+            .then((data: any[]) => {
+                if (data.length > 0)
+                    setRecorrencia({
+                        id: data[data.length - 1].id,
+                        data: data[data.length - 1].data,
+                        despesa: { id: data[data.length - 1].despesa.id },
+                        meses_recorrencia: data[data.length - 1].meses_recorrencia
+                    })
+                else
+                    setRecorrencia(null)
+            })
+            .catch(err => console.log(err))
+    }
+
+    async function editarRecorrencia(data: string) {
+        await fetch(`${apiURL}/recorrencia`, {
+            method: 'PUT',
+            body: JSON.stringify({ ...recorrencia, data: data }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json())
+            .then((data) => {
+                if (data.affected) {
+                    setNotify({ type: 1, text: 'Atualizado!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                        location.reload()
+                    }, 3000)
+                }
+
+            })
+            .catch(err => console.log(err))
+    }
+
     useEffect(() => {
         loadAll()
+        getNotify()
     }, [])
 
     return (

@@ -108,16 +108,16 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify }: {
                     setShowNotify(true)
                     setTimeout(() => {
                         setShowNotify(false);
+                        if (recorrencia) {
+                            const recorrencia = Number(mesesRecorrencia.value) > 0 ? Number(mesesRecorrencia.value) : 1
+                            createRecorrencia({
+                                despesa: data.id,
+                                meses_recorrencia: recorrencia,
+                                data: new Date(new Date(data.data).setMonth(new Date(data.data).getMonth() + recorrencia)).toISOString().split('T')[0]
+                            })
+                        } else
+                            location.reload()
                     }, 3000)
-                    if (recorrencia) {
-                        const recorrencia = Number(mesesRecorrencia.value) > 0 ? Number(mesesRecorrencia.value) : 1
-                        createRecorrencia({
-                            despesa: data.id,
-                            meses_recorrencia: recorrencia,
-                            data: new Date(new Date(data.data).setMonth(new Date(data.data).getMonth() + recorrencia)).toISOString().split('T')[0]
-                        })
-                    } else
-                        location.reload()
                 }
             })
             .catch(err => console.log(err))

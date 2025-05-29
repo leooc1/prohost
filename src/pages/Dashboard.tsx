@@ -675,7 +675,7 @@ export default function Dashboard() {
         {permissao == 0 && <SemPermissao />}
         <h3 className="text-3xl font-semibold mb-7 pt-2">Painel do Negócio</h3>
         <div className="flex flex-wrap gap-4 mb-8">
-          
+
           <label htmlFor="periodo" className="flex flex-col text-zinc-600 font-medium text-sm">
             Período de Análise
             <select name="periodo" id="periodo" onChange={(e) => { setPeriodo(e.target.value) }} className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base">
@@ -689,11 +689,29 @@ export default function Dashboard() {
           {periodo == 'personalizado' ? <>
             <label htmlFor="de" className="flex flex-col text-zinc-600 font-medium text-sm">
               De:
-              <input type="date" name="de" id="de" onChange={(e) => { setDeData(e.target.value) }} className="border border-zinc-300 rounded-md px-1 py-1 w-32 outline-none text-base" />
+              <input type="date" name="de" id="de" value={deData} onChange={(e) => {
+                if (new Date(e.target.value) >= new Date(ateData)) {
+                  const newDate = new Date(e.target.value)
+                  newDate.setDate(newDate.getDate() + 1)
+                  const dataFormatada = newDate.toISOString().split('T')[0]
+                  setAteData(dataFormatada)
+                }
+                setDeData(e.target.value)
+              }} className="border border-zinc-300 rounded-md px-1 py-1 w-32 outline-none text-base" />
             </label>
             <label htmlFor="ate" className="flex flex-col text-zinc-600 font-medium text-sm">
               Até:
-              <input type="date" name="ate" id="ate" onChange={(e) => { setAteData(e.target.value) }} className="border border-zinc-300 rounded-md px-1 py-1 w-32 outline-none text-base" />
+              <input type="date" name="ate" id="ate" value={ateData} onChange={(e) => {
+                if (new Date(deData) >= new Date(e.target.value)) {
+                  {
+                    const newDate = new Date(e.target.value)
+                    newDate.setDate(newDate.getDate() - 1)
+                    const dataFormatada = newDate.toISOString().split('T')[0]
+                    setDeData(dataFormatada)
+                  }
+                }
+                setAteData(e.target.value)
+              }} className="border border-zinc-300 rounded-md px-1 py-1 w-32 outline-none text-base" />
             </label>
           </> : null}
           <div>

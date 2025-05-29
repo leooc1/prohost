@@ -36,6 +36,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids }: { saas:
     const [ediValor, setEdiValor] = useState<string | null>(null)
     const [ediPago, setEdiPago] = useState<boolean | null>(null)
     const [ediObs, setEdiObs] = useState<string | null>(null)
+    const [numPaginacao, setNumPaginacao] = useState<number>(10)
 
     const [download, setDownload] = useState(false)
 
@@ -49,14 +50,15 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids }: { saas:
 
     useEffect(() => {
         const grupos = [];
-        for (let i = 0; i < movimentacoes?.length; i += 10) {
-            grupos.push(movimentacoes.slice(i, i + 10));
+        for (let i = 0; i < movimentacoes?.length; i += numPaginacao) {
+            grupos.push(movimentacoes.slice(i, i + numPaginacao));
         }
         if (grupos?.length > 0)
             setArrayMovimentacoes(grupos);
         else
             setArrayMovimentacoes([[]]);
-    }, [saas, movimentacoes])
+        setPage(0)
+    }, [saas, movimentacoes, numPaginacao])
 
     function gerarEbaixarCSVMovimentacoes(movimentacoes: any) {
         const headers = ["Data", "Categoria", "Descrição", "Acomodação", "Valor Bruto", "Valor Líquido"];
@@ -285,10 +287,18 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids }: { saas:
                             <tfoot className="text-xs bg-slate-50 h-12">
                                 <tr >
                                     <td className="text-center">
-                                        Mostrando {page != 0 ? page + '1' : '1'}-{(arrayMovimentacoes.length > page && (arrayMovimentacoes[page].length) >= 10) ? page + 1 + (arrayMovimentacoes.length > page ? arrayMovimentacoes[page].length : 0).toString().slice(-1) :
-                                            (page == 0 ? '' : page) + (arrayMovimentacoes.length > page ? arrayMovimentacoes[page].length : 0).toString().slice(-1)} de {movimentacoes?.length} resultados</td>
+                                        Mostrando {page != 0 ? (page*numPaginacao) + 1 : '1'}-{(arrayMovimentacoes.length > page && (arrayMovimentacoes[page].length) >= numPaginacao) ? (page*numPaginacao) + (arrayMovimentacoes.length > page ? arrayMovimentacoes[page].length : 0) :
+                                            (page == 0 ? 0 : ((page) * numPaginacao)) + (arrayMovimentacoes.length > page ? arrayMovimentacoes[page].length : 0)} de {movimentacoes?.length} resultados</td>
                                     <td className="text-center"></td>
-                                    <td className="text-center"></td>
+                                    <td className="text-center">
+                                        <select name="num-paginacao" id="num-paginacao"
+                                        onChange={(e)=>setNumPaginacao(Number(e.target.value))}>
+                                            <option value="10">10</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                            <option value="200">200</option>
+                                        </select>
+                                    </td>
                                     <td className="text-center"></td>
                                     <td className="text-center"></td>
                                     <td className="text-center flex items-center h-12 gap-4">

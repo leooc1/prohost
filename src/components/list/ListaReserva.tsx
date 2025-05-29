@@ -219,11 +219,29 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                     {periodo == 'personalizado' ? <>
                         <label htmlFor="de" className="flex flex-col text-zinc-600 font-medium text-xs">
                             De:
-                            <input type="date" name="de" id="de" onChange={(e) => { setDeData(e.target.value) }} className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" />
+                            <input type="date" name="de" id="de" value={deData} onChange={(e) => {
+                                        if (new Date(e.target.value) >= new Date(ateData)) {
+                                            const newDate = new Date(e.target.value)
+                                            newDate.setDate(newDate.getDate() + 1)
+                                            const dataFormatada = newDate.toISOString().split('T')[0]
+                                            setAteData(dataFormatada)
+                                        }
+                                        setDeData(e.target.value)
+                                    }} className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" />
                         </label>
                         <label htmlFor="ate" className="flex flex-col text-zinc-600 font-medium text-xs">
                             Até:
-                            <input type="date" name="ate" id="ate" onChange={(e) => { setAteData(e.target.value) }} className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" />
+                            <input type="date" name="ate" id="ate" value={ateData} onChange={(e) => {
+                                        if (new Date(deData) >= new Date(e.target.value)) {
+                                            {
+                                                const newDate = new Date(e.target.value)
+                                                newDate.setDate(newDate.getDate() - 1)
+                                                const dataFormatada = newDate.toISOString().split('T')[0]
+                                                setDeData(dataFormatada)
+                                            }
+                                        }
+                                        setAteData(e.target.value)
+                                    }} className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" />
                         </label>
                     </> : null}
                 </div>

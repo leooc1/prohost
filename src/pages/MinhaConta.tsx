@@ -1,4 +1,4 @@
-import { ChangeEvent, useContext, useEffect, useState } from "react"
+import { ChangeEvent, useContext, useEffect, useRef, useState } from "react"
 import Loader from "../components/Loader"
 import { SideBarContext } from "../contexts/SideBarMenuContext"
 import Notify from "../components/notify/Notify"
@@ -18,6 +18,8 @@ export default function MinhaConta() {
     const [foto, setFoto] = useState<null | string>(null)
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
+    const isPrimeiraRender = useRef(true); // flag de controle
+
     function Perfil(nome: string) {
         const array = nome.split(' ')
         const pnome = array[0][0]
@@ -34,6 +36,7 @@ export default function MinhaConta() {
         })
             .then(data => data.json())
             .then((data: any[]) => {
+                setFoto(data[0].foto)
                 setUser({ nome: data[0].nome, email: data[0].email })
                 setNome(data[0].nome)
                 setEmail(data[0].email)
@@ -62,6 +65,28 @@ export default function MinhaConta() {
             })
             .catch(err => console.log(err))
     }
+    async function updateFoto(imagem: string) {
+        await fetch(`${apiURL}/users/${dataToken.idUsu}/foto`, {
+            method: 'PUT',
+            body: JSON.stringify({ foto: (imagem && imagem.length > 0) ? imagem : null }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json())
+            .then((data) => {
+                if (data.affected)
+                    location.reload()
+                else {
+                    setNotify({ type: 2, text: 'Não foi possível atualizar essa foto.' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
+                }
+            })
+            .catch(err => console.log(err))
+    }
 
     useEffect(() => {
         getInfo()
@@ -77,12 +102,18 @@ export default function MinhaConta() {
                     <form onSubmit={(e) => { e.preventDefault() }}
                         style={{ width: '-webkit-fill-available' }}
                         className="flex rounded-md flex-col absolute px-4 pb-3 gap-4 top-1/2 right-1/2 min-w-72 translate-x-1/2 -translate-y-1/2 bg-white pt-2">
-                        <label htmlFor="foto" className="cursor-pointer">
+                        <label htmlFor="foto" className="cursor-pointer w-fit m-auto relative">
                             {!foto ? <div className="m-auto w-16 h-16 flex justify-center items-center rounded-full bg-[#B1C2D9] text-white font-medium text-4xl">
                                 {dataToken ? Perfil(nome) : 'NOT'}
                             </div>
                                 :
-                                <img className="m-auto w-16 h-16 flex justify-center items-center rounded-full bg-[#B1C2D9] text-white font-medium text-4xl" src={foto}/>
+                                <>
+                                    <button className="absolute bg-red-100 w-7 h-7 rounded-full -bottom-1 -right-2"
+                                        onClick={() => { updateFoto('') }}>
+                                        <svg className="h-fit w-5 m-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ED3E44"><path d="M4 8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8ZM7 5V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V5H22V7H2V5H7ZM9 4V5H15V4H9ZM9 12V18H11V12H9ZM13 12V18H15V12H13Z"></path></svg>
+                                    </button>
+                                    <img className="m-auto w-16 h-16 flex justify-center items-center rounded-full bg-[#B1C2D9] text-white font-medium text-4xl" src={foto} />
+                                </>
 
                             }
                             <input type="file" name="foto" id="foto" accept=".jpg, .jpeg, .jfif, .pjpeg, .pjp, .png, .gif, .bmp, .dib, .tif, .tiff, .webp, .heic, .heif, .svg, .ico, .cur, .apng" className="hidden"
@@ -94,12 +125,14 @@ export default function MinhaConta() {
                                             if (e.target?.result) {
                                                 const imageData = e.target.result as string;
                                                 setFoto(imageData);
+                                                updateFoto(imageData);
                                             }
                                         };
                                         reader.readAsDataURL(file);
                                     }
                                     else {
-                                        setFoto(null)
+                                        // updateFoto('');
+                                        // setFoto('')
                                     }
                                 }}
                             />
