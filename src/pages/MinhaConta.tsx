@@ -1,7 +1,7 @@
-import { ChangeEvent, useContext, useEffect, useRef, useState } from "react"
+import { ChangeEvent, useContext, useEffect, useState } from "react"
 import Loader from "../components/Loader"
-import { SideBarContext } from "../contexts/SideBarMenuContext"
 import Notify from "../components/notify/Notify"
+import { SideBarContext } from "../contexts/SideBarMenuContext"
 
 export default function MinhaConta() {
     const apiURL = 'https://api.prohost.net.br'
@@ -18,7 +18,6 @@ export default function MinhaConta() {
     const [foto, setFoto] = useState<null | string>(null)
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
-    const isPrimeiraRender = useRef(true); // flag de controle
 
     function Perfil(nome: string) {
         const array = nome.split(' ')
