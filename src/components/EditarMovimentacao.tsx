@@ -63,25 +63,26 @@ export default function EditarMovimentacao(props: propsEditar) {
             })
             .catch(err => console.log(err))
     }
-    async function editar(pbody: {
-        id: number | null
-        acomodacao: { id: number | null }
-        categoria_financeiro: { id: number | null }
-        data: string
-        canal_reserva: { id: number | null }
-        nome: string
-        saas: { id: number | null }
-        valor: number
-        valor_liq: number
-        valor_prop: number
-        valor_gestor: number
-        reserva: { id: number | null }
-        pago: boolean | null
-        receita: boolean
-        tipo_despesa: string | null
-        recebedor: string
-        obs: string
-    }) {
+    async function editar(
+        pbody: {
+            id: number | null
+            acomodacao: { id: number | null }
+            categoria_financeiro: { id: number | null }
+            data: string
+            canal_reserva: { id: number | null }
+            nome: string
+            saas: { id: number | null }
+            valor: number
+            valor_liq: number
+            valor_prop: number
+            valor_gestor: number
+            reserva: { id: number | null }
+            pago: boolean | null
+            receita: boolean
+            tipo_despesa: string | null
+            recebedor: string
+            obs: string
+        }) {
         await fetch(`${apiURL}/movimentacao/${props.id}`, {
             method: 'PUT',
             body: JSON.stringify(pbody),
