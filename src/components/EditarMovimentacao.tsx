@@ -173,7 +173,7 @@ export default function EditarMovimentacao(props: propsEditar) {
     }
 
     async function editarRecorrencia(data: string) {
-        await fetch(`${apiURL}/recorrencia`, {
+        await fetch(`${apiURL}/recorrencia/${recorrencia?.id}`, {
             method: 'PUT',
             body: JSON.stringify({ ...recorrencia, data: data }),
             headers: {
