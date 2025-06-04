@@ -501,13 +501,13 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                     else {
                                         error = (error.map((e, i) => i === 2 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
                                     }
-                                    if (checkinDate.value.length == 0 || checkinHora.value.length == 0) {
+                                    if (checkinDate.value.length == 0 || checkinHora.value.length == 0 || !(checkinDateTime < checkoutDateTime)) {
                                         error = (error.map((e, i) => i === 3 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
                                     }
                                     else {
                                         error = (error.map((e, i) => i === 3 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
                                     }
-                                    if (checkoutDate.value.length == 0 || checkoutHora.value.length == 0) {
+                                    if (checkoutDate.value.length == 0 || checkoutHora.value.length == 0 || !(checkinDateTime < checkoutDateTime)) {
                                         error = (error.map((e, i) => i === 4 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
                                     }
                                     else {

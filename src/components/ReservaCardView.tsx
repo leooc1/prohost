@@ -65,6 +65,7 @@ export default function ReservaCardView(props: propsReserva) {
     const [cancelamento, setCancelamento] = useState(false)
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
+    const [dataReserva, setDataReserva] = useState<any>(null)
 
     function formatDate(isoDateStr: string) {
         const date = new Date(isoDateStr);
@@ -119,6 +120,22 @@ export default function ReservaCardView(props: propsReserva) {
             .then(data => data.json())
             .then((data: Reserva[]) => {
                 setReserva(data[0])
+                setDataReserva({
+                    saas: dataToken.id,
+                    id: Number(data[0].id),
+                    close: () => setEditar(false),
+                    acomodacaoID: Number(data[0].acomodacao.id),
+                    canalID: Number(data[0]?.canal_reserva?.id),
+                    checkIn: data[0]?.check_in,
+                    checkOut: data[0]?.check_out,
+                    comissao: Number(data[0]?.comissao_ota),
+                    hospedeNOME: data[0]?.hospede?.nome,
+                    obs: data[0]?.obs,
+                    qtdHospede: Number(data[0]?.qtd_hospede),
+                    valorLiq: Number(data[0]?.valor_liq),
+                    valorTotal: Number(data[0]?.valor),
+                    taxaLimpeza: Number(data[0]?.taxa_limpeza),
+                })
                 if (data[0].tipo_reserva != "Indisponibilidade" && data[0].tipo_reserva != "Continuidade")
                     idReserva(data[0].id || 0, data[0].acomodacao.id)
                 else if (data[0].tipo_reserva == "Continuidade")
@@ -162,21 +179,21 @@ export default function ReservaCardView(props: propsReserva) {
                 comissao={reserva?.acomodacao.comissao || null}
             />}
 
-            {editar && <EditarReserva
-                saas={dataToken.id}
-                id={reserva?.id || 0}
-                close={() => setEditar(false)}
-                acomodacaoID={reserva?.acomodacao.id || 0}
-                canalID={reserva?.canal_reserva?.id || 0}
-                checkIn={reserva?.check_in || ''}
-                checkOut={reserva?.check_out || ''}
-                comissao={reserva?.comissao_ota || 0}
-                hospedeNOME={reserva?.hospede?.nome || ''}
-                obs={reserva?.obs || ''}
-                qtdHospede={reserva?.qtd_hospede || 0}
-                valorLiq={reserva?.valor_liq || 0}
-                valorTotal={reserva?.valor || 0}
-                taxaLimpeza={reserva?.taxa_limpeza || 0}
+            {editar && dataReserva && <EditarReserva
+                saas={dataReserva.saas}
+                id={dataReserva.id}
+                close={dataReserva.close}
+                acomodacaoID={dataReserva.acomodacaoID}
+                canalID={dataReserva.canalID}
+                checkIn={dataReserva.checkIn}
+                checkOut={dataReserva.checkOut}
+                comissao={dataReserva.comissao}
+                hospedeNOME={dataReserva.hospedeNOME}
+                obs={dataReserva.obs}
+                qtdHospede={dataReserva.qtdHospede}
+                valorLiq={dataReserva.valorLiq}
+                valorTotal={dataReserva.valorTotal}
+                taxaLimpeza={dataReserva.taxaLimpeza}
             />}
             {editarContinuidade && <EditarContinuidade
                 saas={dataToken.id}

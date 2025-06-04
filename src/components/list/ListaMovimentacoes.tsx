@@ -49,6 +49,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids }: { saas:
     }
 
     useEffect(() => {
+        console.log(movimentacoes)
         const grupos = [];
         for (let i = 0; i < movimentacoes?.length; i += numPaginacao) {
             grupos.push(movimentacoes.slice(i, i + numPaginacao));
@@ -65,7 +66,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids }: { saas:
         const linhas = [headers.join(",")];
 
         movimentacoes.forEach((m: any) => {
-            const dataFormatada = m.data && m.data !== '-' ? m.data.split('-').reverse().join('/') : '-';
+            const dataFormatada = m.data && m.data != '-' ? m.data.split('-').reverse().join('/') : '-';
 
             const categoria = m.categoria_financeiro
                 ? m.categoria_financeiro.nome
@@ -78,7 +79,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids }: { saas:
             const descricao = m.reserva
                 ? m.nome.replace(
                     m.nome.split('Reserva ')[1]?.split(' ')[0],
-                    String(ids.find(i => i?.id == Number(m.nome.split('Reserva ')[1]?.split(' ')[0]))?.index || '')
+                    String(ids.find(i => i?.id == Number(m.reserva))?.index || '')
                 )
                 : m.nome;
 
@@ -236,8 +237,8 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids }: { saas:
                             <tbody className="">
                                 {
                                     arrayMovimentacoes.length > page && arrayMovimentacoes[page]?.length > 0 ?
-                                        arrayMovimentacoes[page].map((e) =>
-                                            <>
+                                        arrayMovimentacoes[page].map((e) =>{  
+                                            return <>
                                                 <tr className={`text-xs bg-white h-12 border border-zinc-200 w-full hover:bg-[#FAFBFD]
                                                 ${e.reserva == null && e.data != '-' ? 'cursor-pointer' : ''}`}
                                                     onClick={() => {
@@ -266,7 +267,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids }: { saas:
                                                     </td>
                                                     <td className="text-center text-xs font-normal">{e.reserva
                                                         ? e.nome.replace(
-                                                            e.nome.split('Reserva ')[1].split(' ')[0],
+                                                            e.nome.split('Reserva ')[1]?.split(' ')?.[0],
                                                             String(
                                                                 ids.find(i => {
                                                                     return i?.id == Number(e.reserva?.id)
@@ -280,19 +281,19 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids }: { saas:
                                                     <td className="text-center text-xs font-normal">{formatarMoedaBrasileira(String(e.valor))}</td>
                                                     <td className="text-center text-xs font-normal">{formatarMoedaBrasileira(String(e.valor_liq))}</td>
                                                 </tr >
-                                            </>)
+                                            </>})
                                         : null
                                 }
                             </tbody>
                             <tfoot className="text-xs bg-slate-50 h-12">
                                 <tr >
                                     <td className="text-center">
-                                        Mostrando {page != 0 ? (page*numPaginacao) + 1 : '1'}-{(arrayMovimentacoes.length > page && (arrayMovimentacoes[page].length) >= numPaginacao) ? (page*numPaginacao) + (arrayMovimentacoes.length > page ? arrayMovimentacoes[page].length : 0) :
+                                        Mostrando {page != 0 ? (page * numPaginacao) + 1 : '1'}-{(arrayMovimentacoes.length > page && (arrayMovimentacoes[page].length) >= numPaginacao) ? (page * numPaginacao) + (arrayMovimentacoes.length > page ? arrayMovimentacoes[page].length : 0) :
                                             (page == 0 ? 0 : ((page) * numPaginacao)) + (arrayMovimentacoes.length > page ? arrayMovimentacoes[page].length : 0)} de {movimentacoes?.length} resultados</td>
                                     <td className="text-center"></td>
                                     <td className="text-center">
                                         <select name="num-paginacao" id="num-paginacao"
-                                        onChange={(e)=>setNumPaginacao(Number(e.target.value))}>
+                                            onChange={(e) => setNumPaginacao(Number(e.target.value))}>
                                             <option value="10">10</option>
                                             <option value="50">50</option>
                                             <option value="100">100</option>

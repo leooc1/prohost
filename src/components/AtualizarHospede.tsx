@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 import Notify from "./notify/Notify";
+import EditarReserva from "./EditarReserva";
 
 interface Hospede {
     id?: number;
@@ -18,37 +19,57 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
     const [email, setEmail] = useState<string | null>()
     const [tel, setTel] = useState<string | null>()
     const [err, setErr] = useState<boolean>(false)
+    const [cardReserva, setCardReserva] = useState<boolean>(false)
+    const [dataReserva, setDataReserva] = useState<any>(null)
     const [reservas, setReservas] = useState<{
         acomodacao: string
         nome: string,
         foto: string,
         reservas: {
-            reserva: string
+            id: string
             check_in: string
             check_out: string
             valor: string
+            qtd_hospede: number
+            canal_reserva: string
+            comissao_ota: string
+            taxa_limpeza: string
+            valor_liq: string
+            obs: string
         }[]
     }[]>([])
     const [showNotify, setShowNotify] = useState<boolean>(false)
 
     function agruparPorAcomodacao(reservas: {
-        reserva: string
+        id: string
         check_in: string
         check_out: string
         nome: string
         valor: string
         acomodacao: string
         foto: string
+        qtd_hospede: number
+        canal_reserva: string
+        comissao_ota: string
+        taxa_limpeza: string
+        valor_liq: string
+        obs: string
     }[]) {
         const resultado: {
             acomodacao: string
             nome: string,
             foto: string,
             reservas: {
-                reserva: string
+                id: string
                 check_in: string
                 check_out: string
                 valor: string
+                qtd_hospede: number
+                canal_reserva: string
+                comissao_ota: string
+                taxa_limpeza: string
+                valor_liq: string
+                obs: string
             }[]
         }[] = [];
 
@@ -67,9 +88,15 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
             }
 
             acomodacao.reservas.push({
-                reserva: reserva.reserva,
+                id: reserva.id,
                 check_in: reserva.check_in,
                 check_out: reserva.check_out,
+                qtd_hospede: reserva.qtd_hospede,
+                canal_reserva: reserva.canal_reserva,
+                comissao_ota: reserva.comissao_ota,
+                taxa_limpeza: reserva.taxa_limpeza,
+                valor_liq: reserva.valor_liq,
+                obs: reserva.obs,
                 valor: reserva.valor
             });
         });
@@ -78,7 +105,6 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
         return resultado;
     }
 
-
     async function getHospede() {
         await fetch(`${apiURL}/hospede/${dataToken.id}/${id}`, {
             method: 'GET'
@@ -86,13 +112,19 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
             .then(data => data.json())
             .then((data: {
                 hospede: Hospede[], reservas: {
-                    reserva: string
+                    id: string
                     check_in: string
-                    nome: string
                     check_out: string
+                    nome: string
                     valor: string
                     acomodacao: string
                     foto: string
+                    qtd_hospede: number
+                    canal_reserva: string
+                    comissao_ota: string
+                    taxa_limpeza: string
+                    valor_liq: string
+                    obs: string
                 }[]
             }) => {
                 setNome(data.hospede[0].nome)
@@ -131,7 +163,25 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
 
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
-            <div className="w-screen h-screen bg-black top-0 right-0 bg-opacity-20" onClick={close}></div>
+            <div className="w-screen h-screen bg-black top-0 right-0 bg-opacity-20"
+                onClick={close}></div>
+            {cardReserva && dataReserva &&
+                <EditarReserva
+                    id={dataReserva.id}
+                    close={dataReserva.close}
+                    checkIn={dataReserva.checkIn}
+                    checkOut={dataReserva.checkOut}
+                    canalID={dataReserva.canalID}
+                    comissao={dataReserva.comissao}
+                    hospedeNOME={dataReserva.hospedeNOME}
+                    qtdHospede={dataReserva.qtdHospede}
+                    acomodacaoID={dataReserva.acomodacaoID}
+                    saas={dataReserva.saas}
+                    valorLiq={dataReserva.valorLiq}
+                    taxaLimpeza={dataReserva.taxaLimpeza}
+                    valorTotal={dataReserva.valorTotal}
+                    obs={dataReserva.obs}
+                />}
             {showNotify && <Notify type={1} text="Atualizado!" />}
             <form onSubmit={(e) => {
                 e.preventDefault()
@@ -164,7 +214,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
                 </label>
                 <section className="flex flex-col gap-2">
                     RESERVAS
-                    {reservas.length &&
+                    {reservas.length > 0 &&
                         reservas.map(a =>
                             <details className="border border-black rounded-lg overflow-hidden">
                                 <summary className="flex py-1 items-center bg-zinc-100 cursor-pointer">
@@ -174,7 +224,28 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
                                 <ul>
                                     {a.reservas.map(r => <>
                                         <hr className="brightness-0" />
-                                        <li>
+                                        <li
+                                            onClick={() => {
+                                                console.log(r)
+                                                setCardReserva(true)
+                                                setDataReserva({
+                                                    id: Number(r.id),
+                                                    acomodacaoID: Number(a.acomodacao),
+                                                    canalID: Number(r.canal_reserva),
+                                                    checkIn: r.check_in,
+                                                    checkOut: r.check_out,
+                                                    close: () => setCardReserva(false),
+                                                    comissao: Number(r.comissao_ota),
+                                                    hospedeNOME: nome,
+                                                    obs: r.obs,
+                                                    qtdHospede: r.qtd_hospede,
+                                                    saas: dataToken.id,
+                                                    taxaLimpeza: Number(r.taxa_limpeza),
+                                                    valorLiq: Number(r.valor_liq),
+                                                    valorTotal: Number(r.valor)
+                                                })
+                                            }}
+                                            className="hover:bg-slate-300 cursor-pointer">
                                             <p className="text-center">{r.check_in.split('T')[0].split('-')[2]}/
                                                 {r.check_in.split('T')[0].split('-')[1]}/
                                                 {r.check_in.split('T')[0].split('-')[0]} -&gt; {r.check_out.split('T')[0].split('-')[2]}/
@@ -183,7 +254,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
                                             </p>
                                             <p className="text-center">{r.check_in.split('T')[1].slice(0, 5)} -&gt; {r.check_out.split('T')[1].slice(0, 5)}</p>
                                             <p className="text-center">R$ {r.valor}</p>
-                                        </li>
+                                        </li >
                                     </>
                                     )}
                                 </ul>
@@ -204,6 +275,6 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
                         className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary">Atualizar</button>
                 </section>
             </form>
-        </div>
+        </div >
     )
 }

@@ -102,9 +102,18 @@ export default function MinhaConta() {
                         style={{ width: '-webkit-fill-available' }}
                         className="flex rounded-md flex-col absolute px-4 pb-3 gap-4 top-1/2 right-1/2 min-w-72 translate-x-1/2 -translate-y-1/2 bg-white pt-2">
                         <label htmlFor="foto" className="cursor-pointer w-fit m-auto relative">
-                            {!foto ? <div className="m-auto w-16 h-16 flex justify-center items-center rounded-full bg-[#B1C2D9] text-white font-medium text-4xl">
-                                {dataToken ? Perfil(nome) : 'NOT'}
-                            </div>
+                            {!foto ? <>
+                                <button className="absolute bg-blue-100 w-7 h-7 rounded-full -bottom-1 -right-2"
+                                onClick={()=>{
+                                    const input = document.getElementById('foto') as HTMLInputElement
+                                    input.click()
+                                }}>
+                                    <svg className="h-fit w-5 m-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3E6BED"><path d="M12.8995 6.85453L17.1421 11.0972L7.24264 20.9967H3V16.754L12.8995 6.85453ZM14.3137 5.44032L16.435 3.319C16.8256 2.92848 17.4587 2.92848 17.8492 3.319L20.6777 6.14743C21.0682 6.53795 21.0682 7.17112 20.6777 7.56164L18.5563 9.68296L14.3137 5.44032Z"></path></svg>
+                                </button>
+                                <div className="m-auto w-16 h-16 flex justify-center items-center rounded-full bg-[#B1C2D9] text-white font-medium text-4xl">
+                                    {dataToken ? Perfil(nome) : 'NOT'}
+                                </div>
+                            </>
                                 :
                                 <>
                                     <button className="absolute bg-red-100 w-7 h-7 rounded-full -bottom-1 -right-2"

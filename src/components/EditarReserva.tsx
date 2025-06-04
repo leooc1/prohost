@@ -235,10 +235,10 @@ export default function EditarReserva(props: propsEdicao) {
 
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
-            <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={props.close}></div>
+            <div className="w-screen h-screen bg-black absolute top-0 right-0 bg-opacity-20" onClick={props.close}></div>
             {showNotify && <Notify type={notify.type} text={notify.text} />}
             {render &&
-                <form onSubmit={(e) => { e.preventDefault() }} className="flex rounded-md flex-col absolute min-w-80 px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white">
+                <form onSubmit={(e) => { e.preventDefault() }} className="flex rounded-md flex-col absolute min-w-80 px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white max-h-screen overflow-scroll scroll-default">
                     <h5 className="font-semibold text-2xl mb-2">Editar Reserva</h5>
                     <label htmlFor="acomodacao" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Acomodação<span className='text-red-500 font-bold'> *</span></span>
@@ -305,7 +305,7 @@ export default function EditarReserva(props: propsEdicao) {
                         <label htmlFor="tot" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Valor Total<span className='text-red-500 font-bold'> *</span></span>
                             <div className="flex items-center gap-2">
-                                R$<input defaultValue={formatedNumber(String(props.valorTotal))} type="text" placeholder="R$" step="0.01" name="tot" id="tot" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full"
+                                R$<input defaultValue={formatedNumber(String(props.valorTotal.toFixed(2)))} type="text" placeholder="R$" step="0.01" name="tot" id="tot" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full"
                                     onInput={() => {
                                         const total = document.getElementById('tot') as HTMLInputElement
                                         const comissao = document.getElementById('com') as HTMLInputElement
@@ -329,7 +329,7 @@ export default function EditarReserva(props: propsEdicao) {
                         <label htmlFor="com" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Comissão<span className='text-red-500 font-bold'> *</span></span>
                             <div className="flex items-center gap-2">
-                                R$<input defaultValue={formatedNumber(String(props.comissao))} type="text" placeholder="R$" step="0.01" name="com" id="com" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full"
+                                R$<input defaultValue={formatedNumber(String(props.comissao.toFixed(2)))} type="text" placeholder="R$" step="0.01" name="com" id="com" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full"
                                     onInput={() => {
                                         const total = document.getElementById('tot') as HTMLInputElement
                                         const comissao = document.getElementById('com') as HTMLInputElement
@@ -353,7 +353,7 @@ export default function EditarReserva(props: propsEdicao) {
                         <label htmlFor="liq" className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Valor Líquido<span className='text-red-500 font-bold'> *</span></span>
                             <div className="flex items-center gap-2">
-                                R$<input defaultValue={formatedNumber(String(props.valorLiq))} type="text" placeholder="R$" step="0.01" name="liq" id="liq" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full"
+                                R$<input defaultValue={formatedNumber(String(props.valorLiq.toFixed(2)))} type="text" placeholder="R$" step="0.01" name="liq" id="liq" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full"
                                     onInput={() => {
                                         const total = document.getElementById('tot') as HTMLInputElement
                                         const comissao = document.getElementById('com') as HTMLInputElement
@@ -380,7 +380,7 @@ export default function EditarReserva(props: propsEdicao) {
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Taxa de Limpeza<span className='text-red-500 font-bold'> *</span></span>
                         <div className="flex items-center gap-2">
                             R$<input type="text" placeholder="R$" step="0.01" name="taxa_limpeza" id="taxa_limpeza"
-                                defaultValue={props.taxaLimpeza} className={`border border-zinc-300  rounded-md px-2 py-1 outline-none w-full`}
+                                defaultValue={props.taxaLimpeza.toFixed(2)} className={`border border-zinc-300  rounded-md px-2 py-1 outline-none w-full`}
                                 onChange={(e) => {
                                     e.target.value = formatedNumber(String(Number(e.target.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
                                     checkNegativeAndApplyStyle();
@@ -477,7 +477,7 @@ export default function EditarReserva(props: propsEdicao) {
                                         },
                                         "qtd_hospede": Number(qtdHospede.value),
                                         "saas": {
-                                            "id": dataToken.id
+                                            "id": Number(dataToken.id)
                                         },
                                         "taxa_limpeza": taxaLimpeza ? Number(taxaLimpeza.value.replace(/[.,]/gm, '').replace(/(\d{1,})(\d{2})/gm, '$1.$2')) : 0,
                                         "valor": Number(valorBruto.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),

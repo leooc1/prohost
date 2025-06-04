@@ -122,9 +122,9 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar, permis
         <section className="w-full min-h-56 border border-zinc-300 rounded-lg bg-white px-4 py-4 mt-8">
             {showNotify && <Notify type={notify.type} text={notify.text} />}
             <div className="flex justify-between">
-                <label htmlFor="hospede" className="flex flex-col relative">
+                <label htmlFor="search-hospede" className="flex flex-col relative">
                     <svg className="w-4 h-fit absolute left-2 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 56.966 56.966" ><g><path d="M55.146 51.887 41.588 37.786A22.926 22.926 0 0 0 46.984 23c0-12.682-10.318-23-23-23s-23 10.318-23 23 10.318 23 23 23c4.761 0 9.298-1.436 13.177-4.162l13.661 14.208c.571.593 1.339.92 2.162.92.779 0 1.518-.297 2.079-.837a3.004 3.004 0 0 0 .083-4.242zM23.984 6c9.374 0 17 7.626 17 17s-7.626 17-17 17-17-7.626-17-17 7.626-17 17-17z" fill="#888888" opacity="1" data-original="#888888" ></path></g></svg>
-                    <input type="text" name="hospede" id="hospede" placeholder="Buscar hóspede" className="pl-8 border border-zinc-300 rounded-md px-2 py-1 outline-none"
+                    <input type="text" name="search-hospede" id="search-hospede" placeholder="Buscar hóspede" className="pl-8 border border-zinc-300 rounded-md px-2 py-1 outline-none"
                         onChange={(e) => {
                             if (e.target.value.length == 0) {
                                 setLHospedes(hospedes)
