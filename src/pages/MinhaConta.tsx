@@ -20,7 +20,7 @@ export default function MinhaConta() {
     const [showNotify, setShowNotify] = useState<boolean>(false)
 
     function Perfil(nome: string) {
-        const array = nome.split(' ')
+        const array = nome.trim().split(' ')
         const pnome = array[0][0]
         const unome = array[array.length - 1][0]
         if (array.length - 1 == 0)

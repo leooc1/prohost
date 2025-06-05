@@ -17,13 +17,13 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar, permis
     const [showNotify, setShowNotify] = useState<boolean>(false)
 
     function Perfil(nome: string) {
-        const array = nome.split(' ')
+        const array = nome.trim().split(' ')
         const pnome = array[0][0]
         const unome = array[array.length - 1][0]
         if (array.length - 1 == 0)
-            return pnome
+            return pnome || ''
         else
-            return pnome + unome
+            return pnome + (unome ? unome : '')
 
     }
 
@@ -120,6 +120,7 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar, permis
 
     return (
         <section className="w-full min-h-56 border border-zinc-300 rounded-lg bg-white px-4 py-4 mt-8">
+            {atualizar[0] && <AtualizarHospede id={atualizar[1]} close={() => setAtualizar([false, 0])} />}
             {showNotify && <Notify type={notify.type} text={notify.text} />}
             <div className="flex justify-between">
                 <label htmlFor="search-hospede" className="flex flex-col relative">
@@ -190,7 +191,6 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar, permis
                         lhospedes.length > 0 ?
                             lhospedes.map((e) =>
                                 <>
-                                    {atualizar[0] && <AtualizarHospede id={atualizar[1]} close={() => setAtualizar([false, 0])} />}
                                     <tr onClick={() => {
                                         if (!(permissao >= 3)) { return }
                                         setAtualizar([true, e.id])

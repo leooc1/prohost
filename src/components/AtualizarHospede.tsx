@@ -252,7 +252,6 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
                                                 {r.check_out.split('T')[0].split('-')[1]}/
                                                 {r.check_out.split('T')[0].split('-')[0]}
                                             </p>
-                                            <p className="text-center">{r.check_in.split('T')[1].slice(0, 5)} -&gt; {r.check_out.split('T')[1].slice(0, 5)}</p>
                                             <p className="text-center">R$ {r.valor}</p>
                                         </li >
                                     </>

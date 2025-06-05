@@ -81,7 +81,7 @@ export default function Financeiro() {
             reserva: [],
             canal_reserva: null,
         };
-    
+
         dados.forEach((item) => {
             if (item.nome === "Outras Receitas") {
                 outrasReceitasAgrupadas.valor += parseFloat(String(item.valor));
@@ -89,7 +89,7 @@ export default function Financeiro() {
                 outrasReceitasAgrupadas.valor_prop += parseFloat(String(item.valor_prop));
                 outrasReceitasAgrupadas.valor_gestor += parseFloat(String(item.valor_gestor));
                 outrasReceitasAgrupadas.pago = outrasReceitasAgrupadas.pago || item.pago;
-    
+
                 if (!outrasReceitasAgrupadas.categoria_financeiro && item.categoria_financeiro) {
                     outrasReceitasAgrupadas.categoria_financeiro = {
                         ...item.categoria_financeiro,
@@ -97,17 +97,17 @@ export default function Financeiro() {
                         cor: "#0000ff",
                     };
                 }
-    
+
                 if (item.reserva) {
                     outrasReceitasAgrupadas.reserva.push(item.reserva);
                 }
                 return; // pula para o próximo item
             }
-    
+
             const reservaId = item.reserva?.id;
             const continuidadeId = item.reserva?.continuidade;
             const chave = String(continuidadeId || reservaId);
-    
+
             if (!agrupados[chave]) {
                 agrupados[chave] = {
                     id: item.id,
@@ -126,42 +126,50 @@ export default function Financeiro() {
                     categoria_financeiro: item.categoria_financeiro,
                     reserva: item.reserva,
                     canal_reserva: item.canal_reserva,
+                    cor: item.categoria_financeiro.cor
                 };
             }
-    
+
             agrupados[chave].valor += parseFloat(String(item.valor));
             agrupados[chave].valor_liq += parseFloat(String(item.valor_liq));
             agrupados[chave].valor_prop += parseFloat(String(item.valor_prop));
             agrupados[chave].valor_gestor += parseFloat(String(item.valor_gestor));
         });
-    
+
         const arrayAgroup = Object.values(agrupados) as Movimentacao[];
-    
+
         // Atualiza categorias dos agrupados que não são "Outras Receitas"
         const movimentacoesFinal = arrayAgroup.map((item) => {
-            if (item.categoria_financeiro) {
-                return item;
-            } else {
+            if (item.canal_reserva) {
                 return {
                     ...item,
                     categoria_financeiro: {
+                        ...item.categoria_financeiro,
+                        cor: item.canal_reserva.cor,
+                        nome: item.canal_reserva.nome
+                    }
+                };
+            } else {
+                return {
+                    ...item,
+                    nome: 'Outras Receitas',
+                    categoria_financeiro: {
+                        ...item.categoria_financeiro,
+                        nome: 'Outras Receitas',
                         id: null,
-                        cor: item.canal_reserva ? item.canal_reserva.cor : "#000000",
-                        editavel: true,
-                        receita: true,
-                        nome: item.canal_reserva ? item.canal_reserva.nome : "Desconhecido",
                     },
                 };
             }
         });
-    
+
         // Adiciona "Outras Receitas" agrupadas, se houver
         if (outrasReceitasAgrupadas.valor > 0) {
             movimentacoesFinal.unshift(outrasReceitasAgrupadas);
         }
-    
+
         return movimentacoesFinal;
     }
+
 
     const [novaReceita, setNovaReceita] = useState(false)
     const [novaDespesa, setNovaDespesa] = useState(false)

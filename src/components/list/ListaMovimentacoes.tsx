@@ -49,7 +49,6 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids }: { saas:
     }
 
     useEffect(() => {
-        console.log(movimentacoes)
         const grupos = [];
         for (let i = 0; i < movimentacoes?.length; i += numPaginacao) {
             grupos.push(movimentacoes.slice(i, i + numPaginacao));
@@ -237,13 +236,13 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids }: { saas:
                             <tbody className="">
                                 {
                                     arrayMovimentacoes.length > page && arrayMovimentacoes[page]?.length > 0 ?
-                                        arrayMovimentacoes[page].map((e) =>{  
+                                        arrayMovimentacoes[page].map((e) =>{ 
                                             return <>
                                                 <tr className={`text-xs bg-white h-12 border border-zinc-200 w-full hover:bg-[#FAFBFD]
                                                 ${e.reserva == null && e.data != '-' ? 'cursor-pointer' : ''}`}
                                                     onClick={() => {
                                                         if (e.reserva == null && e.data != '-') {
-                                                            setEditavel(true)
+                                                            // setEditavel(true)
                                                             setTipoDespesa(e.tipo_despesa || null)
                                                             setEdiID(e.id || null)
                                                             setEdiCategoria(e.categoria_financeiro?.id || null)

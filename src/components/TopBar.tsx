@@ -62,7 +62,7 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
         })
             .then(data => data.json())
             .then((data: any[]) => {
-                setFoto(data[0].foto)
+                setFoto(data[0]?.foto||null)
                 setNome(data[0].nome)
             })
             .catch(err => console.log(err))
