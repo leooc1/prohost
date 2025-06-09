@@ -242,7 +242,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids }: { saas:
                                                 ${e.reserva == null && e.data != '-' ? 'cursor-pointer' : ''}`}
                                                     onClick={() => {
                                                         if (e.reserva == null && e.data != '-') {
-                                                            // setEditavel(true)
+                                                            setEditavel(true)
                                                             setTipoDespesa(e.tipo_despesa || null)
                                                             setEdiID(e.id || null)
                                                             setEdiCategoria(e.categoria_financeiro?.id || null)

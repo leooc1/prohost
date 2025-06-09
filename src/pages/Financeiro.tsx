@@ -62,6 +62,7 @@ export default function Financeiro() {
     }
 
     function agruparMovimentacoes(dados: Movimentacao[]) {
+
         const agrupados: { [key: string]: any } = {};
         const outrasReceitasAgrupadas: any = {
             id: null,
@@ -83,7 +84,7 @@ export default function Financeiro() {
         };
 
         dados.forEach((item) => {
-            if (item.nome === "Outras Receitas") {
+            if (item.reserva === null) {
                 outrasReceitasAgrupadas.valor += parseFloat(String(item.valor));
                 outrasReceitasAgrupadas.valor_liq += parseFloat(String(item.valor_liq));
                 outrasReceitasAgrupadas.valor_prop += parseFloat(String(item.valor_prop));
@@ -101,7 +102,7 @@ export default function Financeiro() {
                 if (item.reserva) {
                     outrasReceitasAgrupadas.reserva.push(item.reserva);
                 }
-                return; // pula para o próximo item
+                return;
             }
 
             const reservaId = item.reserva?.id;
@@ -137,8 +138,6 @@ export default function Financeiro() {
         });
 
         const arrayAgroup = Object.values(agrupados) as Movimentacao[];
-
-        // Atualiza categorias dos agrupados que não são "Outras Receitas"
         const movimentacoesFinal = arrayAgroup.map((item) => {
             if (item.canal_reserva) {
                 return {
