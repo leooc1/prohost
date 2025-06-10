@@ -67,7 +67,6 @@ export default function Financeiro() {
 
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
     const [movimentacoes, setMovimentacoes] = useState<Movimentacao[]>([])
-    const [showMovimentacao, setShowMovimentacao] = useState<Movimentacao[]>([])
     const [lDespesa, setLDespesa] = useState<string>('')
     const [filterAC, setFilterAC] = useState<string>('all')
     const [ids, setIds] = useState<{ id: number, index: number }[]>([])
@@ -276,7 +275,6 @@ export default function Financeiro() {
             .then(data => data.json())
             .then((data: []) => {
                 setMovimentacoes(data)
-                setShowMovimentacao(data)
                 setLDespesa('')
                 setListagem(true)
             })
@@ -372,8 +370,7 @@ export default function Financeiro() {
     }, [])
 
     const processedMovimentacoes = useMemo(() => {
-        let items = showMovimentacao.filter(a => filterAC === 'all' || a?.acomodacao?.id === Number(filterAC));
-
+        let items = movimentacoes.filter(a => filterAC === 'all' || a?.acomodacao?.id === Number(filterAC));
         if (session === 1) { // Receitas
             const receitas = items.filter(m => m.receita);
             items = vz ? receitas : agruparMovimentacoes(receitas);
@@ -405,7 +402,7 @@ export default function Financeiro() {
             });
         }
         return items;
-    }, [showMovimentacao, filterAC, session, vz, lDespesa, sortConfig, agruparMovimentacoes, tipoDespesaFilter]);
+    }, [movimentacoes, filterAC, session, vz, lDespesa, sortConfig, agruparMovimentacoes, tipoDespesaFilter]);
 
     return (
         loaded ?
@@ -513,9 +510,9 @@ export default function Financeiro() {
                                     onChange={(e) => {
                                         setFilterAC(e.target.value)
                                         /*  if (e.target.value != 'all') {
-                                             setShowMovimentacao(movimentacoes.filter(mov => mov?.acomodacao?.id == Number(e.target.value)))
+                                             setmovimentacoes(movimentacoes.filter(mov => mov?.acomodacao?.id == Number(e.target.value)))
                                          } else
-                                             setShowMovimentacao(movimentacoes) */
+                                             setmovimentacoes(movimentacoes) */
                                     }}>
                                     <option value="all" selected>Todas</option>
                                     {acomodacao.map(a => <option value={`${a.id}`}>{a.nome}</option>)}
@@ -554,7 +551,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Receita Bruta</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
+                                        <span className="text-xl">{formatarMoedaBrasileira((movimentacoes.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
                                             .map(mov => mov.receita ? Number(mov.valor) : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
@@ -567,7 +564,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Receita Líquida</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
+                                        <span className="text-xl">{formatarMoedaBrasileira((movimentacoes.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
                                             .map(mov => mov.receita ? Number(mov.valor_liq) : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
@@ -580,7 +577,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Despesas</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
+                                        <span className="text-xl">{formatarMoedaBrasileira((movimentacoes.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
                                             .map(mov => !mov.receita ? mov.valor_liq : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
@@ -593,7 +590,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Lucro</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
+                                        <span className="text-xl">{formatarMoedaBrasileira((movimentacoes.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
                                             .map(mov => mov.receita ? mov.valor_liq : (mov.valor_liq * -1))
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
@@ -628,7 +625,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Receita Bruta</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
+                                        <span className="text-xl">{formatarMoedaBrasileira((movimentacoes.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
                                             .map(mov => mov.receita ? Number(mov.valor) : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
@@ -641,7 +638,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Receita Líquida</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
+                                        <span className="text-xl">{formatarMoedaBrasileira((movimentacoes.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
                                             .map(mov => mov.receita ? Number(mov.valor_liq) : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>
