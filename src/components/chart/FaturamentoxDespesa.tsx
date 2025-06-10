@@ -25,12 +25,14 @@ export default function FaturamentoxDespesa({ mes, dadosAtuais, dadosPassado }: 
                         {
                             label: 'Faturamento do Ano',
                             data: dadosAtuais,
+                            borderColor: '#033C50',
                             backgroundColor: '#033C50',
                             borderRadius: 5
                         },
                         {
                             label: 'Despesas do Ano',
                             data: dadosPassado,
+                            borderColor: '#ED3E44',
                             backgroundColor: '#ED3E44',
                             borderRadius: 5
                         }
@@ -83,8 +85,8 @@ export default function FaturamentoxDespesa({ mes, dadosAtuais, dadosPassado }: 
                             },
                             color: '#000',
                             anchor: 'end',
-                            align: 'bottom',
-                            backgroundColor: '#E6ECEF',
+                            align: 'top',
+                            backgroundColor: '',
                             borderRadius: 2,
                             font: {
                                 weight: 'medium',
@@ -95,7 +97,7 @@ export default function FaturamentoxDespesa({ mes, dadosAtuais, dadosPassado }: 
                 };
 
                 const myBarChart = new Chart(ctx, {
-                    type: 'bar',
+                    type: 'line',
                     data: data,
                     options: options,
                 });

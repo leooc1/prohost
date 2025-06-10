@@ -617,8 +617,6 @@ export default function Dashboard() {
       setDataBar(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
     }
 
-
-
     setIndiOpe(false)
     setResAc(false)
     setResGestor(false)
@@ -756,7 +754,6 @@ export default function Dashboard() {
             </select>
           </label>
         </div> : null}
-        {/*  */}
         {/*  */}
         {/*  */}
         {sessao == 0 && indiOpe ?

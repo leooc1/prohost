@@ -211,7 +211,7 @@ export default function Reserva() {
                   : r.canal_reserva?.cor || '',
               "id": String(r ? r.id : null),
               "tipo": r.tipo_reserva,
-              "obs": '',
+              "obs": r.obs || '',
               "bruto": r.valor,
               "liquido": r.valor_liq,
               "comissao": r.comissao_ota

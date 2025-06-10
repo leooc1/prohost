@@ -94,8 +94,8 @@ export default function EvolucaoNegocio({ mes, ano, dadosLucros, dadosDespesas }
                             },
                             color: '#000',
                             anchor: 'end',
-                            align: 'bottom',
-                            backgroundColor: '#E6ECEF',
+                            align: 'top',
+                            backgroundColor: '',
                             borderRadius: 3,
                             font: {
                                 weight: 'medium',

@@ -335,23 +335,26 @@
             var title = arg.event.title;
             var numGuests = arg.event.extendedProps.hospedes;
             var tipo = arg.event.extendedProps.tipo;
-            var obs = arg.event.extendedProps.obs
+            var obs = arg.event.extendedProps.obs;
             if (tipo === 'Continuidade') {
               return {
                 html: `
-                    <div id='${tipo + "-" + publicId}' class='gs-event-continuidade'>
-<span class="material-symbols-outlined plus-continuidade">add_circle</span>
-<div class='gs-event-title'>${tipo}</div>       
-                    </div>
-                `
+                <div id='${tipo + "-" + publicId}' class='gs-event-continuidade'>
+                  <span class="material-symbols-outlined plus-continuidade">add_circle</span>
+                  <div class='gs-event-title'>${tipo}</div>       
+                  </div>
+                  `
               };
             } else if (tipo === 'Indisponibilidade') {
               return {
                 html: `
-                    <div id='${tipo + "-" + publicId}' class='gs-event-wrapper'>
-<span class="material-symbols-outlined">block</span>                        
-<div class='gs-event-title'>${obs}</div>
-</div>
+                  <div id='${tipo + "-" + publicId}' style="
+    justify-content: normal;
+    gap: 8px;
+" class='gs-event-wrapper'>
+                    <span class="material-symbols-outlined">block</span>                        
+                    <div class='gs-event-title'>${obs}</div>
+                  </div>
                 `
               }
             } else {

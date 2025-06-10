@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import EditarMovimentacao from '../EditarMovimentacao';
 import image from '/none-result.svg';
 interface Movimentacao {
@@ -22,7 +22,7 @@ interface Movimentacao {
 }
 
 
-export default function ListaMovimentacoes({ saas, movimentacoes, ids }: { saas: number, movimentacoes: Movimentacao[], ids: { id: number, index: number }[] }) {
+export default function ListaMovimentacoes({ saas, movimentacoes, ids, children }: { saas: number, movimentacoes: Movimentacao[], ids: { id: number, index: number }[], children?:ReactElement }) {
     const [arrayMovimentacoes, setArrayMovimentacoes] = useState<Movimentacao[][]>([])
     const [page, setPage] = useState<number>(0)
     const [editavel, setEditavel] = useState<boolean>(false)
@@ -183,7 +183,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids }: { saas:
                             saas={saas}
                             obs={ediObs} />}
                         <div
-                            className="group relative flex items-end justify-end gap-5">
+                            className="group relative flex items-end justify-between gap-5">
                             {download && <section className='absolute flex gap-5 -top-9 -right-7'>
                                 <div className="w-screen h-screen bg-black fixed top-0 right-0 bg-opacity-20" onClick={() => { setDownload(false) }}></div>
                                 <button onClick={() => {
@@ -203,6 +203,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids }: { saas:
                                     .xlsx
                                 </button>
                             </section>}
+                            <>{children}</>
                             <button onClick={() => { setDownload(true) }}
                                 className="bg-white w-10 h-10 flex justify-center items-center rounded-lg hover:text-green-600 hover:translate-y-1 hover:duration-300 justify-self-end border-2 border-green-600"
                             >

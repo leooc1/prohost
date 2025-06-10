@@ -181,6 +181,7 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar, permis
                     <tr className="text-sm bg-slate-50 h-12">
                         <th className="text-center px-3">Perfil</th>
                         <th className="text-start">Nome</th>
+                        {/* <th className="text-start">Hospedou-se em</th> */}
                         <th className="text-center">E-mail</th>
                         <th className="text-center">Telefone</th>
                         <th className="text-center"></th>
@@ -199,6 +200,9 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar, permis
                                             <div className="w-10 h-10 flex justify-center items-center rounded-full bg-[#B1C2D9] text-white font-medium">{Perfil(e.nome)}</div>
                                         </td>
                                         <td className="text-start text-sm font-medium">{e.nome}</td>
+                                        {/* <td className="text-start text-sm font-medium overflow-hidden whitespace-nowrap text-ellipsis max-w-60" title="101 (AquaGreen), 511 (AquaGreen), 611 (AquaGreen)">
+                                            {'101 (AquaGreen), 511 (AquaGreen), 611 (AquaGreen)'}
+                                        </td> */}
                                         <td className="text-center text-sm font-medium">{e.email ? e.email : <span className="italic">Não Informado</span>}</td>
                                         <td className="text-center text-sm font-medium">{e.telefone ? e.telefone : <span className="italic">Não Informado</span>}</td>
                                         <td className="text-center text-sm font-medium cursor-pointer hover:bg-red-200 rounded-xl transition-all duration-300"

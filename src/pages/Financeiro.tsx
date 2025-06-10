@@ -76,7 +76,7 @@ export default function Financeiro() {
     const [tipoDespesaFilter, setTipoDespesaFilter] = useState<string>('all');
 
     const SortControls = () => (
-        <div className='flex justify-end items-center gap-4 my-4 p-2 bg-gray-50 rounded-lg border border-zinc-200'>
+        <div className='flex justify-end items-center gap-4 p-2 bg-gray-50 rounded-lg border border-zinc-200'>
             <label htmlFor="sort-key" className="flex items-center gap-2 text-sm font-medium text-zinc-600">
                 Ordenar por:
                 <select
@@ -663,14 +663,17 @@ export default function Financeiro() {
                         </div>}
                     {session == 0 && listagem && (
                         <div>
-                            <SortControls />
-                            <ListaMovimentacoes ids={ids} saas={dataToken?.id} movimentacoes={processedMovimentacoes} />
+                            <ListaMovimentacoes ids={ids} saas={dataToken?.id} movimentacoes={processedMovimentacoes} >
+                                <SortControls />
+                            </ListaMovimentacoes>
                         </div>
                     )}
                     {session == 1 && listagem && (
                         <div>
-                            <SortControls />
-                            <ListaMovimentacoes ids={ids} saas={dataToken?.id} movimentacoes={processedMovimentacoes} />
+                            <ListaMovimentacoes ids={ids} saas={dataToken?.id} movimentacoes={processedMovimentacoes} >
+
+                                <SortControls />
+                            </ListaMovimentacoes>
                         </div>
                     )}
                     {session == 2 && listagem && (
@@ -691,9 +694,11 @@ export default function Financeiro() {
                                         </select>
                                     </label>
                                 </div>
-                                <SortControls />
                             </div>
-                            <ListaMovimentacoes ids={ids} saas={dataToken?.id} movimentacoes={processedMovimentacoes} />
+                            <ListaMovimentacoes ids={ids} saas={dataToken?.id} movimentacoes={processedMovimentacoes} >
+
+                                <SortControls />
+                            </ListaMovimentacoes>
                         </div>)}
                 </div>
             </div> :
