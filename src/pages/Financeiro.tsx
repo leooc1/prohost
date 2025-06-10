@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useMemo, useState, useCallback } from 'react'
 import TopBar from '../components/TopBar'
 import RegistrarDespesa from '../components/RegistrarDespesa'
 import RegistrarReceita from '../components/RegistrarReceita'
@@ -45,13 +45,70 @@ interface Acomodacao {
     saas: { id: number }
 }
 
-
 export default function Financeiro() {
+    const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'ascending' | 'descending' }>({
+        key: 'data',
+        direction: 'descending'
+    });
     const apiURL = 'https://api.prohost.net.br'
     useEffect(() => { document.title = `Financeiro | Prohost` }, [])
+    const [novaReceita, setNovaReceita] = useState(false)
+    const [novaDespesa, setNovaDespesa] = useState(false)
+    const [vz, setVz] = useState(true)
+    const [cadastrarCategoria, setCadastrarCategoria] = useState(false)
+    const [session, setSession] = useState(0)
+    const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
+    const date = new Date()
+    const [periodo, setPeriodo] = useState('m-atual')
+    const [deData, setDeData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`)
+    const [ateData, setAteData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
+    const [dataBW, setDataBW] = useState<[string, string]>([`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`, `${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`])
+    const [listagem, setListagem] = useState(false)
+
+    const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
+    const [movimentacoes, setMovimentacoes] = useState<Movimentacao[]>([])
+    const [showMovimentacao, setShowMovimentacao] = useState<Movimentacao[]>([])
+    const [lDespesa, setLDespesa] = useState<string>('')
+    const [filterAC, setFilterAC] = useState<string>('all')
+    const [ids, setIds] = useState<{ id: number, index: number }[]>([])
 
     const { dataToken } = useContext(SideBarContext)
     const [loaded, setLoaded] = useState(false)
+    const [tipoDespesaFilter, setTipoDespesaFilter] = useState<string>('all');
+
+    const SortControls = () => (
+        <div className='flex justify-end items-center gap-4 my-4 p-2 bg-gray-50 rounded-lg border border-zinc-200'>
+            <label htmlFor="sort-key" className="flex items-center gap-2 text-sm font-medium text-zinc-600">
+                Ordenar por:
+                <select
+                    id="sort-key"
+                    value={sortConfig.key}
+                    onChange={(e) => setSortConfig({ ...sortConfig, key: e.target.value })}
+                    className="border border-zinc-300 rounded-md px-2 py-1 h-8 outline-none text-base font-normal"
+                >
+                    <option value="data">Data</option>
+                    <option value="nome">Descrição</option>
+                    <option value="categoria">Categoria</option>
+                    <option value="acomodacao">Acomodação</option>
+                    <option value="valor_liq">Valor Líquido</option>
+                    <option value="pago">Status Pagamento</option>
+                </select>
+            </label>
+            <label htmlFor="sort-direction" className="flex items-center gap-2 text-sm font-medium text-zinc-600">
+                <select
+                    id="sort-direction"
+                    value={sortConfig.direction}
+                    onChange={(e) => setSortConfig({ ...sortConfig, direction: e.target.value as 'ascending' | 'descending' })}
+                    className="border border-zinc-300 rounded-md px-2 py-1 h-8 outline-none text-base font-normal"
+                >
+                    <option value="descending">Decrescente</option>
+                    <option value="ascending">Crescente</option>
+                </select>
+            </label>
+            {/* Seu botão de Download viria aqui, para ficar tudo alinhado */}
+            {/* <button className="... " >Download</button> */}
+        </div>
+    );
 
     function formatarMoedaBrasileira(valorStr: string) {
         const valor = parseFloat(valorStr);
@@ -61,7 +118,7 @@ export default function Financeiro() {
         return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
 
-    function agruparMovimentacoes(dados: Movimentacao[]) {
+    const agruparMovimentacoes = useCallback((dados: Movimentacao[]) => {
 
         const agrupados: { [key: string]: any } = {};
         const outrasReceitasAgrupadas: any = {
@@ -161,34 +218,12 @@ export default function Financeiro() {
             }
         });
 
-        // Adiciona "Outras Receitas" agrupadas, se houver
         if (outrasReceitasAgrupadas.valor > 0) {
             movimentacoesFinal.unshift(outrasReceitasAgrupadas);
         }
 
         return movimentacoesFinal;
-    }
-
-
-    const [novaReceita, setNovaReceita] = useState(false)
-    const [novaDespesa, setNovaDespesa] = useState(false)
-    const [vz, setVz] = useState(true)
-    const [cadastrarCategoria, setCadastrarCategoria] = useState(false)
-    const [session, setSession] = useState(0)
-    const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
-    const date = new Date()
-    const [periodo, setPeriodo] = useState('m-atual')
-    const [deData, setDeData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`)
-    const [ateData, setAteData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
-    const [dataBW, setDataBW] = useState<[string, string]>([`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`, `${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`])
-    const [listagem, setListagem] = useState(false)
-
-    const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
-    const [movimentacoes, setMovimentacoes] = useState<Movimentacao[]>([])
-    const [showMovimentacao, setShowMovimentacao] = useState<Movimentacao[]>([])
-    const [lDespesa, setLDespesa] = useState<string>('')
-    const [filterAC, setFilterAC] = useState<string>('all')
-    const [ids, setIds] = useState<{ id: number, index: number }[]>([])
+    }, []);
 
     const updateQueryParam = (key: string, value: string) => {
         const url = new URL(window.location.href);
@@ -335,6 +370,42 @@ export default function Financeiro() {
         if (filterAC == 'all' && acfil != 'all')
             setFilterAC(acfil)
     }, [])
+
+    const processedMovimentacoes = useMemo(() => {
+        let items = showMovimentacao.filter(a => filterAC === 'all' || a?.acomodacao?.id === Number(filterAC));
+
+        if (session === 1) { // Receitas
+            const receitas = items.filter(m => m.receita);
+            items = vz ? receitas : agruparMovimentacoes(receitas);
+        } else if (session === 2) { // Despesas
+            items = items.filter(m =>
+                !m.receita &&
+                m.nome.toLowerCase().includes(lDespesa.toLowerCase()) &&
+                (tipoDespesaFilter === 'all' || m.tipo_despesa === tipoDespesaFilter)
+            );
+        }
+
+        if (sortConfig.key) {
+            return [...items].sort((a, b) => {
+                if (a === null || b === null) return 0;
+                let aValue: any, bValue: any;
+
+                switch (sortConfig.key) {
+                    case 'categoria': aValue = a.categoria_financeiro?.nome ?? ''; bValue = b.categoria_financeiro?.nome ?? ''; break;
+                    case 'acomodacao': aValue = a.acomodacao?.nome ?? ''; bValue = b.acomodacao?.nome ?? ''; break;
+                    default: aValue = a[sortConfig.key as keyof Movimentacao]; bValue = b[sortConfig.key as keyof Movimentacao];
+                }
+
+                if (typeof aValue === 'number' && typeof bValue === 'number') {
+                    return sortConfig.direction === 'ascending' ? aValue - bValue : bValue - aValue;
+                }
+                if (aValue < bValue) return sortConfig.direction === 'ascending' ? -1 : 1;
+                if (aValue > bValue) return sortConfig.direction === 'ascending' ? 1 : -1;
+                return 0;
+            });
+        }
+        return items;
+    }, [showMovimentacao, filterAC, session, vz, lDespesa, sortConfig, agruparMovimentacoes, tipoDespesaFilter]);
 
     return (
         loaded ?
@@ -578,57 +649,55 @@ export default function Financeiro() {
                             </div>
                         </div>}
                     {session == 2 &&
-                        <div className='grid grid-cols-3 gap-4'>
-                            <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center">
-                                <div className="flex flex-col ml-4">
-                                    <p className="flex flex-col text-zinc-400 font-medium text-sm">Filtrar por tipo</p>
-                                    <label htmlFor="despesas" className={`mt-2`}>
-                                        <select name="despesas" id="despesas" className={`border border-zinc-300 rounded-md px-2 py-1 h-7 outline-none text-md font-normal`} onChange={(e) => {
-                                            if (e.target.value != 'all')
-                                                setShowMovimentacao(movimentacoes.filter(mov => mov.tipo_despesa == e.target.value))
-                                            else
-                                                setShowMovimentacao(movimentacoes)
-                                        }}>
-                                            <option value="all" selected>Todas as Despesas</option>
-                                            <option value="Despesas do Negócio">Despesas do Negócio</option>
-                                            <option value="Despesas Fixas">Despesas Fixas</option>
-                                            <option value="Despesas Variáveis">Despesas Variáveis</option>
-                                        </select>
-                                    </label>
-                                </div>
-                            </div>
+                        <div className='grid grid-cols-1 gap-4'>
                             <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center col-span-2">
                                 <div className="bg-[#F8DCDC] rounded-md w-fit h-fit py-2 px-2 ml-4">
                                     <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D94D52"><path d="M3.00488 2.99979H21.0049C21.5572 2.99979 22.0049 3.4475 22.0049 3.99979V19.9998C22.0049 20.5521 21.5572 20.9998 21.0049 20.9998H3.00488C2.4526 20.9998 2.00488 20.5521 2.00488 19.9998V3.99979C2.00488 3.4475 2.4526 2.99979 3.00488 2.99979ZM20.0049 10.9998H4.00488V18.9998H20.0049V10.9998ZM20.0049 8.99979V4.99979H4.00488V8.99979H20.0049ZM14.0049 14.9998H18.0049V16.9998H14.0049V14.9998Z"></path></svg>
                                 </div>
                                 <div className="flex flex-col ml-4">
-                                    <p className="flex flex-col text-zinc-400 font-medium text-sm">Total</p>
+                                    <p className="flex flex-col text-zinc-400 font-medium text-sm">Total Despesas</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
+                                        <span className="text-xl">{formatarMoedaBrasileira((processedMovimentacoes
                                             .map(mov => !mov.receita ? mov.valor_liq : 0)
-                                            .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
+                                            .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(2))}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>}
-                    {session == 0 && listagem && <ListaMovimentacoes ids={ids} saas={dataToken?.id} movimentacoes={showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))} />}
-                    {session == 1 && listagem && <ListaMovimentacoes ids={ids} saas={dataToken?.id} movimentacoes={
-                        vz ?
-                            (showMovimentacao?.length > 0 ? showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC)).filter(m => m.receita) : []) :
-                            (showMovimentacao?.length > 0 ? agruparMovimentacoes(showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC)).filter(m => m.receita)) : [])
-                    } />}
-                    {session == 2 && listagem && <div>
-                        <label htmlFor="despesa" className="flex flex-col relative w-fit translate-y-5">
-                            <svg className="w-4 h-fit absolute left-2 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 56.966 56.966" ><g><path d="M55.146 51.887 41.588 37.786A22.926 22.926 0 0 0 46.984 23c0-12.682-10.318-23-23-23s-23 10.318-23 23 10.318 23 23 23c4.761 0 9.298-1.436 13.177-4.162l13.661 14.208c.571.593 1.339.92 2.162.92.779 0 1.518-.297 2.079-.837a3.004 3.004 0 0 0 .083-4.242zM23.984 6c9.374 0 17 7.626 17 17s-7.626 17-17 17-17-7.626-17-17 7.626-17 17-17z" fill="#888888" opacity="1" data-original="#888888" ></path></g></svg>
-                            <input type="text" name="despesa" id="despesa" placeholder="Buscar despesa" className="pl-8 border border-zinc-300 rounded-md px-2 py-1 outline-none"
-                                onChange={(e) => {
-                                    setLDespesa(e.target.value)
-                                }} />
-                        </label>
-                        <ListaMovimentacoes ids={ids} saas={dataToken?.id} movimentacoes={showMovimentacao.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
-                            .filter(m => !m.receita && m.nome.toLowerCase().includes(lDespesa.toLowerCase()))
-                        } />
-                    </div>}
+                    {session == 0 && listagem && (
+                        <div>
+                            <SortControls />
+                            <ListaMovimentacoes ids={ids} saas={dataToken?.id} movimentacoes={processedMovimentacoes} />
+                        </div>
+                    )}
+                    {session == 1 && listagem && (
+                        <div>
+                            <SortControls />
+                            <ListaMovimentacoes ids={ids} saas={dataToken?.id} movimentacoes={processedMovimentacoes} />
+                        </div>
+                    )}
+                    {session == 2 && listagem && (
+                        <div className='mt-4'>
+                            <div className="flex justify-between items-center mb-2">
+                                <div className='flex items-center gap-4'>
+                                    <label htmlFor="despesa-search" className="flex flex-col relative w-fit">
+                                        <svg className="w-4 h-fit absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56.966 56.966"><g><path d="M55.146 51.887 41.588 37.786A22.926 22.926 0 0 0 46.984 23c0-12.682-10.318-23-23-23s-23 10.318-23 23 10.318 23 23 23c4.761 0 9.298-1.436 13.177-4.162l13.661 14.208c.571.593 1.339.92 2.162.92.779 0 1.518-.297 2.079-.837a3.004 3.004 0 0 0 .083-4.242zM23.984 6c9.374 0 17 7.626 17 17s-7.626 17-17 17-17-7.626-17-17 7.626-17 17-17z" fill="#888888" opacity="1"></path></g></svg>
+                                        <input type="text" name="despesa-search" id="despesa-search" placeholder="Buscar despesa..." className="pl-9 border border-zinc-300 rounded-md h-8 px-2 py-1 outline-none" onChange={(e) => setLDespesa(e.target.value)} />
+                                    </label>
+                                    <label htmlFor="despesas-tipo" className="flex items-center gap-2 text-sm font-medium text-zinc-600">
+                                        Tipo:
+                                        <select name="despesas-tipo" id="despesas-tipo" value={tipoDespesaFilter} className={`border border-zinc-300 rounded-md px-2 py-1 h-8 outline-none text-md font-normal`} onChange={(e) => setTipoDespesaFilter(e.target.value)}>
+                                            <option value="all">Todas</option>
+                                            <option value="Despesas do Negócio">Do Negócio</option>
+                                            <option value="Despesas Fixas">Fixas</option>
+                                            <option value="Despesas Variáveis">Variáveis</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <SortControls />
+                            </div>
+                            <ListaMovimentacoes ids={ids} saas={dataToken?.id} movimentacoes={processedMovimentacoes} />
+                        </div>)}
                 </div>
             </div> :
             <Loader />
