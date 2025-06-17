@@ -14,10 +14,10 @@ export default function CartaoCredito() {
         await fetch(`${apiURL}/assinatura/${storage}`, {
             method: 'GET'
         })
-            .then(data => data.json())
-            .then(data => {
-                pay = data
-            })
+        .then(data => data.json())
+        .then(data => {
+            pay = data
+        })
             .catch(err => console.error(err))
         await fetch(`${apiURL}/assinatura/credit-card/${pay}`, {
             method: 'POST',

@@ -153,7 +153,7 @@ export default function MelhorarPlanos() {
             body: JSON.stringify({
                 "saas": Number(dataToken.id),
                 "price": isAnnual ?
-                    ((Number(price.total) - Number(info?.valor_ano)) / 12) * mesesAteDataFutura(info?.trial_end || '')
+                    ((Number(price.total) - Number(info?.valor_ano)) / 12) * (mesesAteDataFutura(info?.trial_end || '') > 0 ? mesesAteDataFutura(info?.trial_end || '') : 1)
                     : Number(price.monthly),
                 "cycle": isAnnual ? 'YEARLY' : 'MONTHLY'
             }),
@@ -212,6 +212,7 @@ export default function MelhorarPlanos() {
             setInfo(null)
         }
     }, [isPaymentOpen])
+
 
     return (
         <div className="min-h-screen bg-[#F4F4F5] p-8">
@@ -355,7 +356,7 @@ export default function MelhorarPlanos() {
                                 <div className="text-2xl font-bold text-[#0E3447] mt-2">
                                     {
                                         formatCurrency(isAnnual ?
-                                            ((Number(price.total) - Number(info.valor_ano)) / 12) * mesesAteDataFutura(info.trial_end)
+                                            ((Number(price.total) - Number(info.valor_ano)) / 12) * (mesesAteDataFutura(info.trial_end) > 0 ? mesesAteDataFutura(info.trial_end) : 1)
                                             : Number(price.monthly))
                                     }
                                 </div>
@@ -397,7 +398,7 @@ export default function MelhorarPlanos() {
                                 </div>}
 
                             <div className="flex gap-4">
-                                <button
+                                {!wait && <button
                                     className="flex-1 py-2 px-4 bg-[#76EAB7] hover:bg-[#79EECE] text-[#0E3447] rounded-lg font-semibold"
                                     onClick={async () => {
                                         const numCard = document.getElementById('num-card') as HTMLInputElement
@@ -419,9 +420,9 @@ export default function MelhorarPlanos() {
                                     }}
                                 >
                                     Pagar {isAnnual ?
-                                        formatCurrency(((Number(price.total) - Number(info?.valor_ano)) / 12) * mesesAteDataFutura(info?.trial_end || ''))
+                                        formatCurrency(((Number(price.total) - Number(info.valor_ano)) / 12) * (mesesAteDataFutura(info.trial_end) > 0 ? mesesAteDataFutura(info.trial_end) : 1))
                                         : formatCurrency(Number(price.monthly))}
-                                </button>
+                                </button>}
                                 <button
                                     className="flex-1 py-2 px-4 border rounded-lg"
                                     onClick={() => {
@@ -442,7 +443,6 @@ Poderia me ajudar?`)}`} target="_blank"
                             </section>
                         </div>
                     }
-
                 </div>
             )}
         </div>
