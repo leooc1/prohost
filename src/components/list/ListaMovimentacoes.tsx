@@ -35,6 +35,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children 
     const [ediData, setEdiData] = useState<string | null>(null)
     const [ediValor, setEdiValor] = useState<string | null>(null)
     const [ediPago, setEdiPago] = useState<boolean | null>(null)
+    const [despesa, setDespesa] = useState<boolean>(false)
     const [ediObs, setEdiObs] = useState<string | null>(null)
     const [numPaginacao, setNumPaginacao] = useState<number>(10)
 
@@ -172,6 +173,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children 
                         {editavel && <EditarMovimentacao
                             close={() => setEditavel(false)}
                             id={ediID}
+                            despesa={despesa}
                             categoria={ediCategoria}
                             descricao={ediDescricao}
                             recebedor={ediRecebedor}
@@ -245,6 +247,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children 
                                                         if (e.reserva == null && e.data != '-') {
                                                             setEditavel(true)
                                                             setTipoDespesa(e.tipo_despesa || null)
+                                                            setDespesa(!e.receita)
                                                             setEdiID(e.id || null)
                                                             setEdiCategoria(e.categoria_financeiro?.id || null)
                                                             setEdiDescricao(e.nome || null)

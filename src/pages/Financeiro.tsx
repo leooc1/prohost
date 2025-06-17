@@ -104,8 +104,6 @@ export default function Financeiro() {
                     <option value="ascending">Crescente</option>
                 </select>
             </label>
-            {/* Seu botão de Download viria aqui, para ficar tudo alinhado */}
-            {/* <button className="... " >Download</button> */}
         </div>
     );
 
@@ -183,7 +181,7 @@ export default function Financeiro() {
                     categoria_financeiro: item.categoria_financeiro,
                     reserva: item.reserva,
                     canal_reserva: item.canal_reserva,
-                    cor: item.categoria_financeiro.cor
+                    cor: item.canal_reserva.cor
                 };
             }
 

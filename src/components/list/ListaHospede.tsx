@@ -15,6 +15,7 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar, permis
     const [lhospedes, setLHospedes] = useState<Hospede[]>([])
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
+    const [acomodacoes, setAcomodacoes] = useState<{ hospede: number, acomodacoes: string[] }[]>([])
 
     function Perfil(nome: string) {
         const array = nome.trim().split(' ')
@@ -44,6 +45,19 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar, permis
             })
             .catch(err => console.log(err))
 
+    }
+
+    async function arrayAcomodacao() {
+        const arrayHospede = hospedes.map(h => h.id)
+        await fetch(`${apiURL}/hospede/acomodacao/${arrayHospede}`,
+            { method: 'GET' }
+        )
+            .then(data => data.json())
+            .then(data => {
+                console.log(data)
+                setAcomodacoes(data)
+            })
+            .catch(err => console.log(err))
     }
 
     function gerarEbaixarCSVHospedes(hospedes: any[]) {
@@ -116,6 +130,7 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar, permis
 
     useEffect(() => {
         setLHospedes(hospedes)
+        arrayAcomodacao()
     }, [hospedes])
 
     return (
@@ -181,7 +196,7 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar, permis
                     <tr className="text-sm bg-slate-50 h-12">
                         <th className="text-center px-3">Perfil</th>
                         <th className="text-start">Nome</th>
-                        {/* <th className="text-start">Hospedou-se em</th> */}
+                        {<th className="text-start">Hospedou-se em</th>}
                         <th className="text-center">E-mail</th>
                         <th className="text-center">Telefone</th>
                         <th className="text-center"></th>
@@ -200,9 +215,9 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar, permis
                                             <div className="w-10 h-10 flex justify-center items-center rounded-full bg-[#B1C2D9] text-white font-medium">{Perfil(e.nome)}</div>
                                         </td>
                                         <td className="text-start text-sm font-medium">{e.nome}</td>
-                                        {/* <td className="text-start text-sm font-medium overflow-hidden whitespace-nowrap text-ellipsis max-w-60" title="101 (AquaGreen), 511 (AquaGreen), 611 (AquaGreen)">
-                                            {'101 (AquaGreen), 511 (AquaGreen), 611 (AquaGreen)'}
-                                        </td> */}
+                                        {<td className="text-start text-sm font-medium overflow-hidden whitespace-nowrap text-ellipsis max-w-60" title="101 (AquaGreen), 511 (AquaGreen), 611 (AquaGreen)">
+                                            {acomodacoes.find(a => a.hospede == e.id)?.acomodacoes.toString().replace(',',', ')}
+                                        </td>}
                                         <td className="text-center text-sm font-medium">{e.email ? e.email : <span className="italic">Não Informado</span>}</td>
                                         <td className="text-center text-sm font-medium">{e.telefone ? e.telefone : <span className="italic">Não Informado</span>}</td>
                                         <td className="text-center text-sm font-medium cursor-pointer hover:bg-red-200 rounded-xl transition-all duration-300"

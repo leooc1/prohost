@@ -36,22 +36,37 @@ export default function Acomodacoes() {
     const [desativados, setDesativados] = useState<Acomodacao[]>([])
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
+    const [verifyAcomodacao, setVerifyAcomodacao] = useState<boolean>(false)
 
     async function acomodacoes() {
         await fetch(`${apiURL}/acomodacao/` + dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
-            .then((data: Acomodacao[]) => {
+            .then(async (data: Acomodacao[]) => {
                 setProprio(data.filter((e => e.tipo == 'proprio' && !e.desativado)))
                 setTerceiro(data.filter((e => e.tipo == 'terceiro' && !e.desativado)))
                 setDesativados(data.filter((e => e.desativado)))
+                await fetch(`${apiURL}/assinatura/upgrade/${dataToken.id}`, {
+                    method: 'GET'
+                })
+                    .then(verify => verify.json())
+                    .then(v => {
+                        if ((data.filter((e => !e.desativado)).length) < v.qtd_acomodacao)
+                            setVerifyAcomodacao(true)
+                        else
+                            setVerifyAcomodacao(false)
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
                 setLoaded(true)
             })
             .catch(err => console.log(err))
 
         await permissoes()
     }
+
 
     async function deletarAcomodacao(id: number) {
         await fetch(`${apiURL}/acomodacao/${id}/del`, {
@@ -131,7 +146,17 @@ export default function Acomodacoes() {
                     <h3 className="text-3xl font-semibold">Acomodações</h3>
                     {showNotify && <Notify type={notify.type} text={notify.text} />}
                     <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#003447] hover:bg-[#325B6A] hover:shadow-md shadow-black'
-                        onClick={() => setCadastrarAcomodacao(true)}
+                        onClick={() => {
+                            if (verifyAcomodacao)
+                                setCadastrarAcomodacao(true)
+                            else {
+                                setNotify({ type: 2, text: 'Seu plano não permite ter mais acomodações!' })
+                                setShowNotify(true)
+                                setTimeout(() => {
+                                    setShowNotify(false);
+                                }, 3000)
+                            }
+                        }}
                         disabled={!(permissao >= 2)}>Cadastrar Acomodação</button>
                     {cadastrarAcomodacao && <CadastrarAcomodacao close={() => setCadastrarAcomodacao(false)} />}
                 </div>
@@ -210,9 +235,17 @@ export default function Acomodacoes() {
                                             <div className={`bg-[${e?.tipo == 'proprio' ? '#1266B5' : '#3A8E71'}] w-2 h-2 rounded-full`}></div>
                                             <div className={`uppercase text-xs font-semibold text-[${e?.tipo == 'proprio' ? '#1266B5' : '#3A8E71'}]`} style={{ lineHeight: 'normal', fontSize: '10px' }}>{e?.tipo}</div>
                                         </div>
-                                        <button className="hover:bg-green-200 bg-transparent p-1 rounded-lg transition-all duration-200" onClick={(event) => {
+                                        <button className="hover:bg-green-200 bg-transparent p-1 rounded-lg transition-all duration-200" onClick={async (event) => {
                                             event.stopPropagation()
-                                            desativar(e.id, false)
+                                            if (verifyAcomodacao)
+                                                desativar(e.id, false)
+                                            else {
+                                                setNotify({ type: 2, text: 'Seu plano não permite ter mais acomodações!' })
+                                                setShowNotify(true)
+                                                setTimeout(() => {
+                                                    setShowNotify(false);
+                                                }, 3000)
+                                            }
                                         }}
                                             disabled={!(permissao >= 3)}>
                                             <svg className="feather feather-trash w-7 h-fit" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 512 512"><g><path d="M497.36 69.995c-7.532-7.545-19.753-7.558-27.285-.032L238.582 300.845l-83.522-90.713c-7.217-7.834-19.419-8.342-27.266-1.126-7.841 7.217-8.343 19.425-1.126 27.266l97.126 105.481a19.273 19.273 0 0 0 13.784 6.22c.141.006.277.006.412.006a19.317 19.317 0 0 0 13.623-5.628L497.322 97.286c7.551-7.525 7.564-19.746.038-27.291z" fill="#00dd00" opacity="1" data-original="#000000"></path><path d="M492.703 236.703c-10.658 0-19.296 8.638-19.296 19.297 0 119.883-97.524 217.407-217.407 217.407-119.876 0-217.407-97.524-217.407-217.407 0-119.876 97.531-217.407 217.407-217.407 10.658 0 19.297-8.638 19.297-19.296C275.297 8.638 266.658 0 256 0 114.84 0 0 114.84 0 256c0 141.154 114.84 256 256 256 141.154 0 256-114.846 256-256 0-10.658-8.638-19.297-19.297-19.297z" fill="#00dd00" opacity="1" data-original="#000000"></path></g></svg>
