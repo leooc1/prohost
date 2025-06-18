@@ -32,8 +32,8 @@ export default function EvolucaoNegocio({ mes, ano, dadosLucros, dadosDespesas }
                             backgroundColor: '#09CF9A',
                             fill: false,
                             tension: 0.3,
-                            pointRadius: 5, // Tamanho normal dos pontos
-                            pointHoverRadius: 8, // Tamanho dos pontos ao passar o mouse
+                            pointRadius: 5, 
+                            pointHoverRadius: 8, 
                         },
                         {
                             label: 'Despesas do Negócio',

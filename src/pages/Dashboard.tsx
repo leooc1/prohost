@@ -685,30 +685,28 @@ export default function Dashboard() {
           {periodo == 'personalizado' ? <>
             <label htmlFor="de" className="flex flex-col text-zinc-600 font-medium text-sm">
               De:
-              <input type="date" name="de" id="de" value={deData} onChange={(e) => {
-                if (new Date(e.target.value) >= new Date(ateData)) {
-                  const newDate = new Date(e.target.value)
-                  newDate.setDate(newDate.getDate() + 1)
-                  const dataFormatada = newDate.toISOString().split('T')[0]
-                  setAteData(dataFormatada)
-                }
-                setDeData(e.target.value)
-              }} className="border border-zinc-300 rounded-md px-1 py-1 w-32 outline-none text-base" />
+              <input type="date" name="de" id="de" defaultValue={deData} className="border border-zinc-300 rounded-md px-1 py-1 w-32 outline-none text-base" />
             </label>
             <label htmlFor="ate" className="flex flex-col text-zinc-600 font-medium text-sm">
               Até:
-              <input type="date" name="ate" id="ate" value={ateData} onChange={(e) => {
-                if (new Date(deData) >= new Date(e.target.value)) {
-                  {
-                    const newDate = new Date(e.target.value)
-                    newDate.setDate(newDate.getDate() - 1)
-                    const dataFormatada = newDate.toISOString().split('T')[0]
-                    setDeData(dataFormatada)
-                  }
-                }
-                setAteData(e.target.value)
-              }} className="border border-zinc-300 rounded-md px-1 py-1 w-32 outline-none text-base" />
+              <input type="date" name="ate" id="ate" defaultValue={ateData} className="border border-zinc-300 rounded-md px-1 py-1 w-32 outline-none text-base" />
             </label>
+            <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 h-9 self-end font-medium text-white bg-primary hover:shadow-md shadow-black'
+              onClick={() => {
+                const inputDe = document.getElementById('de') as HTMLInputElement
+                const inputAte = document.getElementById('ate') as HTMLInputElement
+                if (new Date(inputDe.value) >= new Date(inputAte.value)) {
+                  const newDate = new Date(inputDe.value)
+                  newDate.setDate(newDate.getDate() + 1)
+                  const dataFormatada = newDate.toISOString().split('T')[0]
+                  setDeData(inputDe.value)
+                  inputAte.value = dataFormatada
+                  setAteData(dataFormatada)
+                } else {
+                  setDeData(inputDe.value)
+                  setAteData(inputAte.value)
+                }
+              }}>Aplicar filtro</button>
           </> : null}
           <div>
             <p className="text-zinc-600 font-medium text-sm">Exibindo resultados de</p>
@@ -754,8 +752,6 @@ export default function Dashboard() {
             </select>
           </label>
         </div> : null}
-        {/*  */}
-        {/*  */}
         {sessao == 0 && indiOpe ?
           <section className="grid gap-5 mb-24 grid-cols-3 grid-rows-5 h-[600px]">
             <div className="relative bg-white border-zinc-300 border rounded-lg flex flex-col justify-between items-center row-span-2 py-1 h-full">
@@ -870,6 +866,7 @@ export default function Dashboard() {
               <FaturamentoCanal labels={movimentacao.map(m => m.nome)}
                 dados={movimentacao.map(m => m.valor_liq)} colors={movimentacao.map(m => m.cor)} />
             </div>
+            {/*  */}
             <div className="bg-white border-zinc-300 border rounded-lg flex flex-col items-center h-full row-span-5">
               <p className="flex flex-col text-zinc-400 font-medium text-sm mb-16 mt-3">Faturamento X Despesas</p>
               {periodo == 'm-atual' ? <FaturamentoxDespesa
@@ -889,9 +886,9 @@ export default function Dashboard() {
                 dadosPassado={ordenarGraf(0, faturamento).map(fat => Number(fat.despesa))}
                 mes={0} /> : null}
               {periodo == 'personalizado' ? <FaturamentoxDespesa
-                dadosAtuais={ordenarGraf(0, faturamento).map(fat => Number(fat.receita))}
-                dadosPassado={ordenarGraf(0, faturamento).map(fat => Number(fat.despesa))}
-                mes={0} /> : null}
+                dadosAtuais={ordenarGraf(new Date(new Date(deData).setDate(new Date(deData).getDate() +1)).getMonth(), faturamento).map(fat => Number(fat.receita))}
+                dadosPassado={ordenarGraf(new Date(new Date(deData).setDate(new Date(deData).getDate() +1)).getMonth(), faturamento).map(fat => Number(fat.despesa))}
+                mes={new Date(new Date(deData).setDate(new Date(deData).getDate() +1)).getMonth()} /> : null}
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center">
               <div className="bg-[#D8D8D8] rounded-md w-fit py-2 px-2 ml-4">
@@ -930,6 +927,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
+            {/*  */}
             <div className="bg-white border-zinc-300 border rounded-lg flex flex-col items-center h-full row-span-5">
               <p className="flex flex-col text-zinc-400 font-medium text-sm mb-16 mt-3">Comparativo de Faturamento Líquido</p>
               {periodo == 'm-atual' ? <FaturamentoLiquido
@@ -945,8 +943,8 @@ export default function Dashboard() {
                 dadosAtuais={ordenarGraf(0, faturamento).map(fat => Number(fat.receita))}
                 dadosPassado={ordenarGraf(0, faturamento).map(fat => Number(fat.receita_ano_anterior))} mes={0} /> : null}
               {periodo == 'personalizado' ? <FaturamentoLiquido
-                dadosAtuais={ordenarGraf(0, faturamento).map(fat => Number(fat.receita))}
-                dadosPassado={ordenarGraf(0, faturamento).map(fat => Number(fat.receita_ano_anterior))} mes={0} /> : null}
+                dadosAtuais={ordenarGraf(new Date(new Date(deData).setDate(new Date(deData).getDate() +1)).getMonth(), faturamento).map(fat => Number(fat.receita))}
+                dadosPassado={ordenarGraf(new Date(new Date(deData).setDate(new Date(deData).getDate() +1)).getMonth(), faturamento).map(fat => Number(fat.receita_ano_anterior))} mes={new Date(new Date(deData).setDate(new Date(deData).getDate() +1)).getMonth()} /> : null}
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center">
               <div className="bg-[#FCE0E1] rounded-md w-fit py-2 px-2 ml-4">

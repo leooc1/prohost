@@ -27,14 +27,20 @@ export default function FaturamentoLiquido({ mes, dadosAtuais, dadosPassado }: {
                             data: dadosAtuais,
                             borderColor: '#033C50',
                             backgroundColor: '#033C50',
-                            borderRadius: 5
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: 5, 
+                            pointHoverRadius: 8,
                         },
                         {
                             label: 'Faturamento do Ano Anterior',
                             data: dadosPassado,
                             borderColor: '#08CE99',
                             backgroundColor: '#08CE99',
-                            borderRadius: 5
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: 5, 
+                            pointHoverRadius: 8,
                         }
                     ]
                 };
@@ -53,7 +59,8 @@ export default function FaturamentoLiquido({ mes, dadosAtuais, dadosPassado }: {
                             },
                             grid: {
                                 display: false
-                            }
+                            },
+                            grace: '10%'
                         }
                     },
                     plugins: {

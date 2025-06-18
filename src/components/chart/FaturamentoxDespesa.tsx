@@ -27,14 +27,20 @@ export default function FaturamentoxDespesa({ mes, dadosAtuais, dadosPassado }: 
                             data: dadosAtuais,
                             borderColor: '#033C50',
                             backgroundColor: '#033C50',
-                            borderRadius: 5
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: 5, 
+                            pointHoverRadius: 8,
                         },
                         {
                             label: 'Despesas do Ano',
                             data: dadosPassado,
                             borderColor: '#ED3E44',
                             backgroundColor: '#ED3E44',
-                            borderRadius: 5
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: 5, 
+                            pointHoverRadius: 8,
                         }
                     ]
                 };
@@ -52,9 +58,10 @@ export default function FaturamentoxDespesa({ mes, dadosAtuais, dadosPassado }: 
                                 display: false,
                             },
                             grid: {
-                                display: false
-                            }
-                        }
+                                display: false,
+                            },
+                            grace: '10%'
+                        },
                     },
                     plugins: {
                         legend: {
@@ -64,7 +71,7 @@ export default function FaturamentoxDespesa({ mes, dadosAtuais, dadosPassado }: 
                             labels: {
                                 boxWidth: 40,
                                 boxHeight: 15,
-                            }
+                            },
                         },
                         tooltip: {
                             callbacks: {
@@ -78,7 +85,7 @@ export default function FaturamentoxDespesa({ mes, dadosAtuais, dadosPassado }: 
                         },
                         datalabels: {
                             display: function (context: any) {
-                                return context.dataset.data[context.dataIndex] != 0;
+                                return context.dataset.data[context.dataIndex] !== 0;
                             },
                             formatter: (value: number) => {
                                 return `R$ ${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)}`;
@@ -87,12 +94,12 @@ export default function FaturamentoxDespesa({ mes, dadosAtuais, dadosPassado }: 
                             anchor: 'end',
                             align: 'top',
                             backgroundColor: '',
-                            borderRadius: 2,
+                            borderRadius: 3,
                             font: {
                                 weight: 'medium',
-                                size: 6
+                                size: 6,
                             },
-                        }
+                        },
                     },
                 };
 
@@ -107,11 +114,11 @@ export default function FaturamentoxDespesa({ mes, dadosAtuais, dadosPassado }: 
                 };
             }
         }
-    }, []);
+    }, [mes]);
 
     return (
         <div className='h-72 w-full'>
-            <canvas ref={chartRef}></canvas>
+            <canvas className='' ref={chartRef}></canvas>
         </div>
     );
 }
