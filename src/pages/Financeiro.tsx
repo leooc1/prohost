@@ -361,6 +361,10 @@ export default function Financeiro() {
     }, [listagem, dataToken])
 
     useEffect(() => {
+        setTipoDespesaFilter('all')
+    }, [session])
+    
+    useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const acfil = params.get("acfil") || 'all';
         if (filterAC == 'all' && acfil != 'all')
@@ -502,15 +506,25 @@ export default function Financeiro() {
                                     }} className="border border-zinc-300 rounded-md h-9 px-1 py-1 w-32 outline-none text-base" />
                                 </label>
                             </> : null}
+                            {session == 2 && <label htmlFor="despesas-tipo" className={`flex flex-col text-zinc-600 font-medium text-sm`}>
+                                Tipo:
+                                <select name="despesas-tipo" id="despesas-tipo" value={tipoDespesaFilter} className={`border border-zinc-300 rounded-md px-2 py-1 h-9 outline-none text-base`} onChange={(e) => {
+                                    if (e.target.value == 'Despesas do Negócio') {
+                                        setFilterAC('all')
+                                    }
+                                    setTipoDespesaFilter(e.target.value)
+                                }}>
+                                    <option value="all">Todas</option>
+                                    <option value="Despesas do Negócio">Do Negócio</option>
+                                    <option value="Despesas Fixas">Fixas</option>
+                                    <option value="Despesas Variáveis">Variáveis</option>
+                                </select>
+                            </label>}
                             <label htmlFor="acomodacao" className={`flex flex-col text-zinc-600 font-medium text-sm`}>
                                 Acomodação
-                                <select name="acomodacao" id="acomodacao" className={`border border-zinc-300 rounded-md px-2 py-1 h-9 outline-none text-base`} value={filterAC}
+                                <select name="acomodacao" id="acomodacao" className={`border border-zinc-300 rounded-md px-2 py-1 h-9 outline-none text-base`} value={(tipoDespesaFilter == 'Despesas do Negócio' && session == 2) ? 'all' : filterAC} disabled={(tipoDespesaFilter == 'Despesas do Negócio' && session == 2)}
                                     onChange={(e) => {
                                         setFilterAC(e.target.value)
-                                        /*  if (e.target.value != 'all') {
-                                             setmovimentacoes(movimentacoes.filter(mov => mov?.acomodacao?.id == Number(e.target.value)))
-                                         } else
-                                             setmovimentacoes(movimentacoes) */
                                     }}>
                                     <option value="all" selected>Todas</option>
                                     {acomodacao.map(a => <option value={`${a.id}`}>{a.nome}</option>)}
@@ -676,23 +690,6 @@ export default function Financeiro() {
                     )}
                     {session == 2 && listagem && (
                         <div className='mt-4'>
-                            <div className="flex justify-between items-center mb-2">
-                                <div className='flex items-center gap-4'>
-                                    <label htmlFor="despesa-search" className="flex flex-col relative w-fit">
-                                        <svg className="w-4 h-fit absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56.966 56.966"><g><path d="M55.146 51.887 41.588 37.786A22.926 22.926 0 0 0 46.984 23c0-12.682-10.318-23-23-23s-23 10.318-23 23 10.318 23 23 23c4.761 0 9.298-1.436 13.177-4.162l13.661 14.208c.571.593 1.339.92 2.162.92.779 0 1.518-.297 2.079-.837a3.004 3.004 0 0 0 .083-4.242zM23.984 6c9.374 0 17 7.626 17 17s-7.626 17-17 17-17-7.626-17-17 7.626-17 17-17z" fill="#888888" opacity="1"></path></g></svg>
-                                        <input type="text" name="despesa-search" id="despesa-search" placeholder="Buscar despesa..." className="pl-9 border border-zinc-300 rounded-md h-8 px-2 py-1 outline-none" onChange={(e) => setLDespesa(e.target.value)} />
-                                    </label>
-                                    <label htmlFor="despesas-tipo" className="flex items-center gap-2 text-sm font-medium text-zinc-600">
-                                        Tipo:
-                                        <select name="despesas-tipo" id="despesas-tipo" value={tipoDespesaFilter} className={`border border-zinc-300 rounded-md px-2 py-1 h-8 outline-none text-md font-normal`} onChange={(e) => setTipoDespesaFilter(e.target.value)}>
-                                            <option value="all">Todas</option>
-                                            <option value="Despesas do Negócio">Do Negócio</option>
-                                            <option value="Despesas Fixas">Fixas</option>
-                                            <option value="Despesas Variáveis">Variáveis</option>
-                                        </select>
-                                    </label>
-                                </div>
-                            </div>
                             <ListaMovimentacoes ids={ids} saas={dataToken?.id} movimentacoes={processedMovimentacoes} >
 
                                 <SortControls />
