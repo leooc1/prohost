@@ -60,7 +60,7 @@ interface Reserva {
 //const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function NovaReserva({ close }: { close: () => void }) {
-    const apiURL = 'http://localhost:3000'
+    const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
     const [canais, setCanais] = useState<Canais[]>([])

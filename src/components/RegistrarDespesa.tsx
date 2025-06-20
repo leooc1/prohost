@@ -58,7 +58,7 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify }: {
         obs: string;
     }, idNotify?: string | null
 }) {
-    const apiURL = 'http://localhost:3000'
+    const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
 
     const [tipoDespesa, setTipoDespesa] = useState('')

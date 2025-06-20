@@ -4,7 +4,7 @@ import Notify from "../components/notify/Notify"
 import { SideBarContext } from "../contexts/SideBarMenuContext"
 
 export default function MinhaConta() {
-    const apiURL = 'http://localhost:3000'
+    const apiURL = 'https://api.prohost.net.br'
     useEffect(() => { document.title = 'Minha conta | Prohost' }, [])
 
 

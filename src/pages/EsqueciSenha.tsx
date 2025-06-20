@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 interface ApiResponse { success: boolean; message?: string }
 
 export default function ResetarSenha() {
-    const apiURL = 'http://localhost:3000'
+    const apiURL = 'https://api.prohost.net.br'
     const navigate = useNavigate();
     const { search } = useLocation();              // <── lê ?token=…&id=…
     const query = new URLSearchParams(search);

@@ -4,7 +4,7 @@ import Notify from "../notify/Notify"
 
 
 export default function CartaoCredito() {
-        const apiURL = 'http://localhost:3000'
+        const apiURL = 'https://api.prohost.net.br'
         const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
 
