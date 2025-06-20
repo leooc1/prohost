@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import Comparativo from "../components/Comparativo";
-import DesempenhoDiarias from "../components/chart/DesempenhoDiarias";
+// import DesempenhoDiarias from "../components/chart/DesempenhoDiarias";
 import ReservasCanal from "../components/chart/ReservasCanal";
 import OcupacaoMedia from "../components/chart/OcupacaoMedia";
 import FaturamentoCanal from "../components/chart/FaturamentoCanal";
@@ -97,11 +97,11 @@ export default function Dashboard() {
     tipo_reserva: string
     valor_liq: number
   }[]>([])
-  const [desempenhoDiarias, setDesempenhoDiarias] = useState<{
+ /*  const [desempenhoDiarias, setDesempenhoDiarias] = useState<{
     reservadas: number,
     indisponiveis: number,
     ociosas: number
-  }>()
+  }>() */
   const [faturamento, setFaturamento] = useState<{
     mes: string
     receita: string
@@ -389,14 +389,14 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`${apiURL}/reserva/${dataToken.id}/desempenho/${dataBW[0]}/${dataBW[1]}`, {
+      /* await fetch(`${apiURL}/reserva/${dataToken.id}/desempenho/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
         .then((data) => {
           setDesempenhoDiarias(data)
         })
-        .catch(err => console.log(err))
+        .catch(err => console.log(err)) */
 
       await fetch(`${apiURL}/movimentacao/${dataToken.id}/ocupacao-semana/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
@@ -469,14 +469,14 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`${apiURL}/reserva/${dataToken.id}/desempenho/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
+      /* await fetch(`${apiURL}/reserva/${dataToken.id}/desempenho/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
         .then((data) => {
           setDesempenhoDiarias(data)
         })
-        .catch(err => console.log(err))
+        .catch(err => console.log(err)) */
 
       await fetch(`${apiURL}/movimentacao/${dataToken.id}/ocupacao-semana/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
