@@ -6,7 +6,7 @@ import politica from '../../../public/politica-de-privacidade.pdf'
 import Notify from "../notify/Notify"
 
 export default function Cadastro() {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = 'http://localhost:3000'
     const { planoDTO } = useContext(AssinaturaContext)
     const [button, setButton] = useState(false)
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })

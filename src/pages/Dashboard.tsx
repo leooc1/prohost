@@ -774,10 +774,16 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <div className="bg-white border-zinc-300 border rounded-lg h-44 flex flex-col justify-between items-center py-1 row-span-2" >
+            {/* Desempenho das Diárias */}
+            {/* <div className="bg-white border-zinc-300 border rounded-lg h-44 flex flex-col justify-between items-center py-1 row-span-2" >
               <p className="flex flex-col text-zinc-400 font-medium text-sm">Desempenho das Diárias</p>
               <DesempenhoDiarias
                 dados={[desempenhoDiarias?.reservadas || 0, desempenhoDiarias?.ociosas || 0, desempenhoDiarias?.indisponiveis || 0]} />
+            </div> */}
+            {/* Reserva por canal */}
+            <div className="bg-white border-zinc-300 border rounded-lg h-64 -translate-y-0 flex flex-col justify-between items-center py-1 row-span-3" >
+              <p className="flex flex-col text-zinc-400 font-medium text-sm">Reservas por Canal</p>
+              <ReservasCanal labels={reservaCanal.length > 0 ? reservaCanal.map(r => r.nome) : ['']} dados={reservaCanal.length > 0 ? reservaCanal.map(r => Number(r.num_reserva)) : [1]} colors={reservaCanal.length > 0 ? reservaCanal.map(r => r.cor) : ['#cccccc']} />
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg flex items-center" >
               <div className="bg-[#E9F7FD] rounded-md w-fit py-2 px-2 ml-4">
@@ -823,10 +829,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <div className="bg-white border-zinc-300 border rounded-lg h-44 -translate-y-12 flex flex-col justify-between items-center py-1 row-span-2" >
-              <p className="flex flex-col text-zinc-400 font-medium text-sm">Reservas por Canal</p>
-              <ReservasCanal labels={reservaCanal.length > 0 ? reservaCanal.map(r => r.nome) : ['']} dados={reservaCanal.length > 0 ? reservaCanal.map(r => Number(r.num_reserva)) : [1]} colors={reservaCanal.length > 0 ? reservaCanal.map(r => r.cor) : ['#cccccc']} />
-            </div>
+
             <div className="bg-white border-zinc-300 border rounded-lg flex items-center" >
               <div className="bg-[#FDE3E4] rounded-md w-fit py-2 px-2 ml-4">
                 <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ED3E44"><path d="M9 3V1H7V3H3C2.44772 3 2 3.44772 2 4V20C2 20.5523 2.44772 21 3 21H21C21.5523 21 22 20.5523 22 20V4C22 3.44772 21.5523 3 21 3H17V1H15V3H9ZM4 10H20V19H4V10ZM4 5H7V6H9V5H15V6H17V5H20V8H4V5ZM9.87862 10.9644L12 13.0858L14.1212 10.9644L15.5355 12.3785L13.4142 14.5001L15.5354 16.6212L14.1213 18.0354L12 15.9143L9.87855 18.0354L8.46442 16.6211L10.5857 14.5001L8.46436 12.3785L9.87862 10.9644Z"></path></svg>
@@ -839,6 +842,12 @@ export default function Dashboard() {
                     atual={comparativoIO.atual?.total_indisponivel ? Number(comparativoIO.atual?.total_indisponivel) : 0} />
                 </div>
               </div>
+            </div>
+            {/* Quantidade de hospede */}
+            <div className="bg-white border-zinc-300 border rounded-lg h-64 -translate-y-14 flex flex-col justify-between items-center py-1 row-span-3" >
+              <p className="flex flex-col text-zinc-400 font-medium text-sm">Quantidade de hospedes</p>
+              <QtdeHospede labels={qtdHospede.length > 0 ? qtdHospede.map(h => String(h.qtd_hospede)) : ['']} dados={qtdHospede.length > 0 ? qtdHospede.map(h => Number(h.qtd_reserva)) : [1]} colors={qtdHospede.length > 0 ? ['#5ec8de', '#5c89b4', '#e36a5f', '#e59b96', '#f5cf69', '#f1d334', '#da2e97', '#f46bd6', '#c169fe', '#43b9ff', '#efc25d', '#f06788', '#69b2f0', '#5ef1db', '#51e853']
+                : ['#cccccc']} />
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center" >
               <div className="bg-[#F2F2F2] rounded-md w-fit py-2 px-2 ml-4">
@@ -853,11 +862,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <div className="bg-white border-zinc-300 border rounded-lg h-44 -translate-y-24 flex flex-col justify-between items-center py-1" >
-              <p className="flex flex-col text-zinc-400 font-medium text-sm">Quantidade de hospedes</p>
-              <QtdeHospede labels={qtdHospede.length > 0 ? qtdHospede.map(h => String(h.qtd_hospede)) : ['']} dados={qtdHospede.length > 0 ? qtdHospede.map(h => Number(h.qtd_reserva)) : [1]} colors={qtdHospede.length > 0 ? ['#5ec8de', '#5c89b4', '#e36a5f', '#e59b96', '#f5cf69', '#f1d334', '#da2e97', '#f46bd6', '#c169fe', '#43b9ff', '#efc25d', '#f06788', '#69b2f0', '#5ef1db', '#51e853']
-                : ['#cccccc']} />
-            </div>
+
           </section> : null}
         {sessao == 1 && resAc ?
           <section className="grid gap-5 mb-10 grid-rows-10" style={{ gridTemplateColumns: '1fr 2fr' }}>
@@ -886,9 +891,9 @@ export default function Dashboard() {
                 dadosPassado={ordenarGraf(0, faturamento).map(fat => Number(fat.despesa))}
                 mes={0} /> : null}
               {periodo == 'personalizado' ? <FaturamentoxDespesa
-                dadosAtuais={ordenarGraf(new Date(new Date(deData).setDate(new Date(deData).getDate() +1)).getMonth(), faturamento).map(fat => Number(fat.receita))}
-                dadosPassado={ordenarGraf(new Date(new Date(deData).setDate(new Date(deData).getDate() +1)).getMonth(), faturamento).map(fat => Number(fat.despesa))}
-                mes={new Date(new Date(deData).setDate(new Date(deData).getDate() +1)).getMonth()} /> : null}
+                dadosAtuais={ordenarGraf(new Date(new Date(deData).setDate(new Date(deData).getDate() + 1)).getMonth(), faturamento).map(fat => Number(fat.receita))}
+                dadosPassado={ordenarGraf(new Date(new Date(deData).setDate(new Date(deData).getDate() + 1)).getMonth(), faturamento).map(fat => Number(fat.despesa))}
+                mes={new Date(new Date(deData).setDate(new Date(deData).getDate() + 1)).getMonth()} /> : null}
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center">
               <div className="bg-[#D8D8D8] rounded-md w-fit py-2 px-2 ml-4">
@@ -943,8 +948,8 @@ export default function Dashboard() {
                 dadosAtuais={ordenarGraf(0, faturamento).map(fat => Number(fat.receita))}
                 dadosPassado={ordenarGraf(0, faturamento).map(fat => Number(fat.receita_ano_anterior))} mes={0} /> : null}
               {periodo == 'personalizado' ? <FaturamentoLiquido
-                dadosAtuais={ordenarGraf(new Date(new Date(deData).setDate(new Date(deData).getDate() +1)).getMonth(), faturamento).map(fat => Number(fat.receita))}
-                dadosPassado={ordenarGraf(new Date(new Date(deData).setDate(new Date(deData).getDate() +1)).getMonth(), faturamento).map(fat => Number(fat.receita_ano_anterior))} mes={new Date(new Date(deData).setDate(new Date(deData).getDate() +1)).getMonth()} /> : null}
+                dadosAtuais={ordenarGraf(new Date(new Date(deData).setDate(new Date(deData).getDate() + 1)).getMonth(), faturamento).map(fat => Number(fat.receita))}
+                dadosPassado={ordenarGraf(new Date(new Date(deData).setDate(new Date(deData).getDate() + 1)).getMonth(), faturamento).map(fat => Number(fat.receita_ano_anterior))} mes={new Date(new Date(deData).setDate(new Date(deData).getDate() + 1)).getMonth()} /> : null}
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center">
               <div className="bg-[#FCE0E1] rounded-md w-fit py-2 px-2 ml-4">

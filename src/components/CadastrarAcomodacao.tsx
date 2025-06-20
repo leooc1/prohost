@@ -20,7 +20,7 @@ interface Acomodacao {
 }
 
 export default function CadastrarAcomodacao({ close }: { close: () => void }) {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = 'http://localhost:3000'
     const { dataToken } = useContext(SideBarContext)
     const [qtdMaxHospede, setQtdMaxHospede] = useState(1)
     const [tipo, setTipo] = useState('')

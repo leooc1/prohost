@@ -25,22 +25,16 @@ export default function FaturamentoLiquido({ mes, dadosAtuais, dadosPassado }: {
                         {
                             label: 'Faturamento do Ano',
                             data: dadosAtuais,
-                            borderColor: '#033C50',
+
                             backgroundColor: '#033C50',
-                            fill: false,
-                            tension: 0.3,
-                            pointRadius: 5, 
-                            pointHoverRadius: 8,
+                            borderRadius: 5
                         },
                         {
                             label: 'Faturamento do Ano Anterior',
                             data: dadosPassado,
-                            borderColor: '#08CE99',
+
                             backgroundColor: '#08CE99',
-                            fill: false,
-                            tension: 0.3,
-                            pointRadius: 5, 
-                            pointHoverRadius: 8,
+                            borderRadius: 5
                         }
                     ]
                 };
@@ -59,8 +53,7 @@ export default function FaturamentoLiquido({ mes, dadosAtuais, dadosPassado }: {
                             },
                             grid: {
                                 display: false
-                            },
-                            grace: '10%'
+                            }
                         }
                     },
                     plugins: {
@@ -92,8 +85,8 @@ export default function FaturamentoLiquido({ mes, dadosAtuais, dadosPassado }: {
                             },
                             color: '#000',
                             anchor: 'end',
-                            align: 'top',
-                            backgroundColor: '',
+                            align: 'bottom',
+                            backgroundColor: '#E6ECEF',
                             borderRadius: 2,
                             font: {
                                 weight: 'medium',
@@ -104,8 +97,8 @@ export default function FaturamentoLiquido({ mes, dadosAtuais, dadosPassado }: {
                 };
 
                 const myBarChart = new Chart(ctx, {
-                    // type: 'bar',
-                    type: 'line',
+                    type: 'bar',
+                    // type: 'line',
                     data: data,
                     options: options,
                 });

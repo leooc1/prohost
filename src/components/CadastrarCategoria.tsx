@@ -13,7 +13,7 @@ interface CategoriaFinanceiro {
 }
 
 export default function CadastrarCategoria({ close, permissao }: { close: () => void, permissao: number }) {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = 'http://localhost:3000'
     const { dataToken } = useContext(SideBarContext)
     const [mov, setMov] = useState(false)
     const [color, setColor] = useState('#bdc3c7')

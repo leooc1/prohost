@@ -81,7 +81,7 @@ export default function ReservasCanal({ labels, dados, colors }: { labels: strin
     }, []);
 
     return (
-        <div className='h-28 w-full'>
+        <div className='h-40 w-full'>
             <canvas ref={chartRef}></canvas>
         </div>
     );

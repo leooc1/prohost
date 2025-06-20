@@ -81,7 +81,7 @@ export default function QtdeHospede({ labels, dados, colors }: { labels: string[
     }, []);
 
     return (
-        <div className='h-28 w-full'>
+        <div className='h-40 w-full'>
             <canvas ref={chartRef}></canvas>
         </div>
     );

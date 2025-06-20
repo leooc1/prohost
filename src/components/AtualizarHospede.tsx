@@ -13,7 +13,7 @@ interface Hospede {
 
 
 export default function AtualizarHospede({ close, id }: { close: () => void, id: number }) {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = 'http://localhost:3000'
     const { dataToken } = useContext(SideBarContext)
     const [nome, setNome] = useState<string>('')
     const [email, setEmail] = useState<string | null>()

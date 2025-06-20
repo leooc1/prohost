@@ -48,6 +48,12 @@ export default function FaturamentoxDespesa({ mes, dadosAtuais, dadosPassado }: 
                 const options: any = {
                     responsive: true,
                     maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            left: 30,
+                            right: 30,
+                        }
+                    },
                     scales: {
                         x: {
                             beginAtZero: true,

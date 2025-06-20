@@ -51,6 +51,12 @@ export default function EvolucaoNegocio({ mes, ano, dadosLucros, dadosDespesas }
                 const options: any = {
                     responsive: true,
                     maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            left: 30,
+                            right: 30,
+                        }
+                    },
                     scales: {
                         x: {
                             beginAtZero: true,
@@ -63,6 +69,7 @@ export default function EvolucaoNegocio({ mes, ano, dadosLucros, dadosDespesas }
                             grid: {
                                 display: false,
                             },
+                            grace: '10%'
                         },
                     },
                     plugins: {

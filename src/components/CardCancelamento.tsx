@@ -10,7 +10,7 @@ interface propsCancelamento {
 // //const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function CardCancelamento(props: propsCancelamento) {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = 'http://localhost:3000'
     const [possuiTaxa, setPossuiTaxa] = useState<boolean>(false)
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)

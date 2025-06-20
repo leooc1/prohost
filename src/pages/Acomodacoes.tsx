@@ -24,7 +24,7 @@ interface Acomodacao {
 
 
 export default function Acomodacoes() {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = 'http://localhost:3000'
     useEffect(() => { document.title = 'Acomodações | Prohost' }, [])
 
 

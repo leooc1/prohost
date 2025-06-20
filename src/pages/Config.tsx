@@ -8,7 +8,7 @@ import MelhorarPlanos from "../components/MelhorarPlanos";
 export default function Config() {
     useEffect(() => { document.title = `Assinatura | Prohost` }, [])
 
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = 'http://localhost:3000'
     const { statusData, dataToken } = useContext(SideBarContext)
     const [session, setSession] = useState(0)
     const [qtdAcomodacao, setQtdAcomodacao] = useState('1')

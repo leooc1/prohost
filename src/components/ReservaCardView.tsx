@@ -55,7 +55,7 @@ function formatedNumber(input: string) {
 }
 
 export default function ReservaCardView(props: propsReserva) {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = 'http://localhost:3000'
     const { dataToken } = useContext(SideBarContext)
     const [reserva, setReserva] = useState<Reserva>()
     const [idR, setIdR] = useState<number>(0)

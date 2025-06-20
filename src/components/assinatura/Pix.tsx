@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 
 
 export default function Pix() {
-        const apiURL = 'https://api.prohost.net.br'
+        const apiURL = 'http://localhost:3000'
 
     const [qr, setQr] = useState('')
     async function gerarQR(storage: string) {
