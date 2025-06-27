@@ -1,10 +1,3 @@
-// import timeGridPlugin from '@fullcalendar/timegrid';
-// import ptBrLocale from '@fullcalendar/core/locales/pt-br';
-// import dayGridPlugin from '@fullcalendar/daygrid';
-// import FullCalendar from "@fullcalendar/react";
-// import NovaIndisponibilidade from '../components/NovaIndisponibilidade';
-// import NovaReserva from '../components/NovaReserva';
-// import ReservaCardView from '../components/ReservaCardView';
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Loader from "../components/Loader";
@@ -33,7 +26,7 @@ interface Acomodacao {
 }
 
 export default function AcomodacoesDetalhes() {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = 'http://localhost:3000'
     const { dataToken } = useContext(SideBarContext)
     const [loaded, setLoaded] = useState(false)
     const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
@@ -417,30 +410,39 @@ export default function AcomodacoesDetalhes() {
                                 {periodo == 'personalizado' ? <>
                                     <label htmlFor="de" className="flex flex-col text-zinc-600 font-medium text-sm">
                                         De:
-                                        <input type="date" name="de" id="de" value={deData} onChange={(e) => {
-                                        if (new Date(e.target.value) >= new Date(ateData)) {
-                                            const newDate = new Date(e.target.value)
-                                            newDate.setDate(newDate.getDate() + 1)
-                                            const dataFormatada = newDate.toISOString().split('T')[0]
-                                            setAteData(dataFormatada)
-                                        }
-                                        setDeData(e.target.value)
-                                    }} className="border border-zinc-300 rounded-md px-1 py-1 w-32 outline-none text-base" />
+                                        <input type="date" name="de" id="de" defaultValue={deData} className="border border-zinc-300 rounded-md px-1 py-1 w-32 outline-none text-base" />
+
+
+
+
+
+
+
+
                                     </label>
                                     <label htmlFor="ate" className="flex flex-col text-zinc-600 font-medium text-sm">
                                         Até:
-                                        <input type="date" name="ate" id="ate" value={ateData} onChange={(e) => {
-                                        if (new Date(deData) >= new Date(e.target.value)) {
-                                            {
-                                                const newDate = new Date(e.target.value)
-                                                newDate.setDate(newDate.getDate() - 1)
-                                                const dataFormatada = newDate.toISOString().split('T')[0]
-                                                setDeData(dataFormatada)
-                                            }
-                                        }
-                                        setAteData(e.target.value)
-                                    }} className="border border-zinc-300 rounded-md px-1 py-1 w-32 outline-none text-base" />
+                                        <input type="date" name="ate" id="ate" defaultValue={ateData} className="border border-zinc-300 rounded-md px-1 py-1 w-32 outline-none text-base" />
                                     </label>
+                                    <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 h-9 self-end font-medium text-white bg-primary hover:shadow-md shadow-black'
+                                        onClick={() => {
+                                            const inputDe = document.getElementById('de') as HTMLInputElement
+                                            const inputAte = document.getElementById('ate') as HTMLInputElement
+                                            if (new Date(inputDe.value) >= new Date(inputAte.value)) {
+                                                const newDate = new Date(inputDe.value)
+                                                newDate.setDate(newDate.getDate() + 1)
+                                                const dataFormatada = newDate.toISOString().split('T')[0]
+                                                setDeData(inputDe.value)
+                                                inputAte.value = dataFormatada
+                                                setAteData(dataFormatada)
+                                            } else {
+                                                setDeData(inputDe.value)
+                                                setAteData(inputAte.value)
+                                            }
+                                        }}>Aplicar filtro</button>
+
+
+
                                 </> : null}
                             </div>
                             <div className='flex gap-2 items-center'>
@@ -663,7 +665,7 @@ export default function AcomodacoesDetalhes() {
                                             return {
                                                 html: `
                         <div class='flex overflow-hidden items-center flex-nowrap p-1 h-full relative gap-4'>
-                            <svg class="w-5 h-fit" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 2.54 2.54" fill-rule="#000000">
+                            <svg class="w-5 h-fit" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 2.54 2.54" fillRule="#000000">
                                 <g>
                                     <circle cx="1.27" cy="1.27" r="1.27" fill="#ffffff" opacity="1" data-original="#ffffff"></circle>
                                     <g fill="#000">
@@ -848,17 +850,28 @@ export default function AcomodacoesDetalhes() {
                                             const input = document.getElementById('input-file') as HTMLInputElement | null;
                                             const preview = document.getElementById('preview') as HTMLImageElement | null;
                                             const file = e.target.files?.[0];
-                                            if (file && preview) {
-                                                preview.classList.remove('hidden')
-                                                input?.classList.add('hidden')
-                                                const reader = new FileReader();
-                                                reader.onload = (event: ProgressEvent<FileReader>) => {
-                                                    if (event.target) {
-                                                        preview.src = event.target.result as string;
-                                                        setFoto(preview.src)
-                                                    }
-                                                };
-                                                reader.readAsDataURL(file);
+                                            if (file) {
+                                                if (file.size > 2 * 1024 * 1024) { // 2MB
+                                                    setNotify({ type: 2, text: 'A imagem deve ter no máximo 2MB!' });
+                                                    setShowNotify(true);
+                                                    setTimeout(() => setShowNotify(false), 3000);
+                                                    e.target.value = "";
+                                                    preview?.classList.add('hidden');
+                                                    input?.classList.remove('hidden');
+                                                    return;
+                                                }
+                                                if (preview) {
+                                                    preview.classList.remove('hidden')
+                                                    input?.classList.add('hidden')
+                                                    const reader = new FileReader();
+                                                    reader.onload = (event: ProgressEvent<FileReader>) => {
+                                                        if (event.target) {
+                                                            preview.src = event.target.result as string;
+                                                            setFoto(preview.src)
+                                                        }
+                                                    };
+                                                    reader.readAsDataURL(file);
+                                                }
                                             } else {
                                                 preview?.classList.add('hidden')
                                                 input?.classList.remove('hidden')
