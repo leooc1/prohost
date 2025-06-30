@@ -66,8 +66,8 @@ export default function Assinar() {
                     </button>
 
                     {location.pathname.includes('forma-pagamento') ||
-                    location.pathname.includes('credit-card') ||
-                    location.pathname.includes('pix') ? (
+                        location.pathname.includes('credit-card') ||
+                        location.pathname.includes('pix') ? (
                         <div className="flex gap-2">
                             <img src={prohostLogo} alt="Logo ProHost" width={48} height={48} />
                             <h1 className="text-white font-bold text-4xl tracking-tight">prohost</h1>
@@ -108,6 +108,14 @@ export default function Assinar() {
                                     <p className="text-2xl font-semibold">
                                         Bem vindo(a) novo(a) aluno(a)!<br />
                                         Você tem direito a 1 ano grátis de acesso ao sistema.
+                                    </p>
+                                </div>
+                            )}
+                            {origin === 'newAnfitriao' && (
+                                <div className="mt-5 text-zinc-100 flex items-center gap-4">
+                                    <p className="text-2xl font-semibold">
+                                        Parabéns, anfitrião!<br />
+                                        Você ganhou 1 mês gratuito para usar o ProHost, seja bem-vindo(a)
                                     </p>
                                 </div>
                             )}

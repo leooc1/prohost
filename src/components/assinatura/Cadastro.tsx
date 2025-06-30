@@ -165,7 +165,7 @@ export default function Cadastro() {
                     .then((data) => {
                         const origem = new URL(location.href).searchParams.get('origin') || ''
                         window.localStorage.setItem('ph_pay_acc', data)
-                        if (origem === 'newStudents' || origem === 'newClassmates') {
+                        if (origem === 'newStudents' || origem === 'newClassmates' || origem === 'newAnfitriao') {
                             location.assign('/auth')
                         } else {
                             location.assign('/assinar/forma-pagamento')
@@ -303,6 +303,8 @@ export default function Cadastro() {
                                     trial.setMonth(trial.getMonth() + 6);
                                 } else if (origem === 'newClassmates') {
                                     trial.setFullYear(trial.getFullYear() + 1);
+                                } else if (origem === 'newAnfitriao') {
+                                    trial.setMonth(trial.getMonth() + 1);
                                 }
                                 else {
                                     if (cycle == 'MONTHLY')
