@@ -11,6 +11,7 @@ export default function Cadastro() {
     const [button, setButton] = useState(false)
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
+    const [escolhaTrial, setEscolhaTrial] = useState<boolean>(false)
     const [ruas, setRuas] = useState<{ display_name: string }[]>([])
     const [cidade, setCidade] = useState<string>('')
     const [estado, setEstado] = useState<string>('')
@@ -47,12 +48,11 @@ export default function Cadastro() {
             })
             .catch(err => console.log(err))
     }
-    async function criarConta(saas: any, user: any) {
+    async function criarConta(saas: any, user: any, origem:string) {
         let idSaas = null
         let assinatura: any = null
         let pay: any = null
         let getPlano = null
-
 
         {
             await fetch(`${apiURL}/plano/${planoDTO.qtd_acomodacao}/${planoDTO.valor_ano}`, {
@@ -91,7 +91,6 @@ export default function Cadastro() {
         }
 
         if (getPlano) {
-            const origem = new URL(location.href).searchParams.get('origin') || ''
             await fetch(`${apiURL}/assinatura`, {
                 method: 'POST',
                 body: JSON.stringify({ user: user, plano: getPlano, origin: origem }),
@@ -117,7 +116,6 @@ export default function Cadastro() {
 
         if (assinatura) {
             {
-                const origem = new URL(location.href).searchParams.get('origin') || ''
                 await fetch(`${apiURL}/saas`, {
                     method: 'POST',
                     body: JSON.stringify({ ...saas, assinatura: assinatura.id, origin: origem }),
@@ -163,9 +161,8 @@ export default function Cadastro() {
                 })
                     .then(data => data.json())
                     .then((data) => {
-                        const origem = new URL(location.href).searchParams.get('origin') || ''
                         window.localStorage.setItem('ph_pay_acc', data)
-                        if (origem === 'newStudents' || origem === 'newClassmates' || origem === 'newAnfitriao') {
+                        if (origem === 'newStudents' || origem === 'newClassmates' || origem === 'newAnfitriao' || origem === 'trial15') {
                             location.assign('/auth')
                         } else {
                             location.assign('/assinar/forma-pagamento')
@@ -186,6 +183,98 @@ export default function Cadastro() {
 
     return (
         <section className="bg-white flex flex-col justify-center h-full py-20 md:py-0 md:min-w-min">
+            {escolhaTrial && <div className='w-screen h-screen fixed z-20 top-0 right-0'>
+                <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={() => { setEscolhaTrial(false) }}></div>
+                <section className="flex flex-col absolute min-w-80 max-w-[470px] px-9 gap-4 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-md py-6">
+                    <p className="text-center text-primary text-2xl font-semibold">Vamos começar?</p>
+                    <p className="text-center text-zinc-500">Você pode testar ProHost por 15 dias grátis em qualquer plano mensal, sem precisar inserir dados de pagamento.</p>
+                    <p className="text-center text-zinc-500">Ou, se preferir, já pode escolher e contratar seu plano agora mesmo.</p>
+                    <button className="bg-secondary border-2 border-secondary rounded-md p-2 mx-auto font-semibold w-10/12 text-white" onClick={() => {
+                        const celular = document.getElementById('celular') as HTMLInputElement
+                        const cpf_cnpj = document.getElementById('cpfCnpj') as HTMLInputElement
+                        const end_rua = document.getElementById('rua') as HTMLInputElement
+                        const end_num = document.getElementById('num') as HTMLInputElement
+                        const end_cep = document.getElementById('cep') as HTMLInputElement
+                        const nome = document.getElementById('nome') as HTMLInputElement
+                        const email = document.getElementById('email') as HTMLInputElement
+                        const senha = document.getElementById('senha') as HTMLInputElement
+                        const cycle = new URL(location.href).searchParams.get('cycle') || ''
+                        const trial = new Date();
+                         {
+                            if (cycle == 'MONTHLY')
+                                trial.setMonth(trial.getMonth() + 1);
+                            else
+                                trial.setFullYear(trial.getFullYear() + 1);
+                            trial.setDate(trial.getDate() + 15);
+                        }
+                        criarConta({
+                            assinatura: null,
+                            master: email.value,
+                            nome: nome.value,
+                            trial_end: trial.toISOString().split('T')[0],
+                            origin: 'trial15'
+                        },
+                            {
+                                asaas_id: '',
+                                celular: celular.value,
+                                cpf_cnpj: cpf_cnpj.value,
+                                end_rua: end_rua.value,
+                                end_num: end_num.value,
+                                end_bairro: bairro,
+                                end_comp: complemento,
+                                end_cep: end_cep.value,
+                                nome: nome.value,
+                                saas: undefined,
+                                email: email.value,
+                                senha: senha.value
+                            }
+                            ,'trial15'
+                        )
+                    }}>Testar dias grátis (sem cartão)</button>
+                    <button className="bg-primary border-2 border-primary rounded-md p-2 mx-auto font-semibold w-10/12 text-white" onClick={() => {
+                        const celular = document.getElementById('celular') as HTMLInputElement
+                        const cpf_cnpj = document.getElementById('cpfCnpj') as HTMLInputElement
+                        const end_rua = document.getElementById('rua') as HTMLInputElement
+                        const end_num = document.getElementById('num') as HTMLInputElement
+                        const end_cep = document.getElementById('cep') as HTMLInputElement
+                        const nome = document.getElementById('nome') as HTMLInputElement
+                        const email = document.getElementById('email') as HTMLInputElement
+                        const senha = document.getElementById('senha') as HTMLInputElement
+                        const cycle = new URL(location.href).searchParams.get('cycle') || ''
+                        const trial = new Date();
+                        {
+                            if (cycle == 'MONTHLY')
+                                trial.setMonth(trial.getMonth() + 1);
+                            else
+                                trial.setFullYear(trial.getFullYear() + 1);
+                        }
+
+                        criarConta({
+                            assinatura: null,
+                            master: email.value,
+                            nome: nome.value,
+                            trial_end: trial.toISOString().split('T')[0],
+                            origin: ''
+                        },
+                            {
+                                asaas_id: '',
+                                celular: celular.value,
+                                cpf_cnpj: cpf_cnpj.value,
+                                end_rua: end_rua.value,
+                                end_num: end_num.value,
+                                end_bairro: bairro,
+                                end_comp: complemento,
+                                end_cep: end_cep.value,
+                                nome: nome.value,
+                                saas: undefined,
+                                email: email.value,
+                                senha: senha.value
+                            }
+                            ,''
+                        )
+                    }}>Escolher plano e começar agora</button>
+                </section>
+            </div>}
             {showNotify && <Notify type={notify.type} text={notify.text} />}
             <h2 className='text-3xl font-semibold mb-5 ml-10'>Registre-se</h2>
             <form action="" onSubmit={(e) => e.preventDefault()} className='mx-10 flex flex-col gap-2'>
@@ -296,46 +385,94 @@ export default function Cadastro() {
                             const email = document.getElementById('email') as HTMLInputElement
                             const senha = document.getElementById('senha') as HTMLInputElement
                             if (celular.value.length > 0 && cpf_cnpj.value.length > 0 && end_rua.value.length > 0 && end_num.value.length > 0 && end_cep.value.length > 0 && nome.value.length > 0 && email.value.length > 0 && senha.value.length > 0 && button) {
+
                                 const origem = new URL(location.href).searchParams.get('origin') || ''
                                 const cycle = new URL(location.href).searchParams.get('cycle') || ''
                                 const trial = new Date();
                                 if (origem === 'newStudents') {
                                     trial.setMonth(trial.getMonth() + 6);
+                                    criarConta({
+                                        assinatura: null,
+                                        master: email.value,
+                                        nome: nome.value,
+                                        trial_end: trial.toISOString().split('T')[0],
+                                        origin: origem
+                                    },
+                                        {
+                                            asaas_id: '',
+                                            celular: celular.value,
+                                            cpf_cnpj: cpf_cnpj.value,
+                                            end_rua: end_rua.value,
+                                            end_num: end_num.value,
+                                            end_bairro: bairro,
+                                            end_comp: complemento,
+                                            end_cep: end_cep.value,
+                                            nome: nome.value,
+                                            saas: undefined,
+                                            email: email.value,
+                                            senha: senha.value
+                                        },
+                                        origem
+                                    )
                                 } else if (origem === 'newClassmates') {
                                     trial.setFullYear(trial.getFullYear() + 1);
+                                    criarConta({
+                                        assinatura: null,
+                                        master: email.value,
+                                        nome: nome.value,
+                                        trial_end: trial.toISOString().split('T')[0],
+                                        origin: origem
+                                    },
+                                        {
+                                            asaas_id: '',
+                                            celular: celular.value,
+                                            cpf_cnpj: cpf_cnpj.value,
+                                            end_rua: end_rua.value,
+                                            end_num: end_num.value,
+                                            end_bairro: bairro,
+                                            end_comp: complemento,
+                                            end_cep: end_cep.value,
+                                            nome: nome.value,
+                                            saas: undefined,
+                                            email: email.value,
+                                            senha: senha.value
+                                        },
+                                        origem
+                                    )
                                 } else if (origem === 'newAnfitriao') {
                                     trial.setMonth(trial.getMonth() + 1);
+                                    criarConta({
+                                        assinatura: null,
+                                        master: email.value,
+                                        nome: nome.value,
+                                        trial_end: trial.toISOString().split('T')[0],
+                                        origin: origem,
+                                    },
+                                        {
+                                            asaas_id: '',
+                                            celular: celular.value,
+                                            cpf_cnpj: cpf_cnpj.value,
+                                            end_rua: end_rua.value,
+                                            end_num: end_num.value,
+                                            end_bairro: bairro,
+                                            end_comp: complemento,
+                                            end_cep: end_cep.value,
+                                            nome: nome.value,
+                                            saas: undefined,
+                                            email: email.value,
+                                            senha: senha.value
+                                        },
+                                        origem
+                                    )
                                 }
                                 else {
+                                    setEscolhaTrial(true)
                                     if (cycle == 'MONTHLY')
                                         trial.setMonth(trial.getMonth() + 1);
                                     else
                                         trial.setFullYear(trial.getFullYear() + 1);
                                     trial.setDate(trial.getDate() + 15);
                                 }
-                                criarConta({
-                                    assinatura: null,
-                                    master: email.value,
-                                    nome: nome.value,
-                                    trial_end: trial.toISOString().split('T')[0],
-                                    origin: origem
-                                },
-                                    {
-                                        asaas_id: '',
-                                        celular: celular.value,
-                                        cpf_cnpj: cpf_cnpj.value,
-                                        end_rua: end_rua.value,
-                                        end_num: end_num.value,
-                                        end_bairro: bairro,
-                                        end_comp: complemento,
-                                        end_cep: end_cep.value,
-                                        nome: nome.value,
-                                        saas: undefined,
-                                        email: email.value,
-                                        senha: senha.value
-                                    }
-                                )
-
                             }
                         }}
                     >Avançar</button>
