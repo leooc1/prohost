@@ -205,7 +205,6 @@ export default function Cadastro() {
                                 trial.setMonth(trial.getMonth() + 1);
                             else
                                 trial.setFullYear(trial.getFullYear() + 1);
-                            trial.setDate(trial.getDate() + 15);
                         }
                         criarConta({
                             assinatura: null,
