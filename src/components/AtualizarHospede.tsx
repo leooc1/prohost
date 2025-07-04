@@ -181,6 +181,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
                     taxaLimpeza={dataReserva.taxaLimpeza}
                     valorTotal={dataReserva.valorTotal}
                     obs={dataReserva.obs}
+                    tipoReserva="Reserva"
                 />}
             {showNotify && <Notify type={1} text="Atualizado!" />}
             <form onSubmit={(e) => {
