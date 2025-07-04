@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ReservaCardView from "../ReservaCardView";
 
 interface Reserva {
     id?: number
@@ -19,9 +20,11 @@ interface Reserva {
     obs: string | null
 }
 
-export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva }: { reservas: Reserva[], ids: { id: number, index: number }[], acomodacoes: { id: number, nome: string }[], canaisReserva: { id: number, nome: string }[] }) {
+export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva, permissao }: { reservas: Reserva[], ids: { id: number, index: number }[], acomodacoes: { id: number, nome: string }[], canaisReserva: { id: number, nome: string }[], permissao: number }) {
 
     const [download, setDownload] = useState(false)
+    const [card, setCard] = useState(false)
+    const [idReserva, setIdReserva] = useState<string>('')
 
     const date = new Date()
     const [evento, setEvento] = useState('all')
@@ -186,6 +189,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
 
     return (
         <section className="w-full min-h-56 border border-zinc-300 rounded-lg bg-white px-4 py-4">
+            {card && <ReservaCardView close={() => setCard(false)} id={idReserva} permissao={permissao} />}
             <div className="flex gap-4">
                 <label htmlFor="canal" className="flex flex-col text-zinc-600 font-medium text-xs">
                     Canal
@@ -220,28 +224,28 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                         <label htmlFor="de" className="flex flex-col text-zinc-600 font-medium text-xs">
                             De:
                             <input type="date" name="de" id="de" value={deData} onChange={(e) => {
-                                        if (new Date(e.target.value) >= new Date(ateData)) {
-                                            const newDate = new Date(e.target.value)
-                                            newDate.setDate(newDate.getDate() + 1)
-                                            const dataFormatada = newDate.toISOString().split('T')[0]
-                                            setAteData(dataFormatada)
-                                        }
-                                        setDeData(e.target.value)
-                                    }} className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" />
+                                if (new Date(e.target.value) >= new Date(ateData)) {
+                                    const newDate = new Date(e.target.value)
+                                    newDate.setDate(newDate.getDate() + 1)
+                                    const dataFormatada = newDate.toISOString().split('T')[0]
+                                    setAteData(dataFormatada)
+                                }
+                                setDeData(e.target.value)
+                            }} className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" />
                         </label>
                         <label htmlFor="ate" className="flex flex-col text-zinc-600 font-medium text-xs">
                             Até:
                             <input type="date" name="ate" id="ate" value={ateData} onChange={(e) => {
-                                        if (new Date(deData) >= new Date(e.target.value)) {
-                                            {
-                                                const newDate = new Date(e.target.value)
-                                                newDate.setDate(newDate.getDate() - 1)
-                                                const dataFormatada = newDate.toISOString().split('T')[0]
-                                                setDeData(dataFormatada)
-                                            }
-                                        }
-                                        setAteData(e.target.value)
-                                    }} className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" />
+                                if (new Date(deData) >= new Date(e.target.value)) {
+                                    {
+                                        const newDate = new Date(e.target.value)
+                                        newDate.setDate(newDate.getDate() - 1)
+                                        const dataFormatada = newDate.toISOString().split('T')[0]
+                                        setDeData(dataFormatada)
+                                    }
+                                }
+                                setAteData(e.target.value)
+                            }} className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" />
                         </label>
                     </> : null}
                 </div>
@@ -547,7 +551,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                     else return (a.id || 0) - (b.id || 0)
                                 })
                                 .map((e) =>
-                                    <tr className="text-xs bg-white h-12 border border-zinc-200 table table-fixed w-full">
+                                    <tr onClick={() => { setCard(true); setIdReserva(String(e.id)) }} className="text-xs bg-white h-12 border border-zinc-200 table table-fixed w-full">
                                         <td className="text-center text-xs font-medium">
                                             {e.tipo_reserva == 'Indisponibilidade' ?
                                                 '🚫' :
@@ -559,12 +563,14 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                         </td>
                                         <td className="text-center text-xs font-medium">{e.acomodacao.nome}</td>
                                         <td className="text-center text-xs font-medium text-white">
-                                            {e.tipo_reserva != 'Indisponibilidade' && e.tipo_reserva != 'Continuidade' ?
+                                            {e.tipo_reserva != 'Indisponibilidade' && e.tipo_reserva != 'Continuidade' && e.tipo_reserva != 'Cancelamento' ?
                                                 <div className="py-1 w-full rounded-md" style={{ backgroundColor: e.canal_reserva?.cor }}>{e.canal_reserva?.nome}</div> : null}
                                             {e.tipo_reserva == 'Continuidade' ?
                                                 <div className="bg-[#30C46D] py-1 w-full rounded-md">Continuidade</div> : null}
                                             {e.tipo_reserva == 'Indisponibilidade' ?
                                                 <div className="bg-[#353535] py-1 w-full rounded-md">Indisponibilidade</div> : null}
+                                            {e.tipo_reserva == 'Cancelamento' ?
+                                                <div className="bg-[#f67828] py-1 w-full rounded-md">Cancelamento</div> : null}
                                         </td>
                                         <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && e.hospede?.nome}</td>
                                         <td className="text-center text-xs font-medium">{formatDate(e.check_in)}</td>

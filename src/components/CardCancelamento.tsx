@@ -1,19 +1,73 @@
-import { useState } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import nomoney from '/no-money.svg'
 import Notify from './notify/Notify'
+import { SideBarContext } from '../contexts/SideBarMenuContext'
 
 interface propsCancelamento {
     close: () => void
     id: number
 }
+interface Reserva {
+    id?: number
+    acomodacao: { id: number, foto: string, nome: string, comissao: number }
+    check_in: string
+    check_out: string
+    canal_reserva: { id: number, cor: string, nome: string } | null
+    comissao_ota: number
+    continuidade: number | null
+    hospede: { id: number, nome: string } | null
+    qtd_hospede: number
+    saas: { id: number }
+    valor: number
+    valor_liq: number
+    valor_prop: number
+    taxa_limpeza: number
+    valor_liq_calculado: number
+    valor_gestor: number
+    tipo_reserva: string
+    obs: string | null
+}
 
-// //const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function CardCancelamento(props: propsCancelamento) {
     const apiURL = 'https://api.prohost.net.br'
+    const { dataToken } = useContext(SideBarContext)
     const [possuiTaxa, setPossuiTaxa] = useState<boolean>(false)
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
+    const [reserva, setReserva] = useState<Reserva | null>(null)
+    const [isTerceiro, setIsTerceiro] = useState(false)
+    const [comissao, setComissao] = useState<number | null>(null)
+
+    useEffect(() => {
+        async function fetchAcomodacao() {
+            const res = await fetch(`${apiURL}/reserva/${props.id}`)
+            const data = await res.json()
+            const acomodacaoId = data[0]?.acomodacao?.id
+            if (acomodacaoId) {
+                const acomRes = await fetch(`${apiURL}/acomodacao/${acomodacaoId}`)
+                const acomData = await acomRes.json()
+                if (acomData?.tipo === 'terceiro') {
+                    setIsTerceiro(true)
+                    isTerceiro
+                    setComissao(acomData.comissao)
+                }
+            }
+            await getReserva(String(props.id))
+        }
+        fetchAcomodacao()
+    }, [props.id])
+
+    async function getReserva(id: string) {
+        await fetch(`${apiURL}/reserva/${dataToken.id}/${id}`, {
+            method: 'GET'
+        })
+            .then(data => data.json())
+            .then((data: Reserva[]) => {
+                setReserva(data[0])
+            })
+            .catch(err => console.log(err))
+    }
 
     async function deleteReserva(id: number) {
         await fetch(`${apiURL}/reserva/${id}`, {
@@ -35,12 +89,31 @@ export default function CardCancelamento(props: propsCancelamento) {
 
     async function cancelamentoReserva(id: number) {
         const valorCancelamento = document.getElementById('taxa') as HTMLInputElement
-        await fetch(`${apiURL}/reserva/${id}/${Number(valorCancelamento.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))}`, {
-            method: 'DELETE'
+        const comissaoInput = document.getElementById('comissao-cancelamento') as HTMLInputElement
+    
+        await fetch(`${apiURL}/reserva/${id}/valor`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ...reserva, comissao_ota: Number(comissaoInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
+                valor_liq: (Number(valorCancelamento.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) - Number(comissaoInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))),
+                valor: Number(valorCancelamento.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
+                tipo_reserva: 'Cancelamento',
+                taxa_limpeza: (reserva?.taxa_limpeza),
+                valor_liq_calculado: (reserva?.valor_liq_calculado),
+                valor_gestor: (reserva?.valor_gestor),
+                valor_prop: (reserva?.valor_prop),
+                hospede: { id: (reserva?.hospede?.id) },
+                canal_reserva: { id: (reserva?.canal_reserva?.id) },
+                acomodacao: { id: (reserva?.acomodacao.id) },
+                saas: { id: dataToken.id }
+            })
         })
             .then(data => data.json())
             .then((data) => {
-                if (data.affected == 1) {
+                if (data[0].affected == 1) {
                     setNotify({ type: 1, text: 'Excluído!' })
                     setShowNotify(true)
                     setTimeout(() => {
@@ -83,7 +156,7 @@ export default function CardCancelamento(props: propsCancelamento) {
                     </label>
                 </div>
                 {possuiTaxa &&
-                    <label htmlFor="taxa" className="flex flex-col justify-end w-fit">
+                    <label htmlFor="taxa" className="flex flex-col justify-end w-full">
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Valor total</span>
                         <input
                             onChange={(e) => {
@@ -107,6 +180,38 @@ export default function CardCancelamento(props: propsCancelamento) {
                                     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
                             }}
                             type="text" name="taxa" placeholder="R$" id="taxa" className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full" />
+                    </label>
+                }
+                {possuiTaxa &&
+                    <label htmlFor="comissao-cancelamento" className="flex flex-col justify-end w-full">
+                        <span className="text-zinc-500 font-medium mb-1 text-xs">Comissão (R$)</span>
+                        <input
+                            id="comissao-cancelamento"
+                            type="text"
+                            defaultValue={comissao ?? ''}
+                            className="border border-zinc-300 rounded-md px-2 py-1 outline-none w-full"
+                            placeholder="R$"
+                            onChange={(e) => {
+                                if (e.target.value.replace(/[.,]/gm, '').length <= 3)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})/gm, '$1,$2')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 4)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{2})/gm, '$1,$2')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 5)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{2})/gm, '$1,$2')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 6)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 7)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 8)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 9)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 10)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                else if (e.target.value.replace(/[.,]/gm, '').length <= 11)
+                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                            }}
+                        />
                     </label>
                 }
                 <section className="flex gap-3 justify-end mt-2">

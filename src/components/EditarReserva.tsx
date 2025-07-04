@@ -66,6 +66,7 @@ interface propsEdicao {
     valorTotal: number
     taxaLimpeza: number
     comissao: number
+    tipoReserva: string
     valorLiq: number
     obs: string
     saas: number
@@ -486,7 +487,7 @@ export default function EditarReserva(props: propsEdicao) {
                                         "valor_gestor": vGestor,
                                         "valor_liq_calculado": valorLiqCalculado,
                                         "obs": obs.value,
-                                        "tipo_reserva": "Reserva"
+                                        "tipo_reserva": props.tipoReserva
                                     })
                                 }
                                 else {

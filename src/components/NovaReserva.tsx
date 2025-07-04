@@ -153,7 +153,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                         location.reload()
                     }, 3000)
                 } else if (data.length > 0) {
-                    setNotify({ type: 1, text: data })
+                    setNotify({ type: 2, text: data })
                     setShowNotify(true)
                     setTimeout(() => {
                         setShowNotify(false);

@@ -200,7 +200,7 @@ export default function Reserva() {
               image: a.foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'
             }))}
 
-            reservas={reserva.map((r) => ({
+            reservas={reserva.filter(r=>r.tipo_reserva!='Cancelamento').map((r) => ({
               "resourceId": String(r.acomodacao ? r.acomodacao.id : null),
               "title": r.hospede?.nome || '',
               "start": (r.check_in),
@@ -223,6 +223,7 @@ export default function Reserva() {
               reservas={reserva}
               acomodacoes={acomodacao}
               canaisReserva={canais}
+              permissao={permissao}
             />
           : null}
       </div>

@@ -135,6 +135,7 @@ export default function ReservaCardView(props: propsReserva) {
                     valorLiq: Number(data[0]?.valor_liq),
                     valorTotal: Number(data[0]?.valor),
                     taxaLimpeza: Number(data[0]?.taxa_limpeza),
+                    tipoReserva: (data[0]?.tipo_reserva),
                 })
                 if (data[0].tipo_reserva != "Indisponibilidade" && data[0].tipo_reserva != "Continuidade")
                     idReserva(data[0].id || 0, data[0].acomodacao.id)
@@ -194,6 +195,7 @@ export default function ReservaCardView(props: propsReserva) {
                 valorLiq={dataReserva.valorLiq}
                 valorTotal={dataReserva.valorTotal}
                 taxaLimpeza={dataReserva.taxaLimpeza}
+                tipoReserva={dataReserva.tipoReserva}
             />}
             {editarContinuidade && <EditarContinuidade
                 saas={dataToken.id}
@@ -209,7 +211,7 @@ export default function ReservaCardView(props: propsReserva) {
                         {reserva?.tipo_reserva == 'Indisponibilidade' ?
                             <h5 className="font-semibold text-2xl">{'Indisponibilidade'}</h5> :
                             <h5 className="font-semibold text-2xl">Reserva#{idR} {reserva?.tipo_reserva == 'Continuidade' ? <span className="text-[#008000]"><span className="text-black">-</span> C</span> : <></>}</h5>}
-                        {reserva?.tipo_reserva != 'Indisponibilidade' && reserva?.tipo_reserva != 'Continuidade' ? <div className={`px-2 py-1 text-sm font-medium bg-[${reserva?.canal_reserva?.cor}] text-white rounded-md w-fit`}>{reserva?.canal_reserva?.nome}</div> : <></>}
+                        {reserva?.tipo_reserva != 'Indisponibilidade' && reserva?.tipo_reserva != 'Continuidade' ? <div style={{backgroundColor: reserva?.canal_reserva?.cor}} className={`px-2 py-1 text-sm font-medium bg-[${reserva?.canal_reserva?.cor}] text-white rounded-md w-fit`}>{reserva?.canal_reserva?.nome}</div> : <></>}
                         {reserva?.tipo_reserva == 'Indisponibilidade' ? <div className="px-2 py-1 text-sm font-medium bg-[#353535] text-white rounded-md w-fit">Indisponibilidade</div> : <></>}
                         {reserva?.tipo_reserva == 'Continuidade' ? <div className="px-2 py-1 text-sm font-medium bg-[#30C46D] text-white rounded-md w-fit">Continuidade</div> : <></>}
                     </div>
