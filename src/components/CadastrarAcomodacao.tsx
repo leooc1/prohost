@@ -156,7 +156,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                             }}
                             onBlur={() => setAutoComplete([])} />
                         <ul className="absolute bg-white rounded-2xl overflow-hidden top-14 w-max z-50 shadow-xl shadow-zinc-400">
-                            {autoComplete.filter(
+                            {autoComplete.length>0 && autoComplete.filter(
                                 (end: any, index, self) =>
                                     index ===
                                     self.findIndex(
