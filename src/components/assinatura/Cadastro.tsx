@@ -48,7 +48,24 @@ export default function Cadastro() {
             })
             .catch(err => console.log(err))
     }
-    async function criarConta(saas: any, user: any, origem:string) {
+    async function verificarEmail(email: string) {
+        await fetch(`${apiURL}/users/verificar-email/${email}`, {
+            method: 'GET'
+        })
+            .then(data => data.json())
+            .then(data => {
+                if (data) {
+                    setNotify({ type: 2, text: 'Ops! Algo deu errado, esse email pode já estar sendo usado.' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
+                }
+                else setEscolhaTrial(true)
+            })
+            .catch(err => console.log(err))
+    }
+    async function criarConta(saas: any, user: any, origem: string) {
         let idSaas = null
         let assinatura: any = null
         let pay: any = null
@@ -178,6 +195,8 @@ export default function Cadastro() {
             }
         }
 
+        if (origem != 'newAnfitriao' && origem != 'newClassmates' && origem != 'newStudents') { setEscolhaTrial(true) }
+
     }
 
 
@@ -198,14 +217,15 @@ export default function Cadastro() {
                         const nome = document.getElementById('nome') as HTMLInputElement
                         const email = document.getElementById('email') as HTMLInputElement
                         const senha = document.getElementById('senha') as HTMLInputElement
-                        const cycle = new URL(location.href).searchParams.get('cycle') || ''
+                        // const cycle = new URL(location.href).searchParams.get('cycle') || ''
                         const trial = new Date();
-                         {
+                        {/*
                             if (cycle == 'MONTHLY')
                                 trial.setMonth(trial.getMonth() + 1);
                             else
                                 trial.setFullYear(trial.getFullYear() + 1);
-                        }
+                        */}
+                        trial.setDate(trial.getDate() + 15)
                         criarConta({
                             assinatura: null,
                             master: email.value,
@@ -227,9 +247,9 @@ export default function Cadastro() {
                                 email: email.value,
                                 senha: senha.value
                             }
-                            ,'trial15'
+                            , 'trial15'
                         )
-                    }}>Testar dias grátis (sem cartão)</button>
+                    }}>Testar dias grátis</button>
                     <button className="bg-primary border-2 border-primary rounded-md p-2 mx-auto font-semibold w-10/12 text-white" onClick={() => {
                         const celular = document.getElementById('celular') as HTMLInputElement
                         const cpf_cnpj = document.getElementById('cpfCnpj') as HTMLInputElement
@@ -269,9 +289,9 @@ export default function Cadastro() {
                                 email: email.value,
                                 senha: senha.value
                             }
-                            ,''
+                            , ''
                         )
-                    }}>Escolher plano e começar agora</button>
+                    }}>Garantir o acesso ao ProHost</button>
                 </section>
             </div>}
             {showNotify && <Notify type={notify.type} text={notify.text} />}
@@ -465,7 +485,7 @@ export default function Cadastro() {
                                     )
                                 }
                                 else {
-                                    setEscolhaTrial(true)
+                                    verificarEmail(email.value)
                                     if (cycle == 'MONTHLY')
                                         trial.setMonth(trial.getMonth() + 1);
                                     else

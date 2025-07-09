@@ -215,7 +215,7 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar, permis
                                             <div className="w-10 h-10 flex justify-center items-center rounded-full bg-[#B1C2D9] text-white font-medium">{Perfil(e.nome)}</div>
                                         </td>
                                         <td className="text-start text-sm font-medium">{e.nome}</td>
-                                        {<td className="text-start text-sm font-medium overflow-hidden whitespace-nowrap text-ellipsis max-w-60" title="101 (AquaGreen), 511 (AquaGreen), 611 (AquaGreen)">
+                                        {<td className="text-start text-sm font-medium overflow-hidden whitespace-nowrap text-ellipsis max-w-60" title={acomodacoes.find(a => a.hospede == e.id)?.acomodacoes.toString().replace(',',', ')}>
                                             {acomodacoes.find(a => a.hospede == e.id)?.acomodacoes.toString().replace(',',', ')}
                                         </td>}
                                         <td className="text-center text-sm font-medium">{e.email ? e.email : <span className="italic">Não Informado</span>}</td>
