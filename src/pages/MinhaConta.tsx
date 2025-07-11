@@ -151,7 +151,7 @@ export default function MinhaConta() {
                         </label>
 
                         <label htmlFor="nome" className="flex flex-col">
-                            <span className="text-zinc-500 font-medium mb-1 text-sm flex items-center gap-4 ml-6">
+                            <span className="text-zinc-500 font-medium mb-1 text-sm flex items-center gap-4">
                                 Nome
                             </span>
                             <input
@@ -165,7 +165,7 @@ export default function MinhaConta() {
                             />
                         </label>
                         <label htmlFor="email" className="flex flex-col">
-                            <span className="text-zinc-500 font-medium mb-1 text-sm flex items-center gap-4 ml-6">
+                            <span className="text-zinc-500 font-medium mb-1 text-sm flex items-center gap-4">
                                 Email
                             </span>
                             <input
