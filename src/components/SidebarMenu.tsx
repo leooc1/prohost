@@ -42,8 +42,10 @@ export default function SidebarMenu({ route }: { route: string }) {
         })
             .then(data => data.json())
             .then(data => {
-                if (data.status != "CONFIRMED" && (new Date(data.trial_end) < new Date()))
+                const page = location.pathname
+                if (data.status != "CONFIRMED" && (new Date(data.trial_end) < new Date()) && page != '/assinatura'){
                     location.assign('/assinatura')
+                }
                 setStatusData(data)
             })
             .catch(err => console.log(err))
