@@ -43,7 +43,7 @@ export default function SidebarMenu({ route }: { route: string }) {
             .then(data => data.json())
             .then(data => {
                 const page = location.pathname
-                if (data.status != "CONFIRMED" && (new Date(data.trial_end) < new Date()) && page != '/assinatura'){
+                if (data.status != "CONFIRMED" && (new Date(data.trial_end) < new Date()) && page != '/assinatura') {
                     location.assign('/assinatura')
                 }
                 setStatusData(data)
@@ -52,8 +52,11 @@ export default function SidebarMenu({ route }: { route: string }) {
     }
     const { active, setDataToken, dataToken, setStatusData } = useContext(SideBarContext)
     useEffect(() => {
-        if (dataToken?.id)
-            getSituation(dataToken.id)
+        if (dataToken?.id) {
+            const page = location.pathname
+            if (page != '/assinatura')
+                getSituation(dataToken.id)
+        }
     }, [dataToken])
     return (
         <nav className={`bg-primary sticky top-0 left-0 h-screen ${active ? 'w-56' : 'w-20'} flex flex-col justify-between`}>
