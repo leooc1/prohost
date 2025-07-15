@@ -72,7 +72,8 @@ export default function Cadastro() {
         let getPlano = null
 
         {
-            await fetch(`${apiURL}/plano/${planoDTO.qtd_acomodacao}/${planoDTO.valor_ano}`, {
+            const cycle = new URL(location.href).searchParams.get('cycle')
+            await fetch(`${apiURL}/plano/${planoDTO.qtd_acomodacao}/${cycle=='MONTHLY'?planoDTO.valor_mes:planoDTO.valor_ano}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -108,9 +109,10 @@ export default function Cadastro() {
         }
 
         if (getPlano) {
+            const cycle = new URL(location.href).searchParams.get('cycle') || 'YEARLY'
             await fetch(`${apiURL}/assinatura`, {
                 method: 'POST',
-                body: JSON.stringify({ user: user, plano: getPlano, origin: origem }),
+                body: JSON.stringify({ user: user, plano: getPlano, origin: origem, cycle: cycle }),
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -198,7 +200,6 @@ export default function Cadastro() {
         if (origem != 'newAnfitriao' && origem != 'newClassmates' && origem != 'newStudents') { setEscolhaTrial(true) }
 
     }
-
 
     return (
         <section className="bg-white flex flex-col justify-center h-full py-20 md:py-0 md:min-w-min">
