@@ -11,28 +11,11 @@ export default function Config() {
     const apiURL = 'https://api.prohost.net.br'
     const { statusData, dataToken } = useContext(SideBarContext)
     const [session, setSession] = useState(0)
-    const [qtdAcomodacao, setQtdAcomodacao] = useState('1')
     const [assinatura, setAssinatura] = useState(true)
     const [edicao, setEdicao] = useState(false)
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
-    const preco = () => {
-        const qtdAcomod = Number(qtdAcomodacao)
-        const precosA = [249.00, 399.00, 549.00, 799.00, 1299.00, 1799.00]
-        const precosM = [24.90, 39.90, 54.90, 79.90, 129.90, 179.90]
-        if (qtdAcomod == 1)
-            return [precosA[0], precosM[0]]
-        else if (qtdAcomod > 1 && qtdAcomod <= 3)
-            return [precosA[1], precosM[1]]
-        else if (qtdAcomod > 3 && qtdAcomod <= 5)
-            return [precosA[2], precosM[2]]
-        else if (qtdAcomod > 5 && qtdAcomod <= 10)
-            return [precosA[3], precosM[3]]
-        else if (qtdAcomod > 10 && qtdAcomod <= 20)
-            return [precosA[4], precosM[4]]
-        else return [precosA[5], precosM[5]]
 
-    }
     function dateFormat(dataISO: string) {
         if (dataISO == '')
             return ''
@@ -178,8 +161,8 @@ export default function Config() {
     useEffect(() => {
         permissoes()
         if (statusData)
-            if (statusData?.status && statusData?.trial_end)
-                if (statusData?.status != "CONFIRMED" && (new Date(statusData?.trial_end) < new Date()))
+            if (statusData?.trial_end)
+                if ((new Date(statusData?.trial_end) < new Date()))
                     setAssinatura(false)
     }, [statusData, dataToken])
     return (
@@ -202,56 +185,23 @@ export default function Config() {
                 {assinatura ?
                     <>
                         <div className="self-center bg-emerald-100 p-6 rounded-xl flex flex-col gap-3">
-                            <div /* onClick={() => setAssinatura(!assinatura)} */ className="flex items-center gap-2 text-primary font-semibold">
+                            <div className="flex items-center gap-2 text-primary font-semibold">
                                 <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(60,209,169,1)"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM11.0026 16L6.75999 11.7574L8.17421 10.3431L11.0026 13.1716L16.6595 7.51472L18.0737 8.92893L11.0026 16Z"></path></svg>
                                 Meu plano</div>
                             <p className="text-primary text-2xl">Número de Acomodações: {statusData?.qtd_acomodacao || ''}</p>
                             <p className="text-primary text-2xl">Data de Renovação: {dateFormat(statusData?.trial_end || '')}</p>
                             <p className="text-primary text-2xl">Dias Restantes: {diasFaltantes(statusData?.trial_end || '')}</p>
                         </div>
-                        <MelhorarPlanos />
+                        <MelhorarPlanos upgrade={true} />
                     </> :
                     <div className="self-center bg-red-100 p-6 rounded-xl flex flex-col gap-3">
-                        <div /* onClick={() => setAssinatura(!assinatura)} */ className="flex items-center gap-2 text-[rgba(237,62,68,1)] font-semibold">
+                        <div className="flex items-center gap-2 text-[rgba(237,62,68,1)] font-semibold">
                             <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(237,62,68,1)"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 10.5858L14.8284 7.75736L16.2426 9.17157L13.4142 12L16.2426 14.8284L14.8284 16.2426L12 13.4142L9.17157 16.2426L7.75736 14.8284L10.5858 12L7.75736 9.17157L9.17157 7.75736L12 10.5858Z"></path></svg>
                             Seu acesso está bloqueado</div>
-                        <p className="text-primary text-3xl">Para desbloquear assine um plano abaixo</p>
-                        <section className="grid grid-cols-2 gap-4">
-                            <div className="bg-gradient-to-b to-primary from-secondary flex flex-col items-center px-2 py-8 rounded-xl gap-2">
-                                <p className="text-3xl font-semibold text-white">Mensal</p>
-                                <p className="text-2xl font-medium text-white">R$ {preco()[1].toFixed(2)}</p>
-                                <label htmlFor="qtdAcomodacao" className='flex items-center gap-8 my-2'>
-                                    <input id='qtdAcomodacao' type="range" className="max-w-28"
-                                        min={1} max={30} defaultValue={1} value={qtdAcomodacao}
-                                        onChange={(e) => {
-                                            setQtdAcomodacao(e.target.value)
-                                        }} />
-                                    <span className='text-secondary h-8 w-8 border border-zinc-400 flex justify-center items-center rounded-lg'>{qtdAcomodacao}</span>
-                                </label>
-                                <p className="text-xs text-white">Caso precise, pode entrar em contato com o nosso suporte:</p>
-                                <p className="text-sm text-white"><span className="font-semibold">Email:</span> contato@prohost.net.br</p>
-                                <p className="text-sm text-white"><span className="font-semibold">WhatsApp:</span> (21) 99517-8020</p>
-                                <button className="bg-white text-black text-xl px-3 py-1 rounded-lg">SELECIONAR</button>
-                            </div>
-                            <div className="bg-gradient-to-t to-primary from-secondary flex flex-col items-center px-2 py-8 rounded-xl gap-2">
-                                <p className="text-3xl font-semibold text-white">Anual</p>
-                                <p className="text-2xl font-medium text-white">R$ {preco()[0].toFixed(2)}</p>
-                                <label htmlFor="qtdAcomodacao" className='flex items-center gap-8 my-2'>
-                                    <input id='qtdAcomodacao' type="range" className="max-w-28"
-                                        min={1} max={30} defaultValue={1} value={qtdAcomodacao}
-                                        onChange={(e) => {
-                                            setQtdAcomodacao(e.target.value)
-                                        }} />
-                                    <span className='text-secondary h-8 w-8 border border-zinc-400 flex justify-center items-center rounded-lg'>{qtdAcomodacao}</span>
-                                </label>
-                                <p className="text-xs text-white">Caso precise, pode entrar em contato com o nosso suporte:</p>
-                                <p className="text-sm text-white"><span className="font-semibold">Email:</span> contato@prohost.net.br</p>
-                                <p className="text-sm text-white"><span className="font-semibold">WhatsApp:</span> (21) 99517-8020</p>
-                                <button className="bg-white text-black text-xl px-3 py-1 rounded-lg">SELECIONAR</button>
-                            </div>
-                        </section>
-                    </div>}
-
+                        <p className="text-primary text-3xl">Para desbloquear escolha um plano abaixo</p>
+                        <MelhorarPlanos upgrade={false} />
+                    </div>
+                }
             </div>}
             {session == 1 && <section className="flex rounded-md flex-col px-4 pb-3 pt-2">
                 <form onSubmit={(e) => { e.preventDefault() }}

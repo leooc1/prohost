@@ -53,9 +53,7 @@ export default function SidebarMenu({ route }: { route: string }) {
     const { active, setDataToken, dataToken, setStatusData } = useContext(SideBarContext)
     useEffect(() => {
         if (dataToken?.id) {
-            const page = location.pathname
-            if (page != '/assinatura')
-                getSituation(dataToken.id)
+            getSituation(dataToken.id)
         }
     }, [dataToken])
     return (

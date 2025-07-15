@@ -23,7 +23,7 @@ const formatCurrency = (value: number) => {
     }).format(value);
 };
 
-export default function MelhorarPlanos() {
+export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
     const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
     const [isAnnual, setIsAnnual] = useState(false);
@@ -127,21 +127,24 @@ export default function MelhorarPlanos() {
             .then(data => data.json())
             .then(async (data) => {
                 if (data.id) {
-                    await updateAssinatura({
-                        "saas": dataToken.id,
-                        "plano": {
-                            "qtd_acomodacao": selectedAccommodations[0],
-                            "permicao": 1,
-                            "valor_mes": Number(price.monthly),
-                            "valor_ano": Number(price.total)
-                        },
-                        "assinatura": {
-                            "assinatura": data.subscription,
-                            "pagamento": data.id,
-                            "forma_pagamento": data.billingType,
-                            "proxima_cobranca": data.dueDate
-                        }
-                    })
+                    if (upgrade)
+                        await updateAssinatura({
+                            "saas": dataToken.id,
+                            "plano": {
+                                "qtd_acomodacao": selectedAccommodations[0],
+                                "permicao": 1,
+                                "valor_mes": Number(price.monthly),
+                                "valor_ano": Number(price.total)
+                            },
+                            "assinatura": {
+                                "assinatura": data.subscription,
+                                "pagamento": data.id,
+                                "forma_pagamento": data.billingType,
+                                "proxima_cobranca": data.dueDate
+                            }
+                        })
+                    else
+                        location.reload()
                 }
             })
             .catch(err => console.log(err))
@@ -155,6 +158,63 @@ export default function MelhorarPlanos() {
                 "price": isAnnual ?
                     ((Number(price.total) - Number(info?.valor_ano)) / 12) * (mesesAteDataFutura(info?.trial_end || '') > 0 ? mesesAteDataFutura(info?.trial_end || '') : 1)
                     : Number(price.monthly),
+                "cycle": isAnnual ? 'YEARLY' : 'MONTHLY'
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json())
+            .then((data) => {
+                if (data.pagamento) {
+                    pagamentoCartao(data.pagamento, cartao)
+                }
+            })
+            .catch(err => console.log(err))
+    }
+
+    async function renovacaoAssinatura(cartao?: any) {
+        let getPlano = null
+        {
+            await fetch(`${apiURL}/plano/${selectedAccommodations[0]}/${!isAnnual ? price.monthly : price.total}/${isAnnual ? 'YEARLY' : 'MONTHLY'}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(data => data.json())
+                .then(async (data) => {
+                    if (data.length > 0) {
+                        getPlano = data[0]
+                        getPlano = { ...getPlano, valor_ano: Number(getPlano.valor_ano), valor_mes: Number(getPlano.valor_mes), qtd_acomodacao: Number(getPlano.qtd_acomodacao) }
+                    }
+                    else {
+                        await fetch(`${apiURL}/plano/`, {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            method: 'POST',
+                            body: JSON.stringify({
+                                "qtd_acomodacao": Number(selectedAccommodations[0]),
+                                "permicao": 1,
+                                "valor_mes": Number((Number(price.total) / 10).toFixed(2)),
+                                "valor_ano": Number(price.total)
+                            })
+                        })
+                            .then(data => data.json())
+                            .then(data => {
+                                getPlano = data
+                                getPlano = { ...getPlano, valor_ano: Number(getPlano.valor_ano), valor_mes: Number(getPlano.valor_mes), qtd_acomodacao: Number(getPlano.qtd_acomodacao) }
+                            })
+                            .catch(err => console.log(err))
+                    }
+                })
+        }
+        await fetch(`${apiURL}/assinatura/renovacao/`, {
+            method: 'POST',
+            body: JSON.stringify({
+                "saas": Number(dataToken.id),
+                "plano": getPlano,
                 "cycle": isAnnual ? 'YEARLY' : 'MONTHLY'
             }),
             headers: {
@@ -216,7 +276,7 @@ export default function MelhorarPlanos() {
 
     return (
         <div className="min-h-screen bg-[#F4F4F5] p-8">
-            <p className="text-primary text-center text-3xl mb-5">Upgrade de plano</p>
+            {upgrade && <p className="text-primary text-center text-3xl mb-5">Upgrade de plano</p>}
             <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
                 {/* Plano Mensal */}
                 <div className="bg-white rounded-2xl shadow p-8 relative">
@@ -325,7 +385,7 @@ export default function MelhorarPlanos() {
 
             {isPaymentOpen && info && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-                    {currentPlan.accommodations <= info.qtd_acomodacao ?
+                    {currentPlan.accommodations <= info.qtd_acomodacao && upgrade ?
                         <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
                             <h2 className="text-2xl font-bold text-[#0E3447] mb-6">
                                 Seu plano atual é equivalente ou superior ao selecionado
@@ -355,8 +415,12 @@ export default function MelhorarPlanos() {
                                 </div>
                                 <div className="text-2xl font-bold text-[#0E3447] mt-2">
                                     {
-                                        formatCurrency(isAnnual ?
-                                            ((Number(price.total) - Number(info.valor_ano)) / 12) * (mesesAteDataFutura(info.trial_end) > 0 ? mesesAteDataFutura(info.trial_end) : 1)
+                                        formatCurrency(isAnnual ? (
+                                            upgrade ?
+                                                ((Number(price.total) - Number(info.valor_ano)) / 12) * (mesesAteDataFutura(info.trial_end) > 0 ? mesesAteDataFutura(info.trial_end) : 1)
+                                                :
+                                                Number(price.total)
+                                        )
                                             : Number(price.monthly))
                                     }
                                 </div>
@@ -414,14 +478,20 @@ export default function MelhorarPlanos() {
                                                 date: dataValid.value,
                                                 cvc: cvc.value
                                             }
-                                            gerarPagamento(card)
+                                            upgrade ?
+                                                gerarPagamento(card) :
+                                                renovacaoAssinatura(card)
                                             setWait(true)
                                         }
                                     }}
                                 >
-                                    Pagar {isAnnual ?
-                                        formatCurrency(((Number(price.total) - Number(info.valor_ano)) / 12) * (mesesAteDataFutura(info.trial_end) > 0 ? mesesAteDataFutura(info.trial_end) : 1))
-                                        : formatCurrency(Number(price.monthly))}
+                                    Pagar {formatCurrency(isAnnual ? (
+                                        upgrade ?
+                                            ((Number(price.total) - Number(info.valor_ano)) / 12) * (mesesAteDataFutura(info.trial_end) > 0 ? mesesAteDataFutura(info.trial_end) : 1)
+                                            :
+                                            Number(price.total)
+                                    )
+                                        : Number(price.monthly))}
                                 </button>}
                                 <button
                                     className="flex-1 py-2 px-4 border rounded-lg"
