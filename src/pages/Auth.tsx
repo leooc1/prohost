@@ -4,7 +4,7 @@ import Notify from '../components/notify/Notify'
 
 
 export default function Auth() {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = 'http://localhost:3000'
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
     const [viewPW, setViewPW] = useState(false)
