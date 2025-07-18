@@ -50,7 +50,7 @@ export default function Financeiro() {
         key: 'data',
         direction: 'descending'
     });
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = 'http://localhost:3000'
     useEffect(() => { document.title = `Financeiro | Prohost` }, [])
     const [novaReceita, setNovaReceita] = useState(false)
     const [novaDespesa, setNovaDespesa] = useState(false)

@@ -44,7 +44,7 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
         obs: string;
     }>(null)
 
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = 'http://localhost:3000'
     function Perfil(nome: string) {
         const array = nome.split(' ')
         const pnome = array[0][0]

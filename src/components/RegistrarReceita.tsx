@@ -28,7 +28,7 @@ interface CategoriaFinanceiro {
 
 
 export default function RegistrarReceita({ close, saas }: { close: () => void, saas: string }) {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = 'http://localhost:3000'
     const { dataToken } = useContext(SideBarContext)
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
