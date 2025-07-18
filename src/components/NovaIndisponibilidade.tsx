@@ -38,7 +38,7 @@ interface Reserva {
 
 
 export default function NovaIndisponibilidade({ close }: { close: () => void }) {
-    const apiURL = 'http://localhost:3000'
+    const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
     const [render, setRender] = useState(false)
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])

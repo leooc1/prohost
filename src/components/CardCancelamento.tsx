@@ -30,7 +30,7 @@ interface Reserva {
 
 
 export default function CardCancelamento(props: propsCancelamento) {
-    const apiURL = 'http://localhost:3000'
+    const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
     const [possuiTaxa, setPossuiTaxa] = useState<boolean>(false)
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
