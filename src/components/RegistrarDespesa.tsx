@@ -28,7 +28,7 @@ interface CategoriaFinanceiro {
 }
 
 
-export default function RegistrarDespesa({ close, saas, despesa, idNotify }: {
+export default function RegistrarDespesa({ close, saas, despesa, idNotify, onSuccess }: {
     close: () => void, saas: string, despesa?: null | {
         acomodacao: {
             id: string | null;
@@ -56,9 +56,9 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify }: {
         tipo_despesa: string;
         recebedor: string;
         obs: string;
-    }, idNotify?: string | null
+    }, idNotify?: string | null, onSuccess?: () => void
 }) {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = 'http://localhost:3000'
     const { dataToken } = useContext(SideBarContext)
 
     const [tipoDespesa, setTipoDespesa] = useState('')
@@ -115,9 +115,10 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify }: {
                                 meses_recorrencia: recorrencia,
                                 data: new Date(new Date(data.data).setMonth(new Date(data.data).getMonth() + recorrencia)).toISOString().split('T')[0]
                             })
-                        } else
-                            location.reload()
-                    }, 3000)
+                        } else {
+                            if (onSuccess) onSuccess();
+                        }
+                    }, 1000)
                 }
             })
             .catch(err => console.log(err))
@@ -133,7 +134,7 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify }: {
             .then(data => data.json())
             .then((data) => {
                 if (data.id) {
-                    location.reload()
+                    if (onSuccess) onSuccess();
                 }
             })
             .catch(err => console.log(err))
@@ -143,7 +144,7 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify }: {
     const [load, setLoad] = useState<boolean>(false)
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
     const [categoriaf, setCategoriaF] = useState<CategoriaFinanceiro[]>([])
-    const [err, setErr] = useState<[boolean, boolean, boolean, boolean, boolean]>([false, false, false, false, false])
+    const [err, setErr] = useState<[boolean, boolean, boolean, boolean, boolean, boolean]>([false, false, false, false, false, false])
 
     async function deleteRecorrencia(id: number, pbody: any) {
         await fetch(`${apiURL}/recorrencia/${id}`, {
@@ -187,7 +188,7 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify }: {
                                     setCategoria([String(cat.id), cat.cor !== '#FFFFFF' ? cat.cor : '#000000']);
                                 }
                             }}>
-                            <option value="" className="hidden" disabled selected></option>
+                            <option value="" className="hidden" disabled ></option>
                             {categoriaf.length > 0 &&
                                 categoriaf.map(cat => {
                                     if (cat.tipo_despesa == tipoDespesa || cat.tipo_despesa == null || tipoDespesa == '')
@@ -240,13 +241,25 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify }: {
                     </label>
                 </div>
                 <label htmlFor="acomodacaoReceita" className={`flex flex-col ${(tipoDespesa == 'Despesas do Negócio') || despesa?.tipo_despesa == 'Despesas do Negócio' ? 'hidden' : null}`}>
-                    <span className="text-zinc-500 font-medium mb-1 text-sm">Acomodação (opcional)</span>
-                    <select name="acomodacaoReceita" id="acomodacaoReceita" className="border border-zinc-300 rounded-md text-zinc-500 px-2 py-1 outline-none" defaultValue={String(despesa?.acomodacao?.id)}>
+                    <span className="text-zinc-500 font-medium mb-1 text-sm">
+                        Acomodação
+                        {(tipoDespesa === 'Despesas Fixas' || tipoDespesa === 'Despesas Variáveis' || despesa?.tipo_despesa === 'Despesas Fixas' || despesa?.tipo_despesa === 'Despesas Variáveis') ? <span className='text-red-500 font-bold'> *</span> : <span className='text-zinc-400'> ()</span>}
+                    </span>
+                    <select
+                        name="acomodacaoReceita"
+                        id="acomodacaoReceita"
+                        className={`border ${((tipoDespesa === 'Despesas Fixas' || tipoDespesa === 'Despesas Variáveis') && err[5]) ? 'border-red-500' : 'border-zinc-300'} rounded-md text-zinc-500 px-2 py-1 outline-none`}
+                        defaultValue={String(despesa?.acomodacao?.id)}
+                        required={tipoDespesa === 'Despesas Fixas' || tipoDespesa === 'Despesas Variáveis' || despesa?.tipo_despesa === 'Despesas Fixas' || despesa?.tipo_despesa === 'Despesas Variáveis'}
+                    >
                         <option value="" selected disabled className="hidden">Selecione uma acomodação</option>
                         <option value="null"></option>
                         {acomodacao?.length > 0 &&
                             acomodacao?.map(a => <option value={a.id}>{a.nome}</option>)}
                     </select>
+                    {((tipoDespesa === 'Despesas Fixas' || tipoDespesa === 'Despesas Variáveis') && err[5]) && (
+                        <span className="text-red-500 text-xs mt-1">Obrigatório para despesas fixas ou variáveis.</span>
+                    )}
                 </label>
                 <div className="grid gap-3 items-center" style={{ gridTemplateColumns: '1fr 1fr 0.3fr' }}>
                     <label htmlFor="data" className="flex flex-col">
@@ -319,7 +332,7 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify }: {
                             const pago = document.getElementById('pago') as HTMLInputElement
                             let vProprietario: number = 0
                             let vGestor: number = 0
-                            if (acomodacaoInput.value != 'null' && acomodacaoInput.value != '' && acomodacao.filter(e => e.id == Number(acomodacaoInput.value))[0].comissao) {
+                            if (acomodacaoInput.value != 'null' && acomodacaoInput.value != '' && acomodacao.filter(e => e.id == Number(acomodacaoInput.value))[0]?.comissao) {
                                 const comissao = acomodacao.filter(a => a.id == Number(acomodacaoInput.value))[0].comissao
                                 vProprietario = ((100 - comissao) / 100) * Number(valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2'))
                                 vGestor = (comissao / 100) * Number(valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2'))
@@ -328,7 +341,22 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify }: {
                                 vProprietario = Number(valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2'))
                                 vGestor = Number(valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2'))
                             }
-                            if ((Boolean(categoriaInput.value.length > 0) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && tipoDespesa.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2')) > 0)) {
+
+                            // NOVA VALIDAÇÃO PARA ACOMODAÇÃO OBRIGATÓRIA
+                            const isFixaOuVariavel = tipoDespesa.value === 'Despesas Fixas' || tipoDespesa.value === 'Despesas Variáveis';
+                            const acomodacaoValida = acomodacaoInput.value !== '' && acomodacaoInput.value !== 'null';
+
+                            if (
+                                Boolean(categoriaInput.value.length > 0) &&
+                                descricaoInput.value.length > 0 &&
+                                dataInput.value.length > 0 &&
+                                tipoDespesa.value.length > 0 &&
+                                valorInput.value.length > 0 &&
+                                Number(valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2')) > 0 &&
+                                (
+                                    !isFixaOuVariavel || acomodacaoValida // Se for fixa/variável, acomodação deve ser válida
+                                )
+                            ) {
                                 if (idNotify)
                                     await deleteRecorrencia(Number(idNotify), {
                                         "acomodacao": {
@@ -389,39 +417,41 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify }: {
                                     })
                             }
                             else {
-                                let error = err
+                                let error = err;
                                 if (tipoDespesa.value.length == 0) {
-                                    error = (error.map((e, i) => i === 0 ? true : e) as [boolean, boolean, boolean, boolean, boolean]);
-                                }
-                                else {
-                                    error = (error.map((e, i) => i === 0 ? false : e) as [boolean, boolean, boolean, boolean, boolean]);
+                                    error = (error.map((e, i) => i === 0 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean]);
+                                } else {
+                                    error = (error.map((e, i) => i === 0 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean]);
                                 }
                                 if (!(categoriaInput.value.length > 0)) {
-                                    error = (error.map((e, i) => i === 1 ? true : e) as [boolean, boolean, boolean, boolean, boolean]);
-                                }
-                                else {
-                                    error = (error.map((e, i) => i === 1 ? false : e) as [boolean, boolean, boolean, boolean, boolean]);
+                                    error = (error.map((e, i) => i === 1 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean]);
+                                } else {
+                                    error = (error.map((e, i) => i === 1 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean]);
                                 }
                                 if (descricaoInput.value.length == 0) {
-                                    error = (error.map((e, i) => i === 2 ? true : e) as [boolean, boolean, boolean, boolean, boolean]);
-                                }
-                                else {
-                                    error = (error.map((e, i) => i === 2 ? false : e) as [boolean, boolean, boolean, boolean, boolean]);
+                                    error = (error.map((e, i) => i === 2 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean]);
+                                } else {
+                                    error = (error.map((e, i) => i === 2 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean]);
                                 }
                                 if (dataInput.value.length == 0) {
-                                    error = (error.map((e, i) => i === 3 ? true : e) as [boolean, boolean, boolean, boolean, boolean]);
-                                }
-                                else {
-                                    error = (error.map((e, i) => i === 3 ? false : e) as [boolean, boolean, boolean, boolean, boolean]);
+                                    error = (error.map((e, i) => i === 3 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean]);
+                                } else {
+                                    error = (error.map((e, i) => i === 3 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean]);
                                 }
                                 if (valorInput.value.length == 0) {
-                                    error = (error.map((e, i) => i === 4 ? true : e) as [boolean, boolean, boolean, boolean, boolean]);
+                                    error = (error.map((e, i) => i === 4 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean]);
+                                } else {
+                                    error = (error.map((e, i) => i === 4 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean]);
                                 }
-                                else {
-                                    error = (error.map((e, i) => i === 4 ? false : e) as [boolean, boolean, boolean, boolean, boolean]);
+                                // NOVA VALIDAÇÃO DE ERRO PARA ACOMODAÇÃO
+                                if (isFixaOuVariavel && !acomodacaoValida) {
+                                    error = (error.map((e, i) => i === 5 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean]);
+                                    setNotify({ type: 2, text: 'Selecione uma acomodação para este tipo de despesa!' });
+                                } else {
+                                    error = (error.map((e, i) => i === 5 ? false : e) as [boolean, boolean, boolean, boolean, boolean, boolean]);
+                                    setNotify({ type: 2, text: 'Preenchimento incorreto!' });
                                 }
                                 setErr(error)
-                                setNotify({ type: 2, text: 'Preenchimento incorreto!' })
                                 setShowNotify(true)
                                 setTimeout(() => {
                                     setShowNotify(false);
