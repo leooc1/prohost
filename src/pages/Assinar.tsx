@@ -79,27 +79,38 @@ export default function Assinar() {
                                 <h1 className="text-white font-bold text-3xl tracking-tight">prohost</h1>
                             </div>
                             <p className="text-secondary font-semibold text-xl my-5">Assinatura</p>
-                            <button className='w-auto h-fit flex items-center gap-2 mb-5'>
-                                <label className="relative inline-flex items-center cursor-pointer switch">
-                                    <input
-                                        type="checkbox"
-                                        className="sr-only peer"
-
-                                        checked={cycle === 'MONTHLY'}
-                                        onChange={() => {
-                                            setCycle(cycle === 'MONTHLY' ? 'YEARLY' : 'MONTHLY')
-                                            const url = new URL(window.location.href);
-                                            const newCycle = cycle === 'MONTHLY' ? 'YEARLY' : 'MONTHLY';
-                                            url.searchParams.set('cycle', newCycle);
-                                            window.history.replaceState({}, '', url);
-                                        }}
-                                    />
-                                    <span className="w-32 h-7 bg-[#00D19A] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-md peer dark:bg-red dark:border-gray-600 peer-checked:bg-[#00D19A]">
-                                    </span>
-                                    <span className="text-xl font-medium text-white dark:text-white z-10 ml-[-74px]
-                                    peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-md after:h-6 after:w-6 after:transition-all">{(cycle === 'MONTHLY' ? 'Mensal' : 'Anual')}</span>
-                                </label>
-                            </button>
+                            <div className="flex items-center gap-4 mb-5 bg-[#00D19A] w-fit rounded-xl border-4 border-[#00D19A] overflow-hidden font-black">
+                                <span
+                                    className={`px-4 py-2 rounded-lg font-semibold transition-colors duration-200 ${
+                                        cycle === 'YEARLY'
+                                            ? 'bg-[#015A57] text-white'
+                                            : 'bg-[#00D19A] text-white shadow-lg'
+                                    } cursor-pointer`}
+                                    onClick={() => {
+                                        setCycle('YEARLY');
+                                        const url = new URL(window.location.href);
+                                        url.searchParams.set('cycle', 'YEARLY');
+                                        window.history.replaceState({}, '', url);
+                                    }}
+                                >
+                                    Anual
+                                </span>
+                                <span
+                                    className={`px-4 py-2 rounded-lg font-semibold transition-colors duration-200 ${
+                                        cycle === 'MONTHLY'
+                                            ? 'bg-[#015A57] text-white'
+                                            : 'bg-[#00D19A] text-white shadow-lg'
+                                    } cursor-pointer`}
+                                    onClick={() => {
+                                        setCycle('MONTHLY');
+                                        const url = new URL(window.location.href);
+                                        url.searchParams.set('cycle', 'MONTHLY');
+                                        window.history.replaceState({}, '', url);
+                                    }}
+                                >
+                                    Mensal
+                                </span>
+                            </div>
                             <div className="border border-zinc-400 rounded-xl p-4 gap-4 flex flex-col">
                                 <p className="text-white">Quantas acomodações você administra?</p>
                                 <label htmlFor="qtdAcomodacao" className="flex items-center gap-8">
