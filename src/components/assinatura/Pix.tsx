@@ -3,7 +3,7 @@ import { intervalToDuration } from 'date-fns';
 import Notify from "../notify/Notify";
 
 export default function Pix() {
-    const apiURL = 'https://api.prohost.net.br';
+    const apiURL = 'http://localhost:3000';
     const [copypastepix, setCopypastepix] = useState('');
     const [paymentId, setPaymentId] = useState('');
     const initialExpireDate = localStorage.getItem('expireDate') || '';

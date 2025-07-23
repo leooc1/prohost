@@ -30,7 +30,7 @@ interface Acomodacao {
 
 
 export default function Dashboard() {
-  const apiURL = 'https://api.prohost.net.br'
+  const apiURL = 'http://localhost:3000'
   useEffect(() => { document.title = 'Dashboard | Prohost' }, [])
 
   const { dataToken } = useContext(SideBarContext)

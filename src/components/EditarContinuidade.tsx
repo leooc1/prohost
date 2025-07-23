@@ -31,7 +31,7 @@ interface Reserva {
 
 
 export default function EditarContinuidade(props: propsEdicao) {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = 'http://localhost:3000'
     const { dataToken } = useContext(SideBarContext)
     const [reservaAtual, setReservaAtual] = useState<any>()
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })

@@ -26,7 +26,7 @@ interface Acomodacao {
 }
 
 export default function AcomodacoesDetalhes() {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = 'http://localhost:3000'
     const { dataToken } = useContext(SideBarContext)
     const [loaded, setLoaded] = useState(false)
     const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
