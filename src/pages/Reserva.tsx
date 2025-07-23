@@ -45,7 +45,7 @@ interface Reserva {
 }
 
 export default function Reserva() {
-  const apiURL = 'http://localhost:3000'
+  const apiURL = 'https://api.prohost.net.br'
   useEffect(() => { document.title = 'Reservas | Prohost' }, [])
 
 

@@ -24,7 +24,7 @@ const formatCurrency = (value: number) => {
 };
 
 export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
-    const apiURL = 'http://localhost:3000'
+    const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
     const [isAnnual, setIsAnnual] = useState(false);
     const [wait, setWait] = useState(false);

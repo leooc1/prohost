@@ -13,7 +13,7 @@ interface Hospede {
 }
 
 export default function Hospede() {
-    const apiURL = 'http://localhost:3000'
+    const apiURL = 'https://api.prohost.net.br'
     useEffect(() => { document.title = `Hóspedes | Prohost` }, [])
 
 

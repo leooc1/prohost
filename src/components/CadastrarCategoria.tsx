@@ -18,7 +18,7 @@ const CORES = [
 ];
 
 export default function CadastrarCategoria({ close, permissao }: { close: () => void, permissao: number }) {
-    const apiURL = 'http://localhost:3000'
+    const apiURL = 'https://api.prohost.net.br'
     const { dataToken } = useContext(SideBarContext)
     const [mov, setMov] = useState(false)
     const [color, setColor] = useState<string>('#bdc3c7')

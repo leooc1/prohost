@@ -4,7 +4,7 @@ import { SideBarContext } from '../contexts/SideBarMenuContext'
 
 
 export default function SidebarMenu({ route }: { route: string }) {
-    const apiURL = 'http://localhost:3000'
+    const apiURL = 'https://api.prohost.net.br'
     const [refresh, setRefresh] = useState<boolean>(true)
     async function infoToken() {
         const token = window.localStorage.getItem('ph_token_acc')
