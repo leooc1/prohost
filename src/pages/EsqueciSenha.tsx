@@ -1,27 +1,25 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import prohostLogo from '/prohost-logo.png';
 
 interface ApiResponse { success: boolean; message?: string }
 
 export default function ResetarSenha() {
     const apiURL = 'https://api.prohost.net.br'
     const navigate = useNavigate();
-    const { search } = useLocation();              // <── lê ?token=…&id=…
+    const { search } = useLocation();
     const query = new URLSearchParams(search);
     const mode = query.has('token') && query.has('id') ? 'reset' : 'request';
 
-    // estados comuns
     const [loading, setLoading] = useState(false);
     const [msg, setMsg] = useState<string | null>(null);
     const [ok, setOk] = useState(false);
 
-    // estados específicos de cada modo
     const [email, setEmail] = useState('');
     const [senha1, setSenha1] = useState('');
     const [senha2, setSenha2] = useState('');
 
-    /** 1) Solicitar link */
     const handleRequest = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
@@ -36,20 +34,17 @@ export default function ResetarSenha() {
             );
             if (data.success) { setOk(true); setMsg('Email de recuperação enviado!'); setTimeout(() => setMsg(null), 5000); }
         } catch (e) {
-            console.error('Erro ao solicitar redefinição:', e);
             setMsg('Não foi possível processar a solicitação.');
         } finally { setLoading(false); }
     };
 
-    /** 2) Definir nova senha */
     const handleReset = async (e: React.FormEvent) => {
         e.preventDefault();
         if (senha1 !== senha2) { setMsg('As senhas não coincidem.'); return; }
-
         setLoading(true); setMsg(null);
         try {
             const { data } = await axios.post<ApiResponse>(
-                `${apiURL}/reset-password/confirm`,   // rota sugerida
+                `${apiURL}/reset-password/confirm`,
                 {
                     token: query.get('token'),
                     userId: Number(query.get('id')),
@@ -62,20 +57,22 @@ export default function ResetarSenha() {
         } finally { setLoading(false); }
     };
 
-    // ------------------------------------------------------------
-    // JSX (condicional por `mode`)
-    // ------------------------------------------------------------
     return (
-        <div className="flex w-full min-h-screen">
-            {/* coluna esquerda (logo) … */}
-            <main className="w-full grid md:grid-cols-2 bg-zinc-100">
-                {/* …logo/voltar… */}
+        <div className="flex w-full min-h-screen h-full">
+            <main className="w-full min-h-screen h-full relative bg-zinc-100 grid md:grid-cols-2">
+                {/* Coluna visual/identidade */}
+                <section className="bg-gradient-to-t from-primary to-[#015A57] flex flex-col justify-center items-center py-20 md:py-0">
+                    <div className="flex gap-2 mb-8">
+                        <img src={prohostLogo} alt="Logo ProHost" width={48} height={48} />
+                        <h1 className="text-white font-bold text-4xl tracking-tight">prohost</h1>
+                    </div>
+                    <p className="text-secondary font-semibold text-xl mb-5">Recuperação de Senha</p>
+                </section>
+                {/* Coluna formulário */}
                 <section className="flex flex-col items-center justify-center px-8 py-12">
                     <div className="w-full max-w-md space-y-8">
-
-                        {/* Título */}
                         <div className="text-center">
-                            <h2 className="text-3xl font-bold text-gray-900">
+                            <h2 className="text-3xl font-bold text-[#015A57]">
                                 {mode === 'request' ? 'Recuperação de Senha' : 'Definir Nova Senha'}
                             </h2>
                             <p className="mt-2 text-sm text-gray-600">
@@ -84,23 +81,16 @@ export default function ResetarSenha() {
                                     : 'Escolha sua nova senha abaixo'}
                             </p>
                         </div>
-
-                        {/* Mensagem de sucesso/erro */}
                         {msg && (
-                            <div
-                                className={`rounded-md p-4 text-sm ${ok ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
-                                    }`}
-                            >
+                            <div className={`rounded-md p-4 text-sm ${ok ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
                                 {msg}
                             </div>
                         )}
-
-                        {/* FORMULÁRIO — muda conforme o modo */}
                         {mode === 'request' ? (
                             ok ? (
                                 <button
-                                    onClick={() => navigate('/login')}
-                                    className="w-full py-2 px-4 text-white bg-primary rounded-md"
+                                    onClick={() => navigate('/auth')}
+                                    className="w-full py-2 px-4 text-white bg-primary rounded-md font-semibold"
                                 >
                                     Voltar para login
                                 </button>
@@ -117,7 +107,7 @@ export default function ResetarSenha() {
                                     <button
                                         type="submit"
                                         disabled={loading}
-                                        className="w-full py-2 text-white bg-primary rounded-md"
+                                        className="w-full py-2 text-white bg-primary rounded-md font-semibold"
                                     >
                                         {loading ? 'Enviando…' : 'Enviar link'}
                                     </button>
@@ -127,7 +117,7 @@ export default function ResetarSenha() {
                             ok ? (
                                 <button
                                     onClick={() => navigate('/auth')}
-                                    className="w-full py-2 px-4 text-white bg-primary rounded-md"
+                                    className="w-full py-2 px-4 text-white bg-primary rounded-md font-semibold"
                                 >
                                     Ir para login
                                 </button>
@@ -152,7 +142,7 @@ export default function ResetarSenha() {
                                     <button
                                         type="submit"
                                         disabled={loading}
-                                        className="w-full py-2 text-white bg-primary rounded-md"
+                                        className="w-full py-2 text-white bg-primary rounded-md font-semibold"
                                     >
                                         {loading ? 'Salvando…' : 'Salvar nova senha'}
                                     </button>

@@ -1,6 +1,21 @@
 import { useEffect } from "react";
 
+const blockedRoutes = [
+  "/assinar",
+  // "/assinar/forma-pagamento",
+  // "/assinar/pix",
+  // "/assinar/boleto",
+  // "/assinar/credit-card",
+  // "/reset-senha",
+];
+
 const JivoChat = () => {
+  const location = window.location;
+
+  if (blockedRoutes.some(route => location.pathname.startsWith(route))) {
+    return null;
+  }
+
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "//code.jivosite.com/widget/BbNBy6XPgg";

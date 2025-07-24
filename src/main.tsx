@@ -118,9 +118,7 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <>
-      <JivoChat />
-      <RouterProvider router={router} />
-    </>
+    <RouterProvider router={router} />
+    <JivoChat />
   </React.StrictMode>,
 )
