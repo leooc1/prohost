@@ -73,7 +73,7 @@ export default function Cadastro() {
 
         {
             const cycle = new URL(location.href).searchParams.get('cycle')
-            await fetch(`${apiURL}/plano/${planoDTO.qtd_acomodacao}/${cycle=='MONTHLY'?planoDTO.valor_mes:planoDTO.valor_ano}`, {
+            await fetch(`${apiURL}/plano/${planoDTO.qtd_acomodacao}/${cycle == 'MONTHLY' ? planoDTO.valor_mes : planoDTO.valor_ano}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -260,14 +260,15 @@ export default function Cadastro() {
                         const nome = document.getElementById('nome') as HTMLInputElement
                         const email = document.getElementById('email') as HTMLInputElement
                         const senha = document.getElementById('senha') as HTMLInputElement
-                        const cycle = new URL(location.href).searchParams.get('cycle') || ''
+                        /* const cycle = new URL(location.href).searchParams.get('cycle') || '' */
                         const trial = new Date();
-                        {
+                        {/*
                             if (cycle == 'MONTHLY')
                                 trial.setMonth(trial.getMonth() + 1);
                             else
                                 trial.setFullYear(trial.getFullYear() + 1);
-                        }
+                        */}
+                        trial.setDate(trial.getDate() + 15)
 
                         criarConta({
                             assinatura: null,
@@ -407,7 +408,7 @@ export default function Cadastro() {
                             if (celular.value.length > 0 && cpf_cnpj.value.length > 0 && end_rua.value.length > 0 && end_num.value.length > 0 && end_cep.value.length > 0 && nome.value.length > 0 && email.value.length > 0 && senha.value.length > 0 && button) {
 
                                 const origem = new URL(location.href).searchParams.get('origin') || ''
-                                const cycle = new URL(location.href).searchParams.get('cycle') || ''
+                                /* const cycle = new URL(location.href).searchParams.get('cycle') || '' */
                                 const trial = new Date();
                                 if (origem === 'newStudents') {
                                     trial.setMonth(trial.getMonth() + 6);
@@ -487,11 +488,6 @@ export default function Cadastro() {
                                 }
                                 else {
                                     verificarEmail(email.value)
-                                    if (cycle == 'MONTHLY')
-                                        trial.setMonth(trial.getMonth() + 1);
-                                    else
-                                        trial.setFullYear(trial.getFullYear() + 1);
-                                    trial.setDate(trial.getDate() + 15);
                                 }
                             }
                         }}
