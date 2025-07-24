@@ -7,7 +7,7 @@ interface ApiResponse { success: boolean; message?: string }
 
 export default function ResetarSenha() {
     const apiURL = 'https://api.prohost.net.br'
-    const navigate = useNavigate();
+    const navigate = useNavigate(); 
     const { search } = useLocation();
     const query = new URLSearchParams(search);
     const mode = query.has('token') && query.has('id') ? 'reset' : 'request';
