@@ -57,7 +57,7 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
     }
 
     async function getInfo() {
-        await fetch(`${apiURL}/users/${dataToken?.idUsu}/info`, {
+        await fetch(`${apiURL}/users/${dataToken.idUsu}/info`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -98,8 +98,10 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
     }
 
     useEffect(() => {
-        getInfo()
-        getNotify()
+        if (dataToken && dataToken.id && dataToken.idUsu) {
+            getInfo()
+            getNotify()
+        }
     }, [dataToken])
 
     return (

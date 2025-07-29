@@ -159,11 +159,15 @@ export default function Config() {
     const [financeiroPInput, setFinanceiroPInput] = useState<string>("")
 
     useEffect(() => {
-        permissoes()
-        if (statusData)
-            if (statusData?.trial_end)
-                if ((new Date(statusData?.trial_end) < new Date()))
+        if (dataToken && dataToken.id && dataToken.idUsu)
+            permissoes()
+        if (statusData) {
+            if (statusData?.trial_end) {
+                if ((new Date(statusData.trial_end) < new Date())) {
                     setAssinatura(false)
+                }
+            }
+        }
     }, [statusData, dataToken])
     return (
         <div className="flex flex-col w-full min-h-screen h-full">
