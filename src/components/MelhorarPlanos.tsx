@@ -151,6 +151,13 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
     }
 
     async function gerarPagamento(cartao?: any) {
+        console.log({
+                "saas": Number(dataToken.id),
+                "price": isAnnual ?
+                    ((Number(price.total) - Number(info?.valor_ano)) / 12) * (mesesAteDataFutura(info?.trial_end || '') > 0 ? mesesAteDataFutura(info?.trial_end || '') : 1)
+                    : Number(price.monthly),
+                "cycle": isAnnual ? 'YEARLY' : 'MONTHLY'
+            })
         await fetch(`${apiURL}/assinatura/upgrade/`, {
             method: 'POST',
             body: JSON.stringify({
