@@ -38,11 +38,11 @@ export default function MinhaConta() {
             method: 'GET'
         })
             .then(data => data.json())
-            .then((data: any[]) => {
-                setFoto(data[0].foto)
-                setUser({ nome: data[0].nome, email: data[0].email })
-                setNome(data[0].nome)
-                setEmail(data[0].email)
+            .then((data: any) => {
+                setFoto(data.foto)
+                setUser({ nome: data.nome, email: data.master })
+                setNome(data.nome)
+                setEmail(data.master)
                 setLoaded(true)
             })
             .catch(err => console.log(err))
