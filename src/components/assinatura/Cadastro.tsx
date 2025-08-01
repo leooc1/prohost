@@ -19,7 +19,7 @@ export default function Cadastro() {
     const [complemento, setComplemento] = useState<string>('')
     const [bairro, setBairro] = useState<string>('')
     const [maskCpfCnpj, setMaskCpfCnpj] = useState<string>("xxx.xxx.xxx-xx")
-    const [camposObrigatorios, setCamposObrigatorios] = useState<boolean[]>([false, false, false, false, false, false, false, false])
+    const [camposObrigatorios, setCamposObrigatorios] = useState<boolean[]>([true, true, true, true, true, true, true, true])
     async function buscarCEP(cep: string) {
         await fetch(`https://viacep.com.br/ws/${cep}/json/`, {
             method: 'GET'
