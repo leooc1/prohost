@@ -150,7 +150,8 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
             .then(data => data.json())
             .then(async (data) => {
                 if (data.id) {
-                    if (upgrade)
+                    if (upgrade) {
+
                         await updateAssinatura({
                             "saas": dataToken.id,
                             "plano": {
@@ -166,6 +167,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                                 "proxima_cobranca": data.dueDate
                             }
                         })
+                    }
                     else
                         location.reload()
                 }
@@ -174,13 +176,6 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
     }
 
     async function gerarPagamento(cartao?: any) {
-        console.log({
-                "saas": Number(dataToken.id),
-                "price": isAnnual ?
-                    ((Number(price.total) - Number(info?.valor_ano)) / 12) * (mesesAteDataFutura(info?.trial_end || '') > 0 ? mesesAteDataFutura(info?.trial_end || '') : 1)
-                    : Number(price.monthly),
-                "cycle": isAnnual ? 'YEARLY' : 'MONTHLY'
-            })
         await fetch(`${apiURL}/assinatura/upgrade/`, {
             method: 'POST',
             body: JSON.stringify({
@@ -265,7 +260,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
         setPixLoading(true);
         try {
             console.log('Iniciando geração de PIX...');
-            
+
             // 1. Cria o pagamento via upgrade
             const paymentResponse = await fetch(`${apiURL}/assinatura/upgrade/`, {
                 method: 'POST',
@@ -279,15 +274,15 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                 headers: { 'Content-Type': 'application/json' }
             });
             const paymentData = await paymentResponse.json();
-            console.log('Payment Data:', paymentData);
+            // console.log('Payment Data:', paymentData);
 
             if (paymentData.pagamento) {
-                console.log('Payment ID:', paymentData.pagamento);
-                
+                // console.log('Payment ID:', paymentData.pagamento);
+
                 // 2. Gerar QR Code PIX diretamente com o paymentId retornado
                 const qrResponse = await fetch(`${apiURL}/assinatura/pix/${paymentData.pagamento}`);
                 const qrData = await qrResponse.json();
-                console.log('QR Data:', qrData);
+                // console.log('QR Data:', qrData);
 
                 if (qrData.success) {
                     console.log('QR Code gerado com sucesso');
@@ -328,7 +323,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                 if (data.status === 'CONFIRMED') {
                     setNotify({ type: 1, text: 'Pagamento confirmado! Atualizando plano...' });
                     setShowNotify(true);
-                    
+
                     // Atualizar assinatura após confirmação
                     if (upgrade) {
                         await updateAssinatura({
@@ -347,7 +342,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                             }
                         });
                     }
-                    
+
                     setTimeout(() => {
                         location.reload();
                     }, 2000);
@@ -699,7 +694,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                                         && cvc.value.length == 3
                                     ) {
                                         const card = {
-                                            card: numCard.value,    
+                                            card: numCard.value,
                                             date: dataValid.value,
                                             cvc: cvc.value
                                         }
