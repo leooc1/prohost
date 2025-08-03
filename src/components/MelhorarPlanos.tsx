@@ -149,7 +149,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
         })
             .then(data => data.json())
             .then(async (data) => {
-                if (data.id) {
+                if (data.id) { 
 
                     if (upgrade) {
 
