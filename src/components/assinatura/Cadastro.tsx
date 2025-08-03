@@ -1,8 +1,6 @@
 import { InputMask } from "@react-input/mask"
 import { useContext, useState } from "react"
 import { AssinaturaContext } from "../../contexts/AssinaturaContext"
-import termos from '../../../public/termos-de-uso.pdf'
-import politica from '../../../public/politica-de-privacidade.pdf'
 import Notify from "../notify/Notify"
 
 export default function Cadastro() {
@@ -19,7 +17,11 @@ export default function Cadastro() {
     const [complemento, setComplemento] = useState<string>('')
     const [bairro, setBairro] = useState<string>('')
     const [maskCpfCnpj, setMaskCpfCnpj] = useState<string>("xxx.xxx.xxx-xx")
-    const [camposObrigatorios, setCamposObrigatorios] = useState<boolean[]>([true, true, true, true, true, true, true, true])
+    const [camposObrigatorios, setCamposObrigatorios] = useState<boolean[]>([false, false, false, false, false, false, false, false])
+    
+    // URLs dos PDFs
+    const termosUrl = '/termos-de-uso.pdf'
+    const politicaUrl = '/politica-de-privacidade.pdf'
     async function buscarCEP(cep: string) {
         await fetch(`https://viacep.com.br/ws/${cep}/json/`, {
             method: 'GET'
@@ -532,8 +534,8 @@ export default function Cadastro() {
                         <input type="checkbox" name="termos" id="termos" className='cursor-pointer' onChange={(e) => setButton(e.target.checked)} />
                         Aceito os <a href="#"
                             onClick={() => {
-                                window.open(termos, '_blank')
-                                window.open(politica, '_blank')
+                                window.open(termosUrl, '_blank')
+                                window.open(politicaUrl, '_blank')
                             }}
                             className='text-primary italic font-medium'>Termos de Uso</a>
                     </label>

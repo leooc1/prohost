@@ -150,6 +150,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
             .then(data => data.json())
             .then(async (data) => {
                 if (data.id) {
+
                     if (upgrade) {
 
                         await updateAssinatura({
@@ -157,8 +158,8 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                             "plano": {
                                 "qtd_acomodacao": selectedAccommodations[0],
                                 "permicao": 1,
-                                "valor_mes": Number(price.monthly),
-                                "valor_ano": Number(price.total)
+                                "valor_mes": isAnnual ? Number((Number(price.total) / 10).toFixed(2)) : Number(price.monthly),
+                                "valor_ano": Number(price.total),
                             },
                             "assinatura": {
                                 "assinatura": data.subscription,
@@ -168,11 +169,22 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                             }
                         })
                     }
-                    else
+                    else {
                         location.reload()
+                    }
+                } else {
+                    // Erro retornado pela API (ex: cartão recusado)
+                    setWait(false);
+                    setNotify({ type: 2, text: data.error || 'Pagamento recusado. Verifique os dados do cartão.' });
+                    setShowNotify(true);
                 }
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err);
+                setWait(false);
+                setNotify({ type: 2, text: 'Erro de comunicação. Tente novamente.' });
+                setShowNotify(true);
+            })
     }
 
     async function gerarPagamento(cartao?: any) {
@@ -195,7 +207,12 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                     pagamentoCartao(data.pagamento, cartao)
                 }
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err);
+                setWait(false);
+                setNotify({ type: 2, text: 'Erro ao gerar cobrança. Tente novamente.' });
+                setShowNotify(true);
+            })
     }
 
     async function renovacaoAssinatura(cartao?: any) {
@@ -262,6 +279,12 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
             console.log('Iniciando geração de PIX...');
 
             // 1. Cria o pagamento via upgrade
+            console.log("saas:" + Number(dataToken.id),
+                    "price" + isAnnual
+                        ? ((Number(price.total) - Number(info?.valor_ano)) / 12) * (mesesAteDataFutura(info?.trial_end || '') > 0 ? mesesAteDataFutura(info?.trial_end || '') : 1)
+                        : Number(price.monthly),
+                    "cycle" + isAnnual ? 'YEARLY' : 'MONTHLY')
+            
             const paymentResponse = await fetch(`${apiURL}/assinatura/upgrade/`, {
                 method: 'POST',
                 body: JSON.stringify({
@@ -274,7 +297,9 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                 headers: { 'Content-Type': 'application/json' }
             });
             const paymentData = await paymentResponse.json();
-            // console.log('Payment Data:', paymentData);
+            console.log('Payment Data:', paymentData);
+            console.log('Payment ID recebido:', paymentData.pagamento);
+            console.log('Payment ID é válido:', paymentData.pagamento && paymentData.pagamento.length > 0);
 
             if (paymentData.pagamento) {
                 // console.log('Payment ID:', paymentData.pagamento);

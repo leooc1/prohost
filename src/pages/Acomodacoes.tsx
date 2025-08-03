@@ -187,7 +187,7 @@ export default function Acomodacoes() {
                                             desativar(e.id, true)
                                         }}
                                             disabled={!(permissao >= 4)}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="rgba(255,0,0,0)" stroke="currentColor" stroke-width="1" stroke-linecap="undefined" stroke-linejoin="round" className="feather feather-trash w-7 h-fit" color="rgba(255,0,0,1)" pointer-events="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="rgba(255,0,0,0)" stroke="currentColor" strokeWidth="1" stroke-linecap="undefined" stroke-linejoin="round" className="feather feather-trash w-7 h-fit" color="rgba(255,0,0,1)" pointer-events="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                                         </button>
                                     </div>
                                 </li>)}
@@ -214,7 +214,7 @@ export default function Acomodacoes() {
                                             desativar(e.id, true)
                                         }}
                                             disabled={!(permissao >= 4)}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="rgba(255,0,0,0)" stroke="currentColor" stroke-width="1" stroke-linecap="undefined" stroke-linejoin="round" className="feather feather-trash w-7 h-fit" color="rgba(255,0,0,1)" pointer-events="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="rgba(255,0,0,0)" stroke="currentColor" strokeWidth="1" stroke-linecap="undefined" stroke-linejoin="round" className="feather feather-trash w-7 h-fit" color="rgba(255,0,0,1)" pointer-events="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                                         </button>
                                     </div>
                                 </li>)}
@@ -258,7 +258,7 @@ export default function Acomodacoes() {
                                             }
                                         }}
                                             disabled={!(permissao >= 4)}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="rgba(255,0,0,0)" stroke="currentColor" stroke-width="1" stroke-linecap="undefined" stroke-linejoin="round" className="feather feather-trash w-7 h-fit" color="rgba(255,0,0,1)" pointer-events="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="rgba(255,0,0,0)" stroke="currentColor" strokeWidth="1" stroke-linecap="undefined" stroke-linejoin="round" className="feather feather-trash w-7 h-fit" color="rgba(255,0,0,1)" pointer-events="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                                         </button>
                                     </div>
                                 </li>)}

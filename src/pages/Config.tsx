@@ -138,7 +138,7 @@ export default function Config() {
                 }
             })
             .catch(err => console.log(err))
-        /////////////////////////////////////////////////////////////////////////////////////
+        
         await fetch(`${apiURL}/users/${dataToken.id}/users`, {
             method: 'GET'
         })
