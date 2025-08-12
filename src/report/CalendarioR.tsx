@@ -99,7 +99,6 @@ export default function CalendarioR(props: propsCalendario) {
         for (const reserva of reservaC) {
             const diaCalendario = document.getElementById(`dia-${reserva.dia}`)
             const horario = reserva.hora * 100 / 24
-            console.log(horario.toFixed(0))
             diaCalendario ? diaCalendario.innerHTML += `<div 
             style='transform: translateX(
             ${reserva.tipo == 'start' ? `${horario.toFixed(0)}%` : ''}

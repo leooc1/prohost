@@ -2,6 +2,7 @@ import { useEffect } from "react";
 
 const blockedRoutes = [
   "/assinar",
+  "/relatorio",
   // "/assinar/forma-pagamento",
   // "/assinar/pix",
   // "/assinar/boleto",
