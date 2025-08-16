@@ -1,5 +1,5 @@
 
-export default function DespesasR() {
+export default function DespesasR({ despesas }: { despesas: any[] }) {
     return (
         <div>
             <table className='mx-20'>
@@ -11,72 +11,20 @@ export default function DespesasR() {
                     </tr>
                 </thead>
                 <tbody className="">
-                    <tr className="text-sm h-10">
+                    {despesas.length > 0 && despesas.map(e => <tr className="text-sm h-10">
                         <th className="text-center border border-black w-28 text-black font-light">
-                            Conjunto de facas para uso de hospedes
+                            {e.nome}
                         </th>
                         <th className="text-center border border-black w-28 text-black font-light">
-                            Americanas
+                            {e.recebedor}
                         </th>
                         <th className="text-center border border-black w-28 text-black font-light">
-                            54,99
+                            {new Intl.NumberFormat('pt-BR', {
+                                maximumFractionDigits: 2,
+                                minimumFractionDigits: 2,
+                            }).format(e.valor_liq)}
                         </th>
-                    </tr>
-                    <tr className="text-sm h-10">
-                        <th className="text-center border border-black w-28 text-black font-light">
-                            Conta de Luz Agosto.2024
-                        </th>
-                        <th className="text-center border border-black w-28 text-black font-light">
-                            Light
-                        </th>
-                        <th className="text-center border border-black w-28 text-black font-light">
-                            691,69
-                        </th>
-                    </tr>
-                    <tr className="text-sm h-10">
-                        <th className="text-center border border-black w-28 text-black font-light">
-                            Conta de Gás Junho.2024
-                        </th>
-                        <th className="text-center border border-black w-28 text-black font-light">
-                            Naturgy
-                        </th>
-                        <th className="text-center border border-black w-28 text-black font-light">
-                            212,83
-                        </th>
-                    </tr>
-                    <tr className="text-sm h-10">
-                        <th className="text-center border border-black w-28 text-black font-light">
-                            Conta de Gás Julho.2024
-                        </th>
-                        <th className="text-center border border-black w-28 text-black font-light">
-                            Naturgy
-                        </th>
-                        <th className="text-center border border-black w-28 text-black font-light">
-                            168,05
-                        </th>
-                    </tr>
-                    <tr className="text-sm h-10">
-                        <th className="text-center border border-black w-28 text-black font-light">
-                            Conta de Gás Agosto.2024
-                        </th>
-                        <th className="text-center border border-black w-28 text-black font-light">
-                            Naturgy
-                        </th>
-                        <th className="text-center border border-black w-28 text-black font-light">
-                            190,62
-                        </th>
-                    </tr>
-                    <tr className="text-sm h-10">
-                        <th className="text-center border border-black w-28 text-black font-light">
-                            Compra de taças de vinho e copos para reposição
-                        </th>
-                        <th className="text-center border border-black w-28 text-black font-light">
-                            Americanas
-                        </th>
-                        <th className="text-center border border-black w-28 text-black font-light">
-                            74,96
-                        </th>
-                    </tr>
+                    </tr>)}
                 </tbody>
                 <tfoot>
                     <tr className="text-sm h-10">
@@ -84,7 +32,9 @@ export default function DespesasR() {
                             Total
                         </th>
                         <th className="text-center border border-black w-28 text-black text-xl font-semibold">
-                            1.393,14
+                            {despesas.reduce((total, item) => {
+                            return total + parseFloat((item.valor_liq) || 0);
+                        }, 0)}
                         </th>
                     </tr>
                 </tfoot>

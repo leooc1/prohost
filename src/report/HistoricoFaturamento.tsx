@@ -7,7 +7,8 @@ import {
   LineController,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ChartData
 } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { useEffect, useRef } from 'react';
@@ -46,11 +47,11 @@ export default function HistoricoFaturamento({
       const ctx = chartRef.current.getContext('2d');
 
       if (ctx) {
-        const data = {
+        const data: ChartData<'line', number[], string> = {
           labels: ordenarMeses(mes),
           datasets: [
             {
-              type: 'line',
+              type: 'line' as const,
               label: 'FATURAMENTO',
               data: dadosFaturamento,
               borderColor: '#A9C8DC',
@@ -70,7 +71,7 @@ export default function HistoricoFaturamento({
               }
             },
             {
-              type: 'line',
+              type: 'line' as const,
               label: 'DESPESA TOTAL',
               data: dadosDespesa,
               borderColor: '#F67A7D',
@@ -163,8 +164,8 @@ export default function HistoricoFaturamento({
           }
         };
 
-        const chart = new Chart(ctx, {
-          type: 'line', // base type (line for consistency)
+        const chart = new Chart<any>(ctx, {
+          type: 'line',
           data,
           options
         });
@@ -174,7 +175,7 @@ export default function HistoricoFaturamento({
         };
       }
     }
-  }, [mes]);
+  }, [mes, dadosFaturamento, dadosDespesa]);
 
   return (
     <div className="h-72 w-full">
