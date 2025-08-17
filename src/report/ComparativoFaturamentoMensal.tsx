@@ -82,7 +82,7 @@ export default function ComparativoResultados({
                             }
                         }
                     ]
-                };
+                } as any
 
                 const options: any = {
                     responsive: true,
