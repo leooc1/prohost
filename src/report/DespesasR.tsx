@@ -19,7 +19,7 @@ export default function DespesasR({ despesas }: { despesas: any[] }) {
                             {e.recebedor}
                         </th>
                         <th className="text-center border border-black w-28 text-black font-light">
-                            {new Intl.NumberFormat('pt-BR', {
+                            R$ {new Intl.NumberFormat('pt-BR', {
                                 maximumFractionDigits: 2,
                                 minimumFractionDigits: 2,
                             }).format(e.valor_liq)}
@@ -32,9 +32,12 @@ export default function DespesasR({ despesas }: { despesas: any[] }) {
                             Total
                         </th>
                         <th className="text-center border border-black w-28 text-black text-xl font-semibold">
-                            {despesas.reduce((total, item) => {
-                            return total + parseFloat((item.valor_liq) || 0);
-                        }, 0)}
+                            R$ {new Intl.NumberFormat('pt-BR', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    }).format(despesas.reduce((total, item) => {
+                            return total + parseFloat((item.valor_liq) || 0)
+                        }, 0))}
                         </th>
                     </tr>
                 </tfoot>

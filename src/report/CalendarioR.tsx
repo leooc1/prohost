@@ -64,7 +64,7 @@ export default function CalendarioR(props: propsCalendario) {
                 diaAtual.setDate(diaAtual.getDate() + 1)) {
 
                 dias.push({
-                    dia: diaAtual.getDate(),
+                    dia: diaAtual.getMonth() == new Date(props.data).getMonth() ? diaAtual.getDate():32,
                     hora: 0,
                     cor: reserva.color,
                     title: reserva.title,
@@ -100,7 +100,8 @@ export default function CalendarioR(props: propsCalendario) {
             const diaCalendario = document.getElementById(`dia-${reserva.dia}`)
             const horario = reserva.hora * 100 / 24
             diaCalendario ? diaCalendario.innerHTML += `<div 
-            style='transform: translateX(
+            style='background-color: ${reserva.cor};
+            transform: translateX(
             ${reserva.tipo == 'start' ? `${horario.toFixed(0)}%` : ''}
             ${reserva.tipo == 'end' ? `-${(100 - horario).toFixed(0)}%` : ''}
             ${reserva.tipo == 'middle' ? `${0}%` : ''}

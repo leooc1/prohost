@@ -3,27 +3,27 @@ import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import '../styles/index.css'
 import App from './App.tsx'
-import NotFound from './NotFound.tsx'
-import Dashboard from './pages/Dashboard.tsx'
-import Reserva from './pages/Reserva.tsx'
-import Acomodacoes from './pages/Acomodacoes.tsx'
-import AcomodacoesDetalhes from './pages/AcomodacoesDetalhes.tsx'
-import Hospede from './pages/Hospede.tsx'
-import Financeiro from './pages/Financeiro.tsx'
-import Auth from './pages/Auth.tsx'
-import Assinar from './pages/Assinar.tsx'
+import Boleto from './components/assinatura/Boleto.tsx'
 import Cadastro from './components/assinatura/Cadastro.tsx'
+import CartaoCredito from './components/assinatura/CartaoCredito.tsx'
 import FormaPagamento from './components/assinatura/FormaPagamento.tsx'
 import Pix from './components/assinatura/Pix.tsx'
-import Boleto from './components/assinatura/Boleto.tsx'
-import CartaoCredito from './components/assinatura/CartaoCredito.tsx'
 import { AssinaturaProvider } from './contexts/AssinaturaContext.tsx'
 import JivoChat from './JivoChat.tsx'
+import NotFound from './NotFound.tsx'
+import Acomodacoes from './pages/Acomodacoes.tsx'
+import AcomodacoesDetalhes from './pages/AcomodacoesDetalhes.tsx'
+import Assinar from './pages/Assinar.tsx'
+import Auth from './pages/Auth.tsx'
 import Config from './pages/Config.tsx'
-import FeedBacks from './pages/FeedBacks.tsx'
-import Relatorio from './pages/Relatorio.tsx'
-import MinhaConta from './pages/MinhaConta.tsx'
+import Dashboard from './pages/Dashboard.tsx'
 import EsqueciSenha from './pages/EsqueciSenha.tsx'
+import FeedBacks from './pages/FeedBacks.tsx'
+import Financeiro from './pages/Financeiro.tsx'
+import Hospede from './pages/Hospede.tsx'
+import MinhaConta from './pages/MinhaConta.tsx'
+import Relatorio from './pages/Relatorio.tsx'
+import Reserva from './pages/Reserva.tsx'
 
 const router = createBrowserRouter([
   {
@@ -31,6 +31,11 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <NotFound />,
     children: [
+      {
+        path: "/relatorio",
+        element: <Relatorio />,
+        errorElement: <NotFound />,
+      },
       {
         path: "/dashboard",
         element: <Dashboard />,
@@ -103,11 +108,6 @@ const router = createBrowserRouter([
         element: <CartaoCredito />,
       },
     ],
-  },
-  {
-    path: "/relatorio",
-    element: <Relatorio />,
-    errorElement: <NotFound />,
   },
   {
     path: "/reset-senha",

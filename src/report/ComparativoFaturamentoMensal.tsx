@@ -49,23 +49,6 @@ export default function ComparativoResultados({
                     datasets: [
                         {
                             type: 'bar',
-                            label: 'PERÍODO',
-                            data: dadosAtuais,
-                            backgroundColor: 'rgba(46, 97, 164, 0.8)',
-                            borderRadius: 6,
-                            datalabels: {
-                                backgroundColor: 'rgba(46, 97, 164, 0.8)',
-                                borderRadius: 5,
-                                align: 'end',
-                                anchor: 'end',
-                                color: '#fff',
-                                font: {
-                                    size: 10,
-                                }
-                            }
-                        },
-                        {
-                            type: 'bar',
                             label: 'PERÍODO ANTERIOR',
                             data: dadosAnteriores,
                             backgroundColor: 'rgba(180, 180, 180, 0.8)',
@@ -76,6 +59,23 @@ export default function ComparativoResultados({
                                 align: 'end',
                                 anchor: 'end',
                                 color: '#000',
+                                font: {
+                                    size: 10,
+                                }
+                            }
+                        },
+                        {
+                            type: 'bar',
+                            label: 'PERÍODO',
+                            data: dadosAtuais,
+                            backgroundColor: 'rgba(46, 97, 164, 0.8)',
+                            borderRadius: 6,
+                            datalabels: {
+                                backgroundColor: 'rgba(46, 97, 164, 0.8)',
+                                borderRadius: 5,
+                                align: 'end',
+                                anchor: 'end',
+                                color: '#fff',
                                 font: {
                                     size: 10,
                                 }
@@ -169,7 +169,7 @@ export default function ComparativoResultados({
     }, [mes, dadosAtuais, dadosAnteriores]);
 
     return (
-        <div className="h-72 w-full">
+        <div className="h-full w-full pt-16">
             <canvas ref={chartRef}></canvas>
         </div>
     );

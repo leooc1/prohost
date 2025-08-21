@@ -52,26 +52,6 @@ export default function HistoricoFaturamento({
           datasets: [
             {
               type: 'line' as const,
-              label: 'FATURAMENTO',
-              data: dadosFaturamento,
-              borderColor: '#A9C8DC',
-              backgroundColor: '#A9C8DC',
-              borderWidth: 3,
-              tension: 0.4,
-              pointRadius: 4,
-              pointHoverRadius: 6,
-              datalabels: {
-                align: 'top',
-                anchor: 'end',
-                color: '#033C50',
-                font: {
-                  size: 10,
-                  weight: 'bold'
-                }
-              }
-            },
-            {
-              type: 'line' as const,
               label: 'DESPESA TOTAL',
               data: dadosDespesa,
               borderColor: '#F67A7D',
@@ -84,6 +64,26 @@ export default function HistoricoFaturamento({
                 align: 'top',
                 anchor: 'end',
                 color: '#ED3E44',
+                font: {
+                  size: 10,
+                  weight: 'bold'
+                }
+              }
+            },
+            {
+              type: 'line' as const,
+              label: 'FATURAMENTO',
+              data: dadosFaturamento,
+              borderColor: '#A9C8DC',
+              backgroundColor: '#A9C8DC',
+              borderWidth: 3,
+              tension: 0.4,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              datalabels: {
+                align: 'top',
+                anchor: 'end',
+                color: '#033C50',
                 font: {
                   size: 10,
                   weight: 'bold'
