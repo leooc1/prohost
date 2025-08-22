@@ -210,7 +210,7 @@ export default function Cadastro() {
                 <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={() => { setEscolhaTrial(false) }}></div>
                 <section className="flex flex-col absolute min-w-80 max-w-[470px] px-9 gap-4 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-md py-6">
                     <p className="text-center text-primary text-2xl font-semibold">Vamos começar?</p>
-                    <p className="text-center text-zinc-500">Você pode testar ProHost por 15 dias grátis em qualquer plano mensal, sem precisar inserir dados de pagamento.</p>
+                    <p className="text-center text-zinc-500">Você pode testar ProHost por {new URLSearchParams(window.location.search).get('cycle') === 'reservaadoiss' ? '30 dias' : '15 dias'} grátis em qualquer plano mensal, sem precisar inserir dados de pagamento.</p>
                     <p className="text-center text-zinc-500">Ou, se preferir, já pode contratar seu plano agora mesmo.</p>
                     <button className="bg-secondary border-2 border-secondary rounded-md p-2 mx-auto font-semibold w-10/12 text-white" onClick={() => {
                         const celular = document.getElementById('celular') as HTMLInputElement
