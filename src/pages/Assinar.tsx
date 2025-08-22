@@ -143,6 +143,13 @@ export default function Assinar() {
                                     </p>
                                 </div>
                             )}
+                            {origin === 'reservaadoiss' && (
+                                <div className="mt-5 text-zinc-100 flex items-center gap-4">
+                                    <p className="text-2xl font-semibold">
+                                     Bem-vindo(a)! <br /> Se você chegou até aqui pelo <strong>Reserva a Dois</strong>, temos uma surpresa pra você 🎁 Ganhe 1 mês grátis para explorar todos os recursos do nosso sistema e descobrir como ele pode facilitar o seu dia a dia.
+                                    </p>
+                                </div>
+                            )}
                             {origin === 'newAnfitriao' && (
                                 <div className="mt-5 text-zinc-100 flex items-center gap-4">
                                     <p className="text-2xl font-semibold">

@@ -184,7 +184,7 @@ export default function Cadastro() {
                     .then(data => data.json())
                     .then((data) => {
                         window.localStorage.setItem('ph_pay_acc', data)
-                        if (origem === 'newStudents' || origem === 'newClassmates' || origem === 'newAnfitriao' || origem === 'trial15') {
+                        if (origem === 'newStudents' || origem === 'newClassmates' || origem === 'newAnfitriao' || origem === 'trial15' || origem === 'reservaadoiss') {
                             location.assign('/auth')
                         } else {
                             location.assign('/assinar/forma-pagamento')
@@ -200,7 +200,7 @@ export default function Cadastro() {
             }
         }
 
-        if (origem != 'newAnfitriao' && origem != 'newClassmates' && origem != 'newStudents') { setEscolhaTrial(true) }
+        if (origem != 'newAnfitriao' && origem != 'newClassmates' && origem != 'newStudents' && origem != 'reservaadoiss') { setEscolhaTrial(true) }
 
     }
 
@@ -463,7 +463,7 @@ export default function Cadastro() {
                                         },
                                         origem
                                     )
-                                } else if (origem === 'newAnfitriao') {
+                                } else if (origem === 'newAnfitriao' || origem === 'reservaadois') {
                                     trial.setMonth(trial.getMonth() + 1);
                                     criarConta({
                                         assinatura: null,
