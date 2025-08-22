@@ -463,7 +463,7 @@ export default function Cadastro() {
                                         },
                                         origem
                                     )
-                                } else if (origem === 'newAnfitriao' || origem === 'reservaadois') {
+                                } else if (origem === 'newAnfitriao' || origem === 'reservaadoiss') {
                                     trial.setMonth(trial.getMonth() + 1);
                                     criarConta({
                                         assinatura: null,
