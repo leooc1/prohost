@@ -64,7 +64,7 @@ export default function CalendarioR(props: propsCalendario) {
                 diaAtual.setDate(diaAtual.getDate() + 1)) {
 
                 dias.push({
-                    dia: diaAtual.getMonth() == new Date(props.data).getMonth() ? diaAtual.getDate():32,
+                    dia: diaAtual.getMonth() == new Date(props.data).getMonth() ? diaAtual.getDate() : 32,
                     hora: 0,
                     cor: reserva.color,
                     title: reserva.title,
@@ -106,9 +106,12 @@ export default function CalendarioR(props: propsCalendario) {
             ${reserva.tipo == 'end' ? `-${(100 - horario).toFixed(0)}%` : ''}
             ${reserva.tipo == 'middle' ? `${0}%` : ''}
             );' 
-            class='bg-emerald-400 px-1 py-px text-transparent absolute w-full left-0
+            class='bg-emerald-400 py-px absolute w-full left-0
             ${reserva.tipo == 'start' ? `rounded-l-xl` : null} 
-            ${reserva.tipo == 'end' ? `rounded-r-xl` : null}'>.</div>` : null
+            ${reserva.tipo == 'end' ? `rounded-r-xl` : null}' title='${reserva.title}'><p class='whitespace-nowrap overflow-hidden text-white 
+            ${reserva.tipo == 'start' ? `ml-2` : null} 
+            ${reserva.tipo == 'end' ? `mr-2` : null}
+            ${reserva.tipo == 'middle' ? `mx-2` : null}'>${reserva.title}</p></div>` : null
         }
     }, [mes])
 

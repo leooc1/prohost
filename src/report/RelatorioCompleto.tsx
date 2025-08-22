@@ -109,6 +109,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
     };
 
     const [loaded, setLoaded] = useState<boolean>(false)
+    const [nome, setNome] = useState<string>('')
     const [endereco, setEndereco] = useState<string>('')
     const [acIMG, setAcIMG] = useState<string>('')
     const [valorImovel, setValorImovel] = useState<string>('')
@@ -143,6 +144,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                     setValorImovel(data[0].valor_imovel)
                     setEndereco(data[0].endereco)
                     setAcIMG(data[0].foto)
+                    setNome(data[0].nome)
                 })
                 .catch(err => console.log(err))
         }
@@ -314,7 +316,8 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 <p className='text-xl w-96'>{endereco}</p>
                                 <p className='text-xl'>{('0' + new Date().getDate()).slice(-2)} de {meses[new Date().getMonth()]} de {new Date().getFullYear()}</p>
                             </div>
-                            <div className='flex justify-center items-center'>
+                            <div className='flex flex-col justify-center items-center'>
+                                <p className='tracking-widest font-semibold'>{nome}</p>
                                 <img src={acIMG} alt="" className='w-fit h-44 drop-shadow' />
                             </div>
                         </section>
@@ -446,7 +449,9 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                     {dash}
                                 </div>
                             </div>
-                            <DespesasR despesas={despesas} />
+                            <div className='h-3/4 grid items-center'>
+                                <DespesasR despesas={despesas} />
+                            </div>
                         </section>
                     </div>
                     <div className='relative'>
@@ -476,10 +481,12 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                         maximumFractionDigits: 0
                                     }).format(Number(historicoFaturamento.faturamento_periodo))}</div>
                                 </div>
-                                <div className='text-center w-36 text-green-600'>RENTABILIDADE DO IMÓVEL</div>
-                                <div className='flex items-center'>
-                                    <div className='text-center justify-center'>FATURAMENTO DO PERÍODO <hr className='invert' /> VALOR DO IMÓVEL</div>
-                                    <div className='w-28 h-28 bg-green-600 flex justify-center items-center rounded-full text-3xl text-white'>{((Number(historicoFaturamento.faturamento_periodo) / Number(valorImovel)) * 100).toFixed(1)}%</div>
+                                <div className='flex items-center gap-7'>
+                                    <div className='text-center w-36 text-green-600'>RENTABILIDADE DO IMÓVEL</div>
+                                    <div className='flex items-center'>
+                                        <div className='text-center justify-center'>FATURAMENTO DO PERÍODO <hr className='invert' /> VALOR DO IMÓVEL</div>
+                                        <div className='w-28 h-28 bg-green-600 flex justify-center items-center rounded-full text-3xl text-white'>{((Number(historicoFaturamento.faturamento_periodo) / Number(valorImovel)) * 100).toFixed(1)}%</div>
+                                    </div>
                                 </div>
                             </section>
                             {historicoFaturamento.faturamento_despesa.length > 0 &&

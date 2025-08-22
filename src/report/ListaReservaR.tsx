@@ -84,21 +84,6 @@ export default function ListaReservaR({ reservas}: { reservas: Reserva[]}) {
                         : null
                 }
             </tbody>
-            <tfoot className="table table-fixed w-full">
-                <tr className="text-xs bg-slate-50 h-12">
-                    <td className="text-center">Total de Reserva: {
-                        reservas.filter(e => e.tipo_reserva != 'Indisponibilidade').length
-                    }</td>
-                    <td className="text-center">Total Bruto: {
-                        formatarMoedaBrasileira((reservas.map(r => Number(r.valor))
-                            .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
-                    }</td>
-                    <td className="text-center">Total Líquido: {
-                        formatarMoedaBrasileira((reservas.map(r => Number(r.valor_liq))
-                            .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
-                    }</td>
-                </tr>
-            </tfoot>
         </table>
     )
 }
