@@ -762,8 +762,8 @@ export default function Dashboard() {
             <div className="relative bg-white border-zinc-300 border rounded-lg flex flex-col justify-between items-center row-span-2 py-1 h-full">
               <p className="flex flex-col text-zinc-400 font-medium text-sm">Taxa de Ocupação Média</p>
               <div className="">
-                {showTaxaOcu && <OcupacaoMedia dados={taxaOcupacao?.taxa_ocupacao ? [Number((taxaOcupacao?.taxa_ocupacao / totalDiasIntervalo)*100).toFixed(1)] : [0]} />}
-                <p className="text-3xl text-center font-bold bottom-3 text-zinc-500 mb-4">{taxaOcupacao?.taxa_ocupacao ? Number((taxaOcupacao?.taxa_ocupacao / totalDiasIntervalo)*100).toFixed(1) : 0}%</p>
+                {showTaxaOcu && <OcupacaoMedia dados={taxaOcupacao?.taxa_ocupacao ? [Number((taxaOcupacao?.taxa_ocupacao / (totalDiasIntervalo * (filterAC == 'all' ? acomodacao.length : 1))) * 100).toFixed(1)] : [0]} />}
+                <p className="text-3xl text-center font-bold bottom-3 text-zinc-500 mb-4">{taxaOcupacao?.taxa_ocupacao ? Number((taxaOcupacao?.taxa_ocupacao / (totalDiasIntervalo * (filterAC == 'all' ? acomodacao.length : 1))) * 100).toFixed(1) : 0}%</p>
               </div>
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg flex items-center">
