@@ -34,7 +34,7 @@ export default function Dashboard() {
   useEffect(() => { document.title = 'Dashboard | Prohost' }, [])
 
   const { dataToken } = useContext(SideBarContext)
-  const [loaded, setLoaded] = useState(false) 
+  const [loaded, setLoaded] = useState(false)
   function formatarMoedaBrasileira(valorStr: string) {
     const valor = parseFloat(valorStr);
     if (isNaN(valor)) {
@@ -47,6 +47,7 @@ export default function Dashboard() {
   const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
   const date = new Date()
   const [periodo, setPeriodo] = useState('m-atual')
+  const [totalDiasIntervalo, setTotalDiasIntervalo] = useState(0)
   const [sessao, setSessao] = useState(0)
   const [deData, setDeData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`)
   const [ateData, setAteData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
@@ -97,11 +98,11 @@ export default function Dashboard() {
     tipo_reserva: string
     valor_liq: number
   }[]>([])
- /*  const [desempenhoDiarias, setDesempenhoDiarias] = useState<{
-    reservadas: number,
-    indisponiveis: number,
-    ociosas: number
-  }>() */
+  /*  const [desempenhoDiarias, setDesempenhoDiarias] = useState<{
+     reservadas: number,
+     indisponiveis: number,
+     ociosas: number
+   }>() */
   const [faturamento, setFaturamento] = useState<{
     mes: string
     receita: string
@@ -365,9 +366,10 @@ export default function Dashboard() {
         .then(data => data.json())
         .then((data) => {
           setShowTaxaOcu(false)
-          const ociosas = data.ociosas
+          // const ociosas = data.ociosas
           const reservadas = data.reservadas
-          setTaxaOcupacao({ taxa_ocupacao: (reservadas) / (reservadas + ociosas) * 100 })
+          // setTaxaOcupacao({ taxa_ocupacao: (reservadas) / (reservadas + ociosas) * 100 })
+          setTaxaOcupacao({ taxa_ocupacao: reservadas })
         })
         .catch(err => console.log(err))
 
@@ -404,10 +406,11 @@ export default function Dashboard() {
         .then(data => data.json())
         .then((data) => {
           if (data.length > 0)
-            setOcupacaoSemana(data.map((d: { dia_da_semana: string, total_dias_no_intervalo: string, total_movimentacoes: string, total_indisponibilidades: string }) => [
-              d.dia_da_semana,
-              ((Number(d.total_dias_no_intervalo) * acomodacao.length) - Number(d.total_indisponibilidades)) > 0 ? Number(d.total_movimentacoes) / ((Number(d.total_dias_no_intervalo) * acomodacao.length) - Number(d.total_indisponibilidades)) * 100 : 0
-            ]))
+            setTotalDiasIntervalo(data.map((d: any) => Number(d.total_dias_no_intervalo)).reduce((sum: any, value: any) => sum + value, 0))
+          setOcupacaoSemana(data.map((d: { dia_da_semana: string, total_dias_no_intervalo: string, total_movimentacoes: string, total_indisponibilidades: string }) => [
+            d.dia_da_semana,
+            ((Number(d.total_dias_no_intervalo) * acomodacao.length) - Number(d.total_indisponibilidades)) > 0 ? Number(d.total_movimentacoes) / ((Number(d.total_dias_no_intervalo) * acomodacao.length) - Number(d.total_indisponibilidades)) * 100 : 0
+          ]))
         })
         .catch(err => console.log(err))
     }
@@ -445,9 +448,10 @@ export default function Dashboard() {
         .then(data => data.json())
         .then((data) => {
           setShowTaxaOcu(false)
-          const ociosas = data.ociosas
+          // const ociosas = data.ociosas
           const reservadas = data.reservadas
-          setTaxaOcupacao({ taxa_ocupacao: (reservadas) / (reservadas + ociosas) * 100 })
+          // setTaxaOcupacao({ taxa_ocupacao: (reservadas) / (reservadas + ociosas) * 100 })
+          setTaxaOcupacao({ taxa_ocupacao: reservadas })
         })
         .catch(err => console.log(err))
 
@@ -484,10 +488,11 @@ export default function Dashboard() {
         .then(data => data.json())
         .then((data) => {
           if (data.length > 0)
-            setOcupacaoSemana(data.map((d: { dia_da_semana: string, total_dias_no_intervalo: string, total_movimentacoes: string, total_indisponibilidades: string }) => [
-              d.dia_da_semana,
-              ((Number(d.total_dias_no_intervalo)) - Number(d.total_indisponibilidades)) > 0 ? Number(d.total_movimentacoes) / ((Number(d.total_dias_no_intervalo)) - Number(d.total_indisponibilidades)) * 100 : 0
-            ]))
+            setTotalDiasIntervalo(data.map((d: any) => Number(d.total_dias_no_intervalo)).reduce((sum: any, value: any) => sum + value, 0))
+          setOcupacaoSemana(data.map((d: { dia_da_semana: string, total_dias_no_intervalo: string, total_movimentacoes: string, total_indisponibilidades: string }) => [
+            d.dia_da_semana,
+            ((Number(d.total_dias_no_intervalo)) - Number(d.total_indisponibilidades)) > 0 ? Number(d.total_movimentacoes) / ((Number(d.total_dias_no_intervalo)) - Number(d.total_indisponibilidades)) * 100 : 0
+          ]))
         })
         .catch(err => console.log(err))
 
@@ -757,8 +762,8 @@ export default function Dashboard() {
             <div className="relative bg-white border-zinc-300 border rounded-lg flex flex-col justify-between items-center row-span-2 py-1 h-full">
               <p className="flex flex-col text-zinc-400 font-medium text-sm">Taxa de Ocupação Média</p>
               <div className="">
-                {showTaxaOcu && <OcupacaoMedia dados={taxaOcupacao?.taxa_ocupacao ? [Number(taxaOcupacao?.taxa_ocupacao).toFixed(1)] : [0]} />}
-                <p className="text-3xl text-center font-bold bottom-3 text-zinc-500 mb-4">{taxaOcupacao?.taxa_ocupacao ? Number(taxaOcupacao?.taxa_ocupacao).toFixed(1) : 0}%</p>
+                {showTaxaOcu && <OcupacaoMedia dados={taxaOcupacao?.taxa_ocupacao ? [Number((taxaOcupacao?.taxa_ocupacao / totalDiasIntervalo)*100).toFixed(1)] : [0]} />}
+                <p className="text-3xl text-center font-bold bottom-3 text-zinc-500 mb-4">{taxaOcupacao?.taxa_ocupacao ? Number((taxaOcupacao?.taxa_ocupacao / totalDiasIntervalo)*100).toFixed(1) : 0}%</p>
               </div>
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg flex items-center">
