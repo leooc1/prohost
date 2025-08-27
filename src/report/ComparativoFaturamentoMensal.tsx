@@ -51,14 +51,14 @@ export default function ComparativoResultados({
                             type: 'bar',
                             label: 'PERÍODO ANTERIOR',
                             data: dadosAnteriores,
-                            backgroundColor: 'rgba(180, 180, 180, 0.8)',
+                            backgroundColor: '#003447',
                             borderRadius: 6,
                             datalabels: {
-                                backgroundColor: 'rgba(180, 180, 180, 0.8)',
+                                backgroundColor: '#003447',
                                 borderRadius: 5,
                                 align: 'end',
                                 anchor: 'end',
-                                color: '#000',
+                                color: '#fff',
                                 font: {
                                     size: 10,
                                 }
@@ -68,14 +68,14 @@ export default function ComparativoResultados({
                             type: 'bar',
                             label: 'PERÍODO',
                             data: dadosAtuais,
-                            backgroundColor: 'rgba(46, 97, 164, 0.8)',
+                            backgroundColor: '#08FAB8',
                             borderRadius: 6,
                             datalabels: {
-                                backgroundColor: 'rgba(46, 97, 164, 0.8)',
+                                backgroundColor: '#08FAB8',
                                 borderRadius: 5,
                                 align: 'end',
                                 anchor: 'end',
-                                color: '#fff',
+                                color: '#000',
                                 font: {
                                     size: 10,
                                 }
@@ -169,7 +169,7 @@ export default function ComparativoResultados({
     }, [mes, dadosAtuais, dadosAnteriores]);
 
     return (
-        <div className="h-full w-full pt-16">
+        <div className="h-full w-full mt-20 bg-slate-200 rounded-lg">
             <canvas ref={chartRef}></canvas>
         </div>
     );

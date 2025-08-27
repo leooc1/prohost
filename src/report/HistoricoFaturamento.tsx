@@ -178,7 +178,7 @@ export default function HistoricoFaturamento({
   }, [mes, dadosFaturamento, dadosDespesa]);
 
   return (
-    <div className="h-72 w-full">
+    <div className="h-72 w-full bg-slate-200 rounded-lg px-1">
       <canvas ref={chartRef}></canvas>
     </div>
   );

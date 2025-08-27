@@ -6,6 +6,7 @@ interface propsCalendario {
 }
 
 export default function CalendarioR(props: propsCalendario) {
+
     const [mes, setMes] = useState<{ dia: number, diaSemana: number }[][]>([]);
     const [reservaC, setReservaC] = useState<{
         dia: number,
@@ -120,44 +121,44 @@ export default function CalendarioR(props: propsCalendario) {
             <table>
                 <thead className="w-full">
                     <tr className="text-sm h-10">
-                        <th className="text-center border border-black w-28 text-zinc-500 font-light">seg.</th>
-                        <th className="text-center border border-black w-28 text-zinc-500 font-light">ter.</th>
-                        <th className="text-center border border-black w-28 text-zinc-500 font-light">qua.</th>
-                        <th className="text-center border border-black w-28 text-zinc-500 font-light">qui.</th>
-                        <th className="text-center border border-black w-28 text-zinc-500 font-light">sex.</th>
-                        <th className="text-center border border-black w-28 text-zinc-500 font-light">sab.</th>
-                        <th className="text-center border border-black w-28 text-zinc-500 font-light">dom.</th>
+                        <th className="text-center border border-white w-28 text-white bg-[#008374] uppercase">seg</th>
+                        <th className="text-center border border-white w-28 text-white bg-[#008374] uppercase">ter</th>
+                        <th className="text-center border border-white w-28 text-white bg-[#008374] uppercase">qua</th>
+                        <th className="text-center border border-white w-28 text-white bg-[#008374] uppercase">qui</th>
+                        <th className="text-center border border-white w-28 text-white bg-[#008374] uppercase">sex</th>
+                        <th className="text-center border border-white w-28 text-white bg-[#008374] uppercase">sab</th>
+                        <th className="text-center border border-white w-28 text-white bg-[#008374] uppercase">dom</th>
                     </tr>
                 </thead>
                 <tbody className="">
                     {mes.length > 0 &&
                         mes.map(s =>
                             <tr className="text-sm h-14">
-                                <td className="border border-black relative p-0 overflow-hidden"
+                                <td className="border border-black bg-slate-200 relative p-0 overflow-hidden"
                                     id={`dia-${s.find(d => d.diaSemana == 1)?.dia}`}>
                                     <span className="absolute top-1 right-1">{s.find(d => d.diaSemana == 1)?.dia}</span>
                                 </td>
-                                <td className="border border-black relative p-0 overflow-hidden"
+                                <td className="border border-black bg-slate-200 relative p-0 overflow-hidden"
                                     id={`dia-${s.find(d => d.diaSemana == 2)?.dia}`}>
                                     <span className="absolute top-1 right-1">{s.find(d => d.diaSemana == 2)?.dia}</span>
                                 </td>
-                                <td className="border border-black relative p-0 overflow-hidden"
+                                <td className="border border-black bg-slate-200 relative p-0 overflow-hidden"
                                     id={`dia-${s.find(d => d.diaSemana == 3)?.dia}`}>
                                     <span className="absolute top-1 right-1">{s.find(d => d.diaSemana == 3)?.dia}</span>
                                 </td>
-                                <td className="border border-black relative p-0 overflow-hidden"
+                                <td className="border border-black bg-slate-200 relative p-0 overflow-hidden"
                                     id={`dia-${s.find(d => d.diaSemana == 4)?.dia}`}>
                                     <span className="absolute top-1 right-1">{s.find(d => d.diaSemana == 4)?.dia}</span>
                                 </td>
-                                <td className="border border-black relative p-0 overflow-hidden"
+                                <td className="border border-black bg-slate-200 relative p-0 overflow-hidden"
                                     id={`dia-${s.find(d => d.diaSemana == 5)?.dia}`}>
                                     <span className="absolute top-1 right-1">{s.find(d => d.diaSemana == 5)?.dia}</span>
                                 </td>
-                                <td className="border border-black relative p-0 overflow-hidden"
+                                <td className="border border-black bg-slate-200 relative p-0 overflow-hidden"
                                     id={`dia-${s.find(d => d.diaSemana == 6)?.dia}`}>
                                     <span className="absolute top-1 right-1">{s.find(d => d.diaSemana == 6)?.dia}</span>
                                 </td>
-                                <td className="border border-black relative p-0 overflow-hidden"
+                                <td className="border border-black bg-slate-200 relative p-0 overflow-hidden"
                                     id={`dia-${s.find(d => d.diaSemana == 0)?.dia}`}>
                                     <span className="absolute top-1 right-1">{s.find(d => d.diaSemana == 0)?.dia}</span>
                                 </td>
@@ -166,6 +167,16 @@ export default function CalendarioR(props: propsCalendario) {
                     }
                 </tbody>
             </table>
+            <ul>
+                {[
+                    ...new Map(
+                        props.reservas.map((r: any) => [r.canal_reserva, { canal: r.canal_reserva, cor: r.color }])
+                    ).values()
+                ].map((r: any) => <li className="flex items-center gap-2">
+                    <div className={`w-3 h-3 rounded-full`} style={{ backgroundColor: r.cor }}></div>
+                    <p className="text-white font-light">{r.canal}</p>
+                </li>)}
+            </ul>
         </div>
     );
 }

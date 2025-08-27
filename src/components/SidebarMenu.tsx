@@ -57,7 +57,7 @@ export default function SidebarMenu({ route }: { route: string }) {
         }
     }, [dataToken])
     return (
-        <nav className={`bg-primary sticky top-0 left-0 h-screen ${active ? 'w-56' : 'w-20'} flex flex-col justify-between`}>
+        <nav className={`bg-primary sticky top-0 left-0 h-screen ${active ? 'w-56' : 'w-20'} flex flex-col justify-between border-r border-secondary`}>
             <div>
                 <a href={'/'} className='flex py-5 gap-2 px-7 justify-center'>
                     {active ?
