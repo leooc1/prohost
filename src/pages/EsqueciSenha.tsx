@@ -100,7 +100,7 @@ export default function ResetarSenha() {
                                                 Caso não tenha mais acesso ao email ou não esteja recebendo o email (verifique a caixa de spam e lixeira), pode entrar em contato através do WhatsApp.
                                             </div>
                                             <a
-                                                href={"https://wa.me/5532984094552?text= Quero uma nova senha! Não tenho mais acesso ao email "+ `${gmail}!`}
+                                                href={"https://wa.me/5521997541318?text= Quero uma nova senha! Não tenho mais acesso ao email "+ `${gmail}!`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-md font-semibold hover:bg-green-600 transition"
@@ -132,7 +132,7 @@ export default function ResetarSenha() {
                                         Caso não tenha mais acesso ao email ou não esteja recebendo o email (verifique a caixa de spam e lixeira), pode entrar em contato através do WhatsApp.
                                     </div>
                                     <a
-                                        href="https://wa.me/5532984094552"
+                                        href="https://wa.me/5521997541318"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-md font-semibold hover:bg-green-600 transition"
