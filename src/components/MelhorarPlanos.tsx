@@ -26,7 +26,7 @@ const formatCurrency = (value: number) => {
 };
 
 export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = import.meta.env.VITE_API_URL
     const { dataToken } = useContext(SideBarContext)
     const [isAnnual, setIsAnnual] = useState(false);
     const [wait, setWait] = useState(false);

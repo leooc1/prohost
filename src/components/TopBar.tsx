@@ -44,7 +44,7 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
         obs: string;
     }>(null)
 
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = import.meta.env.VITE_API_URL
     function Perfil(nome: string) {
         const array = nome.split(' ')
         const pnome = array[0][0]

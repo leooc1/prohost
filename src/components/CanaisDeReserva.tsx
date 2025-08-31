@@ -11,7 +11,7 @@ interface Canais {
 //const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function CanaisDeReserva({ close, permissao }: { close: () => void, permissao: number }) {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = import.meta.env.VITE_API_URL
     const { dataToken } = useContext(SideBarContext)
     const [canais, setCanais] = useState<Canais[]>([])
     const [color, setColor] = useState('#bdc3c7')

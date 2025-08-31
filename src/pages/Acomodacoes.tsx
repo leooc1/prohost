@@ -24,7 +24,7 @@ interface Acomodacao {
 
 
 export default function Acomodacoes() {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = import.meta.env.VITE_API_URL
     useEffect(() => { document.title = 'Acomodações | Prohost' }, [])
 
 
