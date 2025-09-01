@@ -117,7 +117,7 @@ export default function CalendarioR(props: propsCalendario) {
     }, [mes])
 
     return (
-        <div>
+        <div className="h-full flex flex-col justify-around">
             <table>
                 <thead className="w-full">
                     <tr className="text-sm h-10">
