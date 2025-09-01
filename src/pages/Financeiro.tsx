@@ -50,7 +50,7 @@ export default function Financeiro() {
         key: 'data',
         direction: 'descending'
     });
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = import.meta.env.VITE_API_URL
     useEffect(() => { document.title = `Financeiro | Prohost` }, [])
     const [novaReceita, setNovaReceita] = useState(false)
     const [novaDespesa, setNovaDespesa] = useState(false)

@@ -4,7 +4,7 @@ import Notify from "../notify/Notify"
 
 
 export default function CartaoCredito() {
-        const apiURL = 'https://api.prohost.net.br'
+        const apiURL = import.meta.env.VITE_API_URL
         const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
 

@@ -43,7 +43,7 @@ interface propsEditar {
 
 
 export default function EditarMovimentacao(props: propsEditar) {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = import.meta.env.VITE_API_URL
     async function getAcomodacoes() {
         await fetch(`${apiURL}/acomodacao/${props.saas}`, {
             method: 'GET'

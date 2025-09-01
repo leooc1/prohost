@@ -58,7 +58,7 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify, onSuc
         obs: string;
     }, idNotify?: string | null, onSuccess?: () => void
 }) {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = import.meta.env.VITE_API_URL
     const { dataToken } = useContext(SideBarContext)
 
     const [tipoDespesa, setTipoDespesa] = useState('')

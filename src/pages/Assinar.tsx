@@ -174,7 +174,7 @@ export default function Assinar() {
 
                             {numAcomodacao === '30' && (
                                 <a
-                                    href="https://wa.me/5521995178020"
+                                    href="https://wa.me/5521997541318"
                                     target="_blank"
                                     className="bg-secondary bg-opacity-40 border-2 border-secondary rounded-md p-2 w-fit mx-auto mt-5"
                                 >

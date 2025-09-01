@@ -13,7 +13,7 @@ interface Hospede {
 //const apiURl = import.meta.env.VITE_baseURLAPI;
 
 export default function CadastrarHospede({ close }: { close: () => void }) {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = import.meta.env.VITE_API_URL
     const { dataToken } = useContext(SideBarContext)
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)

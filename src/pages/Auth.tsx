@@ -4,7 +4,7 @@ import Notify from '../components/notify/Notify'
 
 
 export default function Auth() {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = import.meta.env.VITE_API_URL
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
     const [viewPW, setViewPW] = useState(false)
@@ -22,13 +22,18 @@ export default function Auth() {
         })
             .then(data => {
                 if (data.status == 200)
-                    return data.json()
+                    return data.json();
                 else return null
             })
             .then((data) => {
                 if (data) {
-                    window.localStorage.setItem('ph_token_acc', data)
-                    window.location.assign('/')
+                    if (data.token === true) {
+                        window.localStorage.setItem('ph_reset_msg', "Por motivos de segurança, estamos solicitando que você redefina sua senha.");
+                        window.location.assign('/reset-senha?email=' + encodeURIComponent(login.email));
+                    } else if (data.token && data.token != true) {
+                        window.localStorage.setItem('ph_token_acc', data.token)
+                        window.location.assign('/')
+                    }
                 }
                 else {
                     setNotify({ type: 2, text: 'Dados incorretos!' })

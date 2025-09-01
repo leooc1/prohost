@@ -30,7 +30,7 @@ interface propsRelatorio {
 }
 
 export default function RelatorioCompleto(props: propsRelatorio) {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = import.meta.env.VITE_API_URL
     const [editPages, setEditPages] = useState([true, true, true, true, true, true, true])
     const [edit, setEdit] = useState([true, true, true, true, true, true])
     function diasDoMes(month: number, year: number) {

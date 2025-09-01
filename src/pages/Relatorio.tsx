@@ -3,7 +3,7 @@ import { SideBarContext, SideBarProvider } from "../contexts/SideBarMenuContext"
 import RelatorioCompleto from "../report/RelatorioCompleto"
 
 export default function Relatorio() {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = import.meta.env.VITE_API_URL
     const { dataToken } = useContext(SideBarContext)
     const [acomodacoes, setAcomodacoes] = useState<any>([])
     const [foto, setFoto] = useState<string | null>(null)

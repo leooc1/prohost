@@ -11,7 +11,7 @@ interface Hospede {
 
 
 export default function ListaHospede({ hospedes, atualizar, setAtualizar, permissao }: { hospedes: Hospede[], atualizar: [boolean, number], setAtualizar: Dispatch<SetStateAction<[boolean, number]>>, permissao: number }) {
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = import.meta.env.VITE_API_URL
     const [lhospedes, setLHospedes] = useState<Hospede[]>([])
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)

@@ -8,7 +8,7 @@ import MelhorarPlanos from "../components/MelhorarPlanos";
 export default function Config() {
     useEffect(() => { document.title = `Assinatura | Prohost` }, [])
 
-    const apiURL = 'https://api.prohost.net.br'
+    const apiURL = import.meta.env.VITE_API_URL
     const { statusData, dataToken } = useContext(SideBarContext)
     const [session, setSession] = useState(0)
     const [assinatura, setAssinatura] = useState(true)
