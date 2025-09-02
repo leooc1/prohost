@@ -345,8 +345,8 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                         <section className='px-5 h-full mt-20 flex flex-col justify-center'>
                             <ul className='flex flex-col gap-4'>
                                 <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 flex gap-4 items-center rounded-lg relative ${editPages[0] ? 'opacity-100' : 'opacity-30'}`}>
-                                    <span className='font-black text-secondary text-xl'>*</span>
-                                    <p className='text-white'>Calendário do mês e resumo das reservas</p>
+                                    <span className='font-black text-secondary text-3xl'>*</span>
+                                    <p className='text-white text-2xl py-2'>Calendário do mês e resumo das reservas</p>
                                     <button className='absolute right-2 invert'
                                         onClick={() => {
                                             let error = editPages
@@ -355,8 +355,8 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                         }}>{editPages[0] ? open : closed}</button>
                                 </li>
                                 <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 flex gap-4 items-center rounded-lg relative ${editPages[1] ? 'opacity-100' : 'opacity-30'}`}>
-                                    <span className='font-black text-secondary text-xl'>*</span>
-                                    <p className='text-white'>Detalhamento das reservas</p>
+                                    <span className='font-black text-secondary text-3xl'>*</span>
+                                    <p className='text-white text-2xl py-2'>Detalhamento das reservas</p>
                                     <button className='absolute right-2 invert'
                                         onClick={() => {
                                             let error = editPages
@@ -365,8 +365,8 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                         }}>{editPages[1] ? open : closed}</button>
                                 </li>
                                 <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 flex gap-4 items-center rounded-lg relative ${editPages[2] ? 'opacity-100' : 'opacity-30'}`}>
-                                    <span className='font-black text-secondary text-xl'>*</span>
-                                    <p className='text-white'>Desempenho e rentabilidade do imóvel</p>
+                                    <span className='font-black text-secondary text-3xl'>*</span>
+                                    <p className='text-white text-2xl py-2'>Desempenho e rentabilidade do imóvel</p>
                                     <button className='absolute right-2 invert'
                                         onClick={() => {
                                             let error = editPages
@@ -375,8 +375,8 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                         }}>{editPages[2] ? open : closed}</button>
                                 </li>
                                 <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 flex gap-4 items-center rounded-lg relative ${editPages[3] ? 'opacity-100' : 'opacity-30'}`}>
-                                    <span className='font-black text-secondary text-xl'>*</span>
-                                    <p className='text-white'>Comparativo do faturamento</p>
+                                    <span className='font-black text-secondary text-3xl'>*</span>
+                                    <p className='text-white text-2xl py-2'>Comparativo do faturamento</p>
                                     <button className='absolute right-2 invert'
                                         onClick={() => {
                                             let error = editPages
@@ -385,8 +385,8 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                         }}>{editPages[3] ? open : closed}</button>
                                 </li>
                                 <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 flex gap-4 items-center rounded-lg relative ${editPages[4] ? 'opacity-100' : 'opacity-30'}`}>
-                                    <span className='font-black text-secondary text-xl'>*</span>
-                                    <p className='text-white'>Detalhamento das despesas</p>
+                                    <span className='font-black text-secondary text-3xl'>*</span>
+                                    <p className='text-white text-2xl py-2'>Detalhamento das despesas</p>
                                     <button className='absolute right-2 invert'
                                         onClick={() => {
                                             let error = editPages
@@ -395,8 +395,8 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                         }}>{editPages[4] ? open : closed}</button>
                                 </li>
                                 <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 flex gap-4 items-center rounded-lg relative ${editPages[5] ? 'opacity-100' : 'opacity-30'}`}>
-                                    <span className='font-black text-secondary text-xl'>*</span>
-                                    <p className='text-white'>Resultado da acomodação e repasse</p>
+                                    <span className='font-black text-secondary text-3xl'>*</span>
+                                    <p className='text-white text-2xl py-2'>Resultado da acomodação e repasse</p>
                                     <button className='absolute right-2 invert'
                                         onClick={() => {
                                             let error = editPages
@@ -430,7 +430,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                         data={`${props.ano}-${('0' + props.mes).slice(-2)}-01 00:00:00`}
                                         reservas={reservas} />
                                 </div>
-                                <ul className='flex flex-col mt-24 gap-5'>
+                                <ul className='flex flex-col gap-5 self-start mt-6'>
                                     <li className='flex flex-col bg-zinc-400 bg-opacity-10 px-2 py-1 rounded-lg'>
                                         <span className='text-xl text-white'>Ocupação</span>
                                         <span className='text-xl text-white font-semibold text-end pr-4'>{dadosReserva.ocupacao_do_imovel.toFixed(1)}%</span>
@@ -438,6 +438,13 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                     <li className='flex flex-col bg-zinc-400 bg-opacity-10 px-2 py-1 rounded-lg'>
                                         <span className='text-xl text-white'>Novas reservas</span>
                                         <span className='text-xl text-white font-semibold text-end pr-4'>{dadosReserva.novas_reservas}</span>
+                                    </li>
+                                    <li className='flex flex-col bg-zinc-400 bg-opacity-10 px-2 py-1 rounded-lg'>
+                                        <span className='text-xl text-white'>Diária Média</span>
+                                        <span className='text-xl text-white font-semibold text-end pr-4'>R$ {new Intl.NumberFormat('pt-BR', {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        }).format(Number(resultadoAcomodacoes[0].diaria_media))}</span>
                                     </li>
                                     <li className='flex flex-col bg-zinc-400 bg-opacity-10 px-2 py-1 rounded-lg'>
                                         <span className='text-xl text-white'>Faturamento</span>
@@ -536,6 +543,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                             {historicoFaturamento.faturamento_despesa.length > 0 &&
                                 <ComparativoResultados
                                     mes={props.mes}
+                                    ano={props.ano}
                                     dadosAtuais={historicoFaturamento.faturamento_despesa.map(e => (Number(e.receita)))}
                                     dadosAnteriores={historicoFaturamento.faturamento_despesa.map(e => (Number(e.receita_ano_anterior)))}
                                 />}
@@ -705,16 +713,20 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 <section className='flex items-center justify-center'>
                                     <div className='flex flex-col bg-zinc-400 bg-opacity-10 px-2 py-1 rounded-lg gap-2 w-3/4'>
                                         <p className='text-2xl text-white'>Repasse proprietário</p>
-                                        <p className='text-xl text-white font-semibold flex text-end pr-4'>R$ {/* <input className='bg-transparent ml-5 w-full' defaultValue={new Intl.NumberFormat('pt-BR', {
+                                        <p className='text-xl text-white font-semibold flex text-end pr-4'>R$ <input className='bg-transparent ml-5 w-full' defaultValue={new Intl.NumberFormat('pt-BR', {
                                             minimumFractionDigits: 2,
                                             maximumFractionDigits: 2
-                                        }).format(Number(5000))} type="text" onBlur={(e) => e.target.value = new Intl.NumberFormat('pt-BR', {
-                                            minimumFractionDigits: 2,
-                                            maximumFractionDigits: 2
-                                        }).format(Number(e.target.value))} /> */}{new Intl.NumberFormat('pt-BR', {
-                                            minimumFractionDigits: 2,
-                                            maximumFractionDigits: 2
-                                        }).format(Number(5000))} </p>
+                                        }).format(Number(5000))} type="text"
+                                            onBlur={(e) => e.target.value = new Intl.NumberFormat('pt-BR', {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            }).format(Number(e.target.value.replace('.', '').replace(',', '.')))}
+                                            onFocus={(e) => {
+                                                e.target.value = e.target.value.replace(/[^0-9,]/g, "").replace(/(,.*),/g, "$1")
+                                            }}
+                                            onChange={(e) => {
+                                                e.target.value = e.target.value.replace(/[^0-9,]/g, "").replace(/(,.*),/g, "$1")
+                                            }} /></p>
                                     </div>
                                 </section>
                             </section>

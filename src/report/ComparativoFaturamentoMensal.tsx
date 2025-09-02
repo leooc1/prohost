@@ -24,10 +24,12 @@ Chart.register(
 
 export default function ComparativoResultados({
     mes,
+    ano,
     dadosAtuais,
     dadosAnteriores
 }: {
     mes: number;
+    ano: number;
     dadosAtuais: number[];
     dadosAnteriores: number[];
 }) {
@@ -51,14 +53,14 @@ export default function ComparativoResultados({
                             type: 'bar',
                             label: 'PERÍODO ANTERIOR',
                             data: dadosAnteriores,
-                            backgroundColor: '#003447',
+                            backgroundColor: '#08FAB8',
                             borderRadius: 6,
                             datalabels: {
-                                backgroundColor: '#003447',
+                                backgroundColor: '#08FAB8',
                                 borderRadius: 5,
                                 align: 'end',
                                 anchor: 'end',
-                                color: '#fff',
+                                color: '#000',
                                 font: {
                                     size: 10,
                                 }
@@ -68,14 +70,14 @@ export default function ComparativoResultados({
                             type: 'bar',
                             label: 'PERÍODO',
                             data: dadosAtuais,
-                            backgroundColor: '#08FAB8',
+                            backgroundColor: '#003447',
                             borderRadius: 6,
                             datalabels: {
-                                backgroundColor: '#08FAB8',
+                                backgroundColor: '#003447',
                                 borderRadius: 5,
                                 align: 'end',
                                 anchor: 'end',
-                                color: '#000',
+                                color: '#fff',
                                 font: {
                                     size: 10,
                                 }
@@ -169,7 +171,8 @@ export default function ComparativoResultados({
     }, [mes, dadosAtuais, dadosAnteriores]);
 
     return (
-        <div className="h-full w-full mt-20 bg-slate-200 rounded-lg">
+        <div className="h-full w-full mt-20 bg-slate-200 rounded-lg relative">
+            <div className='text-[#333] absolute left-3 top-3 font-mono font-semibold'>{ordenarMeses(mes)[0]}.{ano - 1} - {ordenarMeses(mes)[11]}.{ano}</div>
             <canvas ref={chartRef}></canvas>
         </div>
     );

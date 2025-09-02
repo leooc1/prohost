@@ -56,8 +56,8 @@ export default function HistoricoFaturamento({
               type: 'line' as const,
               label: 'DESPESA TOTAL',
               data: dadosDespesa,
-              borderColor: '#F67A7D',
-              backgroundColor: '#F67A7D',
+              borderColor: '#F0495F',
+              backgroundColor: '#F0495F',
               borderWidth: 3,
               tension: 0.4,
               pointRadius: 4,
@@ -76,8 +76,8 @@ export default function HistoricoFaturamento({
               type: 'line' as const,
               label: 'FATURAMENTO',
               data: dadosFaturamento,
-              borderColor: '#08FAB8',
-              backgroundColor: '#08FAB8',
+              borderColor: '#033C50',
+              backgroundColor: '#033C50',
               borderWidth: 3,
               tension: 0.4,
               pointRadius: 4,
@@ -181,7 +181,7 @@ export default function HistoricoFaturamento({
 
   return (
     <div className="h-72 w-full bg-slate-200 rounded-lg px-1 relative">
-      <div className='text-white absolute right-3 -top-7 font-mono'>{ordenarMeses(mes)[0]}.{ano-1} - {ordenarMeses(mes)[11]}.{ano}</div>
+      <div className='text-[#333] absolute left-3 top-3 font-mono font-semibold'>{ordenarMeses(mes)[0]}.{ano-1} - {ordenarMeses(mes)[11]}.{ano}</div>
       <canvas ref={chartRef}></canvas>
     </div>
   );

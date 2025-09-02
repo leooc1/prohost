@@ -31,7 +31,7 @@ export default function Relatorio() {
     return (
         <section>
             <SideBarProvider>
-                {/*  <>
+                <>
                     {!relatorio && <section>
                         {acomodacoes.length ?
                             <section className="py-py">
@@ -127,14 +127,14 @@ export default function Relatorio() {
                         ano={chooseAno}
                         imagem={foto || ''}
                     />}
-                </> */}
-                <RelatorioCompleto
+                </>
+                {/* <RelatorioCompleto
                     saas={Number(324)}
                     acomodacao={488}
                     mes={8}
                     ano={2025}
                     imagem={`https://i.pinimg.com/736x/fd/81/18/fd8118ad8ccfdad677aa27a0a5abee57.jpg`}
-                />
+                /> */}
             </SideBarProvider>
         </section>
     )
