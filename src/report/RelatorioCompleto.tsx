@@ -4,23 +4,19 @@ const dash = <svg className='w-32 h-fit' xmlns="http://www.w3.org/2000/svg" vers
 
 const blue_print = <svg className='w-32 h-fit' xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 512 512"><g><path d="M486.887 129.919h-92.08l59.755-59.755c7.448-7.444 7.452-19.597 0-27.044l-26.38-26.382c-7.458-7.455-19.587-7.455-27.044 0L287.957 129.919H118.322V63.718a7.258 7.258 0 0 0-7.259-7.259H59.572c-28.748 0-52.798 23.253-52.798 52.796v179.396c0 4.01 3.249 7.259 7.259 7.259s7.259-3.249 7.259-7.259V109.254c0-21.502 17.527-38.278 38.28-38.278h44.232v324.236H59.572c-14.897 0-28.699 6.308-38.28 16.425v-85.773c0-4.01-3.249-7.259-7.259-7.259s-7.259 3.249-7.259 7.259v122.144c0 29.14 23.684 52.845 52.798 52.845h427.316c10.111 0 18.339-8.228 18.339-18.341V148.26c-.001-10.114-8.228-18.341-18.34-18.341zM328.99 200.061v40.215h-45.877v-19.542l22.094-3.244c2.633-.386 4.404-2.503 4.889-2.859l14.57-14.57zm45.635 147.165h-38.377a7.258 7.258 0 0 0-7.259 7.259v42.441H183.712v-44.617h54.395a7.258 7.258 0 0 0 7.259-7.259v-43.072h54.237a7.258 7.258 0 0 0 7.259-7.259v-39.925h108.63v142.132h-71.985v-35.182h31.118c4.01 0 7.259-3.249 7.259-7.259s-3.249-7.259-7.259-7.259zm-112.46-138.089 4.117-28.05 23.606 23.604c.186.092.366.2.551.293zm-13.731 13.731a7.249 7.249 0 0 0 6.186 2.049l13.975-2.052v17.411h-45.877v-40.215h26.107l-2.439 16.621a7.247 7.247 0 0 0 2.048 6.186zm43.911 31.926v32.666h-54.237a7.258 7.258 0 0 0-7.259 7.259v43.072h-47.136v-82.997zm12.617-55.561-32.895-32.893 113.78-113.782 32.895 32.897zM444.297 59.899l-15.291 15.288-32.895-32.895 15.291-15.291c1.742-1.742 4.773-1.737 6.512 0l26.382 26.382a4.613 4.613 0 0 1 .001 6.516zm46.411 422.614a3.826 3.826 0 0 1-3.821 3.823H59.572c-21.108 0-38.28-17.193-38.28-38.327 0-21.502 17.527-38.278 38.28-38.278h51.491a7.258 7.258 0 0 0 7.259-7.259V144.437h155.117l-16.77 16.77c-.335.486-2.433 1.955-2.859 4.889l-2.854 19.447h-35.497a7.258 7.258 0 0 0-7.259 7.259v47.474h-31.746a7.258 7.258 0 0 0-7.259 7.259v156.65a7.258 7.258 0 0 0 7.259 7.259h246.299a7.258 7.258 0 0 0 7.259-7.259v-156.65a7.258 7.258 0 0 0-7.259-7.259h-79.244v-47.474c0-3.137-2-5.783-4.785-6.798l41.567-41.567h106.598a3.826 3.826 0 0 1 3.821 3.823v334.253z" fill="#08fab8" opacity="1" data-original="#000000" className=""></path></g></svg>
 
-const open = <svg className="w-6 h-fit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.0003 3C17.3924 3 21.8784 6.87976 22.8189 12C21.8784 17.1202 17.3924 21 12.0003 21C6.60812 21 2.12215 17.1202 1.18164 12C2.12215 6.87976 6.60812 3 12.0003 3ZM12.0003 19C16.2359 19 19.8603 16.052 20.7777 12C19.8603 7.94803 16.2359 5 12.0003 5C7.7646 5 4.14022 7.94803 3.22278 12C4.14022 16.052 7.7646 19 12.0003 19ZM12.0003 16.5C9.51498 16.5 7.50026 14.4853 7.50026 12C7.50026 9.51472 9.51498 7.5 12.0003 7.5C14.4855 7.5 16.5003 9.51472 16.5003 12C16.5003 14.4853 14.4855 16.5 12.0003 16.5ZM12.0003 14.5C13.381 14.5 14.5003 13.3807 14.5003 12C14.5003 10.6193 13.381 9.5 12.0003 9.5C10.6196 9.5 9.50026 10.6193 9.50026 12C9.50026 13.3807 10.6196 14.5 12.0003 14.5Z"></path></svg>
-const closed = <svg className="w-6 h-fit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17.8827 19.2968C16.1814 20.3755 14.1638 21.0002 12.0003 21.0002C6.60812 21.0002 2.12215 17.1204 1.18164 12.0002C1.61832 9.62282 2.81932 7.5129 4.52047 5.93457L1.39366 2.80777L2.80788 1.39355L22.6069 21.1925L21.1927 22.6068L17.8827 19.2968ZM5.9356 7.3497C4.60673 8.56015 3.6378 10.1672 3.22278 12.0002C4.14022 16.0521 7.7646 19.0002 12.0003 19.0002C13.5997 19.0002 15.112 18.5798 16.4243 17.8384L14.396 15.8101C13.7023 16.2472 12.8808 16.5002 12.0003 16.5002C9.51498 16.5002 7.50026 14.4854 7.50026 12.0002C7.50026 11.1196 7.75317 10.2981 8.19031 9.60442L5.9356 7.3497ZM12.9139 14.328L9.67246 11.0866C9.5613 11.3696 9.50026 11.6777 9.50026 12.0002C9.50026 13.3809 10.6196 14.5002 12.0003 14.5002C12.3227 14.5002 12.6309 14.4391 12.9139 14.328ZM20.8068 16.5925L19.376 15.1617C20.0319 14.2268 20.5154 13.1586 20.7777 12.0002C19.8603 7.94818 16.2359 5.00016 12.0003 5.00016C11.1544 5.00016 10.3329 5.11773 9.55249 5.33818L7.97446 3.76015C9.22127 3.26959 10.5793 3.00016 12.0003 3.00016C17.3924 3.00016 21.8784 6.87992 22.8189 12.0002C22.5067 13.6998 21.8038 15.2628 20.8068 16.5925ZM11.7229 7.50857C11.8146 7.50299 11.9071 7.50016 12.0003 7.50016C14.4855 7.50016 16.5003 9.51488 16.5003 12.0002C16.5003 12.0933 16.4974 12.1858 16.4919 12.2775L11.7229 7.50857Z"></path></svg>
+const open = <svg id='eye-open' className="w-6 h-fit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.0003 3C17.3924 3 21.8784 6.87976 22.8189 12C21.8784 17.1202 17.3924 21 12.0003 21C6.60812 21 2.12215 17.1202 1.18164 12C2.12215 6.87976 6.60812 3 12.0003 3ZM12.0003 19C16.2359 19 19.8603 16.052 20.7777 12C19.8603 7.94803 16.2359 5 12.0003 5C7.7646 5 4.14022 7.94803 3.22278 12C4.14022 16.052 7.7646 19 12.0003 19ZM12.0003 16.5C9.51498 16.5 7.50026 14.4853 7.50026 12C7.50026 9.51472 9.51498 7.5 12.0003 7.5C14.4855 7.5 16.5003 9.51472 16.5003 12C16.5003 14.4853 14.4855 16.5 12.0003 16.5ZM12.0003 14.5C13.381 14.5 14.5003 13.3807 14.5003 12C14.5003 10.6193 13.381 9.5 12.0003 9.5C10.6196 9.5 9.50026 10.6193 9.50026 12C9.50026 13.3807 10.6196 14.5 12.0003 14.5Z"></path></svg>
+const closed = <svg id='eye-closed' className="w-6 h-fit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17.8827 19.2968C16.1814 20.3755 14.1638 21.0002 12.0003 21.0002C6.60812 21.0002 2.12215 17.1204 1.18164 12.0002C1.61832 9.62282 2.81932 7.5129 4.52047 5.93457L1.39366 2.80777L2.80788 1.39355L22.6069 21.1925L21.1927 22.6068L17.8827 19.2968ZM5.9356 7.3497C4.60673 8.56015 3.6378 10.1672 3.22278 12.0002C4.14022 16.0521 7.7646 19.0002 12.0003 19.0002C13.5997 19.0002 15.112 18.5798 16.4243 17.8384L14.396 15.8101C13.7023 16.2472 12.8808 16.5002 12.0003 16.5002C9.51498 16.5002 7.50026 14.4854 7.50026 12.0002C7.50026 11.1196 7.75317 10.2981 8.19031 9.60442L5.9356 7.3497ZM12.9139 14.328L9.67246 11.0866C9.5613 11.3696 9.50026 11.6777 9.50026 12.0002C9.50026 13.3809 10.6196 14.5002 12.0003 14.5002C12.3227 14.5002 12.6309 14.4391 12.9139 14.328ZM20.8068 16.5925L19.376 15.1617C20.0319 14.2268 20.5154 13.1586 20.7777 12.0002C19.8603 7.94818 16.2359 5.00016 12.0003 5.00016C11.1544 5.00016 10.3329 5.11773 9.55249 5.33818L7.97446 3.76015C9.22127 3.26959 10.5793 3.00016 12.0003 3.00016C17.3924 3.00016 21.8784 6.87992 22.8189 12.0002C22.5067 13.6998 21.8038 15.2628 20.8068 16.5925ZM11.7229 7.50857C11.8146 7.50299 11.9071 7.50016 12.0003 7.50016C14.4855 7.50016 16.5003 9.51488 16.5003 12.0002C16.5003 12.0933 16.4974 12.1858 16.4919 12.2775L11.7229 7.50857Z"></path></svg>
 
 import { useEffect, useRef, useState } from 'react'
 import ph from '/prohost-logo.png'
-/* import timeGridPlugin from '@fullcalendar/timegrid';
-import ptBrLocale from '@fullcalendar/core/locales/pt-br';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import FullCalendar from "@fullcalendar/react"; */
+import PptxGenJS from "pptxgenjs";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 import CalendarioR from '../report/CalendarioR'
 import ComparativoResultados from '../report/ComparativoFaturamentoMensal'
 import DespesasR from '../report/DespesasR'
 import HistoricoFaturamento from '../report/HistoricoFaturamento'
 import ListaReservaR from './ListaReservaR'
-// import { set } from 'date-fns'
-// import html2canvas from 'html2canvas';
-// import jsPDF from 'jspdf';
 interface propsRelatorio {
     saas: number,
     acomodacao: number,
@@ -75,43 +71,108 @@ export default function RelatorioCompleto(props: propsRelatorio) {
     ];
     const pdfRef = useRef(null);
 
-    const generatePDF = () => {
-        /* const input = pdfRef.current;
+    const secoes = [
+        "relatorio",
+        "agenda",
+        "calendario",
+        "detalhamento-reservas",
+        "desempenho-imovel",
+        "comparativo-faturamento",
+        "detalhamento-despesas",
+        "resultado-acomodacao",
+        "final",
+    ];
 
-        setTimeout(() => {
-            html2canvas(input, { scale: 3 }).then((canvas) => {
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF('l', 'mm', 'a4');
+    async function clearRelatorio(type: string) {
+        for (const id of secoes) {
+            const elemento = document.getElementById(id)
+            if (type == 'pptx')
+                elemento?.classList.add('w-[calc(177.77vh)]')
+            if (type == 'pdf')
+                elemento?.classList.add('w-[calc(141.4vh)]')
+        }
+        const elements = document.querySelectorAll('.opacity-30')
+        elements.forEach(e => e.classList.add('hidden'))
+        const olhos = document.querySelectorAll('svg#eye-open')
+        olhos.forEach(e => e.classList.add('hidden'))
+        document.body.classList.add('cursor-wait')
+        if (type == 'pptx')
+            await gerarPPT()
+        if (type == 'pdf')
+            await gerarPDF()
+    }
+    async function gerarPPT() {
+        const pptx = new PptxGenJS();
 
-                const pageWidth = 297; // Width of A4 in mm
-                const pageHeight = 210; // Height of A4 in mm
-                const imgWidth = pageWidth;
-                const imgHeight = (canvas.height * pageWidth) / canvas.width; // Proportional height
+        for (const id of secoes) {
+            const elemento = document.getElementById(id);
+            if (!elemento || elemento.classList.contains('hidden')) continue;
 
-                let currentHeight = 0;
-                let remainingHeight = imgHeight;
+            // Captura a div como imagem
+            const canvas = await html2canvas(elemento);
+            const imgData = canvas.toDataURL("image/png");
 
-                // Add pages as needed
-                while (remainingHeight > 0) {
-                    pdf.addImage(
-                        imgData,
-                        'PNG',
-                        0,
-                        -currentHeight, // Offset the image to simulate cropping
-                        imgWidth,
-                        imgHeight
-                    );
-                    remainingHeight -= pageHeight;
-                    currentHeight += pageHeight;
-
-                    // Add a new page if there is still content remaining
-                    if (remainingHeight > 0) pdf.addPage();
-                }
-
-                pdf.save('relatorio.pdf');
+            // Adiciona slide e insere imagem
+            const slide = pptx.addSlide();
+            slide.addImage({
+                data: imgData,
+                x: 0,
+                y: 0,
+                // w: 10, // largura do slide (em polegadas)
+                // h: 5.6, // altura do slide
+                w: '100%', // largura do slide (em porcentagem)
+                h: '100%', // altura do slide
             });
-        }, 1000); */
-    };
+        }
+
+        // Faz o download do arquivo
+        pptx.writeFile("relatorio.pptx").then(() => {
+            window.location.reload();
+        })
+    }
+    async function gerarPDF() {
+        const pdf = new jsPDF("l", "pt", "a4"); // l = landscape, pt = pontos, A4
+        let primeiraPagina = true;
+
+        for (const id of secoes) {
+            const elemento = document.getElementById(id);
+            if (!elemento || elemento.classList.contains("hidden")) continue;
+
+            // Captura a div como imagem
+            const canvas = await html2canvas(elemento);
+            const imgData = canvas.toDataURL("image/png");
+
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+
+            // Mantém proporção da imagem
+            let imgWidth = pageWidth;
+            let imgHeight = (canvas.height * pageWidth) / canvas.width;
+
+            // Se a altura estourar, ajusta pela altura
+            if (imgHeight > pageHeight) {
+                imgHeight = pageHeight;
+                imgWidth = (canvas.width * pageHeight) / canvas.height;
+            }
+
+            // Centraliza na página
+            const x = (pageWidth - imgWidth) / 2;
+            const y = (pageHeight - imgHeight) / 2;
+
+            if (!primeiraPagina) {
+                pdf.addPage();
+            }
+            primeiraPagina = false;
+
+            pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
+        }
+
+        // Faz o download
+        pdf.save("relatorio.pdf");
+
+        // Recarrega a página depois
+        window.location.reload();
+    }
 
     const [loaded, setLoaded] = useState<boolean>(false)
     const [nome, setNome] = useState<string>('')
@@ -294,13 +355,18 @@ export default function RelatorioCompleto(props: propsRelatorio) {
 
     return (
         <>
-            <button onClick={generatePDF} className='w-full bg-red-600 hidden'>
-                Baixar como PDF
-            </button>
+            <div className='flex justify-center gap-10 absolute top-2 left-1/2 -translate-x-1/2'>
+                <button onClick={() => clearRelatorio('pptx')} className='w-fit py-1 px-2 bg-orange-300'>
+                    Baixar como PPTX
+                </button>
+                <button onClick={() => clearRelatorio('pdf')} className='w-fit py-1 px-2 bg-red-300'>
+                    Baixar como PDF
+                </button>
+            </div>
             {loaded &&
                 <div className="flex flex-col relative gap-1" ref={pdfRef} >
                     {/* RELATORIO */}
-                    <section className={`flex flex-col justify-between p-10 h-screen relative bg-[#003347]`}>
+                    <section id='relatorio' className={`flex flex-col justify-between p-10 h-screen relative bg-[#003347]`}>
                         <div className='flex items-center absolute bottom-1 right-2 gap-2'>
                             <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                             <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
@@ -332,7 +398,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                         </section>
                     </section>
                     {/* AGENDA */}
-                    <section className={`flex flex-col justify-between p-10 h-screen relative bg-[#003347]`}>
+                    <section id='agenda' className={`flex flex-col justify-between p-10 h-screen relative bg-[#003347]`}>
                         <div className='flex items-center absolute bottom-1 right-2 gap-2'>
                             <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                             <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
@@ -414,7 +480,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                             error = (error.map((e, i) => i === 0 ? !e : e))
                             setEditPages(error)
                         }} className={`absolute left-3 top-1 py-1 px-2 z-20 ${editPages[0] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[0] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
-                        <section className={`${!editPages[0] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
+                        <section id='calendario' className={`${!editPages[0] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
                             <div className='flex items-center absolute bottom-1 right-2 gap-2'>
                                 <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                                 <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
@@ -465,7 +531,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                             error = (error.map((e, i) => i === 1 ? !e : e))
                             setEditPages(error)
                         }} className={`absolute left-3 top-1 py-1 px-2 z-20 ${editPages[1] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[1] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
-                        <section className={`${!editPages[1] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
+                        <section id='detalhamento-reservas' className={`${!editPages[1] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
                             <div className='flex items-center absolute bottom-1 right-2 gap-2'>
                                 <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                                 <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
@@ -488,7 +554,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                             error = (error.map((e, i) => i === 3 ? !e : e))
                             setEditPages(error)
                         }} className={`absolute left-3 top-1 py-1 px-2 z-20 ${editPages[3] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[3] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
-                        <section className={`${!editPages[3] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
+                        <section id='desempenho-imovel' className={`${!editPages[3] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
                             <div className='flex items-center absolute bottom-1 right-2 gap-2'>
                                 <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                                 <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
@@ -530,7 +596,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                             error = (error.map((e, i) => i === 4 ? !e : e))
                             setEditPages(error)
                         }} className={`absolute left-3 top-1 py-1 px-2 z-20 ${editPages[4] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[4] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
-                        <section className={`${!editPages[4] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
+                        <section id='comparativo-faturamento' className={`${!editPages[4] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
                             <div className='flex items-center absolute bottom-1 right-2 gap-2'>
                                 <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                                 <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
@@ -556,7 +622,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                             error = (error.map((e, i) => i === 2 ? !e : e))
                             setEditPages(error)
                         }} className={`absolute left-3 top-1 py-1 px-2 z-20 ${editPages[2] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[2] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
-                        <section className={`${!editPages[2] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
+                        <section id='detalhamento-despesas' className={`${!editPages[2] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
                             <div className='flex items-center absolute bottom-1 right-2 gap-2'>
                                 <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                                 <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
@@ -578,7 +644,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                             error = (error.map((e, i) => i === 5 ? !e : e))
                             setEditPages(error)
                         }} className={`absolute left-3 top-1 py-1 px-2 z-20 ${editPages[5] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[5] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
-                        <section className={`${!editPages[5] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
+                        <section id='resultado-acomodacao' className={`${!editPages[5] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
                             <div className='flex items-center absolute bottom-1 right-2 gap-2'>
                                 <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                                 <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
@@ -739,7 +805,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                             error = (error.map((e, i) => i === 6 ? !e : e))
                             setEditPages(error)
                         }} className={`absolute left-3 top-1 py-1 px-2 z-20 ${editPages[6] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[6] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
-                        <section className={`${!editPages[6] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
+                        <section id='final' className={`${!editPages[6] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
                             <div className='flex items-center absolute bottom-1 right-2 gap-2'>
                                 <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                                 <p className='text-white font-bold text-lg tracking-tight'>prohost</p>

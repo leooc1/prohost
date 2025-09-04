@@ -876,7 +876,7 @@ export default function Dashboard() {
               {periodo == 'personalizado' ? <FaturamentoxDespesa
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
                 dadosPassado={faturamento.map(fat => Number(fat.despesa))}
-                mes={new Date(new Date(deData).setDate(new Date(deData).getDate() + 1)).getMonth() + 1} /> : null}
+                mes={new Date(new Date(ateData).setDate(new Date(ateData).getDate() + 1)).getMonth() + 1} /> : null}
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center">
               <div className="bg-[#D8D8D8] rounded-md w-fit py-2 px-2 ml-4">
@@ -932,7 +932,7 @@ export default function Dashboard() {
                 dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={1} /> : null}
               {periodo == 'personalizado' ? <FaturamentoLiquido
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={new Date(new Date(deData).setDate(new Date(deData).getDate() + 1)).getMonth()} /> : null}
+                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={new Date(new Date(ateData).setDate(new Date(ateData).getDate() + 1)).getMonth()} /> : null}
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center">
               <div className="bg-[#FCE0E1] rounded-md w-fit py-2 px-2 ml-4">
