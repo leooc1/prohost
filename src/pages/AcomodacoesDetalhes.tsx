@@ -140,20 +140,15 @@ export default function AcomodacoesDetalhes() {
 
     async function dataDashs() {
         {
-            /* await fetch(`${apiURL}/reserva/${dataToken.id}/taxa-ocu/${dataBW[0]}/${dataBW[1]}/${id}`, {
+            await fetch(`${apiURL}/movimentacao/${dataToken.id}/ocupacao-semana/${dataBW[0]}/${dataBW[1]}/${id}`, {
                 method: 'GET'
             })
                 .then(data => data.json())
                 .then((data) => {
-                    if (data.length > 0 && data[0].taxa_ocupacao) {
-                        setTaxaOcupacao(data[0].taxa_ocupacao)
-                    }
-                    else {
-                        setTaxaOcupacao(0)
-                    }
-
+                    if (data.length > 0)
+                        setTotalDiasIntervalo(data.map((d: any) => Number(d.total_dias_no_intervalo)).reduce((sum: any, value: any) => sum + value, 0))
                 })
-                .catch(err => console.log(err)) */
+                .catch(err => console.log(err))
         }
         {
             await fetch(`${apiURL}/reserva/${dataToken.id}/desempenho/${dataBW[0]}/${dataBW[1]}/${id}`, {
@@ -161,9 +156,8 @@ export default function AcomodacoesDetalhes() {
             })
                 .then(data => data.json())
                 .then((data) => {
-                    const ociosas = data.ociosas
                     const reservadas = data.reservadas
-                    setTaxaOcupacao((reservadas) / (reservadas + ociosas) * 100)
+                    setTaxaOcupacao(reservadas)
                 })
                 .catch(err => console.log(err))
         }
@@ -303,6 +297,7 @@ export default function AcomodacoesDetalhes() {
         receita_ano_anterior: string
     }[]>([])
     const [taxaOcupacao, setTaxaOcupacao] = useState<number>(0)
+    const [totalDiasIntervalo, setTotalDiasIntervalo] = useState<number>(0)
     const [faturamentoCanal, setFaturamentoCanal] = useState<{
         nome: string
         cor: string
@@ -411,14 +406,6 @@ export default function AcomodacoesDetalhes() {
                                     <label htmlFor="de" className="flex flex-col text-zinc-600 font-medium text-sm">
                                         De:
                                         <input type="date" name="de" id="de" defaultValue={deData} className="border border-zinc-300 rounded-md px-1 py-1 w-32 outline-none text-base" />
-
-
-
-
-
-
-
-
                                     </label>
                                     <label htmlFor="ate" className="flex flex-col text-zinc-600 font-medium text-sm">
                                         Até:
@@ -551,8 +538,8 @@ export default function AcomodacoesDetalhes() {
                             </div>
                             <div className="relative bg-white border-zinc-300 border rounded-lg flex flex-col h-56 justify-between items-center py-3">
                                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Taxa de Ocupação</p>
-                                <OcupacaoMedia dados={taxaOcupacao ? [Number(taxaOcupacao).toFixed(1)] : [0]} />
-                                <p className="text-3xl text-center font-bold bottom-3 text-zinc-500 mb-4">{taxaOcupacao ? Number(taxaOcupacao).toFixed(1) : 0}%</p>
+                                <OcupacaoMedia dados={taxaOcupacao ? [Number((taxaOcupacao / (totalDiasIntervalo * (1))) * 100).toFixed(1)] : [0]} />
+                                <p className="text-3xl text-center font-bold bottom-3 text-zinc-500 mb-4">{taxaOcupacao ? Number((taxaOcupacao / (totalDiasIntervalo * (1))) * 100).toFixed(1) : 0}%</p>
                             </div>
                         </section>}
                         {graf && <section className='grid mt-4'>

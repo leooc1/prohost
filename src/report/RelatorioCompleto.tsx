@@ -126,9 +126,10 @@ export default function RelatorioCompleto(props: propsRelatorio) {
         }
 
         // Faz o download do arquivo
-        pptx.writeFile("relatorio.pptx").then(() => {
+        pptx.writeFile({ fileName: "relatorio.pptx" }).then(() => {
             window.location.reload();
         })
+
     }
     async function gerarPDF() {
         const pdf = new jsPDF("l", "pt", "a4"); // l = landscape, pt = pontos, A4
