@@ -19,7 +19,7 @@ const JivoChat = () => {
 
   useEffect(() => {
     const script = document.createElement("script");
-    script.src = "//code.jivosite.com/widget/BbNBy6XPgg";
+    script.src = "//code.jivosite.com/widget/t3ZXsHzqJ1";
     script.async = true;
 
     document.body.appendChild(script);
