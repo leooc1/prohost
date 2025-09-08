@@ -7,12 +7,10 @@ Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, L
 export default function FaturamentoLiquido({ mes, dadosAtuais, dadosPassado }: { mes: number, dadosAtuais: number[], dadosPassado: number[] }) {
     const chartRef = useRef<HTMLCanvasElement>(null);
     function ordenarMeses(numero: number) {
-        const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-        const indiceInicio = (numero) % meses.length;
-        const primeiraParte = meses.slice(indiceInicio);
-        const segundaParte = meses.slice(0, indiceInicio);
-        return primeiraParte.concat(segundaParte);
-    }
+    const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const indiceInicio = numero % meses.length;
+    return meses.slice(indiceInicio).concat(meses.slice(0, indiceInicio));
+  }
 
     useEffect(() => {
         if (chartRef.current) {
@@ -23,19 +21,19 @@ export default function FaturamentoLiquido({ mes, dadosAtuais, dadosPassado }: {
                     labels: ordenarMeses(mes),
                     datasets: [
                         {
+                            label: 'Faturamento do Ano Anterior',
+                            data: dadosPassado,
+
+                            backgroundColor: '#08CE99',
+                            borderRadius: 5
+                        },
+                        {
                             label: 'Faturamento do Ano',
                             data: dadosAtuais,
 
                             backgroundColor: '#033C50',
                             borderRadius: 5
                         },
-                        {
-                            label: 'Faturamento do Ano Anterior',
-                            data: dadosPassado,
-
-                            backgroundColor: '#08CE99',
-                            borderRadius: 5
-                        }
                     ]
                 };
 

@@ -647,28 +647,6 @@ export default function Dashboard() {
       setFilterAC(acfil)
   }, [])
 
-  function ordenarGraf(numero: number, fat: {
-    mes: string
-    receita: string
-    despesa: string
-    receita_ano_anterior: string
-  }[]) {
-    fat.sort((a, b) => Number(a.mes) - Number(b.mes))
-    const indiceInicio = (numero) % fat.length;
-    const primeiraParte = fat.slice(indiceInicio);
-    const segundaParte = fat.slice(0, indiceInicio);
-    const dataGraf = primeiraParte.concat(segundaParte).map(f => {
-      if (periodo != 'm-atual' && periodo != 'm-passado')
-        return f
-      return {
-        mes: f.mes,
-        receita: Number(f.mes) == (numero + 1) ? f.receita : "0",
-        despesa: Number(f.mes) == (numero + 1) ? f.despesa : "0",
-        receita_ano_anterior: f.receita_ano_anterior,
-      }
-    });
-    return dataGraf;
-  }
 
   return (
     loaded ?
@@ -880,25 +858,25 @@ export default function Dashboard() {
             <div className="bg-white border-zinc-300 border rounded-lg flex flex-col items-center h-full row-span-5">
               <p className="flex flex-col text-zinc-400 font-medium text-sm mb-16 mt-3">Faturamento X Despesas</p>
               {periodo == 'm-atual' ? <FaturamentoxDespesa
-                dadosAtuais={ordenarGraf(date.getMonth(), faturamento).map(fat => Number(fat.receita))}
-                dadosPassado={ordenarGraf(date.getMonth(), faturamento).map(fat => Number(fat.despesa))}
-                mes={date.getMonth()} /> : null}
+                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
+                dadosPassado={faturamento.map(fat => Number(fat.despesa))}
+                mes={date.getMonth() + 1} /> : null}
               {periodo == 'm-passado' ? <FaturamentoxDespesa
-                dadosAtuais={ordenarGraf(date.getMonth() == 0 ? 11 : date.getMonth() - 1, faturamento).map(fat => Number(fat.receita))}
-                dadosPassado={ordenarGraf(date.getMonth() == 0 ? 11 : date.getMonth() - 1, faturamento).map(fat => Number(fat.despesa))}
-                mes={date.getMonth() == 0 ? 11 : date.getMonth() - 1} /> : null}
+                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
+                dadosPassado={faturamento.map(fat => Number(fat.despesa))}
+                mes={date.getMonth() == 0 ? 12 : date.getMonth()} /> : null}
               {periodo == 'a-atual' ? <FaturamentoxDespesa
-                dadosAtuais={ordenarGraf(0, faturamento).map(fat => Number(fat.receita))}
-                dadosPassado={ordenarGraf(0, faturamento).map(fat => Number(fat.despesa))}
-                mes={0} /> : null}
+                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
+                dadosPassado={faturamento.map(fat => Number(fat.despesa))}
+                mes={1} /> : null}
               {periodo == 'a-passado' ? <FaturamentoxDespesa
-                dadosAtuais={ordenarGraf(0, faturamento).map(fat => Number(fat.receita))}
-                dadosPassado={ordenarGraf(0, faturamento).map(fat => Number(fat.despesa))}
-                mes={0} /> : null}
+                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
+                dadosPassado={faturamento.map(fat => Number(fat.despesa))}
+                mes={1} /> : null}
               {periodo == 'personalizado' ? <FaturamentoxDespesa
-                dadosAtuais={ordenarGraf(new Date(new Date(deData).setDate(new Date(deData).getDate() + 1)).getMonth(), faturamento).map(fat => Number(fat.receita))}
-                dadosPassado={ordenarGraf(new Date(new Date(deData).setDate(new Date(deData).getDate() + 1)).getMonth(), faturamento).map(fat => Number(fat.despesa))}
-                mes={new Date(new Date(deData).setDate(new Date(deData).getDate() + 1)).getMonth()} /> : null}
+                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
+                dadosPassado={faturamento.map(fat => Number(fat.despesa))}
+                mes={new Date(new Date(ateData).setDate(new Date(ateData).getDate() + 1)).getMonth() + 1} /> : null}
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center">
               <div className="bg-[#D8D8D8] rounded-md w-fit py-2 px-2 ml-4">
@@ -906,10 +884,10 @@ export default function Dashboard() {
               <div className="flex flex-col ml-4">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Rentabilidade do Imóvel</p>
                 <div className="flex items-end gap-4">
-                  <span className="text-nowrap text-xl">{(Number(resultadoAcomodacoes[0].rentabilidade_imovel) * 100).toFixed(2)} %</span>
-                  <Comparativo nome="RENTABILIDADE DO IMÓVEL" data={dataBW}
+                  <span className="text-nowrap text-xl">{filterAC != 'all' ? (Number(resultadoAcomodacoes[0].rentabilidade_imovel) * 100).toFixed(2) : '-----'} %</span>
+                  {filterAC != 'all' && <Comparativo nome="RENTABILIDADE DO IMÓVEL" data={dataBW}
                     passado={comparativoRA.passado?.rentabilidade_imovel ? Number(comparativoRA.passado?.rentabilidade_imovel) : 0}
-                    atual={comparativoRA.atual?.rentabilidade_imovel ? Number(comparativoRA.atual?.rentabilidade_imovel) : 0} />
+                    atual={comparativoRA.atual?.rentabilidade_imovel ? Number(comparativoRA.atual?.rentabilidade_imovel) : 0} />}
                 </div>
               </div>
             </div>
@@ -941,20 +919,20 @@ export default function Dashboard() {
             <div className="bg-white border-zinc-300 border rounded-lg flex flex-col items-center h-full row-span-5">
               <p className="flex flex-col text-zinc-400 font-medium text-sm mb-16 mt-3">Comparativo de Faturamento Líquido</p>
               {periodo == 'm-atual' ? <FaturamentoLiquido
-                dadosAtuais={ordenarGraf(date.getMonth(), faturamento).map(fat => Number(fat.receita))}
-                dadosPassado={ordenarGraf(date.getMonth(), faturamento).map(fat => Number(fat.receita_ano_anterior))} mes={date.getMonth()} /> : null}
+                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
+                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={date.getMonth() + 1} /> : null}
               {periodo == 'm-passado' ? <FaturamentoLiquido
-                dadosAtuais={ordenarGraf(date.getMonth() == 0 ? 11 : date.getMonth() - 1, faturamento).map(fat => Number(fat.receita))}
-                dadosPassado={ordenarGraf(date.getMonth() == 0 ? 11 : date.getMonth() - 1, faturamento).map(fat => Number(fat.receita_ano_anterior))} mes={date.getMonth() == 0 ? 11 : date.getMonth() - 1} /> : null}
+                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
+                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={date.getMonth() == 0 ? 12 : date.getMonth()} /> : null}
               {periodo == 'a-atual' ? <FaturamentoLiquido
-                dadosAtuais={ordenarGraf(0, faturamento).map(fat => Number(fat.receita))}
-                dadosPassado={ordenarGraf(0, faturamento).map(fat => Number(fat.receita_ano_anterior))} mes={0} /> : null}
+                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
+                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={1} /> : null}
               {periodo == 'a-passado' ? <FaturamentoLiquido
-                dadosAtuais={ordenarGraf(0, faturamento).map(fat => Number(fat.receita))}
-                dadosPassado={ordenarGraf(0, faturamento).map(fat => Number(fat.receita_ano_anterior))} mes={0} /> : null}
+                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
+                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={1} /> : null}
               {periodo == 'personalizado' ? <FaturamentoLiquido
-                dadosAtuais={ordenarGraf(new Date(new Date(deData).setDate(new Date(deData).getDate() + 1)).getMonth(), faturamento).map(fat => Number(fat.receita))}
-                dadosPassado={ordenarGraf(new Date(new Date(deData).setDate(new Date(deData).getDate() + 1)).getMonth(), faturamento).map(fat => Number(fat.receita_ano_anterior))} mes={new Date(new Date(deData).setDate(new Date(deData).getDate() + 1)).getMonth()} /> : null}
+                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
+                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={new Date(new Date(ateData).setDate(new Date(ateData).getDate() + 1)).getMonth()} /> : null}
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center">
               <div className="bg-[#FCE0E1] rounded-md w-fit py-2 px-2 ml-4">

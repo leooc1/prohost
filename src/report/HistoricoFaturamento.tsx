@@ -27,10 +27,12 @@ Chart.register(
 
 export default function HistoricoFaturamento({
   mes,
+  ano,
   dadosFaturamento,
   dadosDespesa
 }: {
   mes: number;
+  ano: number;
   dadosFaturamento: number[];
   dadosDespesa: number[];
 }) {
@@ -54,8 +56,8 @@ export default function HistoricoFaturamento({
               type: 'line' as const,
               label: 'DESPESA TOTAL',
               data: dadosDespesa,
-              borderColor: '#F67A7D',
-              backgroundColor: '#F67A7D',
+              borderColor: '#F0495F',
+              backgroundColor: '#F0495F',
               borderWidth: 3,
               tension: 0.4,
               pointRadius: 4,
@@ -74,8 +76,8 @@ export default function HistoricoFaturamento({
               type: 'line' as const,
               label: 'FATURAMENTO',
               data: dadosFaturamento,
-              borderColor: '#A9C8DC',
-              backgroundColor: '#A9C8DC',
+              borderColor: '#033C50',
+              backgroundColor: '#033C50',
               borderWidth: 3,
               tension: 0.4,
               pointRadius: 4,
@@ -178,7 +180,8 @@ export default function HistoricoFaturamento({
   }, [mes, dadosFaturamento, dadosDespesa]);
 
   return (
-    <div className="h-72 w-full bg-slate-200 rounded-lg px-1">
+    <div className="h-72 w-full bg-slate-200 rounded-lg px-1 relative">
+      <div className='text-[#333] absolute left-3 top-3 font-mono font-semibold'>{ordenarMeses(mes)[0]}.{ano-1} - {ordenarMeses(mes)[11]}.{ano}</div>
       <canvas ref={chartRef}></canvas>
     </div>
   );
