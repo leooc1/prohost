@@ -301,7 +301,7 @@ export default function ReservaCardView(props: propsReserva) {
                                 setContinuidade(true)
                             }}
                             className="px-2 py-1 text-sm font-medium bg-green-100 text-green-500 rounded-md"
-                            disabled={!(props.permissao >= 2)}>Extender Reserva</button>
+                            disabled={!(props.permissao >= 2)}>Estender Reserva</button>
                     </div> : null}
                     {reserva?.tipo_reserva == 'Continuidade' ? <div className="flex justify-between mt-3">
                         <button
