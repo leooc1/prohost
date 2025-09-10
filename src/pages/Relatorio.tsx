@@ -36,7 +36,7 @@ export default function Relatorio() {
                         {acomodacoes.length ?
                             <section className="py-py">
                                 <p className="text-2xl font-medium text-center -mb-4">Escolha a acomodação para o relatório</p>
-                                <ul className="border border-zinc-300 w-full mt-5 rounded-md pt-px pb-1 px-px flex gap-5 flex-wrap justify-center h-72 overflow-y-scroll">
+                                <ul className="border border-zinc-300 w-full mt-5 rounded-md pt-px pb-1 px-px flex gap-5 flex-wrap justify-center h-[60vh] overflow-y-scroll">
                                     {acomodacoes.map((e: any) =>
                                         <li className={`min-w-52 h-44 border border-zinc-200 rounded-xl p-5 cursor-pointer ${e.id == chooseAc ? 'bg-green-200' : 'bg-white'}`}
                                             onClick={() => setChooseAc(e.id)}>
