@@ -117,7 +117,7 @@ export default function ListaReservaR({ reservas }: { reservas: Reserva[] }) {
                 {
                     reservas.length > 0 ?
                         reservas.map((e) =>
-                            <tr className="text-xs bg-white h-12 border border-zinc-200 table table-fixed w-full">
+                            <tr className="text-xs bg-white h-9 border border-zinc-200 table table-fixed w-full">
                                 <td className={`${edit[0] ? 'opacity-100' : 'opacity-30'} text-center text-xs font-medium text-white`}>
                                     {e.tipo_reserva != 'Indisponibilidade' && e.tipo_reserva != 'Continuidade' && e.tipo_reserva != 'Cancelamento' ?
                                         <div className="py-1 w-full rounded-md" style={{ backgroundColor: e.canal_reserva?.cor }}>{e.canal_reserva?.nome}</div> : null}

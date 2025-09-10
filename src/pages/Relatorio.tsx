@@ -127,7 +127,7 @@ export default function Relatorio() {
                         ano={chooseAno}
                         imagem={foto || ''}
                     />}
-                </>
+                </> 
                 {/* <RelatorioCompleto
                     saas={Number(324)}
                     acomodacao={488}

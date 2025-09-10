@@ -290,10 +290,28 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                 canais.map(c => <option value={c.id}>{c.nome}</option>)}
                         </select>
                     </label>
+                    <div className="-mb-10 -mt-1 z-20 relative">
+                        <button onBlur={() => {
+                            document.getElementById('izinho')?.classList.add('hidden')
+                        }} onClick={() => {
+                            if (document.getElementById('izinho')?.classList.contains('hidden'))
+                                document.getElementById('izinho')?.classList.remove('hidden')
+                            else
+                                document.getElementById('izinho')?.classList.add('hidden')
+                        }}>
+                            <svg className="h-5 w-fit fill-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 9.5C12.8284 9.5 13.5 8.82843 13.5 8C13.5 7.17157 12.8284 6.5 12 6.5C11.1716 6.5 10.5 7.17157 10.5 8C10.5 8.82843 11.1716 9.5 12 9.5ZM14 15H13V10.5H10V12.5H11V15H10V17H14V15Z"></path></svg>
+                        </button>
+                        <section id="izinho" className="absolute bg-primary top-0 text-white text-sm p-2 rounded-xl -translate-y-full hidden">
+                            <p><strong>Valor Total</strong> - Valor Total é o valor pago pelo hóspede.</p>
+                            <p><strong>Valor Diárias</strong> - Valor diárias é o valor que o hóspede pagou referente as diárias da hospedagem, ou seja, o valor que ele pagou menos a taxa de limpeza (ou qualquer taxa cobrada a parte das diárias).</p>
+                            <p><strong>⁠Comissão</strong> - Comissão é o valor que ficou retido para a plataforma, incluindo impostos (se aplicável).</p>
+                            <p><strong>⁠Taxa de limpeza</strong> - Taxa de limpeza é o valor cobrado adicionalmente ao valor das diárias nas reservas.</p>
+                        </section>
+                    </div>
                     {/*  */}
                     <div className="grid gap-4 grid-cols-3">
                         <label htmlFor="tot" className="flex flex-col">
-                            <span className="text-zinc-500 font-medium mb-1 text-xs">Valor Total<span className='text-red-500 font-bold'> *</span></span>
+                            <span className="text-zinc-500 font-medium ml-6 mb-1 text-xs">{!showTaxaLimpeza[0] ? 'Valor Total' : 'Valor Diárias'}<span className='text-red-500 font-bold'> *</span></span>
                             <div className="flex items-center gap-2">
                                 R$<input type="text" placeholder="R$" step="0.01" name="tot" id="tot" className={`border ${err[6] ? 'border-red-500' : 'border-zinc-300'}  rounded-md px-2 py-1 outline-none w-full`}
                                     onInput={() => {
