@@ -29,7 +29,7 @@ export default function Relatorio() {
         }
     }, [dataToken, foto])
     return (
-        <section className="w-full h-screen">
+        <section className="w-full h-screen overflow-hidden">
             <SideBarProvider>
                 <>
                     {!relatorio && <section className="h-full flex flex-col items-center justify-center px-8">
