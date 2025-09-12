@@ -29,14 +29,14 @@ export default function Relatorio() {
         }
     }, [dataToken, foto])
     return (
-        <section>
+        <section className="w-full h-screen">
             <SideBarProvider>
                 <>
-                    {!relatorio && <section>
+                    {!relatorio && <section className="h-full flex flex-col items-center justify-center px-8">
                         {acomodacoes.length ?
-                            <section className="py-py">
+                            <section className="w-full">
                                 <p className="text-2xl font-medium text-center -mb-4">Escolha a acomodação para o relatório</p>
-                                <ul className="border border-zinc-300 w-full mt-5 rounded-md pt-px pb-1 px-px flex gap-5 flex-wrap justify-center h-72 overflow-y-scroll">
+                                <ul className="border border-zinc-300 w-full mt-5 rounded-md pt-px pb-1 px-px flex gap-5 flex-wrap justify-center max-h-72 overflow-y-scroll">
                                     {acomodacoes.map((e: any) =>
                                         <li className={`min-w-52 h-44 border border-zinc-200 rounded-xl p-5 cursor-pointer ${e.id == chooseAc ? 'bg-green-200' : 'bg-white'}`}
                                             onClick={() => setChooseAc(e.id)}>
@@ -47,7 +47,7 @@ export default function Relatorio() {
                             </section>
                             : null
                         }
-                        <section className="flex justify-around mt-8 items-center">
+                        <section className="flex justify-around mt-8 items-center w-full">
                             <label htmlFor="imagem" className="flex flex-col">
                                 <span className="flex flex-col text-zinc-600 font-medium text-sm">Logo da empresa</span>
                                 <div id="input-file" className="w-52 h-20 cursor-pointer flex border border-zinc-300 rounded-md px-1 py-1 outline-none items-center">

@@ -135,24 +135,41 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Valor<span className='text-red-500 font-bold'> *</span></span>
                         <input
                             onChange={(e) => {
-                                if (e.target.value.replace(/[.,]/gm, '').length <= 3)
-                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})/gm, '$1,$2')
-                                else if (e.target.value.replace(/[.,]/gm, '').length <= 4)
-                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{2})/gm, '$1,$2')
-                                else if (e.target.value.replace(/[.,]/gm, '').length <= 5)
-                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{2})/gm, '$1,$2')
-                                else if (e.target.value.replace(/[.,]/gm, '').length <= 6)
-                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{2})/gm, '$1.$2,$3')
-                                else if (e.target.value.replace(/[.,]/gm, '').length <= 7)
-                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{2})/gm, '$1.$2,$3')
-                                else if (e.target.value.replace(/[.,]/gm, '').length <= 8)
-                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{2})/gm, '$1.$2,$3')
-                                else if (e.target.value.replace(/[.,]/gm, '').length <= 9)
-                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
-                                else if (e.target.value.replace(/[.,]/gm, '').length <= 10)
-                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
-                                else if (e.target.value.replace(/[.,]/gm, '').length <= 11)
-                                    e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                // if (e.target.value.replace(/[.,]/gm, '').length <= 3)
+                                //     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})/gm, '$1,$2')
+                                // else if (e.target.value.replace(/[.,]/gm, '').length <= 4)
+                                //     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{2})/gm, '$1,$2')
+                                // else if (e.target.value.replace(/[.,]/gm, '').length <= 5)
+                                //     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{2})/gm, '$1,$2')
+                                // else if (e.target.value.replace(/[.,]/gm, '').length <= 6)
+                                //     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                // else if (e.target.value.replace(/[.,]/gm, '').length <= 7)
+                                //     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                // else if (e.target.value.replace(/[.,]/gm, '').length <= 8)
+                                //     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{2})/gm, '$1.$2,$3')
+                                // else if (e.target.value.replace(/[.,]/gm, '').length <= 9)
+                                //     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                // else if (e.target.value.replace(/[.,]/gm, '').length <= 10)
+                                //     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+                                // else if (e.target.value.replace(/[.,]/gm, '').length <= 11)
+                                //     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
+
+                                //Permitindo números negativos e formatando o valor monetário somente
+                                const { value } = e.target;
+                                const isNegative = value.startsWith('-');
+                                let numericValue = value.replace(/[^0-9]/g, '');
+
+                                if (numericValue) {
+                                    if (numericValue.length < 3) {
+                                        numericValue = numericValue.padStart(3, '0');
+                                    }
+                                    let integerPart = numericValue.slice(0, -2);
+                                    const decimalPart = numericValue.slice(-2);
+                                    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                                    e.target.value = `${isNegative ? '-' : ''}${integerPart || '0'},${decimalPart}`;
+                                } else {
+                                    e.target.value = isNegative ? '-' : '';
+                                }
                             }}
                             type="text" name="valor" placeholder="R$" id="valor" className={`border ${err[3] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none w-full`} />
                     </label>
@@ -182,7 +199,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                                 vProprietario = Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
                                 vGestor = Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
                             }
-                            if ((Boolean(categoriaInput.value.length > 0) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) > 0)) {
+                            if ((Boolean(categoriaInput.value.length > 0) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) !== 0)) {
                                 await create({
                                     "acomodacao": {
                                         "id": Number(acomodacaoInput.value) || null
