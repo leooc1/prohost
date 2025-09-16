@@ -196,6 +196,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
     const [nome, setNome] = useState<string>('')
     const [acIMG, setAcIMG] = useState<string>('')
     const [valorImovel, setValorImovel] = useState<string>('')
+    const [comissao, setComissao] = useState<number>(0)
     const [dadosReserva, setDadosReserva] = useState({ ocupacao_do_imovel: 0, novas_reservas: 0, faturamento: 0 })
     const [resultadoAcomodacoes, setResultadoAcomodacoes] = useState<{
         comissao_plataforma: string
@@ -215,8 +216,6 @@ export default function RelatorioCompleto(props: propsRelatorio) {
         faturamento_despesa: any[]
     }>({ faturamento_periodo: 0, rentabilidade_imovel: 0, faturamento_despesa: [] })
     const [listaReservas, setListaReservas] = useState<any[]>([])
-    const [modelo, setModelo] = useState<number>(1)
-    const [repasseProp, setRepasseProp] = useState<[string, string]>(['', ''])
 
 
     async function getData() {
@@ -229,17 +228,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                     setValorImovel(data[0].valor_imovel)
                     setAcIMG(data[0].foto)
                     setNome(data[0].nome)
-                    setModelo(data[0].modelo)
-                })
-                .catch(err => console.log(err))
-        }
-        {
-            await fetch(`${apiURL}/movimentacao/${props.saas}/proprietario/${`${props.ano}-${('0' + props.mes).slice(-2)}-${'01'}`}/${`${props.ano}-${('0' + props.mes).slice(-2)}-${diasDoMes(props.mes, props.ano)}`}/${props.acomodacao}`, {
-                method: 'GET'
-            })
-                .then(data => data.json())
-                .then(async (data) => {
-                    setRepasseProp([data[0].repasse_proprietario_incluso, data[0].repasse_proprietario_excluso])
+                    setComissao(Number(data[0].comissao))
                 })
                 .catch(err => console.log(err))
         }
@@ -410,7 +399,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 </div>
                                 <div className='flex flex-col justify-center'>
                                     <p className='text-secondary text-3xl'>{nome}</p>
-                                    <p className='text-white text-2xl'>{meses[props.mes - 1]}.{props.ano}</p>
+                                    <p className='text-white text-2xl' style={{lineHeight: '50px'}}>{meses[props.mes - 1]}.{props.ano}</p>
                                     <div className='flex justify-end'>
                                         <img src={props.imagem} alt="" className='bg-primary max-w-56 max-h-28 h-28' />
                                     </div>
@@ -441,60 +430,60 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                         </div>
                         <section className='px-5 h-full mt-20 flex flex-col justify-center'>
                             <ul className='flex flex-col gap-4'>
-                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 flex gap-4 items-center rounded-lg relative ${editPages[0] ? 'opacity-100' : 'opacity-30'}`}>
-                                    <span className='font-black text-secondary text-2xl relative top-1/2 -translate-y-1/2'>*</span>
-                                    <p className='text-white text-2xl my-2'>Calendário do mês e resumo das reservas</p>
-                                    <button className='absolute right-2 invert'
+                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex relative ${editPages[0] ? 'opacity-100' : 'opacity-30'}`}>
+                                    <span className='font-black text-secondary text-2xl relative top-1/2 -translate-y-1/2' style={{lineHeight: '56px'}}>*</span>
+                                    <p className='text-white text-2xl' style={{lineHeight: '50px'}}>Calendário do mês e resumo das reservas</p>
+                                    <button className='absolute right-2 invert top-1/2 -translate-y-1/2'
                                         onClick={() => {
                                             let error = editPages
                                             error = (error.map((e, i) => i === 0 ? !e : e))
                                             setEditPages(error)
                                         }}>{editPages[0] ? open : closed}</button>
                                 </li>
-                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 flex gap-4 items-center rounded-lg relative ${editPages[1] ? 'opacity-100' : 'opacity-30'}`}>
-                                    <span className='font-black text-secondary text-2xl relative top-1/2 -translate-y-1/2'>*</span>
-                                    <p className='text-white text-2xl my-2'>Detalhamento das reservas</p>
-                                    <button className='absolute right-2 invert'
+                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex relative ${editPages[1] ? 'opacity-100' : 'opacity-30'}`}>
+                                    <span className='font-black text-secondary text-2xl relative top-1/2 -translate-y-1/2' style={{lineHeight: '56px'}}>*</span>
+                                    <p className='text-white text-2xl' style={{lineHeight: '50px'}}>Detalhamento das reservas</p>
+                                    <button className='absolute right-2 top-1/2 -translate-y-1/2 invert'
                                         onClick={() => {
                                             let error = editPages
                                             error = (error.map((e, i) => i === 1 ? !e : e))
                                             setEditPages(error)
                                         }}>{editPages[1] ? open : closed}</button>
                                 </li>
-                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 flex gap-4 items-center rounded-lg relative ${editPages[2] ? 'opacity-100' : 'opacity-30'}`}>
-                                    <span className='font-black text-secondary text-2xl relative top-1/2 -translate-y-1/2'>*</span>
-                                    <p className='text-white text-2xl my-2'>Desempenho e rentabilidade do imóvel</p>
-                                    <button className='absolute right-2 invert'
+                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex relative ${editPages[2] ? 'opacity-100' : 'opacity-30'}`}>
+                                    <span className='font-black text-secondary text-2xl relative top-1/2 -translate-y-1/2' style={{lineHeight: '56px'}}>*</span>
+                                    <p className='text-white text-2xl' style={{lineHeight: '50px'}}>Desempenho e rentabilidade do imóvel</p>
+                                    <button className='absolute right-2 top-1/2 -translate-y-1/2 invert'
                                         onClick={() => {
                                             let error = editPages
                                             error = (error.map((e, i) => i === 2 ? !e : e))
                                             setEditPages(error)
                                         }}>{editPages[2] ? open : closed}</button>
                                 </li>
-                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 flex gap-4 items-center rounded-lg relative ${editPages[3] ? 'opacity-100' : 'opacity-30'}`}>
-                                    <span className='font-black text-secondary text-2xl relative top-1/2 -translate-y-1/2'>*</span>
-                                    <p className='text-white text-2xl my-2'>Comparativo do faturamento</p>
-                                    <button className='absolute right-2 invert'
+                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex relative ${editPages[3] ? 'opacity-100' : 'opacity-30'}`}>
+                                    <span className='font-black text-secondary text-2xl relative top-1/2 -translate-y-1/2' style={{lineHeight: '56px'}}>*</span>
+                                    <p className='text-white text-2xl' style={{lineHeight: '50px'}}>Comparativo do faturamento</p>
+                                    <button className='absolute right-2 top-1/2 -translate-y-1/2 invert'
                                         onClick={() => {
                                             let error = editPages
                                             error = (error.map((e, i) => i === 3 ? !e : e))
                                             setEditPages(error)
                                         }}>{editPages[3] ? open : closed}</button>
                                 </li>
-                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 flex gap-4 items-center rounded-lg relative ${editPages[4] ? 'opacity-100' : 'opacity-30'}`}>
-                                    <span className='font-black text-secondary text-2xl relative top-1/2 -translate-y-1/2'>*</span>
-                                    <p className='text-white text-2xl my-2'>Detalhamento das despesas</p>
-                                    <button className='absolute right-2 invert'
+                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex relative ${editPages[4] ? 'opacity-100' : 'opacity-30'}`}>
+                                    <span className='font-black text-secondary text-2xl relative top-1/2 -translate-y-1/2' style={{lineHeight: '56px'}}>*</span>
+                                    <p className='text-white text-2xl' style={{lineHeight: '50px'}}>Detalhamento das despesas</p>
+                                    <button className='absolute right-2 top-1/2 -translate-y-1/2 invert'
                                         onClick={() => {
                                             let error = editPages
                                             error = (error.map((e, i) => i === 4 ? !e : e))
                                             setEditPages(error)
                                         }}>{editPages[4] ? open : closed}</button>
                                 </li>
-                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 flex gap-4 items-center rounded-lg relative ${editPages[5] ? 'opacity-100' : 'opacity-30'}`}>
-                                    <span className='font-black text-secondary text-2xl relative top-1/2 -translate-y-1/2'>*</span>
-                                    <p className='text-white text-2xl my-2'>Resultado da acomodação e repasse</p>
-                                    <button className='absolute right-2 invert'
+                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex relative ${editPages[5] ? 'opacity-100' : 'opacity-30'}`}>
+                                    <span className='font-black text-secondary text-2xl relative top-1/2 -translate-y-1/2' style={{lineHeight: '56px'}}>*</span>
+                                    <p className='text-white text-2xl' style={{lineHeight: '50px'}}>Resultado da acomodação e repasse</p>
+                                    <button className='absolute right-2 top-1/2 -translate-y-1/2 invert'
                                         onClick={() => {
                                             let error = editPages
                                             error = (error.map((e, i) => i === 5 ? !e : e))
@@ -837,7 +826,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                         <p className='text-xl text-white font-semibold flex text-end pr-4'>R$ <input className='bg-transparent ml-5 w-full' defaultValue={new Intl.NumberFormat('pt-BR', {
                                             minimumFractionDigits: 2,
                                             maximumFractionDigits: 2
-                                        }).format(Number(repasseProp[modelo-1]))} type="text"
+                                        }).format(Number(resultadoAcomodacoes[0].lucro)*(comissao>1?(100-comissao)/100:1-comissao))} type="text"
                                             onBlur={(e) => e.target.value = new Intl.NumberFormat('pt-BR', {
                                                 minimumFractionDigits: 2,
                                                 maximumFractionDigits: 2

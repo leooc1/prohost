@@ -41,7 +41,7 @@ export default function Dashboard() {
       return "R$ 0,00";
     }
     if (valor < 0)
-      return (valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      return (0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
   const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
@@ -117,6 +117,7 @@ export default function Dashboard() {
   const [resGestor, setResGestor] = useState<boolean>(false)
   const [indiOpe, setIndiOpe] = useState<boolean>(false)
   const [ocupacaoSemana, setOcupacaoSemana] = useState<[][][]>([])
+  const [comissao, setComissao] = useState<number>(0)
 
   function getDaysInMonth(month: number, year: number) {
     switch (month) {
@@ -273,6 +274,17 @@ export default function Dashboard() {
         .catch(err => console.log(err))
     }
     else {
+      {
+        await fetch(`${apiURL}/acomodacao/${dataToken.id}/${filterAC}`, {
+          method: 'GET'
+        })
+          .then(data => data.json())
+          .then((data) => {
+            console.log(Number(data[0].comissao))
+            setComissao(Number(data[0].comissao))
+          })
+          .catch(err => console.log(err))
+      }
       await fetch(`${apiURL}/movimentacao/${dataToken.id}/fat-canal/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
@@ -415,7 +427,6 @@ export default function Dashboard() {
         .catch(err => console.log(err))
     }
     else {
-
       await fetch(`${apiURL}/reserva/${dataToken.id}/ind-ope/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
@@ -993,6 +1004,17 @@ export default function Dashboard() {
                   <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].diaria_media).toFixed(1))}</span>
                   <Comparativo nome="DIÁRIA MÉDIA" data={dataBW} passado={comparativoRA.passado?.diaria_media ? Number(comparativoRA.passado?.diaria_media) : 0}
                     atual={comparativoRA.atual?.diaria_media ? Number(comparativoRA.atual?.diaria_media) : 0} />
+                </div>
+              </div>
+            </div>
+            <div className="bg-white border-zinc-300 border rounded-lg h-full flex justify-center items-center py-3">
+              <div className="bg-[#f6d0fe] rounded-md w-fit py-2 px-2 ml-4">
+                <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#b115fa"><path d="M4 22C4 17.5817 7.58172 14 12 14C16.4183 14 20 17.5817 20 22H4ZM13 16.083V20H17.6586C16.9423 17.9735 15.1684 16.4467 13 16.083ZM11 20V16.083C8.83165 16.4467 7.05766 17.9735 6.34141 20H11ZM12 13C8.685 13 6 10.315 6 7C6 3.685 8.685 1 12 1C15.315 1 18 3.685 18 7C18 10.315 15.315 13 12 13ZM12 11C14.2104 11 16 9.21043 16 7C16 4.78957 14.2104 3 12 3C9.78957 3 8 4.78957 8 7C8 9.21043 9.78957 11 12 11Z"></path></svg>
+              </div>
+              <div className="flex flex-col ml-4">
+                <p className="flex flex-col text-zinc-400 font-medium text-sm">Repasse ao proprietário</p>
+                <div className="flex items-end gap-4">
+                  <span className="text-nowrap text-xl">{filterAC != 'all' ?formatarMoedaBrasileira((Number(resultadoAcomodacoes[0].lucro) * (comissao > 1 ? (100 - comissao) / 100 : 1 - comissao)).toFixed(1)):'-----'}</span>
                 </div>
               </div>
             </div>
