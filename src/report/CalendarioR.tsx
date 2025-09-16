@@ -109,10 +109,10 @@ export default function CalendarioR(props: propsCalendario) {
             );' 
             class='bg-emerald-400 py-px absolute w-full left-0
             ${reserva.tipo == 'start' ? `rounded-l-xl` : null} 
-            ${reserva.tipo == 'end' ? `rounded-r-xl` : null}' title='${reserva.title}'><p class='whitespace-nowrap overflow-hidden 
-            ${reserva.tipo == 'start' ? `ml-2 text-transparent` : null} 
-            ${reserva.tipo == 'end' ? `mr-2 text-transparent` : null}
-            ${reserva.tipo == 'middle' ? `mx-2 text-white` : null}'>${reserva.title}</p></div>` : null
+            ${reserva.tipo == 'end' ? `rounded-r-xl` : null}' title='${reserva.title}'><p class='whitespace-nowrap overflow-hidden text-white 
+            ${reserva.tipo == 'start' ? `ml-2` : null} 
+            ${reserva.tipo == 'end' ? `mr-2` : null}
+            ${reserva.tipo == 'middle' ? `mx-2` : null}'>${reserva.title}</p></div>` : null
         }
     }, [mes])
 

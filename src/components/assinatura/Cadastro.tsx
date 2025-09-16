@@ -165,29 +165,13 @@ export default function Cadastro() {
                     }
                 })
                     .then(data => data.json())
-                    .then(async (data) => {
+                    .then((data) => {
                         if (data.id) {
                             setNotify({ type: 1, text: 'Criado!' })
                             setShowNotify(true)
                             setTimeout(() => {
                                 setShowNotify(false);
                             }, 3000)
-                            // AUTO-LOGIN
-                            const loginResp = await fetch(`${apiURL}/users/auth`, {
-                                method: 'POST',
-                                body: JSON.stringify({ email: usuarioDTO.email, senha: usuarioDTO.senha }),
-                                headers: { 'Content-Type': 'application/json' }
-                            });
-                            if (loginResp.status === 200) {
-                                const loginData = await loginResp.json();
-                                if (loginData.token && loginData.token !== true) {
-                                    window.localStorage.setItem('ph_token_acc', loginData.token);
-                                    window.location.assign('/');
-                                } else if (loginData.token === true) {
-                                    window.localStorage.setItem('ph_reset_msg', "Por motivos de segurança, estamos solicitando que você redefina sua senha.");
-                                    window.location.assign('/reset-senha?email=' + encodeURIComponent(usuarioDTO.email));
-                                }
-                            }
                         }
                     })
                 await fetch(`${apiURL}/assinatura/crypto`, {

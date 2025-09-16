@@ -280,7 +280,6 @@ export default function Dashboard() {
         })
           .then(data => data.json())
           .then((data) => {
-            console.log(Number(data[0].comissao))
             setComissao(Number(data[0].comissao))
           })
           .catch(err => console.log(err))
