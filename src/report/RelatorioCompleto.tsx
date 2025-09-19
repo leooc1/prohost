@@ -358,6 +358,8 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                             lucro: "0",
                             taxa_limpeza: "0",
                             rentabilidade_imovel: 0,
+                            comissao_taxa_limpeza: 0,
+                            comissao_reservas: 0,
                         }])
                     else
                         setResultadoAcomodacoes(data)
