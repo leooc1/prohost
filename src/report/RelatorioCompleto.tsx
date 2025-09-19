@@ -28,7 +28,7 @@ interface propsRelatorio {
 export default function RelatorioCompleto(props: propsRelatorio) {
     const apiURL = import.meta.env.VITE_API_URL
     const [editPages, setEditPages] = useState([true, true, true, true, true, true, true])
-    const [edit, setEdit] = useState([true, true, true, true, true, true])
+    const [edit, setEdit] = useState([true, true, true, true, true, true, true])
     const [editCalendar, setEditCalendar] = useState([true, true, true, true])
     function diasDoMes(month: number, year: number) {
         switch (month) {
@@ -207,6 +207,8 @@ export default function RelatorioCompleto(props: propsRelatorio) {
         lucro: string
         taxa_limpeza: string
         rentabilidade_imovel: string | number
+        comissao_taxa_limpeza: string | number
+        comissao_reservas: string | number
     }[]>([])
     const [despesas, setDespesas] = useState<any[]>([])
     const [reservas, setReservas] = useState<any[]>([])
@@ -698,8 +700,8 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 <div className='w-full h-px bg-secondary'></div>
                                 <img src={props.imagem} alt="" className='bg-primary max-w-56 max-h-28 h-28' />
                             </div>
-                            <section className="grid gap-5 grid-cols-2 h-full mt-20">
-                                <section className="grid gap-5 grid-cols-1">
+                            <section className="grid gap-5 grid-cols-3 h-full mt-20">
+                                <section className="grid gap-5 grid-cols-2 col-span-2">
                                     <div className={`bg-white border-zinc-300 border rounded-lg h-full flex items-center py-1 relative ${edit[0] ? 'opacity-100' : 'opacity-30'}`}>
                                         <div className="bg-[#D1F0FF] rounded-md w-fit py-2 px-2 ml-4">
                                             <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#01AAFE"><path d="M2 20H22V22H2V20ZM4 12H6V19H4V12ZM9 12H11V19H9V12ZM13 12H15V19H13V12ZM18 12H20V19H18V12ZM2 7L12 2L22 7V11H2V7ZM12 8C12.5523 8 13 7.55228 13 7C13 6.44772 12.5523 6 12 6C11.4477 6 11 6.44772 11 7C11 7.55228 11.4477 8 12 8Z"></path></svg>
@@ -745,12 +747,12 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                             <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ED3E44"><path d="M17.5049 21.0027C15.5719 21.0027 14.0049 19.4357 14.0049 17.5027C14.0049 15.5697 15.5719 14.0027 17.5049 14.0027C19.4379 14.0027 21.0049 15.5697 21.0049 17.5027C21.0049 19.4357 19.4379 21.0027 17.5049 21.0027ZM17.5049 19.0027C18.3333 19.0027 19.0049 18.3312 19.0049 17.5027C19.0049 16.6743 18.3333 16.0027 17.5049 16.0027C16.6765 16.0027 16.0049 16.6743 16.0049 17.5027C16.0049 18.3312 16.6765 19.0027 17.5049 19.0027ZM6.50488 10.0027C4.57189 10.0027 3.00488 8.43574 3.00488 6.50275C3.00488 4.56975 4.57189 3.00275 6.50488 3.00275C8.43788 3.00275 10.0049 4.56975 10.0049 6.50275C10.0049 8.43574 8.43788 10.0027 6.50488 10.0027ZM6.50488 8.00275C7.33331 8.00275 8.00488 7.33117 8.00488 6.50275C8.00488 5.67432 7.33331 5.00275 6.50488 5.00275C5.67646 5.00275 5.00488 5.67432 5.00488 6.50275C5.00488 7.33117 5.67646 8.00275 6.50488 8.00275ZM19.076 3.51747L20.4902 4.93168L4.93382 20.488L3.5196 19.0738L19.076 3.51747Z"></path></svg>
                                         </div>
                                         <div className="flex flex-col ml-4">
-                                            <p className="flex flex-col text-zinc-400 font-medium text-sm">Comissão das Plataformas</p>
+                                            <p className="flex flex-col text-zinc-400 font-medium text-sm">Comissão das Reservas</p>
                                             <div className="flex items-end gap-4">
                                                 <span className="text-nowrap text-xl">R$ {new Intl.NumberFormat('pt-BR', {
                                                     minimumFractionDigits: 2,
                                                     maximumFractionDigits: 2
-                                                }).format(Number(resultadoAcomodacoes[0].comissao_plataforma))}</span>
+                                                }).format(Number(resultadoAcomodacoes[0].comissao_reservas))}</span>
                                             </div>
                                         </div>
                                         <button className='absolute right-3'
@@ -759,6 +761,26 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                                 field = (field.map((e, i) => i === 2 ? !e : e))
                                                 setEdit(field)
                                             }}>{edit[2] ? open : closed}</button>
+                                    </div>
+                                    <div className={`bg-white border-zinc-300 border rounded-lg h-full flex items-center py-1 relative ${edit[6] ? 'opacity-100' : 'opacity-30'}`}>
+                                        <div className="bg-[#f9fce0] rounded-md w-fit py-2 px-2 ml-4">
+                                            <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#edea3e"><path d="M17.5049 21.0027C15.5719 21.0027 14.0049 19.4357 14.0049 17.5027C14.0049 15.5697 15.5719 14.0027 17.5049 14.0027C19.4379 14.0027 21.0049 15.5697 21.0049 17.5027C21.0049 19.4357 19.4379 21.0027 17.5049 21.0027ZM17.5049 19.0027C18.3333 19.0027 19.0049 18.3312 19.0049 17.5027C19.0049 16.6743 18.3333 16.0027 17.5049 16.0027C16.6765 16.0027 16.0049 16.6743 16.0049 17.5027C16.0049 18.3312 16.6765 19.0027 17.5049 19.0027ZM6.50488 10.0027C4.57189 10.0027 3.00488 8.43574 3.00488 6.50275C3.00488 4.56975 4.57189 3.00275 6.50488 3.00275C8.43788 3.00275 10.0049 4.56975 10.0049 6.50275C10.0049 8.43574 8.43788 10.0027 6.50488 10.0027ZM6.50488 8.00275C7.33331 8.00275 8.00488 7.33117 8.00488 6.50275C8.00488 5.67432 7.33331 5.00275 6.50488 5.00275C5.67646 5.00275 5.00488 5.67432 5.00488 6.50275C5.00488 7.33117 5.67646 8.00275 6.50488 8.00275ZM19.076 3.51747L20.4902 4.93168L4.93382 20.488L3.5196 19.0738L19.076 3.51747Z"></path></svg>
+                                        </div>
+                                        <div className="flex flex-col ml-4">
+                                            <p className="flex flex-col text-zinc-400 font-medium text-sm">Comissão Taxa de Limpeza</p>
+                                            <div className="flex items-end gap-4">
+                                                <span className="text-nowrap text-xl">R$ {new Intl.NumberFormat('pt-BR', {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2
+                                                }).format(Number(resultadoAcomodacoes[0].comissao_taxa_limpeza))}</span>
+                                            </div>
+                                        </div>
+                                        <button className='absolute right-3'
+                                            onClick={() => {
+                                                let field = edit
+                                                field = (field.map((e, i) => i === 6 ? !e : e))
+                                                setEdit(field)
+                                            }}>{edit[6] ? open : closed}</button>
                                     </div>
                                     <div className={`bg-white border-zinc-300 border rounded-lg h-full flex items-center py-1 relative ${edit[3] ? 'opacity-100' : 'opacity-30'}`}>
                                         <div className="bg-[#D1F0FF] rounded-md w-fit py-2 px-2 ml-4">
