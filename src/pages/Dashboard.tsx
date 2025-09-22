@@ -229,7 +229,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`${apiURL}/movimentacao/${dataToken.id}/fat-bar/${dataBar}`, {
+      await fetch(`${apiURL}/movimentacao/${dataToken.id}/fat-bar/${dataBW[1]}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -297,7 +297,7 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      await fetch(`${apiURL}/movimentacao/${dataToken.id}/fat-bar/${dataBar}/${filterAC}`, {
+      await fetch(`${apiURL}/movimentacao/${dataToken.id}/fat-bar/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
       })
         .then(data => data.json())
@@ -583,7 +583,6 @@ export default function Dashboard() {
   }
 
   const [dataBW, setDataBW] = useState<[string, string]>([`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`, `${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`])
-  const [dataBar, setDataBar] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
 
   const updateQueryParam = (key: string, value: string) => {
     const url = new URL(window.location.href);
@@ -599,7 +598,6 @@ export default function Dashboard() {
       updateQueryParam("dataate", ate);
       updateQueryParam("acfil", filterAC);
       setDataBW([de, ate])
-      setDataBar(ate)
     }
     else if (periodo == 'm-passado') {
       const de = `${date.getMonth() == 0 ? date.getFullYear() - 1 : date.getFullYear()}-${date.getMonth() == 0 ? 12 : (`0${date.getMonth()}`).slice(-2)}-01`
@@ -608,7 +606,6 @@ export default function Dashboard() {
       updateQueryParam("dataate", ate);
       updateQueryParam("acfil", filterAC);
       setDataBW([de, ate])
-      setDataBar(ate)
     }
     else if (periodo == 'a-atual') {
       const de = `${date.getFullYear()}-01-01`
@@ -617,7 +614,6 @@ export default function Dashboard() {
       updateQueryParam("dataate", ate);
       updateQueryParam("acfil", filterAC);
       setDataBW([de, ate])
-      setDataBar(ate)
     }
     else if (periodo == 'a-passado') {
       const de = `${date.getFullYear() - 1}-01-01`
@@ -626,7 +622,6 @@ export default function Dashboard() {
       updateQueryParam("dataate", ate);
       updateQueryParam("acfil", filterAC);
       setDataBW([de, ate])
-      setDataBar(ate)
     }
     else {
       const de = deData
@@ -635,7 +630,6 @@ export default function Dashboard() {
       updateQueryParam("dataate", ate);
       updateQueryParam("acfil", filterAC);
       setDataBW([de, ate])
-      setDataBar(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
     }
 
     setIndiOpe(false)
@@ -884,11 +878,11 @@ export default function Dashboard() {
               {periodo == 'a-atual' ? <FaturamentoxDespesa
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
                 dadosPassado={faturamento.map(fat => Number(fat.despesa))}
-                mes={1} /> : null}
+                mes={12} /> : null}
               {periodo == 'a-passado' ? <FaturamentoxDespesa
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
                 dadosPassado={faturamento.map(fat => Number(fat.despesa))}
-                mes={1} /> : null}
+                mes={12} /> : null}
               {periodo == 'personalizado' ? <FaturamentoxDespesa
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
                 dadosPassado={faturamento.map(fat => Number(fat.despesa))}
@@ -936,27 +930,32 @@ export default function Dashboard() {
               <p className="flex flex-col text-zinc-400 font-medium text-sm mb-16 mt-3">Comparativo de Faturamento Líquido</p>
               {periodo == 'm-atual' ? <FaturamentoLiquido
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={date.getMonth() + 1} /> : null}
+                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))}
+                mes={date.getMonth() + 1} /> : null}
               {periodo == 'm-passado' ? <FaturamentoLiquido
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={date.getMonth() == 0 ? 12 : date.getMonth()} /> : null}
+                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))}
+                mes={date.getMonth() == 0 ? 12 : date.getMonth()} /> : null}
               {periodo == 'a-atual' ? <FaturamentoLiquido
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={1} /> : null}
+                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))}
+                mes={12} /> : null}
               {periodo == 'a-passado' ? <FaturamentoLiquido
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={1} /> : null}
+                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))}
+                mes={12} /> : null}
               {periodo == 'personalizado' ? <FaturamentoLiquido
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))} mes={new Date(new Date(ateData).setDate(new Date(ateData).getDate() + 1)).getMonth()} /> : null}
+                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))}
+                mes={new Date(new Date(ateData).setDate(new Date(ateData).getDate() + 1)).getMonth() + 1} /> : null}
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center relative"
-            onMouseOver={()=>{
-                    document.getElementById('detail-comission')?.classList.remove('hidden')
-                  }}
-                  onMouseLeave={()=>{
-                    document.getElementById('detail-comission')?.classList.add('hidden')
-                  }}>
+              onMouseOver={() => {
+                document.getElementById('detail-comission')?.classList.remove('hidden')
+              }}
+              onMouseLeave={() => {
+                document.getElementById('detail-comission')?.classList.add('hidden')
+              }}>
               <div className="bg-[#FCE0E1] rounded-md w-fit py-2 px-2 ml-4">
                 <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ED3E44"><path d="M17.5049 21.0027C15.5719 21.0027 14.0049 19.4357 14.0049 17.5027C14.0049 15.5697 15.5719 14.0027 17.5049 14.0027C19.4379 14.0027 21.0049 15.5697 21.0049 17.5027C21.0049 19.4357 19.4379 21.0027 17.5049 21.0027ZM17.5049 19.0027C18.3333 19.0027 19.0049 18.3312 19.0049 17.5027C19.0049 16.6743 18.3333 16.0027 17.5049 16.0027C16.6765 16.0027 16.0049 16.6743 16.0049 17.5027C16.0049 18.3312 16.6765 19.0027 17.5049 19.0027ZM6.50488 10.0027C4.57189 10.0027 3.00488 8.43574 3.00488 6.50275C3.00488 4.56975 4.57189 3.00275 6.50488 3.00275C8.43788 3.00275 10.0049 4.56975 10.0049 6.50275C10.0049 8.43574 8.43788 10.0027 6.50488 10.0027ZM6.50488 8.00275C7.33331 8.00275 8.00488 7.33117 8.00488 6.50275C8.00488 5.67432 7.33331 5.00275 6.50488 5.00275C5.67646 5.00275 5.00488 5.67432 5.00488 6.50275C5.00488 7.33117 5.67646 8.00275 6.50488 8.00275ZM19.076 3.51747L20.4902 4.93168L4.93382 20.488L3.5196 19.0738L19.076 3.51747Z"></path></svg>
               </div>

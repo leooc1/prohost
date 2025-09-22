@@ -8,10 +8,8 @@ export default function FaturamentoxDespesa({ mes, dadosAtuais, dadosPassado }: 
     const chartRef = useRef<HTMLCanvasElement>(null);
     function ordenarMeses(numero: number) {
         const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-        const indiceInicio = (numero) % meses.length;
-        const primeiraParte = meses.slice(indiceInicio);
-        const segundaParte = meses.slice(0, indiceInicio);
-        return primeiraParte.concat(segundaParte);
+        const indiceInicio = numero % meses.length;
+        return meses.slice(indiceInicio).concat(meses.slice(0, indiceInicio));
     }
 
     useEffect(() => {
