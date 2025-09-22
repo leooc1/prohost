@@ -39,9 +39,9 @@ export default function ResetarSenha() {
         }
         setLoading(true); setMsg(null);
         try {
-            const { data } = await axios.put<ApiResponse>(
+            const { data } = await axios.post<ApiResponse>(
                 `${apiURL}/reset-password/request`,
-                { email: gmail }
+                { email: gmail || email }
             );
             if (data.success) { setOk(true); setMsg('Email de recuperação enviado!'); setTimeout(() => setMsg(null), 5000); }
         } catch (e) {
