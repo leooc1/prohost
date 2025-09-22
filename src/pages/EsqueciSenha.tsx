@@ -154,7 +154,6 @@ export default function ResetarSenha() {
                                     <input
                                         type="email"
                                         required
-                                        value={gmail}
                                         onChange={e => setEmail(e.target.value)}
                                         placeholder="seu-email@exemplo.com"
                                         className="w-full border px-3 py-2 rounded-md"
