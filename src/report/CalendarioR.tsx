@@ -97,22 +97,36 @@ export default function CalendarioR(props: propsCalendario) {
     }, [props.data, props.reservas]);
 
     useEffect(() => {
-        for (const reserva of reservaC) {
+        for (let i = 0; i < reservaC.length; i++) {
+            const reserva = reservaC[i];
+            const anterior = reservaC[i - 1]; // pode ser undefined no primeiro loop
+
             const diaCalendario = document.getElementById(`dia-${reserva.dia}`)
             const horario = reserva.hora * 100 / 24
-            diaCalendario ? diaCalendario.innerHTML += `<div 
+
+            const ehEndComStartAntes = reserva.tipo === 'end' && anterior?.tipo === 'start'
+
+            if (diaCalendario) {
+                diaCalendario.innerHTML += `
+        <div 
             style='background-color: ${reserva.cor};
             transform: translateX(
-            ${reserva.tipo == 'start' ? `${horario.toFixed(0)}%` : ''}
-            ${reserva.tipo == 'end' ? `-${(100 - horario).toFixed(0)}%` : ''}
-            ${reserva.tipo == 'middle' ? `${0}%` : ''}
+                ${reserva.tipo == 'start' ? `${horario.toFixed(0)}%` : ''}
+                ${reserva.tipo == 'end' ? `-${(100 - horario).toFixed(0)}%` : ''}
+                ${reserva.tipo == 'middle' ? `0%` : ''}
             );' 
             class='bg-emerald-400 py-px absolute w-full left-0
-            ${reserva.tipo == 'start' ? `rounded-l-xl` : null} 
-            ${reserva.tipo == 'end' ? `rounded-r-xl` : null}' title='${reserva.title}'><p class='whitespace-nowrap overflow-hidden text-white 
-            ${reserva.tipo == 'start' ? `ml-2` : null} 
-            ${reserva.tipo == 'end' ? `mr-2` : null}
-            ${reserva.tipo == 'middle' ? `mx-2` : null}'>${reserva.title}</p></div>` : null
+                ${reserva.tipo == 'start' ? `rounded-l-xl` : ''} 
+                ${reserva.tipo == 'end' ? `rounded-r-xl` : ''}'
+            title='${reserva.title}'
+        >
+            <p class='whitespace-nowrap overflow-hidden text-white 
+                ${reserva.tipo == 'start' ? `ml-2 text-transparent` : ''} 
+                ${reserva.tipo == 'end' && !ehEndComStartAntes ? `mr-2 text-transparent` : ''} 
+                ${reserva.tipo == 'middle' ? `mx-2` : ''}
+            '>${reserva.title}</p>
+        </div>`
+            }
         }
     }, [mes])
 

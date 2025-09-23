@@ -750,8 +750,8 @@ export default function Dashboard() {
             <div className="relative bg-white border-zinc-300 border rounded-lg flex flex-col justify-between items-center row-span-2 py-1 h-full">
               <p className="flex flex-col text-zinc-400 font-medium text-sm">Taxa de Ocupação Média</p>
               <div className="">
-                {showTaxaOcu && <OcupacaoMedia dados={taxaOcupacao?.taxa_ocupacao ? [Number((taxaOcupacao?.taxa_ocupacao / (totalDiasIntervalo * (filterAC == 'all' ? acomodacao.length : 1))) * 100).toFixed(1)] : [0]} />}
-                <p className="text-3xl text-center font-bold bottom-3 text-zinc-500 mb-4">{taxaOcupacao?.taxa_ocupacao ? Number((taxaOcupacao?.taxa_ocupacao / (totalDiasIntervalo * (filterAC == 'all' ? acomodacao.length : 1))) * 100).toFixed(1) : 0}%</p>
+                {showTaxaOcu && <OcupacaoMedia dados={taxaOcupacao?.taxa_ocupacao ? [Number((taxaOcupacao?.taxa_ocupacao / (totalDiasIntervalo * (filterAC == 'all' ? acomodacao.length : 1))) * 100).toFixed(2)] : [0]} />}
+                <p className="text-3xl text-center font-bold bottom-3 text-zinc-500 mb-4">{taxaOcupacao?.taxa_ocupacao ? Number((taxaOcupacao?.taxa_ocupacao / (totalDiasIntervalo * (filterAC == 'all' ? acomodacao.length : 1))) * 100).toFixed(2) : 0}%</p>
               </div>
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg flex items-center">
@@ -795,19 +795,19 @@ export default function Dashboard() {
               <p className="flex flex-col text-zinc-400 font-medium text-sm">Ocupação nos Dias da Semana</p>
               <section className="grid grid-rows-7 grid-cols-2 gap-4 mb-2 w-full px-9">
                 <p>{ocupacaoSemana[1][0]}</p>
-                <p className="text-end">{Number(ocupacaoSemana[1][1]).toFixed(1)}%</p>
+                <p className="text-end">{Number(ocupacaoSemana[1][1]).toFixed(2)}%</p>
                 <p>{ocupacaoSemana[2][0]}</p>
-                <p className="text-end">{Number(ocupacaoSemana[2][1]).toFixed(1)}%</p>
+                <p className="text-end">{Number(ocupacaoSemana[2][1]).toFixed(2)}%</p>
                 <p>{ocupacaoSemana[3][0]}</p>
-                <p className="text-end">{Number(ocupacaoSemana[3][1]).toFixed(1)}%</p>
+                <p className="text-end">{Number(ocupacaoSemana[3][1]).toFixed(2)}%</p>
                 <p>{ocupacaoSemana[4][0]}</p>
-                <p className="text-end">{Number(ocupacaoSemana[4][1]).toFixed(1)}%</p>
+                <p className="text-end">{Number(ocupacaoSemana[4][1]).toFixed(2)}%</p>
                 <p>{ocupacaoSemana[5][0]}</p>
-                <p className="text-end">{Number(ocupacaoSemana[5][1]).toFixed(1)}%</p>
+                <p className="text-end">{Number(ocupacaoSemana[5][1]).toFixed(2)}%</p>
                 <p>{ocupacaoSemana[6][0]}</p>
-                <p className="text-end">{Number(ocupacaoSemana[6][1]).toFixed(1)}%</p>
+                <p className="text-end">{Number(ocupacaoSemana[6][1]).toFixed(2)}%</p>
                 <p>{ocupacaoSemana[0][0]}</p>
-                <p className="text-end">{Number(ocupacaoSemana[0][1]).toFixed(1)}%</p>
+                <p className="text-end">{Number(ocupacaoSemana[0][1]).toFixed(2)}%</p>
               </section>
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg flex items-center" >
@@ -816,7 +816,7 @@ export default function Dashboard() {
               <div className="flex flex-col ml-4">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Duração Média das Reservas</p>
                 <div className="flex items-end gap-4">
-                  <span className="text-3xl">{indicadores?.duracao_media ? Number(indicadores?.duracao_media).toFixed(1) : 0}</span>
+                  <span className="text-3xl">{indicadores?.duracao_media ? Number(indicadores?.duracao_media).toFixed(2) : 0}</span>
                   <Comparativo nome="DURAÇÃO MÉDIA DAS RESERVAS" data={dataBW} passado={comparativoIO.passado?.duracao_media ? Number(comparativoIO.passado?.duracao_media) : 0}
                     atual={comparativoIO.atual?.duracao_media ? Number(comparativoIO.atual?.duracao_media) : 0} />
                 </div>
@@ -908,7 +908,7 @@ export default function Dashboard() {
               <div className="flex flex-col ml-4">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Faturamento Bruto</p>
                 <div className="flex items-end gap-4">
-                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].faturamento_bruto).toFixed(1))}</span>
+                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].faturamento_bruto).toFixed(2))}</span>
                   <Comparativo nome="FATURAMENTO BRUTO" data={dataBW} passado={comparativoRA.passado?.faturamento_bruto ? Number(comparativoRA.passado?.faturamento_bruto) : 0}
                     atual={comparativoRA.atual?.faturamento_bruto ? Number(comparativoRA.atual?.faturamento_bruto) : 0} />
                 </div>
@@ -921,7 +921,7 @@ export default function Dashboard() {
               <div className="flex flex-col ml-4 relative">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Taxa de Limpeza</p>
                 <div className="flex items-end gap-4">
-                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].taxa_limpeza).toFixed(1))}</span>
+                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].taxa_limpeza).toFixed(2))}</span>
                 </div>
               </div>
             </div>
@@ -962,20 +962,20 @@ export default function Dashboard() {
               <div className="flex flex-col ml-4">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Comissão das Plataformas</p>
                 <div className="flex items-end gap-4">
-                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].comissao_plataforma).toFixed(1))}</span>
+                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].comissao_plataforma).toFixed(2))}</span>
                 </div>
               </div>
               <section id="detail-comission" className="absolute flex flex-col top-1/2 -translate-y-1/2 gap-2 -right-32 scale-75 hidden">
                 <div className="flex flex-col bg-white rounded-lg px-2 py-1 shadow-zinc-400 shadow-lg">
                   <p className="flex flex-col text-zinc-400 font-medium text-sm"> Comissão Taxa de Limpeza</p>
                   <div className="flex items-end gap-4">
-                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].comissao_taxa_limpeza).toFixed(1))}</span>
+                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].comissao_taxa_limpeza).toFixed(2))}</span>
                   </div>
                 </div>
                 <div className="flex flex-col bg-white rounded-lg px-2 py-1 shadow-zinc-400 shadow-lg">
                   <p className="flex flex-col text-zinc-400 font-medium text-sm"> Comissão Reservas</p>
                   <div className="flex items-end gap-4">
-                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].comissao_reservas).toFixed(1))}</span>
+                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].comissao_reservas).toFixed(2))}</span>
                   </div>
                 </div>
               </section>
@@ -987,7 +987,7 @@ export default function Dashboard() {
               <div className="flex flex-col ml-4">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Faturamento Líquido</p>
                 <div className="flex items-end gap-4">
-                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].faturamento_liquido).toFixed(1))}</span>
+                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].faturamento_liquido).toFixed(2))}</span>
                   <Comparativo nome="FATURAMENTO LÍQUIDO" data={dataBW} passado={comparativoRA.passado?.faturamento_liquido ? Number(comparativoRA.passado?.faturamento_liquido) : 0}
                     atual={comparativoRA.atual?.faturamento_liquido ? Number(comparativoRA.atual?.faturamento_liquido) : 0} />
                 </div>
@@ -999,7 +999,7 @@ export default function Dashboard() {
               <div className="flex flex-col ml-4">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Despesas (exceto negócio)</p>
                 <div className="flex items-end gap-4">
-                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].despesas).toFixed(1))}</span>
+                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].despesas).toFixed(2))}</span>
                   <Comparativo nome="DESPESAS" data={dataBW} passado={comparativoRA.passado?.despesas ? Number(comparativoRA.passado?.despesas) : 0}
                     atual={comparativoRA.atual?.despesas ? Number(comparativoRA.atual?.despesas) : 0} />
                 </div>
@@ -1012,7 +1012,7 @@ export default function Dashboard() {
               <div className="flex flex-col ml-4">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Lucro das Acomodações</p>
                 <div className="flex items-end gap-4">
-                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].lucro).toFixed(1))}</span>
+                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].lucro).toFixed(2))}</span>
                   <Comparativo nome="LUCRO DAS ACOMODAÇÕES" data={dataBW} passado={comparativoRA.passado?.lucro ? Number(comparativoRA.passado?.lucro) : 0}
                     atual={comparativoRA.atual?.lucro ? Number(comparativoRA.atual?.lucro) : 0} />
                 </div>
@@ -1025,7 +1025,7 @@ export default function Dashboard() {
               <div className="flex flex-col ml-4">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Diária Média</p>
                 <div className="flex items-end gap-4">
-                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].diaria_media).toFixed(1))}</span>
+                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].diaria_media).toFixed(2))}</span>
                   <Comparativo nome="DIÁRIA MÉDIA" data={dataBW} passado={comparativoRA.passado?.diaria_media ? Number(comparativoRA.passado?.diaria_media) : 0}
                     atual={comparativoRA.atual?.diaria_media ? Number(comparativoRA.atual?.diaria_media) : 0} />
                 </div>
@@ -1038,7 +1038,7 @@ export default function Dashboard() {
               <div className="flex flex-col ml-4">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Repasse ao proprietário</p>
                 <div className="flex items-end gap-4">
-                  <span className="text-nowrap text-xl">{filterAC != 'all' ? formatarMoedaBrasileira((Number(resultadoAcomodacoes[0].lucro) * (comissao > 1 ? (100 - comissao) / 100 : 1 - comissao)).toFixed(1)) : '-----'}</span>
+                  <span className="text-nowrap text-xl">{filterAC != 'all' ? formatarMoedaBrasileira((Number(resultadoAcomodacoes[0].lucro) * (comissao > 1 ? (100 - comissao) / 100 : 1 - comissao)).toFixed(2)) : '-----'}</span>
                 </div>
               </div>
             </div>
@@ -1062,7 +1062,7 @@ export default function Dashboard() {
               <div className="flex flex-col ml-4">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Lucro das Acomodações Próprias</p>
                 <div className="flex items-end gap-4">
-                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoGestor[0].lucro_acomodacoes).toFixed(1))}</span>
+                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoGestor[0].lucro_acomodacoes).toFixed(2))}</span>
                   <Comparativo nome="LUCRO DAS ACOMODAÇÕES PRÓPRIAS" data={dataBW} passado={comparativoRG.passado?.lucro_acomodacoes ? Number(comparativoRG.passado?.lucro_acomodacoes) : 0}
                     atual={comparativoRG.atual?.lucro_acomodacoes ? Number(comparativoRG.atual?.lucro_acomodacoes) : 0} />
                 </div>
@@ -1075,7 +1075,7 @@ export default function Dashboard() {
               <div className="flex flex-col ml-4">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Comissão das Acomodações de Terceiros</p>
                 <div className="flex items-end gap-4">
-                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoGestor[0].comissao_terceiros).toFixed(1))}</span>
+                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoGestor[0].comissao_terceiros).toFixed(2))}</span>
                   <Comparativo nome="COMISSÃO DAS ACOMODAÇÕES TERCEIRAS" data={dataBW} passado={comparativoRG.passado?.comissao_terceiros ? Number(comparativoRG.passado?.comissao_terceiros) : 0}
                     atual={comparativoRG.atual?.comissao_terceiros ? Number(comparativoRG.atual?.comissao_terceiros) : 0} />
                 </div>
@@ -1088,7 +1088,7 @@ export default function Dashboard() {
               <div className="flex flex-col ml-4">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Despesas de Negócio</p>
                 <div className="flex items-end gap-4">
-                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoGestor[0].despesas_negocio).toFixed(1))}</span>
+                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoGestor[0].despesas_negocio).toFixed(2))}</span>
                 </div>
               </div>
             </div>
@@ -1099,7 +1099,7 @@ export default function Dashboard() {
               <div className="flex flex-col ml-4">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Taxa de Limpeza</p>
                 <div className="flex items-end gap-4">
-                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoGestor[0].ajuste_comissao_ota).toFixed(1))}</span>
+                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoGestor[0].ajuste_comissao_ota).toFixed(2))}</span>
                 </div>
               </div>
             </div>
@@ -1110,7 +1110,7 @@ export default function Dashboard() {
               <div className="flex flex-col ml-4">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Lucro do Gestor</p>
                 <div className="flex items-end gap-4">
-                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoGestor[0].lucro_gestor).toFixed(1))}</span>
+                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoGestor[0].lucro_gestor).toFixed(2))}</span>
                 </div>
               </div>
             </div>
