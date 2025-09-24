@@ -120,10 +120,10 @@ export default function CalendarioR(props: propsCalendario) {
                 ${reserva.tipo == 'end' ? `rounded-r-xl` : ''}'
             title='${reserva.title}'
         >
-            <p class='whitespace-nowrap overflow-hidden text-white 
+            <p class='whitespace-nowrap overflow-hidden 
                 ${reserva.tipo == 'start' ? `ml-2 text-transparent` : ''} 
-                ${reserva.tipo == 'end' && !ehEndComStartAntes ? `mr-2 text-transparent` : ''} 
-                ${reserva.tipo == 'middle' ? `mx-2` : ''}
+                ${reserva.tipo == 'end' ? (!ehEndComStartAntes ? `mr-2 text-transparent` : ''):''} 
+                ${reserva.tipo == 'middle' ? `mx-2 text-white` : ''}
             '>${reserva.title}</p>
         </div>`
             }
