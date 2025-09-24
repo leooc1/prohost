@@ -1,28 +1,27 @@
 import { useContext, useEffect, useState } from "react"
 import CadastrarAcomodacao from "../components/CadastrarAcomodacao"
-import { SideBarContext } from "../contexts/SideBarMenuContext"
 import Loader from "../components/Loader"
 import SemPermissao from "../components/SemPermissao"
 import Notify from "../components/notify/Notify"
+import { SideBarContext } from "../contexts/SideBarMenuContext"
 
 // dnd-kit
 import {
-    DndContext,
     closestCenter,
+    DndContext,
     KeyboardSensor,
     PointerSensor,
     useSensor,
     useSensors
-} from "@dnd-kit/core";
+} from "@dnd-kit/core"
 import {
     arrayMove,
+    horizontalListSortingStrategy,
     SortableContext,
     sortableKeyboardCoordinates,
-    verticalListSortingStrategy,
-    horizontalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+    useSortable
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 
 interface Acomodacao {
     id: number
@@ -92,7 +91,6 @@ export default function Acomodacoes() {
                 if (storage) {
                     const store: [string, any][] = JSON.parse(storage || "[]");
                     const found = store.find(item => item[0] === dataToken.id);
-                    console.log(found)
                     if (found) {
                         orderMap = found[1];
                     }
@@ -161,6 +159,54 @@ export default function Acomodacoes() {
         acomodacoes()
     }, [dataToken])
 
+    async function desativar(id: number, desativado: boolean) {
+        await fetch(`${apiURL}/acomodacao/${id}`, {
+            method: 'DELETE',
+            body: JSON.stringify({ desativado: desativado }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json())
+            .then((data) => {
+                if (data.affected == 1) {
+                    setNotify({ type: 1, text: 'Atualizado!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
+                    if (desativado) {
+                        setNotify({ type: 1, text: 'Desativado!' })
+                        setShowNotify(true)
+                        setTimeout(() => {
+                            setShowNotify(false);
+                        }, 3000)
+                    } else {
+                        setNotify({ type: 1, text: 'Ativado!' })
+                        setShowNotify(true)
+                        setTimeout(() => {
+                            setShowNotify(false);
+                        }, 3000)
+                    }
+                    location.reload()
+                }
+            })
+            .catch(err => console.log(err))
+    } 
+    async function deletarAcomodacao(id: number) {
+        await fetch(`${apiURL}/acomodacao/${id}/del`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json())
+            .then((data) => {
+                if (data.affected == 1)
+                    location.reload()
+            })
+            .catch(err => console.log(err))
+    }
     // 🔹 Config drag and drop
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -172,6 +218,7 @@ export default function Acomodacoes() {
         list: Acomodacao[],
         setList: React.Dispatch<React.SetStateAction<Acomodacao[]>>
     ) => {
+        list
         const { active, over } = event;
         const storage = localStorage.getItem("order_ac");
         if (!over) return;
