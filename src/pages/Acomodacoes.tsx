@@ -55,12 +55,45 @@ function SortableItem({ id, children }: { id: number, children: React.ReactNode 
         transform: CSS.Transform.toString(transform),
         transition,
         opacity: isDragging ? 0.5 : 1,
-        cursor: "grab"
+        position: "relative" as const,
     };
 
+    // O children esperado é o <li> do card
+    // Vamos clonar o elemento e inserir o handle no canto superior esquerdo
     return (
-        <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-            {children}
+        <div ref={setNodeRef} style={style}>
+            {children && typeof children === 'object' && 'type' in children ?
+                // Clona o <li> e insere o handle no canto superior esquerdo
+                (
+                    <children.type {...children.props}>
+                        <div
+                            {...attributes}
+                            {...listeners}
+                            style={{
+                                position: 'absolute',
+                                top: 8,
+                                left: 8,
+                                zIndex: 2,
+                                width: 28,
+                                height: 28,
+                                background: '#e5e7eb', // gray-200
+                                borderRadius: 6,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                boxShadow: isDragging ? '0 0 0 2px #888' : undefined,
+                                cursor: 'grab',
+                                border: '1px solid #d1d5db',
+                            }}
+                            title="Arraste para ordenar"
+                        >
+                            {/* Ícone de mão estilizado */}
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 11V5a2 2 0 0 1 4 0v6"/><path d="M11 10V4a2 2 0 0 1 4 0v7"/><path d="M15 11V7a2 2 0 0 1 4 0v8a5 5 0 0 1-10 0v-3"/></svg>
+                        </div>
+                        {children.props.children}
+                    </children.type>
+                )
+                : children}
         </div>
     );
 }
@@ -319,10 +352,9 @@ export default function Acomodacoes() {
                             <SortableContext items={proprio.map(e => e.id)} strategy={horizontalListSortingStrategy}>
                                 <ul className="border border-zinc-300 w-full mt-5 rounded-md pt-px pb-1 px-px flex overflow-x-scroll gap-10">
                                     {proprio.map((e) =>
-                                        // <SortableItem key={e.id} id={e.id}>
+                                        <SortableItem key={e.id} id={e.id}>
                                             <li className="bg-white min-w-52 min-h-56 border border-zinc-200 rounded-md p-5 cursor-pointer"
-                                                onClick={() => 
-                                                location.assign(`/acomodacoes/${e.id}`)}>
+                                                onClick={() => location.assign(`/acomodacoes/${e.id}`)}>
                                                 <img src={e.foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'} className="object-cover h-24 w-48 rounded-md" />
                                                 <p className="font-semibold mt-4 text-lg">{e.nome}</p>
                                                 <div className="mt-4 flex justify-between items-center">
@@ -339,7 +371,7 @@ export default function Acomodacoes() {
                                                     </button>
                                                 </div>
                                             </li>
-                                        // </SortableItem>
+                                        </SortableItem>
                                     )}
                                 </ul>
                             </SortableContext>
@@ -360,7 +392,7 @@ export default function Acomodacoes() {
                             <SortableContext items={terceiro.map(e => e.id)} strategy={horizontalListSortingStrategy}>
                                 <ul className="border border-zinc-300 w-full mt-5 rounded-md pt-px pb-1 px-px flex overflow-x-scroll gap-10">
                                     {terceiro.map((e) =>
-                                        // <SortableItem key={e.id} id={e.id}>
+                                        <SortableItem key={e.id} id={e.id}>
                                             <li className="bg-white min-w-52 min-h-56 border border-zinc-200 rounded-md p-5 cursor-pointer"
                                                 onClick={() => location.assign(`/acomodacoes/${e.id}`)}>
                                                 <img src={e.foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'} className="object-cover h-24 w-48 rounded-md" />
@@ -379,7 +411,7 @@ export default function Acomodacoes() {
                                                     </button>
                                                 </div>
                                             </li>
-                                        // </SortableItem>
+                                        </SortableItem>
                                     )}
                                 </ul>
                             </SortableContext>
@@ -400,7 +432,7 @@ export default function Acomodacoes() {
                             <SortableContext items={desativados.map(e => e.id)} strategy={horizontalListSortingStrategy}>
                                 <ul className="border border-zinc-300 w-full mt-5 rounded-md pt-px pb-1 px-px flex overflow-x-scroll gap-10">
                                     {desativados.map((e) =>
-                                        // <SortableItem key={e.id} id={e.id}>
+                                        <SortableItem key={e.id} id={e.id}>
                                             <li className="bg-white min-w-52 min-h-56 border border-zinc-200 rounded-md p-5 cursor-pointer opacity-75 brightness-75">
                                                 <img src={e.foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'} className="object-cover h-24 w-48 rounded-md" />
                                                 <p className="font-semibold mt-4 text-lg">{e.nome}</p>
@@ -417,12 +449,12 @@ export default function Acomodacoes() {
                                                             setNotify({ type: 2, text: 'Seu plano não permite ter mais acomodações!' })
                                                             setShowNotify(true)
                                                             setTimeout(() => {
-                                                                setShowNotify(false);
+                                                                setShowNotify(false); 
                                                             }, 3000)
                                                         }
                                                     }}
                                                         disabled={!(permissao >= 3)}>
-                                                        <svg className="feather feather-trash w-7 h-fit" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 512 512"><g><path d="M497.36 69.995c-7.532-7.545-19.753-7.558-27.285-.032L238.582 300.845l-83.522-90.713c-7.217-7.834-19.419-8.342-27.266-1.126-7.841 7.217-8.343 19.425-1.126 27.266l97.126 105.481a19.273 19.273 0 0 0 13.784 6.22c.141.006.277.006.412.006a19.317 19.317 0 0 0 13.623-5.628L497.322 97.286c7.551-7.525 7.564-19.746.038-27.291z" fill="#00dd00" opacity="1" data-original="#000000"></path><path d="M492.703 236.703c-10.658 0-19.296 8.638-19.296 19.297 0 119.883-97.524 217.407-217.407 217.407-119.876 0-217.407-97.524-217.407-217.407 0-119.876 97.531-217.407 217.407-217.407 10.658 0 19.297-8.638 19.297-19.296C275.297 8.638 266.658 0 256 0 114.84 0 0 114.84 0 256c0 141.154 114.84 256 256 256 141.154 0 256-114.846 256-256 0-10.658-8.638-19.297-19.297-19.297z" fill="#00dd00" opacity="1" data-original="#000000"></path></g></svg>
+                                                        <svg className="feather feather-trash w-7 h-fit" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 512 512"><g><path d="M497.36 69.995c-7.532-7.545-19.753-7.558-27.285-.032L238.582 300.845l-83.522-90.713c-7.217-7.834-19.419-8.342-27.266-1.126-7.841 7.217-8.343 19.425-1.126 27.266l97.126 105.481a19.273 19.273 0 0 0 13.784 6.22c.141.006.277.006.412.006a19.317 19.317 0 0 0 13.623-5.628L497.322 97.286c7.551-7.525 7.564-19.746.038-27.291z" fill="#00dd00" opacity="1" data-original="#000000"></path><path d="M492.703 236.703c-10.658 0-19.296 8.638-19.296 19.297 0 119.883-97.524 217.407-217.407 217.407-119.876 0-217.407-97.524-217.407-217.407 0-119.876 97.531-217.407 217.407-217.407 10.658 0 19.297-8.638 19.297-19.296C512 245.341 503.361 236.703 492.703 236.703z" fill="#00dd00" opacity="1" data-original="#000000"></path></g></svg>
                                                     </button>
                                                     <button className="hover:bg-red-200 bg-transparent p-1 rounded-lg transition-all duration-200" onClick={(event) => {
                                                         event.stopPropagation()
@@ -436,7 +468,7 @@ export default function Acomodacoes() {
                                                     </button>
                                                 </div>
                                             </li>
-                                        // </SortableItem>
+                                        </SortableItem>
                                     )}
                                 </ul>
                             </SortableContext>
