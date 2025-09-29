@@ -24,6 +24,7 @@ import Hospede from './pages/Hospede.tsx'
 import MinhaConta from './pages/MinhaConta.tsx'
 import Relatorio from './pages/Relatorio.tsx'
 import Reserva from './pages/Reserva.tsx'
+import ImportadorReservas from './pages/ImportAirBnB.tsx'
 
 const router = createBrowserRouter([
   {
@@ -67,6 +68,10 @@ const router = createBrowserRouter([
       {
         path: "/feedback",
         element: <FeedBacks />,
+      },
+      {
+        path: "/importacao-airbnb",
+        element: <ImportadorReservas />,
       },
       {
         path: "/minha-conta",

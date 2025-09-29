@@ -397,13 +397,13 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                         </div>
                         <section className='grid grid-cols-2 h-[inherit]'>
                             <section className={`grid grid-rows-3`}>
-                                <div className='flex gap-4'>
+                                <div className='flex items-center gap-4'>
                                     <p className='text-white text-3xl'>Relatório de Resultados</p>
                                     <span>{chart}</span>
                                 </div>
                                 <div className='flex flex-col justify-center'>
                                     <p className='text-secondary text-3xl'>{nome}</p>
-                                    <p className='text-white text-2xl' style={{ lineHeight: '50px' }}>{meses[props.mes - 1]}.{props.ano}</p>
+                                    <p className='text-white text-2xl'>{meses[props.mes - 1]}.{props.ano}</p>
                                     <div className='flex justify-end'>
                                         <img src={props.imagem} alt="" className='bg-primary max-w-56 max-h-28 h-28' />
                                     </div>
@@ -434,9 +434,9 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                         </div>
                         <section className='px-5 h-full mt-20 flex flex-col justify-center'>
                             <ul className='flex flex-col gap-4'>
-                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex relative ${editPages[0] ? 'opacity-100' : 'opacity-30'}`}>
-                                    <span className='font-black text-secondary text-2xl relative top-1/2 -translate-y-1/2' style={{ lineHeight: '56px' }}>*</span>
-                                    <p className='text-white text-2xl' style={{ lineHeight: '50px' }}>Calendário do mês e resumo das reservas</p>
+                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex items-center relative ${editPages[0] ? 'opacity-100' : 'opacity-30'}`}>
+                                    <span className='font-black text-secondary text-2xl'>*</span>
+                                    <p className='text-white text-2xl'>Calendário do mês e resumo das reservas</p>
                                     <button className='absolute right-2 invert top-1/2 -translate-y-1/2'
                                         onClick={() => {
                                             let error = editPages
@@ -444,9 +444,9 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                             setEditPages(error)
                                         }}>{editPages[0] ? open : closed}</button>
                                 </li>
-                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex relative ${editPages[1] ? 'opacity-100' : 'opacity-30'}`}>
-                                    <span className='font-black text-secondary text-2xl relative top-1/2 -translate-y-1/2' style={{ lineHeight: '56px' }}>*</span>
-                                    <p className='text-white text-2xl' style={{ lineHeight: '50px' }}>Detalhamento das reservas</p>
+                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex items-center relative ${editPages[1] ? 'opacity-100' : 'opacity-30'}`}>
+                                    <span className='font-black text-secondary text-2xl'>*</span>
+                                    <p className='text-white text-2xl'>Detalhamento das reservas</p>
                                     <button className='absolute right-2 top-1/2 -translate-y-1/2 invert'
                                         onClick={() => {
                                             let error = editPages
@@ -454,9 +454,9 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                             setEditPages(error)
                                         }}>{editPages[1] ? open : closed}</button>
                                 </li>
-                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex relative ${editPages[2] ? 'opacity-100' : 'opacity-30'}`}>
-                                    <span className='font-black text-secondary text-2xl relative top-1/2 -translate-y-1/2' style={{ lineHeight: '56px' }}>*</span>
-                                    <p className='text-white text-2xl' style={{ lineHeight: '50px' }}>Desempenho e rentabilidade do imóvel</p>
+                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex items-center relative ${editPages[2] ? 'opacity-100' : 'opacity-30'}`}>
+                                    <span className='font-black text-secondary text-2xl'>*</span>
+                                    <p className='text-white text-2xl'>Desempenho e rentabilidade do imóvel</p>
                                     <button className='absolute right-2 top-1/2 -translate-y-1/2 invert'
                                         onClick={() => {
                                             let error = editPages
@@ -464,9 +464,9 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                             setEditPages(error)
                                         }}>{editPages[2] ? open : closed}</button>
                                 </li>
-                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex relative ${editPages[3] ? 'opacity-100' : 'opacity-30'}`}>
-                                    <span className='font-black text-secondary text-2xl relative top-1/2 -translate-y-1/2' style={{ lineHeight: '56px' }}>*</span>
-                                    <p className='text-white text-2xl' style={{ lineHeight: '50px' }}>Comparativo do faturamento</p>
+                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex items-center relative ${editPages[3] ? 'opacity-100' : 'opacity-30'}`}>
+                                    <span className='font-black text-secondary text-2xl'>*</span>
+                                    <p className='text-white text-2xl'>Comparativo do faturamento</p>
                                     <button className='absolute right-2 top-1/2 -translate-y-1/2 invert'
                                         onClick={() => {
                                             let error = editPages
@@ -474,9 +474,9 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                             setEditPages(error)
                                         }}>{editPages[3] ? open : closed}</button>
                                 </li>
-                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex relative ${editPages[4] ? 'opacity-100' : 'opacity-30'}`}>
-                                    <span className='font-black text-secondary text-2xl relative top-1/2 -translate-y-1/2' style={{ lineHeight: '56px' }}>*</span>
-                                    <p className='text-white text-2xl' style={{ lineHeight: '50px' }}>Detalhamento das despesas</p>
+                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex items-center relative ${editPages[4] ? 'opacity-100' : 'opacity-30'}`}>
+                                    <span className='font-black text-secondary text-2xl'>*</span>
+                                    <p className='text-white text-2xl'>Detalhamento das despesas</p>
                                     <button className='absolute right-2 top-1/2 -translate-y-1/2 invert'
                                         onClick={() => {
                                             let error = editPages
@@ -484,9 +484,9 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                             setEditPages(error)
                                         }}>{editPages[4] ? open : closed}</button>
                                 </li>
-                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex relative ${editPages[5] ? 'opacity-100' : 'opacity-30'}`}>
-                                    <span className='font-black text-secondary text-2xl relative top-1/2 -translate-y-1/2' style={{ lineHeight: '56px' }}>*</span>
-                                    <p className='text-white text-2xl' style={{ lineHeight: '50px' }}>Resultado da acomodação e repasse</p>
+                                <li className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex items-center relative ${editPages[5] ? 'opacity-100' : 'opacity-30'}`}>
+                                    <span className='font-black text-secondary text-2xl'>*</span>
+                                    <p className='text-white text-2xl'>Resultado da acomodação e repasse</p>
                                     <button className='absolute right-2 top-1/2 -translate-y-1/2 invert'
                                         onClick={() => {
                                             let error = editPages
