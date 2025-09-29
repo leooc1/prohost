@@ -91,7 +91,7 @@ export default function ImportadorReservas() {
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
-      complete: (results) => {
+      complete: (results:any) => {
         const registros = (results.data as any[])
           .map((r, index) => ({ ...r, originalIndex: index }))
           .filter(

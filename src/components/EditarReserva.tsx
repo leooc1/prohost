@@ -17,6 +17,7 @@ interface Acomodacao {
     numero_hospedes: number
     valor_imovel: number
     desativado: boolean
+    taxa_limpeza:number
     saas: { id: number }
 }
 
@@ -417,7 +418,7 @@ export default function EditarReserva(props: propsEdicao) {
                         <div className="flex items-center gap-2">
                             R$<input type="text" placeholder="R$" step="0.01" name="taxa_limpeza" id="taxa_limpeza"
                                 defaultValue={props.taxaLimpeza.toFixed(2)} className={`border border-zinc-300  rounded-md px-2 py-1 outline-none w-full`}
-                                onInput={(e) => {
+                                onChange={(e) => {
                                     e.target.value = formatedNumber(String(Number(e.target.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
                                     checkNegativeAndApplyStyle();
                                 }} />
