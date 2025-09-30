@@ -406,6 +406,7 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify, onSuc
                                         "valor_liq": (valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2')),
                                         "valor_prop": vProprietario,
                                         "valor_gestor": vGestor,
+                                        "comissao_ota": 0,
                                         "reserva": {
                                             "id": null
                                         },

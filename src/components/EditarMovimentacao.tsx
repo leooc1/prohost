@@ -77,6 +77,7 @@ export default function EditarMovimentacao(props: propsEditar) {
             valor_liq: number
             valor_prop: number
             valor_gestor: number
+            comissao_ota: number
             reserva: { id: number | null }
             pago: boolean | null
             receita: boolean
@@ -386,6 +387,7 @@ export default function EditarMovimentacao(props: propsEditar) {
                                         "valor_liq": Number(valorInput.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})$/gm, '$1.$2')),
                                         "valor_prop": vProprietario,
                                         "valor_gestor": vGestor,
+                                        "comissao_ota": 0,
                                         "reserva": {
                                             "id": null
                                         },

@@ -889,14 +889,14 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                         {dash}
                                         <p className='text-xl text-white text-center'>Resumo e<br /> resultados</p>
                                     </div>
-                                    <textarea className='resize-none h-full py-2 px-2 w-3/4 border border-black rounded-xl bg-slate-100 overflow-clip'></textarea>
+                                    <textarea style={{ whiteSpace: "pre-line" }}className='resize-none h-full py-2 px-2 w-3/4 border border-black rounded-xl bg-slate-100 overflow-clip'></textarea>
                                 </section>
                                 <section className='flex justify-between  bg-zinc-400 bg-opacity-10 px-2 py-1 rounded-lg'>
                                     <div className='h-full w-52 relative flex flex-col justify-around items-center'>
                                         {blue_print}
                                         <p className='text-xl text-white text-center'>Próximos<br /> passos</p>
                                     </div>
-                                    <textarea className='resize-none h-full py-2 px-2 w-3/4 border border-black rounded-xl bg-slate-100 overflow-clip'></textarea>
+                                    <textarea style={{ whiteSpace: "pre-line" }} className='resize-none h-full py-2 px-2 w-3/4 border border-black rounded-xl bg-slate-100 overflow-clip'></textarea>
                                 </section>
                             </div>
                         </section>

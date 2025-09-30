@@ -219,6 +219,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                                     "valor_liq": Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                     "valor_prop": vProprietario,
                                     "valor_gestor": vGestor,
+                                    "comissao_ota": 0,
                                     "reserva": {
                                         "id": null
                                     },
