@@ -193,7 +193,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
             body: JSON.stringify({
                 "saas": Number(dataToken.id),
                 "price": isAnnual ?
-                    ((Number(price.total) - Number(info?.valor_ano)) / 12) * (mesesAteDataFutura(info?.trial_end || '') > 0 ? mesesAteDataFutura(info?.trial_end || '') : 1)
+                    (upgrade?((Number(price.total) - Number(info?.valor_ano)) / 12) * (mesesAteDataFutura(info?.trial_end || '') > 0 ? mesesAteDataFutura(info?.trial_end || '') : 1):Number(info?.valor_ano))
                     : Number(price.monthly),
                 "cycle": isAnnual ? 'YEARLY' : 'MONTHLY'
             }),
