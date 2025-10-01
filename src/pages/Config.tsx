@@ -169,6 +169,7 @@ export default function Config() {
             }
         }
     }, [statusData, dataToken])
+
     return (
         <div className="flex flex-col w-full min-h-screen h-full">
             {permissao == 0 && <SemPermissao />}

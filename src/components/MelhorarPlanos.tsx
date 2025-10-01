@@ -149,7 +149,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
         })
             .then(data => data.json())
             .then(async (data) => {
-                if (data.id) { 
+                if (data.id) {
 
                     if (upgrade) {
 
@@ -193,7 +193,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
             body: JSON.stringify({
                 "saas": Number(dataToken.id),
                 "price": isAnnual ?
-                    (upgrade?((Number(price.total) - Number(info?.valor_ano)) / 12) * (mesesAteDataFutura(info?.trial_end || '') > 0 ? mesesAteDataFutura(info?.trial_end || '') : 1):Number(info?.valor_ano))
+                    (upgrade ? ((Number(price.total) - Number(info?.valor_ano)) / 12) * (mesesAteDataFutura(info?.trial_end || '') > 0 ? mesesAteDataFutura(info?.trial_end || '') : 1) : Number(info?.valor_ano))
                     : Number(price.monthly),
                 "cycle": isAnnual ? 'YEARLY' : 'MONTHLY'
             }),
@@ -278,25 +278,24 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
         try {
             console.log('Iniciando geração de PIX...');
 
-            // 1. Cria o pagamento via upgrade
-            console.log("saas:" + Number(dataToken.id),
-                    "price" + isAnnual
-                        ? ((Number(price.total) - Number(info?.valor_ano)) / 12) * (mesesAteDataFutura(info?.trial_end || '') > 0 ? mesesAteDataFutura(info?.trial_end || '') : 1)
-                        : Number(price.monthly),
-                    "cycle" + isAnnual ? 'YEARLY' : 'MONTHLY')
-            
             const paymentResponse = await fetch(`${apiURL}/assinatura/upgrade/`, {
                 method: 'POST',
                 body: JSON.stringify({
                     "saas": Number(dataToken.id),
-                    "price": isAnnual
-                        ? ((Number(price.total) - Number(info?.valor_ano)) / 12) * (mesesAteDataFutura(info?.trial_end || '') > 0 ? mesesAteDataFutura(info?.trial_end || '') : 1)
+                    "price": isAnnual ?
+                        (upgrade ? ((Number(price.total) - Number(info?.valor_ano)) / 12) * (mesesAteDataFutura(info?.trial_end || '') > 0 ? mesesAteDataFutura(info?.trial_end || '') : 1) : Number(info?.valor_ano))
                         : Number(price.monthly),
                     "cycle": isAnnual ? 'YEARLY' : 'MONTHLY'
                 }),
                 headers: { 'Content-Type': 'application/json' }
-            });
-            const paymentData = await paymentResponse.json();
+            })
+                .then(data => data.json())
+                .then(data => {
+                    console.log(data)
+                    return data
+                })
+                .catch(err => console.log(err))
+            const paymentData = await paymentResponse;
             console.log('Payment Data:', paymentData);
             console.log('Payment ID recebido:', paymentData.pagamento);
             console.log('Payment ID é válido:', paymentData.pagamento && paymentData.pagamento.length > 0);
