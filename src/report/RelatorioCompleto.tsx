@@ -686,7 +686,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                         </section>
                     </div>
                     {/* RESULTADO DA ACOMODACAO E REPASSE */}
-                    <div className='relative'>
+                    {resultadoAcomodacoes && resultadoAcomodacoes.length > 0 && < div className='relative'>
                         <button onClick={() => {
                             let error = editPages
                             error = (error.map((e, i) => i === 5 ? !e : e))
@@ -865,7 +865,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 </section>
                             </section>
                         </section>
-                    </div>
+                    </div>}
                     {/* CONSIDERACOES FINAIS */}
                     <div className='relative'>
                         <button onClick={() => {
@@ -889,7 +889,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                         {dash}
                                         <p className='text-xl text-white text-center'>Resumo e<br /> resultados</p>
                                     </div>
-                                    <textarea style={{ whiteSpace: "pre-line" }}className='resize-none h-full py-2 px-2 w-3/4 border border-black rounded-xl bg-slate-100 overflow-clip'></textarea>
+                                    <textarea style={{ whiteSpace: "pre-line" }} className='resize-none h-full py-2 px-2 w-3/4 border border-black rounded-xl bg-slate-100 overflow-clip'></textarea>
                                 </section>
                                 <section className='flex justify-between  bg-zinc-400 bg-opacity-10 px-2 py-1 rounded-lg'>
                                     <div className='h-full w-52 relative flex flex-col justify-around items-center'>
@@ -901,7 +901,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                             </div>
                         </section>
                     </div>
-                </div>
+                </div >
             }
         </>
     )
