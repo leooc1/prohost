@@ -28,7 +28,6 @@ interface Acomodacao {
   saas: { id: number }
 }
 
-
 export default function Dashboard() {
   const apiURL = import.meta.env.VITE_API_URL
   useEffect(() => { document.title = 'Dashboard | Prohost' }, [])
@@ -91,7 +90,6 @@ export default function Dashboard() {
     qtd_hospede: number
     qtd_reserva: string
   }[]>([])
-
   const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
   const [filterAC, setFilterAC] = useState<string>('all')
   const [movimentacao, setMovimentacao] = useState<{
@@ -100,11 +98,6 @@ export default function Dashboard() {
     tipo_reserva: string
     valor_liq: number
   }[]>([])
-  /*  const [desempenhoDiarias, setDesempenhoDiarias] = useState<{
-     reservadas: number,
-     indisponiveis: number,
-     ociosas: number
-   }>() */
   const [faturamento, setFaturamento] = useState<{
     mes: string
     receita: string
@@ -120,7 +113,6 @@ export default function Dashboard() {
   const [indiOpe, setIndiOpe] = useState<boolean>(false)
   const [ocupacaoSemana, setOcupacaoSemana] = useState<[][][]>([])
   const [comissao, setComissao] = useState<number>(0)
-
   function getDaysInMonth(month: number, year: number) {
     switch (month) {
       case 1: // Janeiro
@@ -181,7 +173,6 @@ export default function Dashboard() {
       "periodo": string | null
     } | null
   }>({ atual: null, passado: null })
-
   const [comparativoRG, setComparativoRG] = useState<{
     atual: {
       comissao_terceiros: string | null
@@ -198,7 +189,6 @@ export default function Dashboard() {
       periodo: string | null
     } | null
   }>({ atual: null, passado: null })
-
   const [comparativoIO, setComparativoIO] = useState<{
     atual: {
       duracao_media: string | null
@@ -408,15 +398,6 @@ export default function Dashboard() {
         })
         .catch(err => console.log(err))
 
-      /* await fetch(`${apiURL}/reserva/${dataToken.id}/desempenho/${dataBW[0]}/${dataBW[1]}`, {
-        method: 'GET'
-      })
-        .then(data => data.json())
-        .then((data) => {
-          setDesempenhoDiarias(data)
-        })
-        .catch(err => console.log(err)) */
-
       await fetch(`${apiURL}/movimentacao/${dataToken.id}/ocupacao-semana/${dataBW[0]}/${dataBW[1]}`, {
         method: 'GET'
       })
@@ -488,15 +469,6 @@ export default function Dashboard() {
           setQtdHospede(data)
         })
         .catch(err => console.log(err))
-
-      /* await fetch(`${apiURL}/reserva/${dataToken.id}/desempenho/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
-        method: 'GET'
-      })
-        .then(data => data.json())
-        .then((data) => {
-          setDesempenhoDiarias(data)
-        })
-        .catch(err => console.log(err)) */
 
       await fetch(`${apiURL}/movimentacao/${dataToken.id}/ocupacao-semana/${dataBW[0]}/${dataBW[1]}/${filterAC}`, {
         method: 'GET'
@@ -767,12 +739,6 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            {/* Desempenho das Diárias */}
-            {/* <div className="bg-white border-zinc-300 border rounded-lg h-44 flex flex-col justify-between items-center py-1 row-span-2" >
-              <p className="flex flex-col text-zinc-400 font-medium text-sm">Desempenho das Diárias</p>
-              <DesempenhoDiarias
-                dados={[desempenhoDiarias?.reservadas || 0, desempenhoDiarias?.ociosas || 0, desempenhoDiarias?.indisponiveis || 0]} />
-            </div> */}
             {/* Reserva por canal */}
             <div className="bg-white border-zinc-300 border rounded-lg h-64 -translate-y-0 flex flex-col justify-between items-center py-1 row-span-3" >
               <p className="flex flex-col text-zinc-400 font-medium text-sm">Reservas por Canal</p>
@@ -861,29 +827,29 @@ export default function Dashboard() {
           <section className="grid gap-5 mb-10 grid-rows-10" style={{ gridTemplateColumns: '1fr 2fr' }}>
             <div className="bg-white border-zinc-300 border rounded-lg flex flex-col items-center h-full row-span-3 w-full">
               <p className="flex flex-col text-zinc-400 font-medium text-sm mb-7 mt-3">Faturamento por Canal</p>
-              <FaturamentoCanal labels={movimentacao.map(m => m.nome)}
-                dados={movimentacao.map(m => m.valor_liq)} colors={movimentacao.map(m => m.cor)} />
+              {movimentacao.length > 0 && <FaturamentoCanal labels={movimentacao.map(m => m.nome)}
+                dados={movimentacao.map(m => m.valor_liq)} colors={movimentacao.map(m => m.cor)} />}
             </div>
             {/*  */}
             <div className="bg-white border-zinc-300 border rounded-lg flex flex-col items-center h-full row-span-5">
               <p className="flex flex-col text-zinc-400 font-medium text-sm mb-16 mt-3">Faturamento X Despesas</p>
-              {periodo == 'm-atual' ? <FaturamentoxDespesa
+              {periodo == 'm-atual' && faturamento.length > 0 ? <FaturamentoxDespesa
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
                 dadosPassado={faturamento.map(fat => Number(fat.despesa))}
                 mes={date.getMonth() + 1} /> : null}
-              {periodo == 'm-passado' ? <FaturamentoxDespesa
+              {periodo == 'm-passado' && faturamento.length > 0 ? <FaturamentoxDespesa
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
                 dadosPassado={faturamento.map(fat => Number(fat.despesa))}
-                mes={date.getMonth() == 0 ? 12 : date.getMonth()} /> : null}
-              {periodo == 'a-atual' ? <FaturamentoxDespesa
-                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.despesa))}
-                mes={12} /> : null}
-              {periodo == 'a-passado' ? <FaturamentoxDespesa
+                mes={date.getMonth() == 0 && faturamento.length > 0 ? 12 : date.getMonth()} /> : null}
+              {periodo == 'a-atual' && faturamento.length > 0 ? <FaturamentoxDespesa
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
                 dadosPassado={faturamento.map(fat => Number(fat.despesa))}
                 mes={12} /> : null}
-              {periodo == 'personalizado' ? <FaturamentoxDespesa
+              {periodo == 'a-passado' && faturamento.length > 0 ? <FaturamentoxDespesa
+                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
+                dadosPassado={faturamento.map(fat => Number(fat.despesa))}
+                mes={12} /> : null}
+              {periodo == 'personalizado' && faturamento.length > 0 ? <FaturamentoxDespesa
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
                 dadosPassado={faturamento.map(fat => Number(fat.despesa))}
                 mes={new Date(new Date(ateData).setDate(new Date(ateData).getDate() + 1)).getMonth() + 1} /> : null}
@@ -931,23 +897,23 @@ export default function Dashboard() {
             {/*  */}
             <div className="bg-white border-zinc-300 border rounded-lg flex flex-col items-center h-full row-span-5">
               <p className="flex flex-col text-zinc-400 font-medium text-sm mb-16 mt-3">Comparativo de Faturamento Líquido</p>
-              {periodo == 'm-atual' ? <FaturamentoLiquido
+              {periodo == 'm-atual' && faturamento.length > 0 ? <FaturamentoLiquido
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
                 dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))}
                 mes={date.getMonth() + 1} /> : null}
-              {periodo == 'm-passado' ? <FaturamentoLiquido
+              {periodo == 'm-passado' && faturamento.length > 0 ? <FaturamentoLiquido
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
                 dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))}
-                mes={date.getMonth() == 0 ? 12 : date.getMonth()} /> : null}
-              {periodo == 'a-atual' ? <FaturamentoLiquido
-                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))}
-                mes={12} /> : null}
-              {periodo == 'a-passado' ? <FaturamentoLiquido
+                mes={date.getMonth() == 0 && faturamento.length > 0 ? 12 : date.getMonth()} /> : null}
+              {periodo == 'a-atual' && faturamento.length > 0 ? <FaturamentoLiquido
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
                 dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))}
                 mes={12} /> : null}
-              {periodo == 'personalizado' ? <FaturamentoLiquido
+              {periodo == 'a-passado' && faturamento.length > 0 ? <FaturamentoLiquido
+                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
+                dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))}
+                mes={12} /> : null}
+              {periodo == 'personalizado' && faturamento.length > 0 ? <FaturamentoLiquido
                 dadosAtuais={faturamento.map(fat => Number(fat.receita))}
                 dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))}
                 mes={new Date(new Date(ateData).setDate(new Date(ateData).getDate() + 1)).getMonth() + 1} /> : null}
@@ -1117,23 +1083,23 @@ export default function Dashboard() {
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg flex flex-col px-2 items-center" style={{ gridArea: 'en' }}>
               <p className="flex flex-col text-zinc-400 font-medium text-sm mb-14 mt-3">Faturamento x Despesas do negócio</p>
-              {periodo == 'm-atual' ? <EvolucaoNegocio
+              {periodo == 'm-atual' && lucroXDespesa.length > 0 ? <EvolucaoNegocio
                 mes={new Date().getMonth()}
                 ano={Number(String(new Date().getFullYear()).slice(-2))}
                 dadosLucros={lucroXDespesa.map(d => Number(d.lucro_acomodacoes))} dadosDespesas={lucroXDespesa.map(d => Number(d.despesas_negocio))} /> : null}
-              {periodo == 'm-passado' ? <EvolucaoNegocio
+              {periodo == 'm-passado' && lucroXDespesa.length > 0 ? <EvolucaoNegocio
                 mes={new Date().getMonth() == 0 ? 11 : new Date().getMonth() - 1}
                 ano={new Date().getMonth() == 0 ? Number(String(new Date().getFullYear()).slice(-2)) - 1 : Number(String(new Date().getFullYear()).slice(-2))}
                 dadosLucros={lucroXDespesa.map(d => Number(d.lucro_acomodacoes))} dadosDespesas={lucroXDespesa.map(d => Number(d.despesas_negocio))} /> : null}
-              {periodo == 'a-atual' ? <EvolucaoNegocio
+              {periodo == 'a-atual' && lucroXDespesa.length > 0 ? <EvolucaoNegocio
                 mes={11}
                 ano={Number(String(new Date().getFullYear()).slice(-2))}
                 dadosLucros={lucroXDespesa.map(d => Number(d.lucro_acomodacoes))} dadosDespesas={lucroXDespesa.map(d => Number(d.despesas_negocio))} /> : null}
-              {periodo == 'a-passado' ? <EvolucaoNegocio
+              {periodo == 'a-passado' && lucroXDespesa.length > 0 ? <EvolucaoNegocio
                 mes={11}
                 ano={Number(String(new Date().getFullYear()).slice(-2)) - 1}
                 dadosLucros={lucroXDespesa.map(d => Number(d.lucro_acomodacoes))} dadosDespesas={lucroXDespesa.map(d => Number(d.despesas_negocio))} /> : null}
-              {periodo == 'personalizado' ? <EvolucaoNegocio
+              {periodo == 'personalizado' && lucroXDespesa.length > 0 ? <EvolucaoNegocio
                 mes={11}
                 ano={Number(String(new Date().getFullYear()).slice(-2))}
                 dadosLucros={lucroXDespesa.map(d => Number(d.lucro_acomodacoes))} dadosDespesas={lucroXDespesa.map(d => Number(d.despesas_negocio))} /> : null}
