@@ -1005,7 +1005,7 @@ export default function Dashboard() {
               <div className="flex flex-col ml-4 relative">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Taxa de Limpeza Descontada Comissão OTA</p>
                 <div className="flex items-end gap-4">
-                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].comissao_taxa_limpeza).toFixed(2))}</span>
+                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira((Number(resultadoAcomodacoes[0].taxa_limpeza) - Number(resultadoAcomodacoes[0].comissao_taxa_limpeza)).toFixed(2))}</span>
                 </div>
               </div>
             </div>
