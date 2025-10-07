@@ -92,6 +92,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function idContinuidade(idAcomodacao: number, idContinuidade: number) {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/reserva/${dataToken.id}/${idAcomodacao}/ci/${idContinuidade}`, {
             method: 'GET'
         })
@@ -103,6 +104,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function idReserva(idReserva: number, idAcomodacao: number) {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/reserva/${dataToken.id}/${idReserva}/${idAcomodacao}`, {
             method: 'GET'
         })
@@ -114,6 +116,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function getReserva(id: string) {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/reserva/${dataToken.id}/${id}`, {
             method: 'GET'
         })
@@ -164,7 +167,7 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     useEffect(() => {
-        getReserva(props.id)
+        if (dataToken && dataToken.id) getReserva(props.id)
     }, [dataToken])
 
     return (

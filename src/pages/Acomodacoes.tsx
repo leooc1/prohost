@@ -113,6 +113,7 @@ export default function Acomodacoes() {
     const [verifyAcomodacao, setVerifyAcomodacao] = useState<boolean>(false)
 
     async function acomodacoes() {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/acomodacao/` + dataToken.id, {
             method: 'GET'
         })
@@ -174,6 +175,7 @@ export default function Acomodacoes() {
 
     const [permissao, setPermissao] = useState(0)
     async function permissoes() {
+        if (!dataToken || !dataToken.idUsu) return
         await fetch(`${apiURL}/users/${dataToken.idUsu}`, {
             method: 'GET'
         })
@@ -189,7 +191,7 @@ export default function Acomodacoes() {
             .catch(err => console.log(err))
     }
     useEffect(() => {
-        acomodacoes()
+        if (dataToken && dataToken.id) acomodacoes()
     }, [dataToken])
 
     async function desativar(id: number, desativado: boolean) {

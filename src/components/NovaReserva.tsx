@@ -191,6 +191,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getAcomodacoes() {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/acomodacao/${dataToken.id}`, {
             method: 'GET'
         })
@@ -202,6 +203,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getCanais() {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/canal_reserva/${dataToken.id}`, {
             method: 'GET'
         })
@@ -213,6 +215,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getHospede() {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/hospede/${dataToken.id}`, {
             method: 'GET'
         })
@@ -224,6 +227,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getAll() {
+        if (!dataToken || !dataToken.id) return
         await getAcomodacoes()
         await getCanais()
         await getHospede()
@@ -231,7 +235,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     useEffect(() => {
-        getAll()
+        if (dataToken && dataToken.id) getAll()
     }, [dataToken])
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>

@@ -79,6 +79,7 @@ export default function EditarContinuidade(props: propsEdicao) {
     }
 
     async function getReserva() {
+        if (!props.saas) return
         await fetch(`${apiURL}/reserva/${props.saas}/${props.id}`, {
             method: 'GET',
             headers: {

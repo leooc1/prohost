@@ -67,6 +67,7 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify, onSuc
     const [showNotify, setShowNotify] = useState<boolean>(false)
 
     async function getAcomodacoes() {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/acomodacao/` + dataToken.id, {
             method: 'GET'
         })
@@ -77,6 +78,7 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify, onSuc
             .catch(err => console.log(err))
     }
     async function getCategorias() {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/categoria_financeiro/` + dataToken.id, {
             method: 'GET'
         })
@@ -159,7 +161,7 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify, onSuc
             .catch(err => console.log(err))
     }
     useEffect(() => {
-        getAll()
+        if (dataToken && dataToken.id) getAll()
     }, [dataToken])
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>

@@ -87,6 +87,7 @@ export default function AcomodacoesDetalhes() {
 
 
     async function getAcomodacao() {
+        if (!dataToken || !dataToken.id) return
 
         await fetch(`${apiURL}/acomodacao/${dataToken.id}/${id}`, {
             method: 'GET'
@@ -139,6 +140,8 @@ export default function AcomodacoesDetalhes() {
     }
 
     async function dataDashs() {
+        if (!dataToken || !dataToken.id) return
+
         {
             await fetch(`${apiURL}/movimentacao/${dataToken.id}/ocupacao-semana/${dataBW[0]}/${dataBW[1]}/${id}`, {
                 method: 'GET'

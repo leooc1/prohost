@@ -375,7 +375,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                             const qtdMaxHospede = document.getElementById('qtd-max-hospede') as HTMLInputElement
 
                             if (status.value?.length && iniOpe.value?.length && identificador.value?.length && valor.value) {
-                                if (status.value == 'proprio')
+                                if (status.value == 'proprio' && dataToken && dataToken.id)
                                     createAcomodacao({
                                         "tipo": status.value,
                                         "comissao": null,
@@ -394,7 +394,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                                             "id": dataToken.id
                                         }
                                     })
-                                else if (status.value == 'terceiro' && String(comissao.value).length)
+                                else if (status.value == 'terceiro' && String(comissao.value).length && dataToken && dataToken.id)
                                     createAcomodacao({
                                         "tipo": status.value,
                                         "comissao": Number(comissao.value),

@@ -34,6 +34,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
     const [showNotify, setShowNotify] = useState<boolean>(false)
     const [categoria, setCategoria] = useState(['', '#000000'])
     async function getAcomodacoes() {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/acomodacao/` + dataToken.id, {
             method: 'GET'
         })
@@ -44,6 +45,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
             .catch(err => console.log(err))
     }
     async function getCategorias() {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/categoria_financeiro/` + dataToken.id, {
             method: 'GET'
         })
@@ -79,8 +81,10 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
     const [err, setErr] = useState<[boolean, boolean, boolean, boolean]>([false, false, false, false])
 
     useEffect(() => {
-        getAcomodacoes()
-        getCategorias()
+        if (dataToken && dataToken.id) {
+            getAcomodacoes()
+            getCategorias()
+        }
     }, [dataToken])
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>

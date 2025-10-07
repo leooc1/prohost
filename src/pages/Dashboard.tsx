@@ -546,12 +546,22 @@ export default function Dashboard() {
   }
 
   async function loadAll() {
-    await acomodacoes()
-    await resultAc()
-    await resultGest()
-    await indicaOpe()
-    await permissoes()
-    setLoaded(true)
+    // guard: don't run if dataToken not ready
+    if (!dataToken || !dataToken.id) return
+
+    // prevent concurrent runs
+    if ((loadAll as any)._running) return
+    ;(loadAll as any)._running = true
+    try {
+      await acomodacoes()
+      await resultAc()
+      await resultGest()
+      await indicaOpe()
+      await permissoes()
+      setLoaded(true)
+    } finally {
+      ;(loadAll as any)._running = false
+    }
   }
 
   const [dataBW, setDataBW] = useState<[string, string]>([`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`, `${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`])
@@ -610,13 +620,19 @@ export default function Dashboard() {
   }, [periodo, deData, ateData, filterAC])
 
   useEffect(() => {
+    // Call loadAll only when dataToken becomes available or changes.
     const params = new URLSearchParams(window.location.search);
     const ss = Number(params.get("ss"));
     if (!isNaN(ss)) {
       setSessao(ss);
     } else setSessao(0)
-    loadAll()
-  }, [resAc, indiOpe, resGestor, dataToken])
+
+    // only trigger when dataToken is defined and has id
+    if (dataToken && dataToken.id) {
+      loadAll()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataToken])
 
   useEffect(() => {
     setShowTaxaOcu(true)

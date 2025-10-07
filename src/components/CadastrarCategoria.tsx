@@ -29,6 +29,7 @@ export default function CadastrarCategoria({ close, permissao }: { close: () => 
     const [editingColorId, setEditingColorId] = useState<number | null>(null) // id da categoria com seletor de cor aberto
 
     async function getCategorias() {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/categoria_financeiro/` + dataToken.id, {
             method: 'GET'
         })
@@ -250,16 +251,16 @@ export default function CadastrarCategoria({ close, permissao }: { close: () => 
                             const nome = document.getElementById('nome') as HTMLInputElement
                             const tipoDespesa = document.getElementById('tipo-despesa') as HTMLInputElement
                             if (nome.value.length)
-                                createCategorias({
+                                if (dataToken && dataToken.id) createCategorias({
                                     "cor": color,
                                     "editavel": true,
                                     "receita": !mov,
                                     "nome": nome.value,
                                     "tipo_despesa": (tipoDespesa && tipoDespesa?.value != 'null') ? tipoDespesa.value : null,
-                                    "saas": {
-                                        "id": dataToken.id
-                                    }
-                                })
+                                                "saas": {
+                                                    "id": dataToken.id
+                                                }
+                                            })
                         }}
                         className="w-full mt-4 h-9 flex justify-center items-center font-semibold border border-zinc-300 rounded-lg text-white bg-primary self-end">
                         Cadastrar Categoria

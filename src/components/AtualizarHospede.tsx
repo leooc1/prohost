@@ -106,6 +106,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
     }
 
     async function getHospede() {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/hospede/${dataToken.id}/${id}`, {
             method: 'GET'
         })
@@ -186,16 +187,16 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
             {showNotify && <Notify type={1} text="Atualizado!" />}
             <form onSubmit={(e) => {
                 e.preventDefault()
-                if (nome.length > 0) {
-                    updateHospede({
-                        "saas": {
-                            "id": dataToken.id
-                        },
-                        "nome": nome,
-                        "telefone": tel?.length ? tel : null,
-                        "email": email?.length ? email : null
-                    })
-                }
+                    if (nome.length > 0 && dataToken && dataToken.id) {
+                        updateHospede({
+                            "saas": {
+                                "id": dataToken.id
+                            },
+                            "nome": nome,
+                            "telefone": tel?.length ? tel : null,
+                            "email": email?.length ? email : null
+                        })
+                    }
 
             }} className="flex rounded-md flex-col absolute max-w-96 min-w-80 px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white max-h-screen overflow-scroll scroll-default">
                 <h5 className="font-semibold text-2xl mb-2">Atualizar Hóspede</h5>

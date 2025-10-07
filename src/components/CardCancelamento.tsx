@@ -53,12 +53,13 @@ export default function CardCancelamento(props: propsCancelamento) {
                     setComissao(acomData.comissao)
                 }
             }
-            await getReserva(String(props.id))
+            if (dataToken && dataToken.id) await getReserva(String(props.id))
         }
         fetchAcomodacao()
     }, [props.id])
 
     async function getReserva(id: string) {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/reserva/${dataToken.id}/${id}`, {
             method: 'GET'
         })
@@ -91,6 +92,7 @@ export default function CardCancelamento(props: propsCancelamento) {
         const valorCancelamento = document.getElementById('taxa') as HTMLInputElement
         const comissaoInput = document.getElementById('comissao-cancelamento') as HTMLInputElement
     
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/reserva/${id}/valor`, {
             method: 'DELETE',
             headers: {

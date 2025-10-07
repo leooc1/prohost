@@ -46,6 +46,7 @@ export default function NovaIndisponibilidade({ close }: { close: () => void }) 
     const [showNotify, setShowNotify] = useState<boolean>(false)
 
     async function getAcomodacoes() {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/acomodacao/` + dataToken.id, {
             method: 'GET'
         })
@@ -173,8 +174,8 @@ export default function NovaIndisponibilidade({ close }: { close: () => void }) 
                                         },
                                         "qtd_hospede": 0,
                                         "saas": {
-                                            "id": dataToken.id
-                                        },
+                                                "id": dataToken?.id
+                                            },
                                         "valor": 0,
                                         "valor_liq": 0,
                                         "valor_prop": 0,

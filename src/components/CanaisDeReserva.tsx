@@ -19,6 +19,7 @@ export default function CanaisDeReserva({ close, permissao }: { close: () => voi
     const [showNotify, setShowNotify] = useState<boolean>(false)
 
     async function getCanais() {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/canal_reserva/` + dataToken.id, {
             method: 'GET'
         })
@@ -47,6 +48,7 @@ export default function CanaisDeReserva({ close, permissao }: { close: () => voi
     }
 
     async function createCanais(pbody: Canais) {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/canal_reserva/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
@@ -207,13 +209,13 @@ export default function CanaisDeReserva({ close, permissao }: { close: () => voi
                         <button
                             onClick={() => {
                                 const nome = document.getElementById('nome') as HTMLInputElement
-                                if (nome.value.length) {
-                                    createCanais({
-                                        cor: color,
-                                        nome: nome.value,
-                                        saas: { id: dataToken.id }
-                                    })
-                                }
+                                        if (nome.value.length && dataToken && dataToken.id) {
+                                            createCanais({
+                                                cor: color,
+                                                nome: nome.value,
+                                                saas: { id: dataToken.id }
+                                            })
+                                        }
                             }}
                             className="w-9 h-9 flex justify-center items-center font-bold border border-zinc-300 rounded-lg text-white bg-primary self-end">+</button>
                     </div>

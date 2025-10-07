@@ -214,6 +214,7 @@ export default function EditarReserva(props: propsEdicao) {
     }
 
     async function getAcomodacoes() {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/acomodacao/${dataToken.id}`, {
             method: 'GET'
         })
@@ -226,6 +227,7 @@ export default function EditarReserva(props: propsEdicao) {
     }
 
     async function getCanais() {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/canal_reserva/${dataToken.id}`, {
             method: 'GET'
         })
@@ -237,6 +239,7 @@ export default function EditarReserva(props: propsEdicao) {
     }
 
     async function getHospede() {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/hospede/${dataToken.id}`, {
             method: 'GET'
         })
@@ -248,6 +251,7 @@ export default function EditarReserva(props: propsEdicao) {
     }
 
     async function getAll() {
+        if (!dataToken || !dataToken.id) return
         await getAcomodacoes()
         await getCanais()
         await getHospede()
@@ -255,7 +259,7 @@ export default function EditarReserva(props: propsEdicao) {
     }
 
     useEffect(() => {
-        getAll()
+        if (dataToken && dataToken.id) getAll()
     }, [dataToken])
 
     return (

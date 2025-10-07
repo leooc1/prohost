@@ -62,6 +62,7 @@ export default function Reserva() {
   const [ids, setIds] = useState<{ id: number, index: number }[]>([])
 
   async function getReserva() {
+    if (!dataToken || !dataToken.id) return
     await fetch(`${apiURL}/reserva/${dataToken.id}`, {
       method: 'GET'
     })
@@ -74,6 +75,7 @@ export default function Reserva() {
   }
 
   async function getAcomodacoes() {
+    if (!dataToken || !dataToken.id) return
     await fetch(`${apiURL}/acomodacao/${dataToken.id}`, {
       method: 'GET'
     })
@@ -85,6 +87,7 @@ export default function Reserva() {
   }
 
   async function getCanais() {
+    if (!dataToken || !dataToken.id) return
     await fetch(`${apiURL}/canal_reserva/${dataToken.id}`, {
       method: 'GET'
     })
@@ -108,6 +111,7 @@ export default function Reserva() {
 
   const [permissao, setPermissao] = useState(0)
   async function permissoes() {
+    if (!dataToken || !dataToken.idUsu) return
     await fetch(`${apiURL}/users/${dataToken.idUsu}`, {
       method: 'GET'
     })
@@ -124,6 +128,7 @@ export default function Reserva() {
   }
 
   async function calendar() {
+    if (!dataToken || !dataToken.id) return
     await getCanais()
     await getAcomodacoes()
     await getReserva()
@@ -154,7 +159,7 @@ export default function Reserva() {
 
 
   useEffect(() => {
-    calendar()
+    if (dataToken && dataToken.id) calendar()
   }, [calendario, dataToken])
 
   return (

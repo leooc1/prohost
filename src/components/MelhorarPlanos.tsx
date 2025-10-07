@@ -131,6 +131,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
         date: '',
         cvc: ''
     }) {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/assinatura/credit-card/${pay}`, {
             method: 'POST',
             body: JSON.stringify({
@@ -188,6 +189,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
     }
 
     async function gerarPagamento(cartao?: any) {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/assinatura/upgrade/`, {
             method: 'POST',
             body: JSON.stringify({
@@ -252,6 +254,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                     }
                 })
         }
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/assinatura/renovacao/`, {
             method: 'POST',
             body: JSON.stringify({

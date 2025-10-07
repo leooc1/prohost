@@ -57,6 +57,7 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
     }
 
     async function getInfo() {
+        if (!dataToken || !dataToken.idUsu) return
         await fetch(`${apiURL}/users/${dataToken.idUsu}/info`, {
             method: 'GET'
         })
@@ -69,6 +70,7 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
     }
 
     async function getNotify() {
+        if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/recorrencia/` + dataToken.id, {
             method: 'GET'
         })
@@ -203,7 +205,7 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
             </div>
             {
                 registrar &&
-                <RegistrarDespesa saas={dataToken.id}
+                <RegistrarDespesa saas={dataToken?.id ?? ''}
                     close={() => setRegistrar(false)}
                     despesa={despesa}
                     idNotify={idNotify} />

@@ -50,7 +50,7 @@ export default function CadastrarHospede({ close }: { close: () => void }) {
                 const email = document.getElementById('email') as HTMLInputElement
                 const tel = document.getElementById('tel') as HTMLInputElement
                 if (nome.value?.length)
-                    createHospede({
+                    if (dataToken && dataToken.id) createHospede({
                         "saas": {
                             "id": dataToken.id
                         },
