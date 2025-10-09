@@ -358,6 +358,16 @@ export default function AcomodacoesDetalhes() {
         setGraf(false)
     }, [deData, ateData, periodo])
 
+    useEffect(() => {
+
+        if (localStorage.getItem('periodo_ph')) {
+            setPeriodo(localStorage.getItem('periodo_ph') || 'm-atual')
+            if (localStorage.getItem('periodo_ph') == 'personalizado') {
+                setDeData(localStorage.getItem('datade') || '')
+                setAteData(localStorage.getItem('dataate') || '')
+            }
+        }
+    }, [])
 
     return (
         loaded ?
@@ -397,7 +407,7 @@ export default function AcomodacoesDetalhes() {
                             <div className='flex gap-4'>
                                 <label htmlFor="periodo" className="flex flex-col text-zinc-600 font-medium text-sm">
                                     Período de Análise
-                                    <select name="periodo" id="periodo" onChange={(e) => { setPeriodo(e.target.value) }} className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base">
+                                    <select name="periodo" id="periodo" value={periodo} onChange={(e) => { setPeriodo(e.target.value) }} className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base">
                                         <option value="m-atual" className="text-black">Mês Atual</option>
                                         <option value="m-passado" className="text-black">Mês Passado</option>
                                         <option value="a-atual" className="text-black">Ano Atual</option>
@@ -425,9 +435,13 @@ export default function AcomodacoesDetalhes() {
                                                 setDeData(inputDe.value)
                                                 inputAte.value = dataFormatada
                                                 setAteData(dataFormatada)
+                                                localStorage.setItem("datade", inputDe.value);
+                                                localStorage.setItem("dataate", dataFormatada);
                                             } else {
                                                 setDeData(inputDe.value)
                                                 setAteData(inputAte.value)
+                                                localStorage.setItem("datade", inputDe.value);
+                                                localStorage.setItem("dataate", inputAte.value);
                                             }
                                         }}>Aplicar filtro</button>
 

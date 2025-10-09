@@ -333,10 +333,16 @@ export default function Financeiro() {
     }, [session])
 
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const acfil = params.get("acfil") || 'all';
-        if (filterAC == 'all' && acfil != 'all')
-            setFilterAC(acfil)
+        if (localStorage.getItem('acfil')) {
+            setFilterAC(localStorage.getItem('acfil') || 'all')
+        }
+        if (localStorage.getItem('periodo_ph')) {
+            setPeriodo(localStorage.getItem('periodo_ph') || 'm-atual')
+            if (localStorage.getItem('periodo_ph') == 'personalizado') {
+                setDeData(localStorage.getItem('datade') || '')
+                setAteData(localStorage.getItem('dataate') || '')
+            }
+        }
     }, [])
 
     const processedMovimentacoes = useMemo(() => {
@@ -435,12 +441,12 @@ export default function Financeiro() {
                                 disabled={!(permissao >= 2)}>+ Nova Despesa</button>
                         </div>
                     </div>}
-                    
-                     <div className="flex flex-col gap-6 mb-8">More actions
+
+                    <div className="flex flex-col gap-6 mb-8">More actions
                         <div className='flex gap-4 mt-5'>
                             <label htmlFor="periodo" className="flex flex-col text-zinc-600 font-medium text-sm">
                                 Período de Análise
-                                <select name="periodo" id="periodo" onChange={(e) => { setPeriodo(e.target.value) }} className="border border-zinc-300 rounded-md px-2 py-1 h-9 outline-none text-base">
+                                <select name="periodo" id="periodo" value={periodo} onChange={(e) => { setPeriodo(e.target.value) }} className="border border-zinc-300 rounded-md px-2 py-1 h-9 outline-none text-base">
                                     <option value="m-atual" className="text-black">Mês Atual</option>
                                     <option value="m-passado" className="text-black">Mês Passado</option>
                                     <option value="a-atual" className="text-black">Ano Atual</option>
@@ -492,13 +498,17 @@ export default function Financeiro() {
                                             setDeData(inputDe.value)
                                             inputAte.value = dataFormatada
                                             setAteData(dataFormatada)
+                                            localStorage.setItem("datade", inputDe.value);
+                                            localStorage.setItem("dataate", dataFormatada);
                                         } else {
                                             setDeData(inputDe.value)
                                             setAteData(inputAte.value)
+                                            localStorage.setItem("datade", inputDe.value);
+                                            localStorage.setItem("dataate", inputAte.value);
                                         }
                                     }}>Aplicar filtro</button>
                             </> : null}
-                            
+
                         </div>
                         <div className=''>
                             <p className="text-zinc-600 font-medium text-sm">Exibindo resultados de</p>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReservaCardView from "../ReservaCardView";
 
 interface Reserva {
@@ -185,7 +185,18 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
         XLSX.writeFile(workbook, 'reservas.xlsx');
     }
 
-
+    useEffect(() => {
+        if (localStorage.getItem('acfil')) {
+            setAcomodacao(localStorage.getItem('acfil') || 'all')
+        }
+        if (localStorage.getItem('periodo_ph')) {
+            setPeriodo(localStorage.getItem('periodo_ph') || 'm-atual')
+            if (localStorage.getItem('periodo_ph') == 'personalizado') {
+                setDeData(localStorage.getItem('datade') || '')
+                setAteData(localStorage.getItem('dataate') || '')
+            }
+        }
+    }, [])
 
     return (
         <section className="w-full min-h-56 border border-zinc-300 rounded-lg bg-white px-4 py-4">
@@ -212,7 +223,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                 <div className="flex flex-wrap gap-4">
                     <label htmlFor="periodo" className="flex flex-col text-zinc-600 font-medium text-xs">
                         Período de Análise
-                        <select name="periodo" id="periodo" onChange={(e) => { setPeriodo(e.target.value) }} className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm">
+                        <select name="periodo" id="periodo" value={periodo} onChange={(e) => { setPeriodo(e.target.value) }} className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm">
                             <option value="m-atual" className="text-black">Mês Atual</option>
                             <option value="m-passado" className="text-black">Mês Passado</option>
                             <option value="a-atual" className="text-black">Ano Atual</option>
@@ -240,9 +251,13 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                     setDeData(inputDe.value)
                                     inputAte.value = dataFormatada
                                     setAteData(dataFormatada)
+                                    localStorage.setItem("datade", inputDe.value);
+                                    localStorage.setItem("dataate", dataFormatada);
                                 } else {
                                     setDeData(inputDe.value)
                                     setAteData(inputAte.value)
+                                    localStorage.setItem("datade", inputDe.value);
+                                    localStorage.setItem("dataate", inputAte.value);
                                 }
                             }}>Aplicar filtro</button>
                     </> : null}
@@ -251,7 +266,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
             <div className="flex gap-4 mt-3">
                 <label htmlFor="acomodacao" className="flex flex-col text-zinc-600 font-medium text-xs">
                     Acomodação
-                    <select name="acomodacao" id="acomodacao" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" onChange={(e) => { setAcomodacao(e.target.value) }}>
+                    <select name="acomodacao" id="acomodacao" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" value={acomodacao} onChange={(e) => { setAcomodacao(e.target.value) }}>
                         <option value="all">Todas</option>
                         {acomodacoes.length > 0 ?
                             acomodacoes.map(ac => <option value={ac.id}>{ac.nome}</option>) :
