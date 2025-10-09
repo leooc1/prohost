@@ -81,6 +81,12 @@ export default function SidebarMenu({ route }: { route: string }) {
                         </a>
                     </li>
                     <li>
+                        <a href={'/relatorio'} className={`${route == '/relatorio' ? 'nav-active' : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover ${active ? 'w-44' : 'w-fit justify-center'}`}>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ACDBFF" height="24" width="24"><path d="M20 22H4C3.44772 22 3 21.5523 3 21V3C3 2.44772 3.44772 2 4 2H20C20.5523 2 21 2.44772 21 3V21C21 21.5523 20.5523 22 20 22ZM19 20V4H5V20H19ZM7 6H11V10H7V6ZM7 12H17V14H7V12ZM7 16H17V18H7V16ZM13 7H17V9H13V7Z"></path></svg>
+                            {active && <p className='text-zinc-300'>Relatório</p>}
+                        </a>
+                    </li>
+                    <li>
                         <a href={'/reservas'} className={`${route == '/reservas' ? 'nav-active' : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover ${active ? 'w-44' : 'w-fit justify-center'}`}>
                             <svg xmlns="http://www.w3.org/2000/svg" height="24" fill='#ACDBFF' viewBox="0 -960 960 960" width="24"><path d="M438-226 296-368l58-58 84 84 168-168 58 58-226 226ZM200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Z" /></svg>
                             {active && <p className='text-zinc-300'>Reserva</p>}
