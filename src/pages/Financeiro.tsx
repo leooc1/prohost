@@ -446,7 +446,10 @@ export default function Financeiro() {
                         <div className='flex gap-4 mt-5'>
                             <label htmlFor="periodo" className="flex flex-col text-zinc-600 font-medium text-sm">
                                 Período de Análise
-                                <select name="periodo" id="periodo" value={periodo} onChange={(e) => { setPeriodo(e.target.value) }} className="border border-zinc-300 rounded-md px-2 py-1 h-9 outline-none text-base">
+                                <select name="periodo" id="periodo" value={periodo} onChange={(e) => {
+                                    setPeriodo(e.target.value)
+                                    localStorage.setItem('periodo_ph', e.target.value)
+                                }} className="border border-zinc-300 rounded-md px-2 py-1 h-9 outline-none text-base">
                                     <option value="m-atual" className="text-black">Mês Atual</option>
                                     <option value="m-passado" className="text-black">Mês Passado</option>
                                     <option value="a-atual" className="text-black">Ano Atual</option>
@@ -473,6 +476,7 @@ export default function Financeiro() {
                                 <select name="acomodacao" id="acomodacao" className={`border border-zinc-300 rounded-md px-2 py-1 h-9 outline-none text-base`} value={(tipoDespesaFilter == 'Despesas do Negócio' && session == 2) ? 'all' : filterAC} disabled={(tipoDespesaFilter == 'Despesas do Negócio' && session == 2)}
                                     onChange={(e) => {
                                         setFilterAC(e.target.value)
+                                        localStorage.setItem("acfil", e.target.value);
                                     }}>
                                     <option value="all" selected>Todas</option>
                                     {acomodacao.map(a => <option value={`${a.id}`}>{a.nome}</option>)}

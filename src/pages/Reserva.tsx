@@ -38,6 +38,7 @@ interface Reserva {
   saas: { id: number }
   valor: number
   valor_liq: number
+  valor_liq_calculado: number
   valor_prop: number
   valor_gestor: number
   tipo_reserva: string
@@ -169,7 +170,7 @@ export default function Reserva() {
             onClick={() => setCanaisReserva(true)}
             disabled={!(permissao >= 2)}>Canais de Reserva</button>
           {canaisReserva && <CanaisDeReserva close={() => setCanaisReserva(false)}
-          permissao={permissao} />}
+            permissao={permissao} />}
           <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#F45C61] hover:bg-[#ED3E44] hover:shadow-md shadow-black'
             onClick={() => {
               if (acomodacao.length == 0) location.assign('/acomodacoes')
@@ -187,14 +188,14 @@ export default function Reserva() {
         </div>
         {render ?
           calendario ? <Calendario
-          permissao={permissao}
+            permissao={permissao}
             acomodacoes={acomodacao.map((a) => ({
               id: String(a ? a.id : null),
               title: a.nome,
               image: a.foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'
             }))}
 
-            reservas={reserva.filter(r=>r.tipo_reserva!='Cancelamento').map((r) => ({
+            reservas={reserva.filter(r => r.tipo_reserva != 'Cancelamento').map((r) => ({
               "resourceId": String(r.acomodacao ? r.acomodacao.id : null),
               "title": r.hospede?.nome || '',
               "start": (r.check_in),

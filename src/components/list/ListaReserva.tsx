@@ -191,13 +191,13 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
         const storedPeriodo = localStorage.getItem("periodo_ph");
         if (storedAc) setAcomodacao(storedAc);
         if (storedPeriodo) {
-          setPeriodo(storedPeriodo);
-          if (storedPeriodo === "personalizado") {
-            setDeData(localStorage.getItem("datade") || "");
-            setAteData(localStorage.getItem("dataate") || "");
-          }
+            setPeriodo(storedPeriodo);
+            if (storedPeriodo === "personalizado") {
+                setDeData(localStorage.getItem("datade") || "");
+                setAteData(localStorage.getItem("dataate") || "");
+            }
         }
-      }, []);
+    }, []);
 
     return (
         <section className="w-full min-h-56 border border-zinc-300 rounded-lg bg-white px-4 py-4">
@@ -224,7 +224,10 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                 <div className="flex flex-wrap gap-4">
                     <label htmlFor="periodo" className="flex flex-col text-zinc-600 font-medium text-xs">
                         Período de Análise
-                        <select name="periodo" id="periodo" value={periodo} onChange={(e) => { setPeriodo(e.target.value) }} className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm">
+                        <select name="periodo" id="periodo" value={periodo} onChange={(e) => {
+                            setPeriodo(e.target.value)
+                            localStorage.setItem('periodo_ph', e.target.value)
+                        }} className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm">
                             <option value="m-atual" className="text-black">Mês Atual</option>
                             <option value="m-passado" className="text-black">Mês Passado</option>
                             <option value="a-atual" className="text-black">Ano Atual</option>
@@ -267,7 +270,10 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
             <div className="flex gap-4 mt-3">
                 <label htmlFor="acomodacao" className="flex flex-col text-zinc-600 font-medium text-xs">
                     Acomodação
-                    <select name="acomodacao" id="acomodacao" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" value={acomodacao} onChange={(e) => { setAcomodacao(e.target.value) }}>
+                    <select name="acomodacao" id="acomodacao" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" value={acomodacao} onChange={(e) => {
+                        setAcomodacao(e.target.value)
+                        localStorage.setItem("acfil", e.target.value);
+                    }}>
                         <option value="all">Todas</option>
                         {acomodacoes.length > 0 ?
                             acomodacoes.map(ac => <option value={ac.id}>{ac.nome}</option>) :
@@ -306,8 +312,8 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                                 new Date(e.check_out).getFullYear() == date.getFullYear())
                                     }
                                     else if (periodo == 'm-passado') {
-                                        const datames = date
-                                        datames.setDate(date.getMonth() - 1)
+                                        const datames = new Date()
+                                        datames.setMonth(new Date().getMonth() - 1)
                                         return (new Date(e.check_in).getMonth() == datames.getMonth() &&
                                             new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
                                             (new Date(e.check_out).getMonth() == datames.getMonth() &&
@@ -382,8 +388,8 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                                 new Date(e.check_out).getFullYear() == date.getFullYear())
                                     }
                                     else if (periodo == 'm-passado') {
-                                        const datames = date
-                                        datames.setDate(date.getMonth() - 1)
+                                        const datames = new Date()
+                                        datames.setMonth(new Date().getMonth() - 1)
                                         return (new Date(e.check_in).getMonth() == datames.getMonth() &&
                                             new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
                                             (new Date(e.check_out).getMonth() == datames.getMonth() &&
@@ -496,8 +502,8 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                                 new Date(e.check_out).getFullYear() == date.getFullYear())
                                     }
                                     else if (periodo == 'm-passado') {
-                                        const datames = date
-                                        datames.setDate(date.getMonth() - 1)
+                                        const datames = new Date()
+                                        datames.setMonth(new Date().getMonth() - 1)
                                         return (new Date(e.check_in).getMonth() == datames.getMonth() &&
                                             new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
                                             (new Date(e.check_out).getMonth() == datames.getMonth() &&
@@ -591,7 +597,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                         <td className="text-center text-xs font-medium">{formatDate(e.check_out)}</td>
                                         <td className="text-center text-xs font-medium">{calcularDiasEntreDatas(e.check_in, e.check_out)}</td>
                                         <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.valor).toFixed(2))}`}</td>
-                                        <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${Number(e.valor_liq_calculado)>0 ? formatarMoedaBrasileira(Number(e.valor_liq_calculado).toFixed(2)) : formatarMoedaBrasileira(Number(e.valor_liq).toFixed(2))}`}</td>
+                                        <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${Number(e.valor_liq_calculado) > 0 ? formatarMoedaBrasileira(Number(e.valor_liq_calculado).toFixed(2)) : formatarMoedaBrasileira(Number(e.valor_liq).toFixed(2))}`}</td>
                                     </tr>)
                             : null
                     }
@@ -609,8 +615,8 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                                 new Date(e.check_out).getFullYear() == date.getFullYear())
                                     }
                                     else if (periodo == 'm-passado') {
-                                        const datames = date
-                                        datames.setDate(date.getMonth() - 1)
+                                        const datames = new Date()
+                                        datames.setMonth(new Date().getMonth() - 1)
                                         return (new Date(e.check_in).getMonth() == datames.getMonth() &&
                                             new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
                                             (new Date(e.check_out).getMonth() == datames.getMonth() &&
@@ -665,8 +671,8 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                                 new Date(e.check_out).getFullYear() == date.getFullYear())
                                     }
                                     else if (periodo == 'm-passado') {
-                                        const datames = date
-                                        datames.setDate(date.getMonth() - 1)
+                                        const datames = new Date()
+                                        datames.setMonth(new Date().getMonth() - 1)
                                         return (new Date(e.check_in).getMonth() == datames.getMonth() &&
                                             new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
                                             (new Date(e.check_out).getMonth() == datames.getMonth() &&
@@ -723,8 +729,8 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                                 new Date(e.check_out).getFullYear() == date.getFullYear())
                                     }
                                     else if (periodo == 'm-passado') {
-                                        const datames = date
-                                        datames.setDate(date.getMonth() - 1)
+                                        const datames = new Date()
+                                        datames.setMonth(new Date().getMonth() - 1)
                                         return (new Date(e.check_in).getMonth() == datames.getMonth() &&
                                             new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
                                             (new Date(e.check_out).getMonth() == datames.getMonth() &&
@@ -767,7 +773,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                         return e
                                     else return e.canal_reserva?.id == Number(canalReserva)
                                 })
-                                .map(r => Number(r.valor_liq))
+                                .map(r => Number(r.valor_liq_calculado) > 0 ? Number(r.valor_liq_calculado) : Number(r.valor_liq))
                                 .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
                         }</td>
                     </tr>
