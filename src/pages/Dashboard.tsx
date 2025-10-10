@@ -313,14 +313,12 @@ export default function Dashboard() {
           0
         );
         setTotalDiasIntervalo(totalDiasIntervalo);
-
         const taxaPorDia = ocupacao.map((d: any) => {
           const totalDias = Number(d.total_dias_no_intervalo) * (filterAC === 'all' ? acomodacao.length : 1);
           const disponiveis = totalDias - Number(d.total_indisponibilidades);
           const taxa = disponiveis > 0 ? (Number(d.total_movimentacoes) / disponiveis) * 100 : 0;
           return [d.dia_da_semana, taxa];
         });
-
         setOcupacaoSemana(taxaPorDia);
       }
 
@@ -379,7 +377,6 @@ export default function Dashboard() {
     if (!dataToken?.id || runningRef.current) return;
     runningRef.current = true;
     try {
-      await acomodacoes();
       await resultAc(databw);
       await resultGest(databw);
       await indicaOpe(databw);
@@ -397,18 +394,20 @@ export default function Dashboard() {
   }, [periodo, deData, ateData, filterAC]);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const ss = Number(params.get("ss"));
-    setSessao(isNaN(ss) ? 0 : ss);
-    if (dataToken) {
-      const { de, ate } = getPeriodoDates(localStorage.getItem("periodo_ph") || "m-atual", deData, ateData, new Date());
-      setDataBW([de, ate]);
-      setIndiOpe(false)
-      setResAc(false)
-      setResGestor(false)
-      loadAll([de, ate]);
-    }
-  }, [filterAC, dataToken, periodo, deData, ateData]);
+    if (acomodacao.length > 0) {
+      const params = new URLSearchParams(window.location.search);
+      const ss = Number(params.get("ss"));
+      setSessao(isNaN(ss) ? 0 : ss);
+      if (dataToken) {
+        const { de, ate } = getPeriodoDates(localStorage.getItem("periodo_ph") || "m-atual", deData, ateData, new Date());
+        setDataBW([de, ate]);
+        setIndiOpe(false)
+        setResAc(false)
+        setResGestor(false)
+        loadAll([de, ate]);
+      }
+    }else {acomodacoes()}
+  }, [filterAC, dataToken, periodo, deData, ateData, acomodacao]);
 
   useEffect(() => setShowTaxaOcu(true), [taxaOcupacao]);
 
