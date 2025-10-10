@@ -14,6 +14,7 @@ interface Reserva {
     saas: { id: number }
     valor: number
     valor_liq: number
+    valor_liq_calculado: number
     valor_prop: number
     valor_gestor: number
     tipo_reserva: string
@@ -186,17 +187,17 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
     }
 
     useEffect(() => {
-        if (localStorage.getItem('acfil')) {
-            setAcomodacao(localStorage.getItem('acfil') || 'all')
+        const storedAc = localStorage.getItem("acfil");
+        const storedPeriodo = localStorage.getItem("periodo_ph");
+        if (storedAc) setAcomodacao(storedAc);
+        if (storedPeriodo) {
+          setPeriodo(storedPeriodo);
+          if (storedPeriodo === "personalizado") {
+            setDeData(localStorage.getItem("datade") || "");
+            setAteData(localStorage.getItem("dataate") || "");
+          }
         }
-        if (localStorage.getItem('periodo_ph')) {
-            setPeriodo(localStorage.getItem('periodo_ph') || 'm-atual')
-            if (localStorage.getItem('periodo_ph') == 'personalizado') {
-                setDeData(localStorage.getItem('datade') || '')
-                setAteData(localStorage.getItem('dataate') || '')
-            }
-        }
-    }, [])
+      }, []);
 
     return (
         <section className="w-full min-h-56 border border-zinc-300 rounded-lg bg-white px-4 py-4">
@@ -590,7 +591,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                         <td className="text-center text-xs font-medium">{formatDate(e.check_out)}</td>
                                         <td className="text-center text-xs font-medium">{calcularDiasEntreDatas(e.check_in, e.check_out)}</td>
                                         <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.valor).toFixed(2))}`}</td>
-                                        <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.valor_liq).toFixed(2))}`}</td>
+                                        <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${Number(e.valor_liq_calculado)>0 ? formatarMoedaBrasileira(Number(e.valor_liq_calculado).toFixed(2)) : formatarMoedaBrasileira(Number(e.valor_liq).toFixed(2))}`}</td>
                                     </tr>)
                             : null
                     }

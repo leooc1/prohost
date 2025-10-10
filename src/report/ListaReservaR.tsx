@@ -13,6 +13,7 @@ interface Reserva {
     saas: { id: number }
     valor: number
     valor_liq: number
+    valor_liq_calculado: number
     valor_prop: number
     valor_gestor: number
     tipo_reserva: string
@@ -133,7 +134,7 @@ export default function ListaReservaR({ reservas }: { reservas: Reserva[] }) {
                                 <td className={`${edit[3] ? 'opacity-100' : 'opacity-30'} text-center text-xs font-medium`}>{formatDate(e.check_out)}</td>
                                 <td className={`${edit[4] ? 'opacity-100' : 'opacity-30'} text-center text-xs font-medium`}>{calcularDiasEntreDatas(e.check_in, e.check_out)}</td>
                                 <td className={`${edit[5] ? 'opacity-100' : 'opacity-30'} text-center text-xs font-medium`}>{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.valor).toFixed(2))}`}</td>
-                                <td className={`${edit[6] ? 'opacity-100' : 'opacity-30'} text-center text-xs font-medium`}>{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.valor_liq).toFixed(2))}`}</td>
+                                <td className={`${edit[6] ? 'opacity-100' : 'opacity-30'} text-center text-xs font-medium`}>{!(e.tipo_reserva == 'Indisponibilidade') && `${Number(e.valor_liq_calculado)>0 ? formatarMoedaBrasileira(Number(e.valor_liq_calculado).toFixed(2)) : formatarMoedaBrasileira(Number(e.valor_liq).toFixed(2))}`}</td>
                             </tr>)
                         : null
                 }
