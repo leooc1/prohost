@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import { SideBarContext } from "../contexts/SideBarMenuContext"
 import Notify from "./notify/Notify"
 
@@ -169,7 +169,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                     setShowNotify(true)
                     setTimeout(() => {
                         setShowNotify(false);
-                        location.reload()
+                        close()
                     }, 3000)
                 } else if (data.length > 0) {
                     setNotify({ type: 2, text: data })
@@ -223,16 +223,16 @@ export default function NovaReserva({ close }: { close: () => void }) {
             .catch(err => console.log(err))
     }
 
-    async function getAll() {
+    const getAll = useCallback(async () => {
         await getAcomodacoes()
         await getCanais()
         await getHospede()
         setRender(true)
-    }
+    }, [getAcomodacoes, getCanais, getHospede])
 
     useEffect(() => {
         getAll()
-    }, [dataToken])
+    }, [dataToken, getAll])
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={close}></div>

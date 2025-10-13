@@ -25,7 +25,7 @@ const formatCurrency = (value: number) => {
     }).format(value);
 };
 
-export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
+export default function MelhorarPlanos({ upgrade, refreshData }: { upgrade: boolean, refreshData: () => void }) {
     const apiURL = import.meta.env.VITE_API_URL
     const { dataToken } = useContext(SideBarContext)
     const [isAnnual, setIsAnnual] = useState(false);
@@ -120,7 +120,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
             .then(data => {
                 setWait(false)
                 if (data.length > 1 && data[1] == 1)
-                    location.reload()
+                    refreshData()
                 return data
             })
             .catch(err => console.log(err))
@@ -170,7 +170,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                         })
                     }
                     else {
-                        location.reload()
+                        refreshData()
                     }
                 } else {
                     // Erro retornado pela API (ex: cartão recusado)
@@ -368,7 +368,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                     }
 
                     setTimeout(() => {
-                        location.reload();
+                        refreshData();
                     }, 2000);
                 }
             } catch (error) {

@@ -33,7 +33,7 @@ export default function CadastrarHospede({ close }: { close: () => void }) {
                     setShowNotify(true)
                     setTimeout(() => {
                         setShowNotify(false);
-                        location.reload()
+                        close()
                     }, 3000)
                 }
             })

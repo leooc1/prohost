@@ -228,19 +228,19 @@ export default function Financeiro() {
             method: 'GET'
         })
             .then(data => data.json())
-            .then((data: Acomodacao[]) => {
-                setAcomodacao(data.filter((e => !e.desativado)))
+            .then((data: { acomodacoes: Acomodacao[] }) => {
+                setAcomodacao(data.acomodacoes.filter((e => !e.desativado)))
             })
             .catch(err => console.log(err))
     }
 
     async function getMovimentacao() {
-        await fetch(`${apiURL}/movimentacao/${dataToken.id}/${dataBW[0]}/${dataBW[1]}`, {
+        await fetch(`${apiURL}/movimentacao/${dataToken.id}/all?dataIni=${dataBW[0]}&dataFim=${dataBW[1]}&limit=10000`, {
             method: 'GET'
         })
             .then(data => data.json())
-            .then((data: []) => {
-                setMovimentacoes(data)
+            .then((data: { movimentacoes: Movimentacao[] }) => {
+                setMovimentacoes(data.movimentacoes)
                 setLDespesa('')
                 setListagem(true)
             })
@@ -468,8 +468,8 @@ export default function Financeiro() {
                                     onChange={(e) => {
                                         setFilterAC(e.target.value)
                                     }}>
-                                    <option value="all" selected>Todas</option>
-                                    {acomodacao.map(a => <option value={`${a.id}`}>{a.nome}</option>)}
+                                    <option value="all">Todas</option>
+                                    {acomodacao.map(a => <option key={a.id} value={`${a.id}`}>{a.nome}</option>)}
                                 </select>
                             </label>
                             {periodo == 'personalizado' ? <>
@@ -522,7 +522,7 @@ export default function Financeiro() {
                     {cadastrarCategoria && <CadastrarCategoria close={() => setCadastrarCategoria(false)}
                         permissao={permissao} />}
                     {novaDespesa && <RegistrarDespesa close={() => setNovaDespesa(false)} saas={dataToken?.id ? dataToken.id : ''} onSuccess={() => { setNovaDespesa(false); getMovimentacao(); }} />}
-                    {novaReceita && <RegistrarReceita close={() => setNovaReceita(false)} saas={dataToken?.id ? dataToken.id : ''} />}
+                    {novaReceita && <RegistrarReceita close={() => setNovaReceita(false)} saas={dataToken?.id ? dataToken.id : ''} onSuccess={() => { setNovaReceita(false); getMovimentacao(); }} />}
                     {session == 1 &&
                         <div className='grid grid-cols-3 gap-3'>
                             <div className="bg-white border-zinc-300 border rounded-lg h-20 flex flex-col justify-center items-center px-3 gap-2">

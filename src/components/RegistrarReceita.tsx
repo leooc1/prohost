@@ -1,6 +1,7 @@
-import { useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState, ChangeEvent } from "react"
 import { SideBarContext } from "../contexts/SideBarMenuContext"
 import Notify from "./notify/Notify"
+
 interface Acomodacao {
     id: number
     tipo: string
@@ -17,6 +18,7 @@ interface Acomodacao {
     desativado: boolean
     saas: { id: number }
 }
+
 interface CategoriaFinanceiro {
     id?: number;
     cor: string;
@@ -26,62 +28,74 @@ interface CategoriaFinanceiro {
     saas: { id: number };
 }
 
-
-export default function RegistrarReceita({ close, saas }: { close: () => void, saas: string }) {
+export default function RegistrarReceita({ close, saas, onSuccess }: { close: () => void, saas: string, onSuccess?: () => void }) {
     const apiURL = import.meta.env.VITE_API_URL
     const { dataToken } = useContext(SideBarContext)
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
-    const [categoria, setCategoria] = useState(['', '#000000'])
-    async function getAcomodacoes() {
-        await fetch(`${apiURL}/acomodacao/` + dataToken.id, {
-            method: 'GET'
-        })
-            .then(data => data.json())
-            .then((data: Acomodacao[]) => {
-                setAcomodacao(data.filter((e => !e.desativado)))
-            })
-            .catch(err => console.log(err))
-    }
-    async function getCategorias() {
-        await fetch(`${apiURL}/categoria_financeiro/` + dataToken.id, {
-            method: 'GET'
-        })
-            .then(data => data.json())
-            .then((data: CategoriaFinanceiro[]) => {
-                setCategoriaF(data.filter(e => e.receita))
-            })
-            .catch(err => console.log(err))
-    }
-    async function create(pbody: any) {
-        await fetch(`${apiURL}/movimentacao/`, {
-            method: 'POST',
-            body: JSON.stringify(pbody),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(data => data.json())
-            .then((data) => {
-                if (data.id) {
-                    setNotify({ type: 1, text: 'Criado!' })
-                    setShowNotify(true)
-                    setTimeout(() => {
-                        setShowNotify(false);
-                        location.reload()
-                    }, 3000)
-                }
-            })
-            .catch(err => console.log(err))
-    }
+    const [categoria, setCategoria] = useState<[string, string]>(['', '#000000'])
     const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
     const [categoriaf, setCategoriaF] = useState<CategoriaFinanceiro[]>([])
-    const [err, setErr] = useState<[boolean, boolean, boolean, boolean]>([false, false, false, false])
+    const [err, setErr] = useState<boolean[]>(Array(4).fill(false))
+
+    const getAcomodacoes = useCallback(async () => {
+        if (!dataToken) return
+        try {
+            const response = await fetch(`${apiURL}/acomodacao/` + dataToken.id, {
+                method: 'GET'
+            })
+            const data: Acomodacao[] = await response.json()
+            setAcomodacao(data.filter((e => !e.desativado)))
+        } catch (error) {
+            console.log(error)
+        }
+    }, [apiURL, dataToken])
+
+    const getCategorias = useCallback(async () => {
+        if (!dataToken) return
+        try {
+            const response = await fetch(`${apiURL}/categoria_financeiro/` + dataToken.id, {
+                method: 'GET'
+            })
+            const data: CategoriaFinanceiro[] = await response.json()
+            setCategoriaF(data.filter(e => e.receita))
+        } catch (error) {
+            console.log(error)
+        }
+    }, [apiURL, dataToken])
 
     useEffect(() => {
         getAcomodacoes()
         getCategorias()
-    }, [dataToken])
+    }, [dataToken, getAcomodacoes, getCategorias])
+
+    async function create(data: any) {
+        try {
+            const response = await fetch(`${apiURL}/movimentacao`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            if (response.ok) {
+                setNotify({ type: 1, text: 'Receita registrada com sucesso!' })
+                setShowNotify(true)
+                setTimeout(() => {
+                    close()
+                    if (onSuccess) onSuccess()
+                }, 2000)
+            } else {
+                setNotify({ type: 2, text: 'Erro ao registrar receita.' })
+                setShowNotify(true)
+            }
+        } catch (error) {
+            console.log(error)
+            setNotify({ type: 2, text: 'Erro de conexão.' })
+            setShowNotify(true)
+        }
+    }
+
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black fixed top-0 right-0 bg-opacity-20" onClick={close}></div>
@@ -95,14 +109,14 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                         <select name="categoria" id="categoria"
                             className={`${err[0] ? 'border-red-500' : 'border-zinc-300'} font-medium border rounded-md px-2 py-1 outline-none w-full`} style={{ color: categoria[1] }} defaultValue={categoria[0]}
                             onChange={(e) => {
-                                const cat = categoriaf.find((c) => String(c.id) === e.target.value);
+                                const cat = categoriaf.find((c: CategoriaFinanceiro) => String(c.id) === e.target.value);
                                 if (cat) {
                                     setCategoria([String(cat.id), cat.cor !== '#FFFFFF' ? cat.cor : '#000000']);
                                 }
                             }}>
                             <option value="" className="hidden" disabled selected></option>
                             {categoriaf.length > 0 &&
-                                categoriaf.map(cat =>
+                                categoriaf.map((cat: CategoriaFinanceiro) =>
                                     <option value={String(cat.id)} id={String(cat.id)}
                                         style={{ color: cat.cor != '#FFFFFF' ? cat.cor : '#000000' }}>
                                         {cat.nome}
@@ -119,11 +133,11 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                 </div>
                 <label htmlFor="acomodacaoReceita" className={`flex flex-col`}>
                     <span className="text-zinc-500 font-medium mb-1 text-sm">Acomodação</span>
-                    <select name="acomodacaoReceita" id="acomodacaoReceita" className="border border-zinc-300 rounded-md text-zinc-5 00 px-2 py-1 outline-none">
+                    <select name="acomodacaoReceita" id="acomodacaoReceita" className="border border-zinc-300 rounded-md text-zinc-500 px-2 py-1 outline-none">
                         <option value="" selected disabled className="hidden">Selecione uma acomodação</option>
                         <option value="null" ></option>
                         {acomodacao?.length > 0 &&
-                            acomodacao?.map(a => <option value={a.id}>{a.nome}</option>)}
+                            acomodacao?.map((a: Acomodacao) => <option value={a.id}>{a.nome}</option>)}
                     </select>
                 </label>
                 <div className="grid gap-3 items-center grid-cols-2">
@@ -134,27 +148,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                     <label htmlFor="valor" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Valor<span className='text-red-500 font-bold'> *</span></span>
                         <input
-                            onChange={(e) => {
-                                // if (e.target.value.replace(/[.,]/gm, '').length <= 3)
-                                //     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{2})/gm, '$1,$2')
-                                // else if (e.target.value.replace(/[.,]/gm, '').length <= 4)
-                                //     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{2})/gm, '$1,$2')
-                                // else if (e.target.value.replace(/[.,]/gm, '').length <= 5)
-                                //     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{2})/gm, '$1,$2')
-                                // else if (e.target.value.replace(/[.,]/gm, '').length <= 6)
-                                //     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{2})/gm, '$1.$2,$3')
-                                // else if (e.target.value.replace(/[.,]/gm, '').length <= 7)
-                                //     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{2})/gm, '$1.$2,$3')
-                                // else if (e.target.value.replace(/[.,]/gm, '').length <= 8)
-                                //     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{2})/gm, '$1.$2,$3')
-                                // else if (e.target.value.replace(/[.,]/gm, '').length <= 9)
-                                //     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{1})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
-                                // else if (e.target.value.replace(/[.,]/gm, '').length <= 10)
-                                //     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{2})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
-                                // else if (e.target.value.replace(/[.,]/gm, '').length <= 11)
-                                //     e.target.value = e.target.value.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4')
-
-                                //Permitindo números negativos e formatando o valor monetário somente
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
                                 const { value } = e.target;
                                 const isNegative = value.startsWith('-');
                                 let numericValue = value.replace(/[^0-9]/g, '');
@@ -184,22 +178,36 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                         onClick={async () => {
                             const categoriaInput = document.getElementById('categoria') as HTMLSelectElement
                             const descricaoInput = document.getElementById('descricao') as HTMLInputElement
-                            const acomodacaoInput = document.getElementById('acomodacaoReceita') as HTMLInputElement
+                            const acomodacaoInput = document.getElementById('acomodacaoReceita') as HTMLSelectElement
                             const dataInput = document.getElementById('data') as HTMLInputElement
                             const valorInput = document.getElementById('valor') as HTMLInputElement
                             const observacaoInput = document.getElementById('observacao') as HTMLInputElement
+
+                            const valorFloat = parseFloat(valorInput.value.replace('.', '').replace(',', '.'))
+
                             let vProprietario: number = 0
                             let vGestor: number = 0
-                            if (acomodacaoInput.value != 'null' && acomodacao.filter(e => e.id == Number(acomodacaoInput.value))[0]?.comissao) {
-                                const comissao = acomodacao.filter(a => a.id == Number(acomodacaoInput.value))[0]?.comissao
-                                vProprietario = ((100 - comissao) / 100) * Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
-                                vGestor = (comissao / 100) * Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
+                            const selectedAcomodacao = acomodacao.find(e => e.id === Number(acomodacaoInput.value));
+
+                            if (selectedAcomodacao && selectedAcomodacao.comissao) {
+                                vProprietario = ((100 - selectedAcomodacao.comissao) / 100) * valorFloat
+                                vGestor = (selectedAcomodacao.comissao / 100) * valorFloat
+                            } else {
+                                vProprietario = valorFloat
+                                vGestor = valorFloat
                             }
-                            else {
-                                vProprietario = Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
-                                vGestor = Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.'))
-                            }
-                            if ((Boolean(categoriaInput.value.length > 0) && descricaoInput.value.length > 0 && dataInput.value.length > 0 && valorInput.value.length > 0 && Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) !== 0)) {
+
+                            const newErr = Array(4).fill(false)
+                            let valid = true
+
+                            if (categoriaInput.value.length === 0) { newErr[0] = true; valid = false }
+                            if (descricaoInput.value.length === 0) { newErr[1] = true; valid = false }
+                            if (dataInput.value.length === 0) { newErr[2] = true; valid = false }
+                            if (valorInput.value.length === 0 || valorFloat === 0) { newErr[3] = true; valid = false }
+
+                            setErr(newErr)
+
+                            if (valid) {
                                 await create({
                                     "acomodacao": {
                                         "id": Number(acomodacaoInput.value) || null
@@ -215,8 +223,8 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                                     "saas": {
                                         "id": saas
                                     },
-                                    "valor": Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
-                                    "valor_liq": Number(valorInput.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
+                                    "valor": valorFloat,
+                                    "valor_liq": valorFloat,
                                     "valor_prop": vProprietario,
                                     "valor_gestor": vGestor,
                                     "comissao_ota": 0,
@@ -230,32 +238,6 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                                 })
                             }
                             else {
-                                let error = err
-                                if (!(categoriaInput.value.length > 0)) {
-                                    error = (error.map((e, i) => i === 0 ? true : e) as [boolean, boolean, boolean, boolean]);
-                                }
-                                else {
-                                    error = (error.map((e, i) => i === 0 ? false : e) as [boolean, boolean, boolean, boolean]);
-                                }
-                                if (descricaoInput.value.length == 0) {
-                                    error = (error.map((e, i) => i === 1 ? true : e) as [boolean, boolean, boolean, boolean]);
-                                }
-                                else {
-                                    error = (error.map((e, i) => i === 1 ? false : e) as [boolean, boolean, boolean, boolean]);
-                                }
-                                if (dataInput.value.length == 0) {
-                                    error = (error.map((e, i) => i === 2 ? true : e) as [boolean, boolean, boolean, boolean]);
-                                }
-                                else {
-                                    error = (error.map((e, i) => i === 2 ? false : e) as [boolean, boolean, boolean, boolean]);
-                                }
-                                if (valorInput.value.length == 0) {
-                                    error = (error.map((e, i) => i === 3 ? true : e) as [boolean, boolean, boolean, boolean]);
-                                }
-                                else {
-                                    error = (error.map((e, i) => i === 3 ? false : e) as [boolean, boolean, boolean, boolean]);
-                                }
-                                setErr(error)
                                 setNotify({ type: 2, text: 'Preenchimento incorreto!' })
                                 setShowNotify(true)
                                 setTimeout(() => {

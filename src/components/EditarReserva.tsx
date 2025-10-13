@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import { SideBarContext } from "../contexts/SideBarMenuContext"
 import Notify from "./notify/Notify"
 
@@ -193,7 +193,7 @@ export default function EditarReserva(props: propsEdicao) {
                     setShowNotify(true)
                     setTimeout(() => {
                         setShowNotify(false);
-                        location.reload()
+                        props.close()
                     }, 3000)
                 } else if (data.length > 0) {
                     setNotify({ type: 1, text: data })
@@ -247,16 +247,16 @@ export default function EditarReserva(props: propsEdicao) {
             .catch(err => console.log(err))
     }
 
-    async function getAll() {
+    const getAll = useCallback(async () => {
         await getAcomodacoes()
         await getCanais()
         await getHospede()
         setRender(true)
-    }
+    }, [getAcomodacoes, getCanais, getHospede])
 
     useEffect(() => {
         getAll()
-    }, [dataToken])
+    }, [dataToken, getAll])
 
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>

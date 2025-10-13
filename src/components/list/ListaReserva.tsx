@@ -93,10 +93,10 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
     }
 
     function gerarEbaixarCSVReservas(
-        reservas: any[],
-        formatDate: (date: any) => string,
-        calcularDias: (inicio: any, fim: any) => number,
-        formatarMoeda: (valor: any) => string
+        reservas: Reserva[],
+        formatDate: (date: string) => string,
+        calcularDias: (inicio: string, fim: string) => number,
+        formatarMoeda: (valor: string) => string
     ) {
         const headers = [
             "Índice",
@@ -151,13 +151,13 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
     }
 
     async function gerarEbaixarExcelReservas(
-        reservas: any[],
-        formatDate: (date: any) => string,
-        calcularDias: (inicio: any, fim: any) => number,
-        formatarMoeda: (valor: any) => string
+        reservas: Reserva[],
+        formatDate: (date: string) => string,
+        calcularDias: (inicio: string, fim: string) => number,
+        formatarMoeda: (valor: string) => string
     ) {
         const XLSX = await import('xlsx');
-        const dados = reservas.map((e, index) => {
+        const dados = reservas.map((e: Reserva, index) => {
             const isIndisp = e.tipo_reserva === 'Indisponibilidade';
             const isCont = e.tipo_reserva === 'Continuidade';
 

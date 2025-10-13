@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import { SideBarContext } from "../contexts/SideBarMenuContext"
 import Notify from "./notify/Notify"
 
@@ -33,23 +33,24 @@ interface Reserva {
 export default function EditarContinuidade(props: propsEdicao) {
     const apiURL = import.meta.env.VITE_API_URL
     const { dataToken } = useContext(SideBarContext)
-    const [reservaAtual, setReservaAtual] = useState<any>()
+    const [reservaAtual, setReservaAtual] = useState<Reserva | undefined>(undefined)
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
-    const [valor, setValor] = useState<any>()
+    const [valor, setValor] = useState<string>()
     let isProcessing = false;
     async function createContinuidade(pbody: Reserva) {
         if (isProcessing) {
             return;
         }
         isProcessing = true;
-        await fetch(`${apiURL}/reserva/`, {
-            method: 'POST',
-            body: JSON.stringify(pbody),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
+        await fetch(`${apiURL}/reserva/`,
+            {
+                method: 'POST',
+                body: JSON.stringify(pbody),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
             .then(data => data.json())
             .then((data) => {
                 if (data.id) {
@@ -57,7 +58,7 @@ export default function EditarContinuidade(props: propsEdicao) {
                     setShowNotify(true)
                     setTimeout(() => {
                         setShowNotify(false);
-                        location.reload()
+                        props.close()
                     }, 3000)
                 } else if (data.length > 0) {
                     setNotify({ type: 1, text: data })
@@ -78,7 +79,7 @@ export default function EditarContinuidade(props: propsEdicao) {
             .finally(() => isProcessing = false)
     }
 
-    async function getReserva() {
+    const getReserva = useCallback(async () => {
         await fetch(`${apiURL}/reserva/${props.saas}/${props.id}`, {
             method: 'GET',
             headers: {
@@ -109,11 +110,11 @@ export default function EditarContinuidade(props: propsEdicao) {
                         setValor(data[0].valor.replace(/[.,]/gm, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/gm, '$1.$2.$3,$4'))
                 }
             })
-    }
+    }, [apiURL, dataToken.id, props.id, props.saas])
 
     useEffect(() => {
         getReserva()
-    }, [dataToken])
+    }, [dataToken, getReserva])
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
             <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={props.close}></div>

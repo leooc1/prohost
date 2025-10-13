@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useCallback, useState, useContext, useEffect } from "react";
 import NovaContinuidade from "./NovaContinuidade"
 import EditarReserva from "./EditarReserva"
 import CardCancelamento from "./CardCancelamento"
@@ -58,14 +58,35 @@ export default function ReservaCardView(props: propsReserva) {
     const apiURL = import.meta.env.VITE_API_URL
     const { dataToken } = useContext(SideBarContext)
     const [reserva, setReserva] = useState<Reserva>()
-    const [idR, setIdR] = useState<number>(0)
     const [continuidade, setContinuidade] = useState(false)
     const [editar, setEditar] = useState(false)
     const [editarContinuidade, setEditarContinuidade] = useState(false)
     const [cancelamento, setCancelamento] = useState(false)
-    const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
-    const [showNotify, setShowNotify] = useState<boolean>(false)
     const [dataReserva, setDataReserva] = useState<any>(null)
+    const [showNotify, setShowNotify] = useState(false)
+    const [notify, setNotify] = useState({ type: 1, text: '' })
+
+    async function deleteReserva(id: number) {
+        try {
+            const response = await fetch(`${apiURL}/reserva/${id}`, {
+                method: 'DELETE'
+            });
+            if (response.ok) {
+                setNotify({ type: 1, text: "Reserva excluída com sucesso!" });
+                setShowNotify(true);
+                setTimeout(() => {
+                    props.close();
+                }, 2000);
+            } else {
+                setNotify({ type: 2, text: "Erro ao excluir reserva." });
+                setShowNotify(true);
+            }
+        } catch (error) {
+            console.error("Erro ao excluir reserva:", error);
+            setNotify({ type: 2, text: "Erro de conexão." });
+            setShowNotify(true);
+        }
+    }
 
     function formatDate(isoDateStr: string) {
         const date = new Date(isoDateStr);
@@ -91,81 +112,20 @@ export default function ReservaCardView(props: propsReserva) {
         return diferencaDias === 1 ? `${diferencaDias} noite` : `${diferencaDias} noites`;
     }
 
-    async function idContinuidade(idAcomodacao: number, idContinuidade: number) {
-        await fetch(`${apiURL}/reserva/${dataToken.id}/${idAcomodacao}/ci/${idContinuidade}`, {
-            method: 'GET'
-        })
-            .then(data => data.json())
-            .then((data: number) => {
-                setIdR(data)
-            })
-            .catch(err => console.log(err))
-    }
-
-    async function idReserva(idReserva: number, idAcomodacao: number) {
-        await fetch(`${apiURL}/reserva/${dataToken.id}/${idReserva}/${idAcomodacao}`, {
-            method: 'GET'
-        })
-            .then(data => data.json())
-            .then((data: number) => {
-                setIdR(data)
-            })
-            .catch(err => console.log(err))
-    }
-
-    async function getReserva(id: string) {
+    const getReserva = useCallback(async (id: string) => {
         await fetch(`${apiURL}/reserva/${dataToken.id}/${id}`, {
             method: 'GET'
         })
             .then(data => data.json())
             .then((data: Reserva[]) => {
                 setReserva(data[0])
-                setDataReserva({
-                    saas: dataToken.id,
-                    id: Number(data[0].id),
-                    close: () => setEditar(false),
-                    acomodacaoID: Number(data[0].acomodacao.id),
-                    canalID: Number(data[0]?.canal_reserva?.id),
-                    checkIn: data[0]?.check_in,
-                    checkOut: data[0]?.check_out,
-                    comissao: Number(data[0]?.comissao_ota),
-                    hospedeNOME: data[0]?.hospede?.nome,
-                    obs: data[0]?.obs,
-                    qtdHospede: Number(data[0]?.qtd_hospede),
-                    valorLiq: Number(data[0]?.valor_liq),
-                    valorTotal: Number(data[0]?.valor),
-                    taxaLimpeza: Number(data[0]?.taxa_limpeza),
-                    tipoReserva: (data[0]?.tipo_reserva),
-                })
-                if (data[0].tipo_reserva != "Indisponibilidade" && data[0].tipo_reserva != "Continuidade")
-                    idReserva(data[0].id || 0, data[0].acomodacao.id)
-                else if (data[0].tipo_reserva == "Continuidade")
-                    idContinuidade(data[0].acomodacao.id, data[0].continuidade || 0)
             })
             .catch(err => console.log(err))
-    }
-
-    async function deleteReserva(id: number) {
-        await fetch(`${apiURL}/reserva/${id}`, {
-            method: 'DELETE'
-        })
-            .then(data => data.json())
-            .then((data) => {
-                if (data.affected == 1) {
-                    setNotify({ type: 1, text: 'Excluído!' })
-                    setShowNotify(true)
-                    setTimeout(() => {
-                        setShowNotify(false);
-                        location.reload()
-                    }, 3000)
-                }
-            })
-            .catch(err => console.log(err))
-    }
+    }, [apiURL, dataToken.id])
 
     useEffect(() => {
         getReserva(props.id)
-    }, [dataToken])
+    }, [dataToken, props.id, getReserva])
 
     return (
         <div className='w-screen min-h-screen fixed z-10 top-0 right-0'>
@@ -183,7 +143,7 @@ export default function ReservaCardView(props: propsReserva) {
             {editar && dataReserva && <EditarReserva
                 saas={dataReserva.saas}
                 id={dataReserva.id}
-                close={dataReserva.close}
+                close={() => setEditar(false)}
                 acomodacaoID={dataReserva.acomodacaoID}
                 canalID={dataReserva.canalID}
                 checkIn={dataReserva.checkIn}
@@ -210,8 +170,8 @@ export default function ReservaCardView(props: propsReserva) {
                     <div className="flex flex-col gap-3 mt-2">
                         {reserva?.tipo_reserva == 'Indisponibilidade' ?
                             <h5 className="font-semibold text-2xl">{'Indisponibilidade'}</h5> :
-                            <h5 className="font-semibold text-2xl">Reserva#{idR} {reserva?.tipo_reserva == 'Continuidade' ? <span className="text-[#008000]"><span className="text-black">-</span> C</span> : <></>}</h5>}
-                        {reserva?.tipo_reserva != 'Indisponibilidade' && reserva?.tipo_reserva != 'Continuidade' ? <div style={{backgroundColor: reserva?.canal_reserva?.cor}} className={`px-2 py-1 text-sm font-medium bg-[${reserva?.canal_reserva?.cor}] text-white rounded-md w-fit`}>{reserva?.canal_reserva?.nome}</div> : <></>}
+                            <h5 className="font-semibold text-2xl">Reserva#{props.id} {reserva?.tipo_reserva == 'Continuidade' ? <span className="text-[#008000]"><span className="text-black">-</span> C</span> : <></>}</h5>}
+                        {reserva?.tipo_reserva != 'Indisponibilidade' && reserva?.tipo_reserva != 'Continuidade' ? <div style={{ backgroundColor: reserva?.canal_reserva?.cor }} className={`px-2 py-1 text-sm font-medium bg-[${reserva?.canal_reserva?.cor}] text-white rounded-md w-fit`}>{reserva?.canal_reserva?.nome}</div> : <></>}
                         {reserva?.tipo_reserva == 'Indisponibilidade' ? <div className="px-2 py-1 text-sm font-medium bg-[#353535] text-white rounded-md w-fit">Indisponibilidade</div> : <></>}
                         {reserva?.tipo_reserva == 'Continuidade' ? <div className="px-2 py-1 text-sm font-medium bg-[#30C46D] text-white rounded-md w-fit">Continuidade</div> : <></>}
                     </div>
@@ -254,11 +214,6 @@ export default function ReservaCardView(props: propsReserva) {
                     {reserva?.tipo_reserva == 'Indisponibilidade' ? null : <div className="grid gap-4"
                         style={{ gridTemplateColumns: '1fr 1fr' }}>
                         <div className="border border-zinc-300 rounded-md px-3 py-2 flex flex-col justify-center relative pl-12">
-                            <svg className="absolute w-8 h-fit left-2 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 80.13 80.13"><g><path d="M48.355 17.922c3.705 2.323 6.303 6.254 6.776 10.817a11.69 11.69 0 0 0 4.966 1.112c6.491 0 11.752-5.261 11.752-11.751 0-6.491-5.261-11.752-11.752-11.752-6.429.002-11.644 5.169-11.742 11.574zm-7.699 24.062c6.491 0 11.752-5.262 11.752-11.752s-5.262-11.751-11.752-11.751c-6.49 0-11.754 5.262-11.754 11.752s5.264 11.751 11.754 11.751zm4.985.801h-9.972c-8.297 0-15.047 6.751-15.047 15.048v12.195l.031.191.84.263c7.918 2.474 14.797 3.299 20.459 3.299 11.059 0 17.469-3.153 17.864-3.354l.785-.397h.084V57.833c.003-8.297-6.747-15.048-15.044-15.048zm19.443-12.132h-9.895a14.483 14.483 0 0 1-4.47 10.088c7.375 2.193 12.771 9.032 12.771 17.11v3.758c9.77-.358 15.4-3.127 15.771-3.313l.785-.398h.084V45.699c0-8.296-6.75-15.046-15.046-15.046zm-45.049-.8c2.299 0 4.438-.671 6.25-1.814a14.544 14.544 0 0 1 5.467-9.276c.012-.22.033-.438.033-.66 0-6.491-5.262-11.752-11.75-11.752-6.492 0-11.752 5.261-11.752 11.752 0 6.488 5.26 11.75 11.752 11.75zm10.554 10.888a14.492 14.492 0 0 1-4.467-10.032c-.367-.027-.73-.056-1.104-.056h-9.971C6.75 30.653 0 37.403 0 45.699v12.197l.031.188.84.265c6.352 1.983 12.021 2.897 16.945 3.185v-3.683c.002-8.078 5.396-14.915 12.773-17.11z" fill="#6279f2" opacity="1" data-original="#000000"></path></g></svg>
-                            <span className="text-zinc-500 font-medium mb-1 text-sm">Qtd. Hóspedes</span>
-                            <p className="font-semibold text-sm">{reserva?.qtd_hospede} pessoas</p>
-                        </div>
-                        <div className="border border-zinc-300 rounded-md px-3 py-2 flex flex-col justify-center relative pl-12">
                             <svg className="absolute w-8 h-fit left-2 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 105.78"><defs></defs><title>scissors</title><path d="M95.36,19.84c11-5.17,20.18-5.08,27.52-.1l-65,37.45a12.92,12.92,0,0,1-7.22,3c-2.42.13-3.29-.56-5.39-.95a7.22,7.22,0,0,0-5.4,1l-1.71,1.56c-1.53,1.39-3.37,2.6-3.07,5,.2,1.58,1.55,2.91,3.69,4.06A15.4,15.4,0,0,1,42.56,76,17.92,17.92,0,0,1,44,82.5c-.39,7.55-3.92,14.07-12.41,19-9.68,6-17.86,5.27-25.18.86C2,98.93,0,94.82,0,90.16,0,83,3.41,77.26,8.73,72.78A73.68,73.68,0,0,1,20.66,65.1l14-10.95.25.85L95.36,19.84Zm0,66.1c11,5.17,20.18,5.08,27.52.1L69.16,55.09,55.53,62.78,95.36,85.94ZM42.29,46.56a7.4,7.4,0,0,1-2.41-1L38.17,44c-1.53-1.39-3.37-2.6-3.07-5,.2-1.59,1.55-2.92,3.69-4.06a15.44,15.44,0,0,0,3.77-5.2A17.86,17.86,0,0,0,44,23.29c-.39-7.55-3.92-14.08-12.41-19C21.93-1.63,13.75-.95,6.43,3.46,2,6.85,0,11,0,15.63,0,22.74,3.41,28.53,8.73,33a73,73,0,0,0,11.93,7.68L34.24,51.31l.6-.35.06-.18.12.08,7.27-4.3ZM32.85,30.43c3.91-2.55,4.31-6.85,2.87-10.95C34.57,16.19,32.1,13.35,28.4,11A21.36,21.36,0,0,0,15.88,7.77c-8.44.77-10,8.29-6.35,14.86a17.07,17.07,0,0,0,7.37,6.92A24.19,24.19,0,0,0,24.44,32a12.16,12.16,0,0,0,8.41-1.56ZM55.08,53.11a3.58,3.58,0,1,1-3.57-3.58,3.57,3.57,0,0,1,3.57,3.58ZM32.85,75.36c3.91,2.55,4.31,6.84,2.87,10.94-1.15,3.3-3.62,6.13-7.32,8.53A21.44,21.44,0,0,1,15.88,98c-8.44-.78-10-8.3-6.35-14.87a17,17,0,0,1,7.37-6.91,23.94,23.94,0,0,1,7.54-2.45,12.16,12.16,0,0,1,8.41,1.57Z" fill="#6279f2" /></svg>
                             <span className="text-zinc-500 font-medium mb-1 text-sm">Comissão</span>
                             {reserva?.tipo_reserva != 'Continuidade' && <p className="font-semibold text-sm">R$ {formatedNumber(Number(reserva?.comissao_ota).toFixed(2))}</p>}
@@ -272,7 +227,7 @@ export default function ReservaCardView(props: propsReserva) {
                             <p className="font-semibold text-sm">R$ {formatedNumber(Number(reserva?.valor).toFixed(2))}</p>
                         </div>
                         <div className="border border-zinc-300 rounded-md px-3 py-2 flex flex-col justify-center relative pl-12">
-                            <svg className="absolute w-9 h-fit left-2 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 100 100" ><g><path d="m93.9 29.7-.6-.1v-.4c-.1-1.1-.6-2-1.4-2.7s-1.8-1-2.9-.9L72.9 27l-60.8-7.7c-2.2-.3-4.2 1.3-4.5 3.5L6.3 33.1c-.9.2-1.7.6-2.3 1.3-.7.8-1 1.9-.9 2.9l1.1 12.1-1.6 13c-.1 1.1.2 2.1.8 3 .6.8 1.4 1.3 2.4 1.5L6.7 77c.2 2.1 1.9 3.6 4 3.6h.4l61-5.5 15.9 2h.5c2 0 3.7-1.5 4-3.5l.1-.4.8-.1c1.1-.1 2-.6 2.7-1.4s1-1.9.9-2.9L95.4 51l2.1-17c.2-2-1.4-4-3.6-4.3zM9.6 23.1c.1-1 1-1.8 2-1.8h.3l51.8 6.5-55.3 5zM5 64.1c-.3-.4-.5-1-.4-1.5l.5-3.8.5 5.8c-.2-.1-.4-.3-.6-.5zm83.2 11.1-6.8-.9 9.1-.8c-.2 1.1-1.2 1.8-2.3 1.7zm6.2-4.6c-.3.4-.8.7-1.3.7h-.3l-2 .2-18.6 1.7-9.5.8-51.9 4.6c-1.1.1-2.1-.7-2.2-1.8L7.7 67l-.2-2-1.3-15.5-.8-9.4-.3-3c0-.5.1-1 .5-1.5.1-.2.3-.3.4-.4.3-.1.6-.2.9-.2l1.2-.1 64.8-5.8 9.3-.8 7-.6h.2c.5 0 .9.2 1.3.5s.7.8.7 1.3l.2 2 1.8 19.7.8 9.4.8 8.7c-.1.3-.2.9-.6 1.3zm1-36.7-1 7.9-.9-10.1h.2c1.1.1 1.9 1.1 1.7 2.2z" fill="#6279f2" opacity="1" data-original="#000000"></path><path d="M86.1 38.7c-1.5.1-3-.3-4.2-1.3s-1.9-2.3-2-3.9c0-.3-.2-.5-.4-.7s-.5-.3-.7-.2l-30.5 2.7L18 38c-.5.1-1 .5-.9 1.1.1 1.5-.3 3-1.3 4.2s-2.4 1.9-3.9 2c-.3 0-.5.2-.7.4s-.2.4-.2.7l1.7 19.3.1 1c0 .5.5 1 1.1.9 1.1-.1 2.2.1 3.1.6 1.7.9 2.9 2.5 3.1 4.6 0 .3.2.5.4.7s.4.2.6.2h.1L44 71.6l7.6-.7 1.7-.1L82 68.2c.3 0 .5-.2.7-.3.2-.2.3-.5.2-.7-.1-1.5.3-3 1.3-4.2s2.4-1.9 3.9-2c.3 0 .5-.2.7-.4s.3-.5.2-.7l-1.8-20.3c-.1-.6-.5-1-1.1-.9zm-3.4 23c-1.1 1.3-1.7 2.9-1.8 4.6L51.4 69l-7.3.7-9.3.8L22 71.6c-.2-1.1-.7-2.1-1.4-2.9-.8-1-1.8-1.9-3-2.4-.9-.4-1.9-.7-2.9-.7l-1.6-18.4c3.4-.8 5.9-3.7 6-7.2l29.5-2.7L78 34.6c.4 1.7 1.3 3.1 2.6 4.3 1.3 1.1 2.9 1.7 4.6 1.8l1.7 18.4c-1.6.4-3.1 1.3-4.2 2.6z" fill="#6279f2" opacity="1" data-original="#000000"></path><path d="M49.9 52.1c-.5.1-1-.1-1.4-.5-.4-.3-.7-.8-.7-1.3s.1-1 .5-1.4c.3-.4.8-.7 1.3-.7s1 .1 1.4.5c.4.3.7.8.7 1.3s.5 1 1.1.9c.6 0 1-.5.9-1.1-.1-1.1-.6-2-1.4-2.7-.5-.5-1.2-.7-1.9-.9l-.1-1.1c0-.5-.5-1-1.1-.9-.5 0-1 .5-.9 1.1l.1 1.1c-.7.2-1.2.6-1.7 1.2-.7.8-1 1.8-.9 2.9s.6 2 1.4 2.7 1.9 1 2.9.9c1.1-.1 2 .7 2.1 1.8 0 .5-.1 1-.5 1.4-.3.4-.8.7-1.3.7-.5.1-1-.1-1.4-.5-.4-.3-.7-.8-.7-1.3 0-.6-.5-1-1.1-.9-.6 0-1 .5-.9 1.1.1 1.1.6 2 1.4 2.7.6.5 1.2.8 1.9.9l.1 1.1c0 .5.5.9 1 .9h.1c.5 0 1-.5.9-1.1l-.1-1.1c.7-.2 1.2-.6 1.7-1.2.7-.8 1-1.8.9-2.9s-.6-2-1.4-2.7c-.8-.6-1.8-1-2.9-.9z" fill="#6279f2" opacity="1" data-original="#000000"></path><path d="M58.7 42.7c-2.8-2.3-6.3-3.4-9.9-3.1-7.5.7-13 7.3-12.3 14.8.3 3.6 2 6.9 4.8 9.2 2.5 2.1 5.5 3.2 8.7 3.2.4 0 .8 0 1.2-.1 7.1-.6 12.4-6.6 12.4-13.5V52c-.4-3.7-2.1-7-4.9-9.3zm-7.7 22c-3 .3-6.1-.7-8.4-2.7s-3.8-4.8-4.1-7.9c-.6-6.4 4.2-12 10.5-12.6h1.1c2.7 0 5.3.9 7.4 2.7 1.2 1 2.2 2.2 2.8 3.5.7 1.3 1.1 2.8 1.3 4.3.5 6.5-4.2 12.1-10.6 12.7zM20.9 50c-1.9 0-3.5 1.6-3.5 3.5S19 57 20.9 57s3.5-1.6 3.5-3.5c-.1-1.9-1.6-3.5-3.5-3.5zm0 5c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5c-.1.8-.7 1.5-1.5 1.5zM79.1 50c-1.9 0-3.5 1.6-3.5 3.5s1.6 3.5 3.5 3.5 3.5-1.6 3.5-3.5S81 50 79.1 50zm0 5c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5S80 55 79.1 55z" fill="#6279f2" opacity="1" data-original="#000000"></path></g></svg>
+                            <svg className="absolute w-9 h-fit left-2 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 100 100" ><g><path d="m93.9 29.7-.6-.1v-.4c-.1-1.1-.6-2-1.4-2.7s-1.8-1-2.9-.9L72.9 27l-60.8-7.7c-2.2-.3-4.2 1.3-4.5 3.5L6.3 33.1c-.9.2-1.7.6-2.3 1.3-.7.8-1 1.9-.9 2.9l1.1 12.1-1.6 13c-.1 1.1.2 2.1.8 3 .6.8 1.4 1.3 2.4 1.5L6.7 77c.2 2.1 1.9 3.6 4 3.6h.4l61-5.5 15.9 2h.5c2 0 3.7-1.5 4-3.5l.1-.4.8-.1c1.1-.1 2-.6 2.7-1.4s1-1.9.9-2.9L95.4 51l2.1-17c.2-2-1.4-4-3.6-4.3zM9.6 23.1c.1-1 1-1.8 2-1.8h.3l51.8 6.5-55.3 5zM5 64.1c-.3-.4-.5-1-.4-1.5l.5-3.8.5 5.8c-.2-.1-.4-.3-.6-.5zm83.2 11.1-6.8-.9 9.1-.8c-.2 1.1-1.2 1.8-2.3 1.7zm6.2-4.6c-.3.4-.8.7-1.3.7h-.3l-2 .2-18.6 1.7-9.5.8-51.9 4.6c-1.1.1-2.1-.7-2.2-1.8L7.7 67l-.2-2-1.3-15.5-.8-9.4-.3-3c0-.5.1-1 .5-1.5.1-.2.3-.3.4-.4.3-.1.6-.2.9-.2l1.2-.1 64.8-5.8 9.3-.8 7-.6h.2c.5 0 .9.2 1.3.5s.7.8.7 1.3l.2 2 1.8 19.7.8 9.4.8 8.7c-.1.3-.2.9-.6 1.3zm1-36.7-1 7.9-.9-10.1h.2c1.1.1 1.9 1.1 1.7 2.2z" fill="#6279f2" opacity="1" data-original="#000000"></path><path d="M86.1 38.7c-1.5.1-3-.3-4.2-1.3s-1.9-2.3-2-3.9c0-.3-.2-.5-.4-.7s-.5-.3-.7-.2l-30.5 2.7L18 38c-.5.1-1 .5-.9 1.1.1 1.5-.3 3-1.3 4.2s-2.4 1.9-3.9 2c-.3 0-.5.2-.7.4s-.2.4-.2.7l1.7 19.3.1 1c0 .5.5 1 1.1.9 1.1-.1 2.2.1 3.1.6 1.7.9 2.9 2.5 3.1 4.6 0 .3.2.5.4.7s.4.2.6.2h.1L44 71.6l7.6-.7 1.7-.1L82 68.2c.3 0 .5-.2.7-.3.2-.2.3-.5.2-.7-.1-1.5.3-3 1.3-4.2s2.4-1.9 3.9-2c.3 0 .5-.2.7-.4s.3-.5.2-.7l-1.8-20.3c-.1-.6-.5-1-1.1-.9zm-3.4 23c-1.1 1.3-1.7 2.9-1.8 4.6L51.4 69l-7.3.7-9.3.8L22 71.6c-.2-1.1-.7-2.1-1.4-2.9-.8-1-1.8-1.9-3-2.4-.9-.4-1.9-.7-2.9-.7l-1.6-18.4c3.4-.8 5.9-3.7 6-7.2l29.5-2.7L78 34.6c.4 1.7 1.3 3.1 2.6 4.3 1.3 1.1 2.9 1.7 4.6 1.8l1.7 18.4c-1.6.4-3.1 1.3-4.2 2.6z" fill="#6279f2" opacity="1" data-original="#000000"></path><path d="M49.9 52.1c-.5.1-1-.1-1.4-.5-.4-.3-.7-.8-.7-1.3s.1-1 .5-1.4c.3-.4.8-.7 1.3-.7s1 .1 1.4.5c.4.3.7.8.7 1.3s.5 1 1.1.9c.6 0 1-.5.9-1.1-.1-1.1-.6-2-1.4-2.7-.5-.5-1.2-.7-1.9-.9.6-.1 1.2-.5 1.6-1 .9-1 1.1-2.3.5-3.5-.6-1.2-1.8-2-3.2-2s-2.7.8-3.2 2c-.6 1.2-.4 2.5.5 3.5.4.5 1 .8 1.6 1-1.2.3-2.2 1.1-2.7 2.3-.6 1.2-.4 2.5.5 3.5.8.7 1.8 1.1 2.9 1.1.3 0 .6 0 .9-.1z" fill="#6279f2" opacity="1" data-original="#000000"></path></g></svg>
                             <span className="text-zinc-500 font-medium mb-1 text-sm">Valor Líquido</span>
                             <p className="font-semibold text-sm">R$ {formatedNumber(Number(reserva?.valor_liq).toFixed(2))}</p>
                         </div>
@@ -292,6 +247,24 @@ export default function ReservaCardView(props: propsReserva) {
                             className="px-2 py-1 text-sm font-medium bg-red-100 text-red-500 rounded-md" disabled={!(props.permissao >= 4)}>Cancelar Reserva</button>
                         <button
                             onClick={() => {
+                                if (reserva) {
+                                    setDataReserva({
+                                        saas: reserva.saas.id,
+                                        id: reserva.id,
+                                        acomodacaoID: reserva.acomodacao.id,
+                                        hospedeNOME: reserva.hospede?.nome,
+                                        qtdHospede: reserva.qtd_hospede,
+                                        checkIn: reserva.check_in,
+                                        checkOut: reserva.check_out,
+                                        canalID: reserva.canal_reserva?.id,
+                                        valorTotal: reserva.valor,
+                                        taxaLimpeza: reserva.taxa_limpeza,
+                                        comissao: reserva.comissao_ota,
+                                        tipoReserva: reserva.tipo_reserva,
+                                        valorLiq: reserva.valor_liq,
+                                        obs: reserva.obs
+                                    });
+                                }
                                 setEditar(true)
                             }}
                             className="px-2 py-1 text-sm font-medium bg-blue-100 text-blue-500 rounded-md"

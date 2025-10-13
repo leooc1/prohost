@@ -54,7 +54,7 @@ export default function NovaContinuidade(props: propsContinuidade) {
                     setShowNotify(true)
                     setTimeout(() => {
                         setShowNotify(false);
-                        location.reload()
+                        props.close()
                     }, 3000)
                 } else if (data.length > 0) {
                     setNotify({ type: 1, text: data })

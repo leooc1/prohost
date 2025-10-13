@@ -50,7 +50,7 @@ export default function Config() {
                     setShowNotify(true)
                     setTimeout(() => {
                         setShowNotify(false);
-                        location.reload()
+                        setUsers(users.filter(u => u.id != String(idUsers)))
                     }, 3000)
                 }
             })
@@ -73,7 +73,7 @@ export default function Config() {
                     setShowNotify(true)
                     setTimeout(() => {
                         setShowNotify(false);
-                        location.reload()
+                        setUsers([...users, data])
                     }, 3000)
                 }
                 else {
@@ -102,7 +102,7 @@ export default function Config() {
                     setShowNotify(true)
                     setTimeout(() => {
                         setShowNotify(false);
-                        location.reload()
+                        permissoes()
                     }, 3000)
                 }
             })
@@ -158,6 +158,17 @@ export default function Config() {
     const [hospedePInput, setHospedePInput] = useState<string>("")
     const [financeiroPInput, setFinanceiroPInput] = useState<string>("")
 
+    async function refreshData() {
+        await permissoes()
+        if (statusData) {
+            if (statusData?.trial_end) {
+                if ((new Date(statusData.trial_end) < new Date())) {
+                    setAssinatura(false)
+                }
+            }
+        }
+    }
+
     useEffect(() => {
         if (dataToken && dataToken.id && dataToken.idUsu)
             permissoes()
@@ -197,14 +208,14 @@ export default function Config() {
                             <p className="text-primary text-2xl">Data de Renovação: {dateFormat(statusData?.trial_end || '')}</p>
                             <p className="text-primary text-2xl">Dias Restantes: {diasFaltantes(statusData?.trial_end || '')}</p>
                         </div>
-                        <MelhorarPlanos upgrade={true} />
+                        <MelhorarPlanos upgrade={true} refreshData={refreshData} />
                     </> :
                     <div className="self-center bg-red-100 p-6 rounded-xl flex flex-col gap-3">
                         <div className="flex items-center gap-2 text-[rgba(237,62,68,1)] font-semibold">
                             <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(237,62,68,1)"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 10.5858L14.8284 7.75736L16.2426 9.17157L13.4142 12L16.2426 14.8284L14.8284 16.2426L12 13.4142L9.17157 16.2426L7.75736 14.8284L10.5858 12L7.75736 9.17157L9.17157 7.75736L12 10.5858Z"></path></svg>
                             Seu acesso está bloqueado</div>
                         <p className="text-primary text-3xl">Para continuar escolha um plano abaixo</p>
-                        <MelhorarPlanos upgrade={false} />
+                        <MelhorarPlanos upgrade={false} refreshData={refreshData} />
                     </div>
                 }
             </div>}

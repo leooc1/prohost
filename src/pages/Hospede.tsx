@@ -28,8 +28,8 @@ export default function Hospede() {
             method: 'GET'
         })
             .then(data => data.json())
-            .then((data: Hospede[]) => {
-                setHospede(data)
+            .then((data: { hospedes: Hospede[] }) => {
+                setHospede(data.hospedes)
                 setLoaded(true)
             })
             .catch(err => console.log(err))

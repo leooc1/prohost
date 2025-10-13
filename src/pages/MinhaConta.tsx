@@ -68,19 +68,19 @@ export default function MinhaConta() {
             })
             .catch(err => console.log(err))
     }
-    async function updateFoto(imagem: string) {
+    async function updateFoto(imagem: File) {
+        const formData = new FormData();
+        formData.append('file', imagem);
+
         await fetch(`${apiURL}/users/${dataToken.idUsu}/foto`, {
             method: 'PUT',
-            body: JSON.stringify({ foto: (imagem && imagem.length > 0) ? imagem : null }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            body: formData,
         })
             .then(data => data.json())
             .then((data) => {
-                if (data.affected)
-                    location.reload()
-                else {
+                if (data.affected) {
+                    getInfo();
+                } else {
                     setNotify({ type: 2, text: 'Não foi possível atualizar essa foto.' })
                     setShowNotify(true)
                     setTimeout(() => {
@@ -132,19 +132,7 @@ export default function MinhaConta() {
                                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                                     const file = event.target.files?.[0];
                                     if (file) {
-                                        const reader = new FileReader();
-                                        reader.onload = (e: ProgressEvent<FileReader>) => {
-                                            if (e.target?.result) {
-                                                const imageData = e.target.result as string;
-                                                setFoto(imageData);
-                                                updateFoto(imageData);
-                                            }
-                                        };
-                                        reader.readAsDataURL(file);
-                                    }
-                                    else {
-                                        // updateFoto('');
-                                        // setFoto('')
+                                        updateFoto(file);
                                     }
                                 }}
                             />

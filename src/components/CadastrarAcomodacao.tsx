@@ -25,18 +25,37 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
     const [qtdMaxHospede, setQtdMaxHospede] = useState(1)
     const [tipo, setTipo] = useState('')
     const [modelo, setModelo] = useState('')
-    const [autoComplete, setAutoComplete] = useState([])
+    const [autoComplete, setAutoComplete] = useState<{
+        name: string;
+        city: string;
+        state: string;
+        country: string;
+    }[]>([])
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
 
     const [err, setErr] = useState<[boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean]>([false, false, false, false, false, false, false, false])
     async function createAcomodacao(pbody: Acomodacao) {
+        const formData = new FormData();
+        (Object.keys(pbody) as Array<keyof Acomodacao>).forEach(key => {
+            const value = pbody[key];
+            if (value !== null && value !== undefined) {
+                if (typeof value === 'object') {
+                    formData.append(key, JSON.stringify(value));
+                } else {
+                    formData.append(key, String(value));
+                }
+            }
+        });
+
+        const fileInput = document.getElementById('imagem') as HTMLInputElement;
+        if (fileInput.files && fileInput.files[0]) {
+            formData.append('file', fileInput.files[0]);
+        }
+
         await fetch(`${apiURL}/acomodacao/`, {
             method: 'POST',
-            body: JSON.stringify(pbody),
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            body: formData,
         })
             .then(data => data.json())
             .then((data) => {
@@ -45,7 +64,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                     setShowNotify(true)
                     setTimeout(() => {
                         setShowNotify(false);
-                        location.reload()
+                        close()
                     }, 3000)
                 }
             })
@@ -56,7 +75,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
         await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(input)}&limit=5`)
             .then(data => data.json())
             .then(data => {
-                setAutoComplete(data?.features.map((feature: any) => ({
+                setAutoComplete(data?.features.map((feature: { properties: { name: string, city: string, state: string, country: string } }) => ({
                     name: feature?.properties?.name,
                     city: feature?.properties?.city || "",
                     state: feature?.properties?.state || "",
@@ -166,7 +185,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                                             e.state === end?.state &&
                                             e.country === end?.country
                                     )
-                            ).map((end: any) => <li
+                            ).map((end: { name: string, city: string, state: string, country: string }) => <li
                                 onMouseDown={(e) => e.preventDefault()}
                                 onClick={() => {
                                     const endereco = document.getElementById('endereco') as HTMLInputElement

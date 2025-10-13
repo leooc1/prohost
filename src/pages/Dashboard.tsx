@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Comparativo from "../components/Comparativo";
 // import DesempenhoDiarias from "../components/chart/DesempenhoDiarias";
 import ReservasCanal from "../components/chart/ReservasCanal";
@@ -10,6 +10,7 @@ import QtdeHospede from "../components/chart/QtdeHospede";
 import FaturamentoxDespesa from "../components/chart/FaturamentoxDespesa";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 import Loader from "../components/Loader";
+import SkeletonLoader from "../components/SkeletonLoader";
 import SemPermissao from "../components/SemPermissao";
 interface Acomodacao {
   id: number
@@ -28,7 +29,7 @@ interface Acomodacao {
   saas: { id: number }
 }
 
-export default function Dashboard() {
+export function Dashboard() {
   const apiURL = import.meta.env.VITE_API_URL
   useEffect(() => { document.title = 'Dashboard | Prohost' }, [])
 
@@ -145,8 +146,8 @@ export default function Dashboard() {
       method: 'GET'
     })
       .then(data => data.json())
-      .then((data: Acomodacao[]) => {
-        setAcomodacao(data.filter((e => !e.desativado)))
+      .then((data: { acomodacoes: Acomodacao[] }) => {
+        setAcomodacao(data.acomodacoes.filter((e => !e.desativado)))
       })
       .catch(err => console.log(err))
   }
@@ -256,12 +257,28 @@ export default function Dashboard() {
       })
         .then(data => data.json())
         .then((data) => {
-          if (data.length > 0) {
-            const atual = data.filter((d: any) => d.periodo == 'atual')
-            const passado = data.filter((d: any) => d.periodo == 'ano_anterior')
+          if (data) {
             setComparativoRA({
-              atual: atual[0],
-              passado: passado[0]
+              atual: {
+                rentabilidade_imovel: data.rentabilidade_imovel_atual,
+                faturamento_bruto: data.faturamento_bruto_atual,
+                comissao_plataforma: data.comissao_plataforma_atual,
+                faturamento_liquido: data.faturamento_liquido_atual,
+                despesas: data.despesas_atual,
+                lucro: data.lucro_atual,
+                diaria_media: data.diaria_media_atual,
+                periodo: 'atual'
+              },
+              passado: {
+                rentabilidade_imovel: data.rentabilidade_imovel_anterior,
+                faturamento_bruto: data.faturamento_bruto_anterior,
+                comissao_plataforma: data.comissao_plataforma_anterior,
+                faturamento_liquido: data.faturamento_liquido_anterior,
+                despesas: data.despesas_anterior,
+                lucro: data.lucro_anterior,
+                diaria_media: data.diaria_media_anterior,
+                periodo: 'ano_anterior'
+              }
             })
           }
         })
@@ -324,12 +341,28 @@ export default function Dashboard() {
       })
         .then(data => data.json())
         .then((data) => {
-          if (data.length > 0) {
-            const atual = data.filter((d: any) => d.periodo == 'atual')
-            const passado = data.filter((d: any) => d.periodo == 'ano_anterior')
+          if (data) {
             setComparativoRA({
-              atual: atual[0],
-              passado: passado[0]
+              atual: {
+                rentabilidade_imovel: data.rentabilidade_imovel_atual,
+                faturamento_bruto: data.faturamento_bruto_atual,
+                comissao_plataforma: data.comissao_plataforma_atual,
+                faturamento_liquido: data.faturamento_liquido_atual,
+                despesas: data.despesas_atual,
+                lucro: data.lucro_atual,
+                diaria_media: data.diaria_media_atual,
+                periodo: 'atual'
+              },
+              passado: {
+                rentabilidade_imovel: data.rentabilidade_imovel_anterior,
+                faturamento_bruto: data.faturamento_bruto_anterior,
+                comissao_plataforma: data.comissao_plataforma_anterior,
+                faturamento_liquido: data.faturamento_liquido_anterior,
+                despesas: data.despesas_anterior,
+                lucro: data.lucro_anterior,
+                diaria_media: data.diaria_media_anterior,
+                periodo: 'ano_anterior'
+              }
             })
           }
         })
@@ -356,12 +389,24 @@ export default function Dashboard() {
       })
         .then(data => data.json())
         .then((data) => {
-          if (data.length > 0) {
-            const atual = data.filter((d: any) => d.periodo == 'atual')
-            const passado = data.filter((d: any) => d.periodo == 'ano_anterior')
+          if (data) {
             setComparativoIO({
-              atual: atual[0],
-              passado: passado[0]
+              atual: {
+                duracao_media: data.duracao_media_atual,
+                periodo: 'atual',
+                total_diaria: data.total_diaria_atual,
+                total_hospede: data.total_hospede_atual,
+                total_indisponivel: data.total_indisponivel_atual,
+                total_reserva: data.total_reserva_atual,
+              },
+              passado: {
+                duracao_media: data.duracao_media_anterior,
+                periodo: 'ano_anterior',
+                total_diaria: data.total_diaria_anterior,
+                total_hospede: data.total_hospede_anterior,
+                total_indisponivel: data.total_indisponivel_anterior,
+                total_reserva: data.total_reserva_anterior,
+              }
             })
           }
         })
@@ -428,12 +473,24 @@ export default function Dashboard() {
       })
         .then(data => data.json())
         .then((data) => {
-          if (data.length > 0) {
-            const atual = data.filter((d: any) => d.periodo == 'atual')
-            const passado = data.filter((d: any) => d.periodo == 'ano_anterior')
+          if (data) {
             setComparativoIO({
-              atual: atual[0],
-              passado: passado[0]
+              atual: {
+                duracao_media: data.duracao_media_atual,
+                periodo: 'atual',
+                total_diaria: data.total_diaria_atual,
+                total_hospede: data.total_hospede_atual,
+                total_indisponivel: data.total_indisponivel_atual,
+                total_reserva: data.total_reserva_atual,
+              },
+              passado: {
+                duracao_media: data.duracao_media_anterior,
+                periodo: 'ano_anterior',
+                total_diaria: data.total_diaria_anterior,
+                total_hospede: data.total_hospede_anterior,
+                total_indisponivel: data.total_indisponivel_anterior,
+                total_reserva: data.total_reserva_anterior,
+              }
             })
           }
         })
@@ -503,13 +560,23 @@ export default function Dashboard() {
       method: 'GET'
     })
       .then(data => data.json())
-      .then((data: []) => {
-        if (data.length > 0) {
-          const atual = data.filter((d: any) => d.periodo == 'atual')
-          const passado = data.filter((d: any) => d.periodo == 'ano_anterior')
+      .then((data) => {
+        if (data) {
           setComparativoRG({
-            atual: atual[0],
-            passado: passado[0]
+            atual: {
+              comissao_terceiros: data.comissao_terceiros_atual,
+              despesas_negocio: data.despesas_negocio_atual,
+              lucro_acomodacoes: data.lucro_acomodacoes_atual,
+              lucro_gestor: data.lucro_gestor_atual,
+              periodo: 'atual'
+            },
+            passado: {
+              comissao_terceiros: data.comissao_terceiros_anterior,
+              despesas_negocio: data.despesas_negocio_anterior,
+              lucro_acomodacoes: data.lucro_acomodacoes_anterior,
+              lucro_gestor: data.lucro_gestor_anterior,
+              periodo: 'ano_anterior'
+            }
           })
         }
       })
@@ -722,8 +789,17 @@ export default function Dashboard() {
             <div className="relative bg-white border-zinc-300 border rounded-lg flex flex-col justify-between items-center row-span-2 py-1 h-full">
               <p className="flex flex-col text-zinc-400 font-medium text-sm">Taxa de Ocupação Média</p>
               <div className="">
-                {showTaxaOcu && <OcupacaoMedia dados={taxaOcupacao?.taxa_ocupacao ? [Number((taxaOcupacao?.taxa_ocupacao / (totalDiasIntervalo * (filterAC == 'all' ? acomodacao.length : 1))) * 100).toFixed(2)] : [0]} />}
-                <p className="text-3xl text-center font-bold bottom-3 text-zinc-500 mb-4">{taxaOcupacao?.taxa_ocupacao ? Number((taxaOcupacao?.taxa_ocupacao / (totalDiasIntervalo * (filterAC == 'all' ? acomodacao.length : 1))) * 100).toFixed(2) : 0}%</p>
+                {loaded ? (
+                  <>
+                    {showTaxaOcu && <OcupacaoMedia dados={taxaOcupacao?.taxa_ocupacao ? [Number((taxaOcupacao?.taxa_ocupacao / (totalDiasIntervalo * (filterAC == 'all' ? acomodacao.length : 1))) * 100).toFixed(2)] : [0]} />}
+                    <p className="text-3xl text-center font-bold bottom-3 text-zinc-500 mb-4">{taxaOcupacao?.taxa_ocupacao ? Number((taxaOcupacao?.taxa_ocupacao / (totalDiasIntervalo * (filterAC == 'all' ? acomodacao.length : 1))) * 100).toFixed(2) : 0}%</p>
+                  </>
+                ) : (
+                  <>
+                    <SkeletonLoader width="100%" height="100px" className="mb-4" />
+                    <SkeletonLoader width="50%" height="1.5em" />
+                  </>
+                )}
               </div>
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg flex items-center">
@@ -731,61 +807,103 @@ export default function Dashboard() {
                 <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#6279F2"><path d="M9 1V3H15V1H17V3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3H7V1H9ZM20 10H4V19H20V10ZM15.0355 11.136L16.4497 12.5503L11.5 17.5L7.96447 13.9645L9.37868 12.5503L11.5 14.6716L15.0355 11.136ZM7 5H4V8H20V5H17V6H15V5H9V6H7V5Z"></path></svg>
               </div>
               <div className="flex flex-col ml-4">
-                <p className="flex flex-col text-zinc-400 font-medium text-sm">Total de Reservas</p>
-                <div className="flex items-end gap-4">
-                  <span className="text-3xl">{indicadores?.total_reserva}</span>
-                  <Comparativo nome="TOTAL DE RESERVAS" data={dataBW} passado={comparativoIO.passado?.total_reserva ? Number(comparativoIO.passado?.total_reserva) : 0}
-                    atual={comparativoIO.atual?.total_reserva ? Number(comparativoIO.atual?.total_reserva) : 0} />
-                </div>
+                {loaded ? (
+                  <>
+                    <p className="flex flex-col text-zinc-400 font-medium text-sm">Total de Reservas</p>
+                    <div className="flex items-end gap-4">
+                      <span className="text-3xl">{indicadores?.total_reserva}</span>
+                      <Comparativo nome="TOTAL DE RESERVAS" data={dataBW} passado={comparativoIO.passado?.total_reserva ? Number(comparativoIO.passado?.total_reserva) : 0}
+                        atual={comparativoIO.atual?.total_reserva ? Number(comparativoIO.atual?.total_reserva) : 0} />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <SkeletonLoader width="80%" height="1em" className="mb-2" />
+                    <SkeletonLoader width="50%" height="1.5em" />
+                  </>
+                )}
               </div>
             </div>
             {/* Reserva por canal */}
             <div className="bg-white border-zinc-300 border rounded-lg h-64 -translate-y-0 flex flex-col justify-between items-center py-1 row-span-3" >
               <p className="flex flex-col text-zinc-400 font-medium text-sm">Reservas por Canal</p>
-              <ReservasCanal labels={reservaCanal.length > 0 ? reservaCanal.map(r => r.nome) : ['']} dados={reservaCanal.length > 0 ? reservaCanal.map(r => Number(r.num_reserva)) : [1]} colors={reservaCanal.length > 0 ? reservaCanal.map(r => r.cor) : ['#cccccc']} />
+              {loaded ? (
+                <ReservasCanal labels={reservaCanal.length > 0 ? reservaCanal.map(r => r.nome) : ['']} dados={reservaCanal.length > 0 ? reservaCanal.map(r => Number(r.num_reserva)) : [1]} colors={reservaCanal.length > 0 ? reservaCanal.map(r => r.cor) : ['#cccccc']} />
+              ) : (
+                <SkeletonLoader width="100%" height="100%" className="mt-4" />
+              )}
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg flex items-center" >
               <div className="bg-[#E9F7FD] rounded-md w-fit py-2 px-2 ml-4">
                 <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#63C3F2"><path d="M22 11V20H20V17H4V20H2V4H4V14H12V7H18C20.2091 7 22 8.79086 22 11ZM8 13C6.34315 13 5 11.6569 5 10C5 8.34315 6.34315 7 8 7C9.65685 7 11 8.34315 11 10C11 11.6569 9.65685 13 8 13Z"></path></svg>
               </div>
               <div className="flex flex-col ml-4">
-                <p className="flex flex-col text-zinc-400 font-medium text-sm">Diárias reservadas</p>
-                <div className="flex items-end gap-4">
-                  <span className="text-3xl">{indicadores?.total_diaria ? indicadores?.total_diaria : 0}</span>
-                  <Comparativo nome="DIÁRIAS RESERVADAS" data={dataBW} passado={comparativoIO.passado?.total_diaria ? Number(comparativoIO.passado?.total_diaria) : 0}
-                    atual={comparativoIO.atual?.total_diaria ? Number(comparativoIO.atual?.total_diaria) : 0} />
-                </div>
+                {loaded ? (
+                  <>
+                    <p className="flex flex-col text-zinc-400 font-medium text-sm">Diárias reservadas</p>
+                    <div className="flex items-end gap-4">
+                      <span className="text-3xl">{indicadores?.total_diaria ? indicadores?.total_diaria : 0}</span>
+                      <Comparativo nome="DIÁRIAS RESERVADAS" data={dataBW} passado={comparativoIO.passado?.total_diaria ? Number(comparativoIO.passado?.total_diaria) : 0}
+                        atual={comparativoIO.atual?.total_diaria ? Number(comparativoIO.atual?.total_diaria) : 0} />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <SkeletonLoader width="80%" height="1em" className="mb-2" />
+                    <SkeletonLoader width="50%" height="1.5em" />
+                  </>
+                )}
               </div>
             </div>
             <div className="relative bg-white border-zinc-300 border rounded-lg h-80 flex flex-col justify-between items-center py-1 row-span-3">
               <p className="flex flex-col text-zinc-400 font-medium text-sm">Ocupação nos Dias da Semana</p>
-              <section className="grid grid-rows-7 grid-cols-2 gap-4 mb-2 w-full px-9">
-                <p>{ocupacaoSemana[1][0]}</p>
-                <p className="text-end">{Number(ocupacaoSemana[1][1]).toFixed(2)}%</p>
-                <p>{ocupacaoSemana[2][0]}</p>
-                <p className="text-end">{Number(ocupacaoSemana[2][1]).toFixed(2)}%</p>
-                <p>{ocupacaoSemana[3][0]}</p>
-                <p className="text-end">{Number(ocupacaoSemana[3][1]).toFixed(2)}%</p>
-                <p>{ocupacaoSemana[4][0]}</p>
-                <p className="text-end">{Number(ocupacaoSemana[4][1]).toFixed(2)}%</p>
-                <p>{ocupacaoSemana[5][0]}</p>
-                <p className="text-end">{Number(ocupacaoSemana[5][1]).toFixed(2)}%</p>
-                <p>{ocupacaoSemana[6][0]}</p>
-                <p className="text-end">{Number(ocupacaoSemana[6][1]).toFixed(2)}%</p>
-                <p>{ocupacaoSemana[0][0]}</p>
-                <p className="text-end">{Number(ocupacaoSemana[0][1]).toFixed(2)}%</p>
-              </section>
+              {loaded ? (
+                <section className="grid grid-rows-7 grid-cols-2 gap-4 mb-2 w-full px-9">
+                  <p>{ocupacaoSemana[1][0]}</p>
+                  <p className="text-end">{Number(ocupacaoSemana[1][1]).toFixed(2)}%</p>
+                  <p>{ocupacaoSemana[2][0]}</p>
+                  <p className="text-end">{Number(ocupacaoSemana[2][1]).toFixed(2)}%</p>
+                  <p>{ocupacaoSemana[3][0]}</p>
+                  <p className="text-end">{Number(ocupacaoSemana[3][1]).toFixed(2)}%</p>
+                  <p>{ocupacaoSemana[4][0]}</p>
+                  <p className="text-end">{Number(ocupacaoSemana[4][1]).toFixed(2)}%</p>
+                  <p>{ocupacaoSemana[5][0]}</p>
+                  <p className="text-end">{Number(ocupacaoSemana[5][1]).toFixed(2)}%</p>
+                  <p>{ocupacaoSemana[6][0]}</p>
+                  <p className="text-end">{Number(ocupacaoSemana[6][1]).toFixed(2)}%</p>
+                  <p>{ocupacaoSemana[0][0]}</p>
+                  <p className="text-end">{Number(ocupacaoSemana[0][1]).toFixed(2)}%</p>
+                </section>
+              ) : (
+                <section className="grid grid-rows-7 grid-cols-2 gap-4 mb-2 w-full px-9">
+                  {[...Array(7)].map((_, i) => (
+                    <React.Fragment key={i}>
+                      <SkeletonLoader width="80%" height="1em" />
+                      <SkeletonLoader width="50%" height="1em" />
+                    </React.Fragment>
+                  ))}
+                </section>
+              )}
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg flex items-center" >
               <div className="bg-[#F7D3AB] rounded-md w-fit py-2 px-2 ml-4">
                 <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FEB158"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM13 12H17V14H11V7H13V12Z"></path></svg>            </div>
               <div className="flex flex-col ml-4">
-                <p className="flex flex-col text-zinc-400 font-medium text-sm">Duração Média das Reservas</p>
-                <div className="flex items-end gap-4">
-                  <span className="text-3xl">{indicadores?.duracao_media ? Number(indicadores?.duracao_media).toFixed(2) : 0}</span>
-                  <Comparativo nome="DURAÇÃO MÉDIA DAS RESERVAS" data={dataBW} passado={comparativoIO.passado?.duracao_media ? Number(comparativoIO.passado?.duracao_media) : 0}
-                    atual={comparativoIO.atual?.duracao_media ? Number(comparativoIO.atual?.duracao_media) : 0} />
-                </div>
+                {loaded ? (
+                  <>
+                    <p className="flex flex-col text-zinc-400 font-medium text-sm">Duração Média das Reservas</p>
+                    <div className="flex items-end gap-4">
+                      <span className="text-3xl">{indicadores?.duracao_media ? Number(indicadores?.duracao_media).toFixed(2) : 0}</span>
+                      <Comparativo nome="DURAÇÃO MÉDIA DAS RESERVAS" data={dataBW} passado={comparativoIO.passado?.duracao_media ? Number(comparativoIO.passado?.duracao_media) : 0}
+                        atual={comparativoIO.atual?.duracao_media ? Number(comparativoIO.atual?.duracao_media) : 0} />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <SkeletonLoader width="80%" height="1em" className="mb-2" />
+                    <SkeletonLoader width="50%" height="1.5em" />
+                  </>
+                )}
               </div>
             </div>
 
@@ -794,12 +912,21 @@ export default function Dashboard() {
                 <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ED3E44"><path d="M9 3V1H7V3H3C2.44772 3 2 3.44772 2 4V20C2 20.5523 2.44772 21 3 21H21C21.5523 21 22 20.5523 22 20V4C22 3.44772 21.5523 3 21 3H17V1H15V3H9ZM4 10H20V19H4V10ZM4 5H7V6H9V5H15V6H17V5H20V8H4V5ZM9.87862 10.9644L12 13.0858L14.1212 10.9644L15.5355 12.3785L13.4142 14.5001L15.5354 16.6212L14.1213 18.0354L12 15.9143L9.87855 18.0354L8.46442 16.6211L10.5857 14.5001L8.46436 12.3785L9.87862 10.9644Z"></path></svg>
               </div>
               <div className="flex flex-col ml-4">
-                <p className="flex flex-col text-zinc-400 font-medium text-sm">Diárias Indisponíveis</p>
-                <div className="flex items-end gap-4">
-                  <span className="text-3xl">{indicadores?.total_indisponivel ? indicadores?.total_indisponivel : 0}</span>
-                  <Comparativo nome="DIÁRIAS INDISPONÍVEIS" data={dataBW} passado={comparativoIO.passado?.total_indisponivel ? Number(comparativoIO.passado?.total_indisponivel) : 0}
-                    atual={comparativoIO.atual?.total_indisponivel ? Number(comparativoIO.atual?.total_indisponivel) : 0} />
-                </div>
+                {loaded ? (
+                  <>
+                    <p className="flex flex-col text-zinc-400 font-medium text-sm">Diárias Indisponíveis</p>
+                    <div className="flex items-end gap-4">
+                      <span className="text-3xl">{indicadores?.total_indisponivel ? indicadores?.total_indisponivel : 0}</span>
+                      <Comparativo nome="DIÁRIAS INDISPONÍVEIS" data={dataBW} passado={comparativoIO.passado?.total_indisponivel ? Number(comparativoIO.passado?.total_indisponivel) : 0}
+                        atual={comparativoIO.atual?.total_indisponivel ? Number(comparativoIO.atual?.total_indisponivel) : 0} />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <SkeletonLoader width="80%" height="1em" className="mb-2" />
+                    <SkeletonLoader width="50%" height="1.5em" />
+                  </>
+                )}
               </div>
             </div>
             {/* Quantidade de hospede */}
@@ -808,17 +935,26 @@ export default function Dashboard() {
               <QtdeHospede labels={qtdHospede.length > 0 ? qtdHospede.map(h => String(h.qtd_hospede)) : ['']} dados={qtdHospede.length > 0 ? qtdHospede.map(h => Number(h.qtd_reserva)) : [1]} colors={qtdHospede.length > 0 ? ['#5ec8de', '#5c89b4', '#e36a5f', '#e59b96', '#f5cf69', '#f1d334', '#da2e97', '#f46bd6', '#c169fe', '#43b9ff', '#efc25d', '#f06788', '#69b2f0', '#5ef1db', '#51e853']
                 : ['#cccccc']} />
             </div>
-            <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center" >
+            <div className="bg-white border-zinc-300 border rounded-lg flex items-center" >
               <div className="bg-[#F2F2F2] rounded-md w-fit py-2 px-2 ml-4">
                 <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#111827"><path d="M20 22H4V20C4 17.2386 6.23858 15 9 15H15C17.7614 15 20 17.2386 20 20V22ZM12 13C8.68629 13 6 10.3137 6 7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7C18 10.3137 15.3137 13 12 13Z"></path></svg>
               </div>
               <div className="flex flex-col ml-4">
-                <p className="flex flex-col text-zinc-400 font-medium text-sm">Total de Hóspedes</p>
-                <div className="flex items-end gap-4">
-                  <span className="text-3xl">{indicadores?.total_hospede || 0}</span>
-                  <Comparativo nome="TOTAL DE HÓSPEDES" data={dataBW} passado={comparativoIO.passado?.total_hospede ? Number(comparativoIO.passado?.total_hospede) : 0}
-                    atual={comparativoIO.atual?.total_hospede ? Number(comparativoIO.atual?.total_hospede) : 0} />
-                </div>
+                {loaded ? (
+                  <>
+                    <p className="flex flex-col text-zinc-400 font-medium text-sm">Total de Hóspedes</p>
+                    <div className="flex items-end gap-4">
+                      <span className="text-3xl">{indicadores?.total_hospede || 0}</span>
+                      <Comparativo nome="TOTAL DE HÓSPEDES" data={dataBW} passado={comparativoIO.passado?.total_hospede ? Number(comparativoIO.passado?.total_hospede) : 0}
+                        atual={comparativoIO.atual?.total_hospede ? Number(comparativoIO.atual?.total_hospede) : 0} />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <SkeletonLoader width="80%" height="1em" className="mb-2" />
+                    <SkeletonLoader width="50%" height="1.5em" />
+                  </>
+                )}
               </div>
             </div>
 
@@ -827,44 +963,63 @@ export default function Dashboard() {
           <section className="grid gap-5 mb-10 grid-rows-10" style={{ gridTemplateColumns: '1fr 2fr' }}>
             <div className="bg-white border-zinc-300 border rounded-lg flex flex-col items-center h-full row-span-3 w-full">
               <p className="flex flex-col text-zinc-400 font-medium text-sm mb-7 mt-3">Faturamento por Canal</p>
-              {movimentacao.length > 0 && <FaturamentoCanal labels={movimentacao.map(m => m.nome)}
-                dados={movimentacao.map(m => m.valor_liq)} colors={movimentacao.map(m => m.cor)} />}
+              {loaded ? (
+                movimentacao.length > 0 && <FaturamentoCanal labels={movimentacao.map(m => m.nome)}
+                  dados={movimentacao.map(m => m.valor_liq)} colors={movimentacao.map(m => m.cor)} />
+              ) : (
+                <SkeletonLoader width="100%" height="100%" className="mt-4" />
+              )}
             </div>
             {/*  */}
             <div className="bg-white border-zinc-300 border rounded-lg flex flex-col items-center h-full row-span-5">
               <p className="flex flex-col text-zinc-400 font-medium text-sm mb-16 mt-3">Faturamento X Despesas</p>
-              {periodo == 'm-atual' && faturamento.length > 0 ? <FaturamentoxDespesa
-                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.despesa))}
-                mes={date.getMonth() + 1} /> : null}
-              {periodo == 'm-passado' && faturamento.length > 0 ? <FaturamentoxDespesa
-                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.despesa))}
-                mes={date.getMonth() == 0 && faturamento.length > 0 ? 12 : date.getMonth()} /> : null}
-              {periodo == 'a-atual' && faturamento.length > 0 ? <FaturamentoxDespesa
-                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.despesa))}
-                mes={12} /> : null}
-              {periodo == 'a-passado' && faturamento.length > 0 ? <FaturamentoxDespesa
-                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.despesa))}
-                mes={12} /> : null}
-              {periodo == 'personalizado' && faturamento.length > 0 ? <FaturamentoxDespesa
-                dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                dadosPassado={faturamento.map(fat => Number(fat.despesa))}
-                mes={new Date(new Date(ateData).setDate(new Date(ateData).getDate() + 1)).getMonth() + 1} /> : null}
+              {loaded ? (
+                <>
+                  {periodo == 'm-atual' && faturamento.length > 0 ? <FaturamentoxDespesa
+                    dadosAtuais={faturamento.map(fat => Number(fat.receita))}
+                    dadosPassado={faturamento.map(fat => Number(fat.despesa))}
+                    mes={date.getMonth() + 1} /> : null}
+                  {periodo == 'm-passado' && faturamento.length > 0 ? <FaturamentoxDespesa
+                    dadosAtuais={faturamento.map(fat => Number(fat.receita))}
+                    dadosPassado={faturamento.map(fat => Number(fat.despesa))}
+                    mes={date.getMonth() == 0 && faturamento.length > 0 ? 12 : date.getMonth()} /> : null}
+                  {periodo == 'a-atual' && faturamento.length > 0 ? <FaturamentoxDespesa
+                    dadosAtuais={faturamento.map(fat => Number(fat.receita))}
+                    dadosPassado={faturamento.map(fat => Number(fat.despesa))}
+                    mes={12} /> : null}
+                  {periodo == 'a-passado' && faturamento.length > 0 ? <FaturamentoxDespesa
+                    dadosAtuais={faturamento.map(fat => Number(fat.receita))}
+                    dadosPassado={faturamento.map(fat => Number(fat.despesa))}
+                    mes={12} /> : null}
+                  {periodo == 'personalizado' && faturamento.length > 0 ? <FaturamentoxDespesa
+                    dadosAtuais={faturamento.map(fat => Number(fat.receita))}
+                    dadosPassado={faturamento.map(fat => Number(fat.despesa))}
+                    mes={new Date(new Date(ateData).setDate(new Date(ateData).getDate() + 1)).getMonth() + 1} /> : null}
+                </>
+              ) : (
+                <SkeletonLoader width="100%" height="100%" className="mt-4" />
+              )}
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center">
               <div className="bg-[#FEF0D0] rounded-md w-fit py-2 px-2 ml-4">
                 <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FAB515"><path d="M22 11V20H20V17H4V20H2V4H4V14H12V7H18C20.2091 7 22 8.79086 22 11ZM8 13C6.34315 13 5 11.6569 5 10C5 8.34315 6.34315 7 8 7C9.65685 7 11 8.34315 11 10C11 11.6569 9.65685 13 8 13Z"></path></svg>
               </div>
               <div className="flex flex-col ml-4">
-                <p className="flex flex-col text-zinc-400 font-medium text-sm">Diária Média</p>
-                <div className="flex items-end gap-4">
-                  <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].diaria_media).toFixed(2))}</span>
-                  <Comparativo nome="DIÁRIA MÉDIA" data={dataBW} passado={comparativoRA.passado?.diaria_media ? Number(comparativoRA.passado?.diaria_media) : 0}
-                    atual={comparativoRA.atual?.diaria_media ? Number(comparativoRA.atual?.diaria_media) : 0} />
-                </div>
+                {loaded ? (
+                  <>
+                    <p className="flex flex-col text-zinc-400 font-medium text-sm">Diária Média</p>
+                    <div className="flex items-end gap-4">
+                      <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].diaria_media).toFixed(2))}</span>
+                      <Comparativo nome="DIÁRIA MÉDIA" data={dataBW} passado={comparativoRA.passado?.diaria_media ? Number(comparativoRA.passado?.diaria_media) : 0}
+                        atual={comparativoRA.atual?.diaria_media ? Number(comparativoRA.atual?.diaria_media) : 0} />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <SkeletonLoader width="80%" height="1em" className="mb-2" />
+                    <SkeletonLoader width="50%" height="1.5em" />
+                  </>
+                )}
               </div>
             </div>
             <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center">

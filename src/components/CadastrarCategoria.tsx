@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 import Notify from "./notify/Notify";
 
@@ -28,7 +28,7 @@ export default function CadastrarCategoria({ close, permissao }: { close: () => 
     const [showNotify, setShowNotify] = useState<boolean>(false)
     const [editingColorId, setEditingColorId] = useState<number | null>(null) // id da categoria com seletor de cor aberto
 
-    async function getCategorias() {
+    const getCategorias = useCallback(async () => {
         await fetch(`${apiURL}/categoria_financeiro/` + dataToken.id, {
             method: 'GET'
         })
@@ -38,7 +38,7 @@ export default function CadastrarCategoria({ close, permissao }: { close: () => 
                 setReceitas(data.filter(e => e.receita))
             })
             .catch(err => console.log(err))
-    }
+    }, [apiURL, dataToken.id])
 
     async function createCategorias(pbody: CategoriaFinanceiro) {
         await fetch(`${apiURL}/categoria_financeiro/`, {
@@ -101,7 +101,7 @@ export default function CadastrarCategoria({ close, permissao }: { close: () => 
 
     useEffect(() => {
         getCategorias()
-    }, [dataToken])
+    }, [dataToken, getCategorias])
 
     // Fecha o seletor de cor ao clicar fora
     useEffect(() => {

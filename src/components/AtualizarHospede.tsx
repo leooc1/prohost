@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 import Notify from "./notify/Notify";
 import EditarReserva from "./EditarReserva";
@@ -20,7 +20,23 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
     const [tel, setTel] = useState<string | null>()
     const [err, setErr] = useState<boolean>(false)
     const [cardReserva, setCardReserva] = useState<boolean>(false)
-    const [dataReserva, setDataReserva] = useState<any>(null)
+    const [dataReserva, setDataReserva] = useState<{
+        id: number
+        close: () => void
+        acomodacaoID: number
+        hospedeNOME: string
+        qtdHospede: number
+        checkIn: string
+        checkOut: string
+        canalID: number
+        valorTotal: number
+        taxaLimpeza: number
+        comissao: number
+        tipoReserva: string
+        valorLiq: number
+        obs: string
+        saas: number
+    } | null>(null)
     const [reservas, setReservas] = useState<{
         acomodacao: string
         nome: string,
@@ -105,7 +121,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
         return resultado;
     }
 
-    async function getHospede() {
+    const getHospede = useCallback(async () => {
         await fetch(`${apiURL}/hospede/${dataToken.id}/${id}`, {
             method: 'GET'
         })
@@ -133,7 +149,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
                 agruparPorAcomodacao(data.reservas)
             })
             .catch(err => console.log(err))
-    }
+    }, [apiURL, dataToken.id, id])
 
     async function updateHospede(pbody: Hospede) {
         await fetch(`${apiURL}/hospede/${id}`, {
@@ -149,7 +165,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
                     setShowNotify(true)
                     setTimeout(() => {
                         setShowNotify(false);
-                        location.reload()
+                        close()
                     }, 3000)
                 }
             })
@@ -158,7 +174,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
 
     useEffect(() => {
         getHospede()
-    }, [dataToken])
+    }, [dataToken, getHospede])
 
 
     return (

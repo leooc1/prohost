@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, useCallback } from 'react'
 import nomoney from '/no-money.svg'
 import Notify from './notify/Notify'
 import { SideBarContext } from '../contexts/SideBarMenuContext'
@@ -39,8 +39,19 @@ export default function CardCancelamento(props: propsCancelamento) {
     const [isTerceiro, setIsTerceiro] = useState(false)
     const [comissao, setComissao] = useState<number | null>(null)
 
+    const getReserva = useCallback(async (id: string) => {
+        await fetch(`${apiURL}/reserva/${dataToken.id}/${id}`, {
+            method: 'GET'
+        })
+            .then(data => data.json())
+            .then((data: Reserva[]) => {
+                setReserva(data[0])
+            })
+            .catch(err => console.log(err))
+    }, [apiURL, dataToken.id])
+
     useEffect(() => {
-        async function fetchAcomodacao() {
+        const fetchAcomodacao = async () => {
             const res = await fetch(`${apiURL}/reserva/${props.id}`)
             const data = await res.json()
             const acomodacaoId = data[0]?.acomodacao?.id
@@ -56,18 +67,9 @@ export default function CardCancelamento(props: propsCancelamento) {
             await getReserva(String(props.id))
         }
         fetchAcomodacao()
-    }, [props.id])
+    }, [props.id, apiURL, getReserva, isTerceiro])
 
-    async function getReserva(id: string) {
-        await fetch(`${apiURL}/reserva/${dataToken.id}/${id}`, {
-            method: 'GET'
-        })
-            .then(data => data.json())
-            .then((data: Reserva[]) => {
-                setReserva(data[0])
-            })
-            .catch(err => console.log(err))
-    }
+
 
     async function deleteReserva(id: number) {
         await fetch(`${apiURL}/reserva/${id}`, {
@@ -80,7 +82,7 @@ export default function CardCancelamento(props: propsCancelamento) {
                     setShowNotify(true)
                     setTimeout(() => {
                         setShowNotify(false);
-                        location.reload()
+                        props.close()
                     }, 3000)
                 }
             })
@@ -118,7 +120,7 @@ export default function CardCancelamento(props: propsCancelamento) {
                     setShowNotify(true)
                     setTimeout(() => {
                         setShowNotify(false);
-                        location.reload()
+                        props.close()
                     }, 3000)
                 }
             })

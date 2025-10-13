@@ -61,11 +61,11 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children 
         setPage(0)
     }, [saas, movimentacoes, numPaginacao])
 
-    function gerarEbaixarCSVMovimentacoes(movimentacoes: any) {
+    function gerarEbaixarCSVMovimentacoes(movimentacoes: Movimentacao[]) {
         const headers = ["Data", "Categoria", "Descrição", "Acomodação", "Valor Bruto", "Valor Líquido"];
         const linhas = [headers.join(",")];
 
-        movimentacoes.forEach((m: any) => {
+        movimentacoes.forEach((m: Movimentacao) => {
             const dataFormatada = m.data && m.data != '-' ? m.data.split('-').reverse().join('/') : '-';
 
             const categoria = m.categoria_financeiro
@@ -108,9 +108,9 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children 
         document.body.removeChild(link);
     }
 
-    async function gerarEbaixarExcelMovimentacoes(movimentacoes: any[]) {
+    async function gerarEbaixarExcelMovimentacoes(movimentacoes: Movimentacao[]) {
         const XLSX = await import('xlsx');
-        const dados = movimentacoes.map((e: any) => {
+        const dados = movimentacoes.map((e: Movimentacao) => {
             // Formata data (ex: 2024-04-30 → 30/04/2024)
             const dataFormatada = e.data?.length === 1 ? e.data :
                 `${e.data.split('-')[2]}/${e.data.split('-')[1]}/${e.data.split('-')[0]}`;
@@ -219,8 +219,8 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children 
                                 >
                                     <path
                                         d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
-                                        stroke-linejoin="round"
-                                        stroke-linecap="round"
+                                        strokeLinejoin="round"
+                                        strokeLinecap="round"
                                     ></path>
                                 </svg>
                             </button>
@@ -236,13 +236,11 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children 
                                     <th className="text-center">Valor Líquido</th>
                                 </tr>
                             </thead>
-                            <tbody className="">
+<tbody className="">
                                 {
                                     arrayMovimentacoes.length > page && arrayMovimentacoes[page]?.length > 0 ?
-                                        arrayMovimentacoes[page].map((e) =>{ 
-                                            return <>
-                                                <tr className={`text-xs bg-white h-12 border border-zinc-200 w-full hover:bg-[#FAFBFD]
-                                                ${e.reserva == null && e.data != '-' ? 'cursor-pointer' : ''}`}
+                                        arrayMovimentacoes[page].map((e) => (
+                                                <tr key={e.id} className={`text-xs bg-white h-12 border border-zinc-200 w-full hover:bg-[#FAFBFD]\n                                                ${e.reserva == null && e.data != '-' ? 'cursor-pointer' : ''}`}
                                                     onClick={() => {
                                                         if (e.reserva == null && e.data != '-') {
                                                             setEditavel(true)
@@ -283,8 +281,8 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children 
                                                     <td className="text-center text-xs font-normal">{e.acomodacao ? e.acomodacao.nome : ''}</td>
                                                     <td className="text-center text-xs font-normal">{formatarMoedaBrasileira(String(e.valor))}</td>
                                                     <td className="text-center text-xs font-normal">{formatarMoedaBrasileira(String(e.valor_liq))}</td>
-                                                </tr >
-                                            </>})
+                                                </tr>
+                                        ))
                                         : null
                                 }
                             </tbody>

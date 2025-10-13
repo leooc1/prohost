@@ -214,14 +214,28 @@ export default function Acomodacoes() {
                         setTimeout(() => {
                             setShowNotify(false);
                         }, 3000)
+                        const acomodacao = proprio.find(a => a.id === id) || terceiro.find(a => a.id === id);
+                        if (acomodacao) {
+                            setProprio(proprio.filter(a => a.id !== id));
+                            setTerceiro(terceiro.filter(a => a.id !== id));
+                            setDesativados([...desativados, acomodacao]);
+                        }
                     } else {
                         setNotify({ type: 1, text: 'Ativado!' })
                         setShowNotify(true)
                         setTimeout(() => {
                             setShowNotify(false);
                         }, 3000)
+                        const acomodacao = desativados.find(a => a.id === id);
+                        if (acomodacao) {
+                            setDesativados(desativados.filter(a => a.id !== id));
+                            if (acomodacao.tipo === 'proprio') {
+                                setProprio([...proprio, acomodacao]);
+                            } else {
+                                setTerceiro([...terceiro, acomodacao]);
+                            }
+                        }
                     }
-                    location.reload()
                 }
             })
             .catch(err => console.log(err))
@@ -235,8 +249,14 @@ export default function Acomodacoes() {
         })
             .then(data => data.json())
             .then((data) => {
-                if (data.affected == 1)
-                    location.reload()
+                if (data.affected == 1) {
+                    setNotify({ type: 1, text: 'Deletado!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
+                    setDesativados(desativados.filter(a => a.id !== id));
+                }
             })
             .catch(err => console.log(err))
     }

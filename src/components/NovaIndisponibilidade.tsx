@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import { SideBarContext } from "../contexts/SideBarMenuContext"
 import Notify from "./notify/Notify"
 
@@ -72,7 +72,7 @@ export default function NovaIndisponibilidade({ close }: { close: () => void }) 
                     setShowNotify(true)
                     setTimeout(() => {
                         setShowNotify(false);
-                        location.reload()
+                        close()
                     }, 3000)
                 } else if (data.length > 0) {
                     setNotify({ type: 1, text: data })
@@ -92,14 +92,14 @@ export default function NovaIndisponibilidade({ close }: { close: () => void }) 
             .catch(err => console.log(err))
     }
 
-    async function getInfo() {
+    const getInfo = useCallback(async () => {
         await getAcomodacoes()
         setRender(true)
-    }
+    }, [getAcomodacoes])
 
     useEffect(() => {
         getInfo()
-    }, [])
+    }, [getInfo])
 
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>

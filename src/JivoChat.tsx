@@ -13,11 +13,11 @@ const blockedRoutes = [
 const JivoChat = () => {
   const location = window.location;
 
-  if (blockedRoutes.some(route => location.pathname.startsWith(route))) {
-    return null;
-  }
-
   useEffect(() => {
+    if (blockedRoutes.some(route => location.pathname.startsWith(route))) {
+      return;
+    }
+
     const script = document.createElement("script");
     script.src = "//code.jivosite.com/widget/t3ZXsHzqJ1";
     script.async = true;
@@ -27,7 +27,7 @@ const JivoChat = () => {
     return () => {
       document.body.removeChild(script);
     };
-  }, []);
+  }, [location.pathname]);
 
   return null;
 };

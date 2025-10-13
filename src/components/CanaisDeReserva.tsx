@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { SideBarContext } from '../contexts/SideBarMenuContext'
 import Notify from './notify/Notify'
 interface Canais {
@@ -18,7 +18,7 @@ export default function CanaisDeReserva({ close, permissao }: { close: () => voi
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
 
-    async function getCanais() {
+    const getCanais = useCallback(async () => {
         await fetch(`${apiURL}/canal_reserva/` + dataToken.id, {
             method: 'GET'
         })
@@ -27,7 +27,7 @@ export default function CanaisDeReserva({ close, permissao }: { close: () => voi
                 setCanais(data)
             })
             .catch(err => console.log(err))
-    }
+    }, [apiURL, dataToken.id])
 
     async function updateCanais(id: number, pbody: { cor: string, nome: string }) {
         await fetch(`${apiURL}/canal_reserva/${id}`, {
@@ -91,7 +91,7 @@ export default function CanaisDeReserva({ close, permissao }: { close: () => voi
 
     useEffect(() => {
         getCanais()
-    }, [dataToken])
+    }, [dataToken, getCanais])
 
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>

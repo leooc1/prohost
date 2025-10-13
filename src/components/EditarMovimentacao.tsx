@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import Loader from "./Loader"
 import Notify from "./notify/Notify"
 interface Acomodacao {
@@ -103,7 +103,7 @@ export default function EditarMovimentacao(props: propsEditar) {
                         setShowNotify(true)
                         setTimeout(() => {
                             setShowNotify(false);
-                            location.reload()
+                            props.close()
                         }, 3000)
                     }
                 }
@@ -122,7 +122,7 @@ export default function EditarMovimentacao(props: propsEditar) {
                     setShowNotify(true)
                     setTimeout(() => {
                         setShowNotify(false);
-                        location.reload()
+                        props.close()
                     }, 3000)
                 }
                 else {
@@ -153,18 +153,25 @@ export default function EditarMovimentacao(props: propsEditar) {
             id: number
         }
     }>(null)
-    async function loadAll() {
+    const loadAll = useCallback(async () => {
         await getAcomodacoes()
         await getCategorias()
         setLoaded(true)
-    }
+    }, [getAcomodacoes, getCategorias])
 
-    async function getNotify() {
+    const getNotify = useCallback(async () => {
         await fetch(`${apiURL}/recorrencia/` + props.id + '/despesa', {
             method: 'GET'
         })
             .then(data => data.json())
-            .then((data: any[]) => {
+            .then((data: {
+                id: number
+                meses_recorrencia: number
+                data: string
+                despesa: {
+                    id: number
+                }
+            }[]) => {
                 if (data.length > 0) {
                     setRecorrencia({
                         id: data[data.length - 1].id,
@@ -178,35 +185,12 @@ export default function EditarMovimentacao(props: propsEditar) {
                     setRecorrencia(null)
             })
             .catch(err => console.log(err))
-    }
-
-    async function editarRecorrencia(data: string) {
-        await fetch(`${apiURL}/recorrencia/${recorrencia?.id}`, {
-            method: 'PUT',
-            body: JSON.stringify({ ...recorrencia, data: data, meses_recorrencia: mesRecorrencia }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(data => data.json())
-            .then((data) => {
-                if (data.affected) {
-                    setNotify({ type: 1, text: 'Atualizado!' })
-                    setShowNotify(true)
-                    setTimeout(() => {
-                        setShowNotify(false);
-                        location.reload()
-                    }, 3000)
-                }
-
-            })
-            .catch(err => console.log(err))
-    }
+    }, [apiURL, props.id])
 
     useEffect(() => {
         loadAll()
         getNotify()
-    }, [])
+    }, [loadAll, getNotify])
 
     return (
         loaded ?

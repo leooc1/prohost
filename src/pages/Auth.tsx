@@ -1,13 +1,17 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import { SideBarContext } from '../contexts/SideBarMenuContext';
 import prohostLogo from '/prohost-logo.png'
 import Notify from '../components/notify/Notify'
+import { useNavigate } from 'react-router-dom';
 
 
 export default function Auth() {
     const apiURL = import.meta.env.VITE_API_URL
+    const { setDataToken } = useContext(SideBarContext)
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
     const [viewPW, setViewPW] = useState(false)
+    const navigate = useNavigate()
 
     async function logar(login: { email: string, senha: string }) {
         await fetch(`${apiURL}/users/auth`, {
@@ -32,7 +36,9 @@ export default function Auth() {
                         window.location.assign('/reset-senha?email=' + encodeURIComponent(login.email));
                     } else if (data.token && data.token != true) {
                         window.localStorage.setItem('ph_token_acc', data.token)
-                        window.location.assign('/')
+                        const tokenData = JSON.parse(atob(data.token.split('.')[1]))
+                        setDataToken(tokenData)
+                        navigate('/')
                     }
                 }
                 else {

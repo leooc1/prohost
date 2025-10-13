@@ -16,7 +16,7 @@ import AcomodacoesDetalhes from './pages/AcomodacoesDetalhes.tsx'
 import Assinar from './pages/Assinar.tsx'
 import Auth from './pages/Auth.tsx'
 import Config from './pages/Config.tsx'
-import Dashboard from './pages/Dashboard.tsx'
+import { Dashboard } from './pages/Dashboard.tsx'
 import EsqueciSenha from './pages/EsqueciSenha.tsx'
 import FeedBacks from './pages/FeedBacks.tsx'
 import Financeiro from './pages/Financeiro.tsx'
@@ -25,6 +25,8 @@ import MinhaConta from './pages/MinhaConta.tsx'
 import Relatorio from './pages/Relatorio.tsx'
 import Reserva from './pages/Reserva.tsx'
 import ImportadorReservas from './pages/ImportAirBnB.tsx'
+
+import { SideBarProvider } from './contexts/SideBarMenuContext.tsx';
 
 const router = createBrowserRouter([
   {
@@ -121,8 +123,10 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode> 
-    <RouterProvider router={router} />
+  <React.StrictMode>
+    <SideBarProvider>
+      <RouterProvider router={router} />
+    </SideBarProvider>
     <JivoChat />
   </React.StrictMode>,
 )
