@@ -406,7 +406,7 @@ export default function Dashboard() {
         setResGestor(false)
         loadAll([de, ate]);
       }
-    }else {acomodacoes()}
+    } else { acomodacoes() }
   }, [filterAC, dataToken, periodo, deData, ateData, acomodacao]);
 
   useEffect(() => setShowTaxaOcu(true), [taxaOcupacao]);
@@ -682,8 +682,8 @@ export default function Dashboard() {
                   <div className="flex items-end gap-4">
                     <span className="text-nowrap text-xl">{filterAC != 'all' ? (Number(resultadoAcomodacoes[0].rentabilidade_imovel) * 100).toFixed(2) : '-----'} %</span>
                     {filterAC != 'all' && <Comparativo nome="RENTABILIDADE DO IMÓVEL" data={dataBW}
-                      passado={comparativoRA.passado?.rentabilidade_imovel ? Number(comparativoRA.passado?.rentabilidade_imovel) : 0}
-                      atual={comparativoRA.atual?.rentabilidade_imovel ? Number(comparativoRA.atual?.rentabilidade_imovel) : 0} />}
+                      passado={comparativoRA.passado?.rentabilidade_imovel ? Number(comparativoRA.passado?.rentabilidade_imovel) * 100 : 0}
+                      atual={comparativoRA.atual?.rentabilidade_imovel ? Number(comparativoRA.atual?.rentabilidade_imovel) * 100 : 0} />}
                   </div>
                 </div>
               </div>

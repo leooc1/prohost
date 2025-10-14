@@ -149,7 +149,7 @@ export default function Financeiro() {
                     categoria_financeiro: item.categoria_financeiro,
                     reserva: item.reserva,
                     canal_reserva: item.canal_reserva,
-                    cor: item.canal_reserva.cor
+                    cor: item?.canal_reserva?.cor || ''
                 };
             }
 
@@ -177,6 +177,7 @@ export default function Financeiro() {
                     categoria_financeiro: {
                         ...item.categoria_financeiro,
                         nome: 'Outras Receitas',
+                        cor: '#0000ff',
                         id: null,
                     },
                 };
