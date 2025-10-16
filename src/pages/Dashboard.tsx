@@ -455,24 +455,46 @@ export default function Dashboard() {
             </label>
             <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 h-9 self-end font-medium text-white bg-primary hover:shadow-md shadow-black'
               onClick={() => {
-                const inputDe = document.getElementById('de') as HTMLInputElement
-                const inputAte = document.getElementById('ate') as HTMLInputElement
-                if (new Date(inputDe.value) >= new Date(inputAte.value)) {
-                  const newDate = new Date(inputDe.value)
-                  newDate.setDate(newDate.getDate() + 1)
-                  const dataFormatada = newDate.toISOString().split('T')[0]
-                  setDeData(inputDe.value)
-                  inputAte.value = dataFormatada
-                  setAteData(dataFormatada)
+                const inputDe = document.getElementById('de') as HTMLInputElement;
+                const inputAte = document.getElementById('ate') as HTMLInputElement;
+
+                const dataDe = new Date(inputDe.value);
+                const dataAte = new Date(inputAte.value);
+
+                const anos = dataAte.getFullYear() - dataDe.getFullYear();
+                const meses = dataAte.getMonth() - dataDe.getMonth();
+                const diffMeses = anos * 12 + meses;
+
+                if (diffMeses > 12) {
+                  const novaDataDe = new Date(dataAte);
+                  novaDataDe.setMonth(novaDataDe.getMonth() - 12);
+                  const dataFormatada = novaDataDe.toISOString().split('T')[0];
+                  inputDe.value = dataFormatada;
+                  setDeData(dataFormatada);
+                  setAteData(inputAte.value);
+                  localStorage.setItem("datade", dataFormatada);
+                  localStorage.setItem("dataate", inputAte.value);
+                  alert('Neste filtro, as datas são limitadas em 12 meses. A data "De" foi ajustada automaticamente.');
+                  return;
+                }
+
+                if (dataDe >= dataAte) {
+                  const newDate = new Date(dataDe);
+                  newDate.setDate(newDate.getDate() + 1);
+                  const dataFormatada = newDate.toISOString().split('T')[0];
+                  setDeData(inputDe.value);
+                  inputAte.value = dataFormatada;
+                  setAteData(dataFormatada);
                   localStorage.setItem("datade", inputDe.value);
                   localStorage.setItem("dataate", dataFormatada);
                 } else {
-                  setDeData(inputDe.value)
-                  setAteData(inputAte.value)
+                  setDeData(inputDe.value);
+                  setAteData(inputAte.value);
                   localStorage.setItem("datade", inputDe.value);
                   localStorage.setItem("dataate", inputAte.value);
                 }
-              }}>Aplicar filtro</button>
+              }}
+            >Aplicar filtro</button>
           </> : null}
           <div>
             <p className="text-zinc-600 font-medium text-sm">Exibindo resultados de</p>
