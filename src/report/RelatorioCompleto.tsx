@@ -119,7 +119,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
 
         // Lógica para PDF (usando o novo handler)
         if (type === 'pdf') {
-            
+
             const button_report = document.querySelectorAll('.button-report')
             button_report.forEach(e => e.classList.add('hidden'))
             const elements = document.querySelectorAll('.opacity-30')
@@ -574,13 +574,13 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                         </section>
                     </div>
                     {/* DESEMPENHO E RENTABILIDADE DO IMOVEL */}
-                    <div className={`relative ${!editPages[3] && 'opacity-30'}`}>
+                    <div className={`relative ${!editPages[2] && 'opacity-30'}`}>
                         <button onClick={() => {
                             let error = editPages
-                            error = (error.map((e, i) => i === 3 ? !e : e))
+                            error = (error.map((e, i) => i === 2 ? !e : e))
                             setEditPages(error)
-                        }} className={`button-report absolute left-3 top-1 py-1 px-2 z-20 ${editPages[3] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[3] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
-                        <section id='desempenho-imovel' className={`${!editPages[3] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
+                        }} className={`button-report absolute left-3 top-1 py-1 px-2 z-20 ${editPages[2] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[2] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
+                        <section id='desempenho-imovel' className={`${!editPages[2] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
                             <div className='flex items-center absolute bottom-1 right-2 gap-2'>
                                 <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                                 <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
@@ -616,13 +616,13 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                         </section>
                     </div>
                     {/* COMPARATIVO DO FATURAMENTO */}
-                    <div className={`relative ${!editPages[4] && 'opacity-30'}`}>
+                    <div className={`relative ${!editPages[3] && 'opacity-30'}`}>
                         <button onClick={() => {
                             let error = editPages
-                            error = (error.map((e, i) => i === 4 ? !e : e))
+                            error = (error.map((e, i) => i === 3 ? !e : e))
                             setEditPages(error)
-                        }} className={`button-report absolute left-3 top-1 py-1 px-2 z-20 ${editPages[4] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[4] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
-                        <section id='comparativo-faturamento' className={`${!editPages[4] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
+                        }} className={`button-report absolute left-3 top-1 py-1 px-2 z-20 ${editPages[3] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[3] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
+                        <section id='comparativo-faturamento' className={`${!editPages[3] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
                             <div className='flex items-center absolute bottom-1 right-2 gap-2'>
                                 <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                                 <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
@@ -642,13 +642,13 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                         </section>
                     </div>
                     {/* DETALHAMENTO DAS DESPESAS */}
-                    <div className={`relative ${!editPages[2] && 'opacity-30'}`}>
+                    <div className={`relative ${!editPages[4] && 'opacity-30'}`}>
                         <button onClick={() => {
                             let error = editPages
-                            error = (error.map((e, i) => i === 2 ? !e : e))
+                            error = (error.map((e, i) => i === 4 ? !e : e))
                             setEditPages(error)
-                        }} className={`button-report absolute left-3 top-1 py-1 px-2 z-20 ${editPages[2] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[2] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
-                        <section id='detalhamento-despesas' className={`${!editPages[2] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
+                        }} className={`button-report absolute left-3 top-1 py-1 px-2 z-20 ${editPages[4] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[4] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
+                        <section id='detalhamento-despesas' className={`${!editPages[4] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
                             <div className='flex items-center absolute bottom-1 right-2 gap-2'>
                                 <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                                 <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
@@ -664,7 +664,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                         </section>
                     </div>
                     {/* RESULTADO DA ACOMODACAO E REPASSE */}
-                    {resultadoAcomodacoes && resultadoAcomodacoes.length > 0 && < div className='relative'>
+                    {resultadoAcomodacoes && resultadoAcomodacoes.length > 0 && < div className={`relative ${!editPages[5] && 'opacity-30'}`}>
                         <button onClick={() => {
                             let error = editPages
                             error = (error.map((e, i) => i === 5 ? !e : e))
