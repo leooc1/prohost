@@ -90,6 +90,8 @@ export default function RelatorioCompleto(props: propsRelatorio) {
 
         // Lógica para restaurar o DOM após a impressão (ou cancelamento)
         onAfterPrint: () => {
+            const relatorio_container = document.querySelector('#relatorio-container')
+            relatorio_container?.classList.remove('w-[calc(141.4vh)]')
             const button_report = document.querySelectorAll('.button-report')
             button_report.forEach(e => e.classList.remove('hidden'))
             const elements = document.querySelectorAll('.opacity-30');
@@ -119,7 +121,8 @@ export default function RelatorioCompleto(props: propsRelatorio) {
 
         // Lógica para PDF (usando o novo handler)
         if (type === 'pdf') {
-
+            const relatorio_container = document.querySelector('#relatorio-container')
+            relatorio_container?.classList.add('w-[calc(141.4vh)]')
             const button_report = document.querySelectorAll('.button-report')
             button_report.forEach(e => e.classList.add('hidden'))
             const elements = document.querySelectorAll('.opacity-30')
@@ -366,7 +369,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                 </button>
             </div>
             {loaded &&
-                <div className="flex flex-col relative gap-1" ref={pdfRef} >
+                <div id='relatorio-container' className="flex flex-col relative gap-1" ref={pdfRef} >
                     {/* RELATORIO */}
                     <section id='relatorio' className={`flex flex-col justify-between p-10 h-screen relative bg-[#003347]`}>
                         <div className='flex items-center absolute bottom-1 right-2 gap-2'>
