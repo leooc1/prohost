@@ -71,16 +71,16 @@ export default function Dashboard() {
   const apiURL = import.meta.env.VITE_API_URL
   useEffect(() => { document.title = 'Dashboard | Prohost' }, [])
 
-  const { dataToken } = useContext(SideBarContext)
+  const { dataToken } = useContext(SideBarContext);
   const [loaded, setLoaded] = useState(false)
-  function formatarMoedaBrasileira(valorStr: string) {
-    const valor = parseFloat(valorStr);
-    if (isNaN(valor)) {
+  function formatarMoedaBrasileira(valor: string | number | null | undefined) {
+    const valorNumerico = parseFloat(String(valor));
+    if (isNaN(valorNumerico)) {
       return "R$ 0,00";
     }
-    if (valor < 0)
+    if (valorNumerico < 0)
       return (0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    return valorNumerico.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
   const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
   const date = new Date()
@@ -154,6 +154,7 @@ export default function Dashboard() {
   const [comissao, setComissao] = useState<number>(0)
 
   async function acomodacoes() {
+    if (!dataToken?.id) return;
     try {
       const data: Acomodacao[] = await fetchJson(`${apiURL}/acomodacao/${dataToken.id}`);
       setAcomodacao(data.filter(e => !e.desativado));
@@ -586,22 +587,24 @@ export default function Dashboard() {
               </div>
               <div className="relative bg-white border-zinc-300 border rounded-lg h-80 flex flex-col justify-between items-center py-1 row-span-3">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm">Ocupação nos Dias da Semana</p>
-                <section className="grid grid-rows-7 grid-cols-2 gap-4 mb-2 w-full px-9">
-                  <p>{ocupacaoSemana[1][0]}</p>
-                  <p className="text-end">{Number(ocupacaoSemana[1][1]).toFixed(2)}%</p>
-                  <p>{ocupacaoSemana[2][0]}</p>
-                  <p className="text-end">{Number(ocupacaoSemana[2][1]).toFixed(2)}%</p>
-                  <p>{ocupacaoSemana[3][0]}</p>
-                  <p className="text-end">{Number(ocupacaoSemana[3][1]).toFixed(2)}%</p>
-                  <p>{ocupacaoSemana[4][0]}</p>
-                  <p className="text-end">{Number(ocupacaoSemana[4][1]).toFixed(2)}%</p>
-                  <p>{ocupacaoSemana[5][0]}</p>
-                  <p className="text-end">{Number(ocupacaoSemana[5][1]).toFixed(2)}%</p>
-                  <p>{ocupacaoSemana[6][0]}</p>
-                  <p className="text-end">{Number(ocupacaoSemana[6][1]).toFixed(2)}%</p>
-                  <p>{ocupacaoSemana[0][0]}</p>
-                  <p className="text-end">{Number(ocupacaoSemana[0][1]).toFixed(2)}%</p>
-                </section>
+                {ocupacaoSemana.length > 0 && (
+                  <section className="grid grid-rows-7 grid-cols-2 gap-4 mb-2 w-full px-9">
+                    <p>{ocupacaoSemana[1][0]}</p>
+                    <p className="text-end">{Number(ocupacaoSemana[1][1]).toFixed(2)}%</p>
+                    <p>{ocupacaoSemana[2][0]}</p>
+                    <p className="text-end">{Number(ocupacaoSemana[2][1]).toFixed(2)}%</p>
+                    <p>{ocupacaoSemana[3][0]}</p>
+                    <p className="text-end">{Number(ocupacaoSemana[3][1]).toFixed(2)}%</p>
+                    <p>{ocupacaoSemana[4][0]}</p>
+                    <p className="text-end">{Number(ocupacaoSemana[4][1]).toFixed(2)}%</p>
+                    <p>{ocupacaoSemana[5][0]}</p>
+                    <p className="text-end">{Number(ocupacaoSemana[5][1]).toFixed(2)}%</p>
+                    <p>{ocupacaoSemana[6][0]}</p>
+                    <p className="text-end">{Number(ocupacaoSemana[6][1]).toFixed(2)}%</p>
+                    <p>{ocupacaoSemana[0][0]}</p>
+                    <p className="text-end">{Number(ocupacaoSemana[0][1]).toFixed(2)}%</p>
+                  </section>
+                )}
               </div>
               <div className="bg-white border-zinc-300 border rounded-lg flex items-center" >
                 <div className="bg-[#F7D3AB] rounded-md w-fit py-2 px-2 ml-4">
@@ -690,9 +693,9 @@ export default function Dashboard() {
                 <div className="flex flex-col ml-4">
                   <p className="flex flex-col text-zinc-400 font-medium text-sm">Diária Média</p>
                   <div className="flex items-end gap-4">
-                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].diaria_media).toFixed(2))}</span>
-                    <Comparativo nome="DIÁRIA MÉDIA" data={dataBW} passado={comparativoRA.passado?.diaria_media ? Number(comparativoRA.passado?.diaria_media) : 0}
-                      atual={comparativoRA.atual?.diaria_media ? Number(comparativoRA.atual?.diaria_media) : 0} />
+                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(resultadoAcomodacoes[0]?.diaria_media)}</span>
+                    <Comparativo nome="DIÁRIA MÉDIA" data={dataBW} passado={Number(comparativoRA.passado?.diaria_media) || 0}
+                      atual={Number(comparativoRA.atual?.diaria_media) || 0} />
                   </div>
                 </div>
               </div>
@@ -716,9 +719,9 @@ export default function Dashboard() {
                 <div className="flex flex-col ml-4">
                   <p className="flex flex-col text-zinc-400 font-medium text-sm">Faturamento Bruto</p>
                   <div className="flex items-end gap-4">
-                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].faturamento_bruto).toFixed(2))}</span>
-                    <Comparativo nome="FATURAMENTO BRUTO" data={dataBW} passado={comparativoRA.passado?.faturamento_bruto ? Number(comparativoRA.passado?.faturamento_bruto) : 0}
-                      atual={comparativoRA.atual?.faturamento_bruto ? Number(comparativoRA.atual?.faturamento_bruto) : 0} />
+                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(resultadoAcomodacoes[0]?.faturamento_bruto)}</span>
+                    <Comparativo nome="FATURAMENTO BRUTO" data={dataBW} passado={Number(comparativoRA.passado?.faturamento_bruto) || 0}
+                      atual={Number(comparativoRA.atual?.faturamento_bruto) || 0} />
                   </div>
                 </div>
               </div>
@@ -785,9 +788,9 @@ export default function Dashboard() {
                 <div className="flex flex-col ml-4">
                   <p className="flex flex-col text-zinc-400 font-medium text-sm">Faturamento Líquido</p>
                   <div className="flex items-end gap-4">
-                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].faturamento_liquido).toFixed(2))}</span>
-                    <Comparativo nome="FATURAMENTO LÍQUIDO" data={dataBW} passado={comparativoRA.passado?.faturamento_liquido ? Number(comparativoRA.passado?.faturamento_liquido) : 0}
-                      atual={comparativoRA.atual?.faturamento_liquido ? Number(comparativoRA.atual?.faturamento_liquido) : 0} />
+                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(resultadoAcomodacoes[0]?.faturamento_liquido)}</span>
+                    <Comparativo nome="FATURAMENTO LÍQUIDO" data={dataBW} passado={Number(comparativoRA.passado?.faturamento_liquido) || 0}
+                      atual={Number(comparativoRA.atual?.faturamento_liquido) || 0} />
                   </div>
                 </div>
               </div>
@@ -797,9 +800,9 @@ export default function Dashboard() {
                 <div className="flex flex-col ml-4">
                   <p className="flex flex-col text-zinc-400 font-medium text-sm">Despesas (exceto negócio)</p>
                   <div className="flex items-end gap-4">
-                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].despesas).toFixed(2))}</span>
-                    <Comparativo nome="DESPESAS" data={dataBW} passado={comparativoRA.passado?.despesas ? Number(comparativoRA.passado?.despesas) : 0}
-                      atual={comparativoRA.atual?.despesas ? Number(comparativoRA.atual?.despesas) : 0} />
+                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(resultadoAcomodacoes[0]?.despesas)}</span>
+                    <Comparativo nome="DESPESAS" data={dataBW} formatarMoeda={formatarMoedaBrasileira} passado={Number(comparativoRA.passado?.despesas) || 0}
+                      atual={Number(comparativoRA.atual?.despesas) || 0} />
                   </div>
                 </div>
               </div>
@@ -810,9 +813,9 @@ export default function Dashboard() {
                 <div className="flex flex-col ml-4">
                   <p className="flex flex-col text-zinc-400 font-medium text-sm">Lucro das Acomodações</p>
                   <div className="flex items-end gap-4">
-                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].lucro).toFixed(2))}</span>
-                    <Comparativo nome="LUCRO DAS ACOMODAÇÕES" data={dataBW} passado={comparativoRA.passado?.lucro ? Number(comparativoRA.passado?.lucro) : 0}
-                      atual={comparativoRA.atual?.lucro ? Number(comparativoRA.atual?.lucro) : 0} />
+                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(resultadoAcomodacoes[0]?.lucro)}</span>
+                    <Comparativo nome="LUCRO DAS ACOMODAÇÕES" data={dataBW} formatarMoeda={formatarMoedaBrasileira} passado={(Number(comparativoRA.passado?.lucro)) || 0}
+                      atual={Number(comparativoRA.atual?.lucro) || 0} />
                   </div>
                 </div>
               </div>
@@ -860,9 +863,9 @@ export default function Dashboard() {
                 <div className="flex flex-col ml-4">
                   <p className="flex flex-col text-zinc-400 font-medium text-sm">Lucro das Acomodações Próprias</p>
                   <div className="flex items-end gap-4">
-                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoGestor[0].lucro_acomodacoes).toFixed(2))}</span>
-                    <Comparativo nome="LUCRO DAS ACOMODAÇÕES PRÓPRIAS" data={dataBW} passado={comparativoRG.passado?.lucro_acomodacoes ? Number(comparativoRG.passado?.lucro_acomodacoes) : 0}
-                      atual={comparativoRG.atual?.lucro_acomodacoes ? Number(comparativoRG.atual?.lucro_acomodacoes) : 0} />
+                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(resultadoGestor[0]?.lucro_acomodacoes)}</span>
+                    <Comparativo nome="LUCRO DAS ACOMODAÇÕES PRÓPRIAS" data={dataBW} formatarMoeda={formatarMoedaBrasileira} passado={Number(comparativoRG.passado?.lucro_acomodacoes) || 0}
+                      atual={Number(comparativoRG.atual?.lucro_acomodacoes) || 0} />
                   </div>
                 </div>
               </div>
@@ -873,9 +876,9 @@ export default function Dashboard() {
                 <div className="flex flex-col ml-4">
                   <p className="flex flex-col text-zinc-400 font-medium text-sm">Comissão das Acomodações de Terceiros</p>
                   <div className="flex items-end gap-4">
-                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoGestor[0].comissao_terceiros).toFixed(2))}</span>
-                    <Comparativo nome="COMISSÃO DAS ACOMODAÇÕES TERCEIRAS" data={dataBW} passado={comparativoRG.passado?.comissao_terceiros ? Number(comparativoRG.passado?.comissao_terceiros) : 0}
-                      atual={comparativoRG.atual?.comissao_terceiros ? Number(comparativoRG.atual?.comissao_terceiros) : 0} />
+                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(resultadoGestor[0]?.comissao_terceiros)}</span>
+                    <Comparativo nome="COMISSÃO DAS ACOMODAÇÕES TERCEIRAS" data={dataBW} formatarMoeda={formatarMoedaBrasileira} passado={Number(comparativoRG.passado?.comissao_terceiros) || 0}
+                      atual={Number(comparativoRG.atual?.comissao_terceiros) || 0} />
                   </div>
                 </div>
               </div>
@@ -886,7 +889,7 @@ export default function Dashboard() {
                 <div className="flex flex-col ml-4">
                   <p className="flex flex-col text-zinc-400 font-medium text-sm">Despesas de Negócio</p>
                   <div className="flex items-end gap-4">
-                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoGestor[0].despesas_negocio).toFixed(2))}</span>
+                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(resultadoGestor[0]?.despesas_negocio)}</span>
                   </div>
                 </div>
               </div>
@@ -897,7 +900,7 @@ export default function Dashboard() {
                 <div className="flex flex-col ml-4">
                   <p className="flex flex-col text-zinc-400 font-medium text-sm">Taxa de Limpeza</p>
                   <div className="flex items-end gap-4">
-                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoGestor[0].ajuste_comissao_ota).toFixed(2))}</span>
+                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(resultadoGestor[0]?.ajuste_comissao_ota)}</span>
                   </div>
                 </div>
               </div>
@@ -908,7 +911,7 @@ export default function Dashboard() {
                 <div className="flex flex-col ml-4">
                   <p className="flex flex-col text-zinc-400 font-medium text-sm">Lucro do Gestor</p>
                   <div className="flex items-end gap-4">
-                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoGestor[0].lucro_gestor).toFixed(2))}</span>
+                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(resultadoGestor[0]?.lucro_gestor)}</span>
                   </div>
                 </div>
               </div>

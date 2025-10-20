@@ -3,7 +3,8 @@ interface comparatidoProps {
     passado: number
     atual: number
     data: string[]
-    nome: string
+    nome: string,
+    formatarMoeda?: (valor: number) => string;
 }
 
 export default function Comparativo(props: comparatidoProps) {
@@ -58,11 +59,11 @@ export default function Comparativo(props: comparatidoProps) {
 
                         <div className="flex justify-between text-zinc-600">
                             <p className="text-left text-2xl font-semibold">
-                                {Number.isInteger(props.passado) ? (props.passado) : Number(props.passado).toFixed(2)}
+                                {props.formatarMoeda ? props.formatarMoeda(props.passado) : (Number.isInteger(props.passado) ? props.passado : Number(props.passado).toFixed(2))}
                             </p>
                             <span className="font-semibold text-xl">✕</span>
                             <p className="text-right text-2xl font-semibold">
-                                {Number.isInteger(props.atual) ? (props.atual) : Number(props.atual).toFixed(2)}
+                                {props.formatarMoeda ? props.formatarMoeda(props.atual) : (Number.isInteger(props.atual) ? props.atual : Number(props.atual).toFixed(2))}
                             </p>
                         </div>
 
