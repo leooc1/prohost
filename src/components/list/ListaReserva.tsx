@@ -331,7 +331,7 @@ console.log(reservas)
                                     }
                                     else {
                                         return (new Date(e.check_in) >= new Date(deData) &&
-                                            new Date(e.check_in) <= new Date(ateData)) &&
+                                            new Date(e.check_in) <= new Date(ateData)) ||
                                             (new Date(e.check_out) >= new Date(deData) &&
                                                 new Date(e.check_out) <= new Date(ateData))
                                     }
@@ -407,7 +407,7 @@ console.log(reservas)
                                     }
                                     else {
                                         return (new Date(e.check_in) >= new Date(deData) &&
-                                            new Date(e.check_in) <= new Date(ateData)) &&
+                                            new Date(e.check_in) <= new Date(ateData)) ||
                                             (new Date(e.check_out) >= new Date(deData) &&
                                                 new Date(e.check_out) <= new Date(ateData))
                                     }
@@ -525,7 +525,7 @@ console.log(reservas)
                                     }
                                     else {
                                         return (new Date(e.check_in) >= new Date(deData) &&
-                                            new Date(e.check_in) <= new Date(ateData)) &&
+                                            new Date(e.check_in) <= new Date(ateData)) ||
                                             (new Date(e.check_out) >= new Date(deData) &&
                                                 new Date(e.check_out) <= new Date(ateData))
                                     }
@@ -639,7 +639,7 @@ console.log(reservas)
                                     }
                                     else {
                                         return (new Date(e.check_in) >= new Date(deData) &&
-                                            new Date(e.check_in) <= new Date(ateData)) &&
+                                            new Date(e.check_in) <= new Date(ateData)) ||
                                             (new Date(e.check_out) >= new Date(deData) &&
                                                 new Date(e.check_out) <= new Date(ateData))
                                     }
@@ -695,7 +695,7 @@ console.log(reservas)
                                     }
                                     else {
                                         return (new Date(e.check_in) >= new Date(deData) &&
-                                            new Date(e.check_in) <= new Date(ateData)) &&
+                                            new Date(e.check_in) <= new Date(ateData)) ||
                                             (new Date(e.check_out) >= new Date(deData) &&
                                                 new Date(e.check_out) <= new Date(ateData))
                                     }
@@ -753,7 +753,7 @@ console.log(reservas)
                                     }
                                     else {
                                         return (new Date(e.check_in) >= new Date(deData) &&
-                                            new Date(e.check_in) <= new Date(ateData)) &&
+                                            new Date(e.check_in) <= new Date(ateData)) ||
                                             (new Date(e.check_out) >= new Date(deData) &&
                                                 new Date(e.check_out) <= new Date(ateData))
                                     }
