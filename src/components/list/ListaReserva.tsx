@@ -22,7 +22,7 @@ interface Reserva {
 }
 
 export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva, permissao }: { reservas: Reserva[], ids: { id: number, index: number }[], acomodacoes: { id: number, nome: string }[], canaisReserva: { id: number, nome: string }[], permissao: number }) {
-
+console.log(reservas)
     const [download, setDownload] = useState(false)
     const [card, setCard] = useState(false)
     const [idReserva, setIdReserva] = useState<string>('')
@@ -104,6 +104,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
             "Acomodação",
             "Canal",
             "Hóspede",
+            "Qtd. Hóspede",
             "Check-in",
             "Check-out",
             "Diárias",
@@ -171,6 +172,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                         ? 'Continuidade'
                         : e.canal_reserva?.nome || '',
                 'Hóspede': !isIndisp ? e.hospede?.nome || '' : '',
+                'Qtd. Hóspede': !isIndisp ? e.qtd_hospede || '' : '',
                 'Check-in': formatDate(e.check_in),
                 'Check-out': formatDate(e.check_out),
                 'Diárias': calcularDias(e.check_in, e.check_out),
@@ -482,6 +484,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                         <th className="text-center">Acomodação</th>
                         <th className="text-center">Canal</th>
                         <th className="text-center">Hóspede</th>
+                        <th className="text-center">Qtd. Hóspede</th>
                         <th className="text-center">Check-in</th>
                         <th className="text-center">Check-out</th>
                         <th className="text-center">Diárias</th>
@@ -593,6 +596,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                                 <div className="bg-[#f67828] py-1 w-full rounded-md">Cancelamento</div> : null}
                                         </td>
                                         <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && e.hospede?.nome}</td>
+                                        <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && e.qtd_hospede}</td>
                                         <td className="text-center text-xs font-medium">{formatDate(e.check_in)}</td>
                                         <td className="text-center text-xs font-medium">{formatDate(e.check_out)}</td>
                                         <td className="text-center text-xs font-medium">{calcularDiasEntreDatas(e.check_in, e.check_out)}</td>
