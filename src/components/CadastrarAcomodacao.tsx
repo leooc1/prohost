@@ -56,7 +56,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
         await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(input)}&limit=5`)
             .then(data => data.json())
             .then(data => {
-                setAutoComplete(data?.features.map((feature: any) => ({
+                setAutoComplete(data?.features?.map((feature: any) => ({
                     name: feature?.properties?.name,
                     city: feature?.properties?.city || "",
                     state: feature?.properties?.state || "",
@@ -156,7 +156,17 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                             }}
                             onBlur={() => setAutoComplete([])} />
                         <ul className="absolute bg-white rounded-2xl overflow-hidden top-14 w-max z-50 shadow-xl shadow-zinc-400">
-                            {autoComplete.length>0 && autoComplete.filter(
+                            {autoComplete.length > 0 && autoComplete.filter(
+                                (end: any, index, self) =>
+                                    index ===
+                                    self.findIndex(
+                                        (e: any) =>
+                                            e.name === end?.name &&
+                                            e.city === end?.city &&
+                                            e.state === end?.state &&
+                                            e.country === end?.country
+                                    )
+                            ).length > 0 && autoComplete.filter(
                                 (end: any, index, self) =>
                                     index ===
                                     self.findIndex(
