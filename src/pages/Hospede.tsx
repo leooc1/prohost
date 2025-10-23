@@ -24,6 +24,8 @@ export default function Hospede() {
     const [hospede, setHospede] = useState<Hospede[]>([])
 
     async function getHospede() {
+        if(!dataToken) return
+        await permissoes()
         await fetch(`${apiURL}/hospede/${dataToken.id}`, {
             method: 'GET'
         })
@@ -34,7 +36,6 @@ export default function Hospede() {
             })
             .catch(err => console.log(err))
 
-        await permissoes()
     }
 
     const [permissao, setPermissao] = useState(0)
@@ -70,6 +71,7 @@ export default function Hospede() {
                     {cadastrarHospede && <CadastrarHospede close={() => setCadastrarHospede(false)} />}
 
                     <ListaHospede
+                        saas={dataToken.id}
                         permissao={permissao}
                         atualizar={atualizarHospede}
                         setAtualizar={setAtualizarHospede}

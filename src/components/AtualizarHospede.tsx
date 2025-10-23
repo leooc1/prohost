@@ -128,6 +128,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
                     obs: string
                 }[]
             }) => {
+                data
                 setNome(data.hospede[0].nome)
                 setEmail(data.hospede[0].email)
                 setTel(data.hospede[0].telefone)
@@ -218,13 +219,13 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
                     RESERVAS
                     {reservas.length > 0 &&
                         reservas.map(a =>
-                            <details className="border border-black rounded-lg overflow-hidden">
+                            <details key={a.acomodacao} className="border border-black rounded-lg overflow-hidden">
                                 <summary className="flex py-1 items-center bg-zinc-100 cursor-pointer">
                                     <img className="size-10" src={a.foto} alt={a.nome} />
                                     <p className="max-w-full overflow-hidden whitespace-nowrap text-ellipsis ml-5">{a.nome}</p>
                                 </summary>
                                 <ul>
-                                    {a.reservas.map(r => <>
+                                    {a.reservas.map(r => <div key={r.id}>
                                         <hr className="brightness-0" />
                                         <li
                                             onClick={() => {
@@ -256,7 +257,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
                                             </p>
                                             <p className="text-center">R$ {r.valor}</p>
                                         </li >
-                                    </>
+                                    </div>
                                     )}
                                 </ul>
                             </details>)

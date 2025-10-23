@@ -1,16 +1,15 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import Comparativo from "../components/Comparativo";
-// import DesempenhoDiarias from "../components/chart/DesempenhoDiarias";
-import ReservasCanal from "../components/chart/ReservasCanal";
-import OcupacaoMedia from "../components/chart/OcupacaoMedia";
+import EvolucaoNegocio from "../components/chart/EvolucaoNegocio";
 import FaturamentoCanal from "../components/chart/FaturamentoCanal";
 import FaturamentoLiquido from "../components/chart/FaturamentoLiquido";
-import EvolucaoNegocio from "../components/chart/EvolucaoNegocio";
-import QtdeHospede from "../components/chart/QtdeHospede";
 import FaturamentoxDespesa from "../components/chart/FaturamentoxDespesa";
-import { SideBarContext } from "../contexts/SideBarMenuContext";
+import OcupacaoMedia from "../components/chart/OcupacaoMedia";
+import QtdeHospede from "../components/chart/QtdeHospede";
+import ReservasCanal from "../components/chart/ReservasCanal";
 import Loader from "../components/Loader";
 import SemPermissao from "../components/SemPermissao";
+import { SideBarContext } from "../contexts/SideBarMenuContext";
 interface Acomodacao {
   id: number
   tipo: string
@@ -129,7 +128,7 @@ export default function Dashboard() {
     qtd_hospede: number
     qtd_reserva: string
   }[]>([])
-  const [acomodacao, setAcomodacao] = useState<Acomodacao[] | [number]>([])
+  const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
   const [filterAC, setFilterAC] = useState<string>('all')
   const [movimentacao, setMovimentacao] = useState<{
     nome: string
@@ -157,7 +156,22 @@ export default function Dashboard() {
     if (!dataToken?.id) return;
     try {
       const data: Acomodacao[] = await fetchJson(`${apiURL}/acomodacao/${dataToken.id}`);
-      setAcomodacao(data.filter(e => !e.desativado).length > 0 ? data.filter(e => !e.desativado) : [1]);
+      setAcomodacao(data.filter(e => !e.desativado).length > 0 ? data.filter(e => !e.desativado) : [{
+        id: 0,
+        tipo: '',
+        comissao: 0,
+        data_ini_ope: '',
+        descricao: '',
+        endereco: '',
+        check_in_p: '',
+        check_out_p: '',
+        foto: '',
+        nome: '',
+        numero_hospedes: 0,
+        valor_imovel: 0,
+        desativado: false,
+        saas: { id: 0 }
+      }]);
     } catch (err) {
       console.error("Erro ao carregar acomodações:", err);
     }

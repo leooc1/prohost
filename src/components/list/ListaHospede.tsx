@@ -10,7 +10,7 @@ interface Hospede {
 }
 
 
-export default function ListaHospede({ hospedes, atualizar, setAtualizar, permissao }: { hospedes: Hospede[], atualizar: [boolean, number], setAtualizar: Dispatch<SetStateAction<[boolean, number]>>, permissao: number }) {
+export default function ListaHospede({ saas, hospedes, atualizar, setAtualizar, permissao }: { saas: number, hospedes: Hospede[], atualizar: [boolean, number], setAtualizar: Dispatch<SetStateAction<[boolean, number]>>, permissao: number }) {
     const apiURL = import.meta.env.VITE_API_URL
     const [lhospedes, setLHospedes] = useState<Hospede[]>([])
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
@@ -48,13 +48,12 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar, permis
     }
 
     async function arrayAcomodacao() {
-        const arrayHospede = hospedes.map(h => h.id)
-        await fetch(`${apiURL}/hospede/acomodacao/${arrayHospede}`,
+        await fetch(`${apiURL}/hospede/acomodacao/${saas}`,
             { method: 'GET' }
         )
             .then(data => data.json())
             .then(data => {
-                console.log(data)
+                setLHospedes(hospedes)
                 setAcomodacoes(data)
             })
             .catch(err => console.log(err))
@@ -129,7 +128,6 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar, permis
 
 
     useEffect(() => {
-        setLHospedes(hospedes)
         arrayAcomodacao()
     }, [hospedes])
 
@@ -184,8 +182,7 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar, permis
                         >
                             <path
                                 d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
-                                stroke-linejoin="round"
-                                stroke-linecap="round"
+                                strokeLinecap="round"
                             ></path>
                         </svg>
                     </button>
@@ -206,33 +203,31 @@ export default function ListaHospede({ hospedes, atualizar, setAtualizar, permis
                     {
                         lhospedes.length > 0 ?
                             lhospedes.map((e) =>
-                                <>
-                                    <tr onClick={() => {
-                                        if (!(permissao >= 3)) { return }
-                                        setAtualizar([true, e.id])
-                                    }} className="cursor-pointer text-sm bg-white h-12 border border-zinc-200 w-full hover:bg-[#FAFBFD]">
-                                        <td className="flex h-12 items-center justify-center text-sm font-medium">
-                                            <div className="w-10 h-10 flex justify-center items-center rounded-full bg-[#B1C2D9] text-white font-medium">{Perfil(e.nome)}</div>
-                                        </td>
-                                        <td className="text-start text-sm font-medium">{e.nome}</td>
-                                        {<td className="text-start text-sm font-medium overflow-hidden whitespace-nowrap text-ellipsis max-w-60" title={acomodacoes.find(a => a.hospede == e.id)?.acomodacoes.toString().replace(',',', ')}>
-                                            {acomodacoes.find(a => a.hospede == e.id)?.acomodacoes.toString().replace(',',', ')}
-                                        </td>}
-                                        <td className="text-center text-sm font-medium">{e.email ? e.email : <span className="italic">Não Informado</span>}</td>
-                                        <td className="text-center text-sm font-medium">{e.telefone ? e.telefone : <span className="italic">Não Informado</span>}</td>
-                                        <td className="text-center text-sm font-medium cursor-pointer hover:bg-red-200 rounded-xl transition-all duration-300"
-                                            onClick={(ex) => {
-                                                if (!(permissao >= 4)) { return }
-                                                let confirmDelete = false
-                                                ex.stopPropagation()
-                                                confirmDelete = confirm("Deseja deletar este hóspede?")
-                                                if (confirmDelete)
-                                                    excluir(e.id)
-                                            }}>
-                                            <svg className="h-fit w-5 m-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ED3E44"><path d="M4 8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8ZM7 5V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V5H22V7H2V5H7ZM9 4V5H15V4H9ZM9 12V18H11V12H9ZM13 12V18H15V12H13Z"></path></svg>
-                                        </td>
-                                    </tr>
-                                </>
+                                <tr key={e.id} onClick={() => {
+                                    if (!(permissao >= 3)) { return }
+                                    setAtualizar([true, e.id])
+                                }} className="cursor-pointer text-sm bg-white h-12 border border-zinc-200 w-full hover:bg-[#FAFBFD]">
+                                    <td className="flex h-12 items-center justify-center text-sm font-medium">
+                                        <div className="w-10 h-10 flex justify-center items-center rounded-full bg-[#B1C2D9] text-white font-medium">{Perfil(e.nome)}</div>
+                                    </td>
+                                    <td className="text-start text-sm font-medium">{e.nome}</td>
+                                    {<td className="text-start text-sm font-medium overflow-hidden whitespace-nowrap text-ellipsis max-w-60" title={acomodacoes.find(a => a.hospede == e.id)?.acomodacoes.toString().replace(',', ', ')}>
+                                        {acomodacoes.find(a => a.hospede == e.id)?.acomodacoes.toString().replace(',', ', ')}
+                                    </td>}
+                                    <td className="text-center text-sm font-medium">{e.email ? e.email : <span className="italic">Não Informado</span>}</td>
+                                    <td className="text-center text-sm font-medium">{e.telefone ? e.telefone : <span className="italic">Não Informado</span>}</td>
+                                    <td className="text-center text-sm font-medium cursor-pointer hover:bg-red-200 rounded-xl transition-all duration-300"
+                                        onClick={(ex) => {
+                                            if (!(permissao >= 4)) { return }
+                                            let confirmDelete = false
+                                            ex.stopPropagation()
+                                            confirmDelete = confirm("Deseja deletar este hóspede?")
+                                            if (confirmDelete)
+                                                excluir(e.id)
+                                        }}>
+                                        <svg className="h-fit w-5 m-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ED3E44"><path d="M4 8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8ZM7 5V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V5H22V7H2V5H7ZM9 4V5H15V4H9ZM9 12V18H11V12H9ZM13 12V18H15V12H13Z"></path></svg>
+                                    </td>
+                                </tr>
                             )
                             : null
                     }
