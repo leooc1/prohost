@@ -129,7 +129,7 @@ export default function Dashboard() {
     qtd_hospede: number
     qtd_reserva: string
   }[]>([])
-  const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
+  const [acomodacao, setAcomodacao] = useState<Acomodacao[] | [number]>([])
   const [filterAC, setFilterAC] = useState<string>('all')
   const [movimentacao, setMovimentacao] = useState<{
     nome: string
@@ -157,7 +157,7 @@ export default function Dashboard() {
     if (!dataToken?.id) return;
     try {
       const data: Acomodacao[] = await fetchJson(`${apiURL}/acomodacao/${dataToken.id}`);
-      setAcomodacao(data.filter(e => !e.desativado));
+      setAcomodacao(data.filter(e => !e.desativado).length > 0 ? data.filter(e => !e.desativado) : [1]);
     } catch (err) {
       console.error("Erro ao carregar acomodações:", err);
     }
