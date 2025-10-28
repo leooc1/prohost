@@ -22,13 +22,13 @@ interface Reserva {
 }
 
 export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva, permissao }: { reservas: Reserva[], ids: { id: number, index: number }[], acomodacoes: { id: number, nome: string }[], canaisReserva: { id: number, nome: string }[], permissao: number }) {
-console.log(reservas)
     const [download, setDownload] = useState(false)
     const [card, setCard] = useState(false)
     const [idReserva, setIdReserva] = useState<string>('')
 
     const date = new Date()
     const [evento, setEvento] = useState('all')
+    const [valorTotal, setValorTotal] = useState(true)
     const [acomodacao, setAcomodacao] = useState('all')
     const [compare, setCompare] = useState('all')
     const [order, setOrder] = useState('decrescente')
@@ -477,6 +477,9 @@ console.log(reservas)
                     </button>
                 </div>
             </div>
+            <div className="flex justify-end">
+                <button className="text-sm underline" onClick={() => { setValorTotal(!valorTotal) }}>{valorTotal ? 'Ocultar' : 'Mostrar'} Valor Total</button>
+            </div>
             <table id="listagem" className="w-full mt-3 border border-zinc-200 rounded-lg grid">
                 <thead className="table table-fixed w-full">
                     <tr className="text-xs bg-slate-50 h-12">
@@ -488,7 +491,7 @@ console.log(reservas)
                         <th className="text-center">Check-in</th>
                         <th className="text-center">Check-out</th>
                         <th className="text-center">Diárias</th>
-                        <th className="text-center">Valor Total</th>
+                        {valorTotal && <th className="text-center">Valor Total</th>}
                         <th className="text-center">Valor Líquido</th>
                     </tr>
                 </thead>
@@ -600,7 +603,7 @@ console.log(reservas)
                                         <td className="text-center text-xs font-medium">{formatDate(e.check_in)}</td>
                                         <td className="text-center text-xs font-medium">{formatDate(e.check_out)}</td>
                                         <td className="text-center text-xs font-medium">{calcularDiasEntreDatas(e.check_in, e.check_out)}</td>
-                                        <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.valor).toFixed(2))}`}</td>
+                                        {valorTotal && <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.valor).toFixed(2))}`}</td>}
                                         <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${Number(e.valor_liq_calculado) > 0 ? formatarMoedaBrasileira(Number(e.valor_liq_calculado).toFixed(2)) : formatarMoedaBrasileira(Number(e.valor_liq).toFixed(2))}`}</td>
                                     </tr>)
                             : null
