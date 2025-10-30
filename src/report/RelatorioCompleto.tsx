@@ -90,8 +90,8 @@ export default function RelatorioCompleto(props: propsRelatorio) {
 
         // Lógica para restaurar o DOM após a impressão (ou cancelamento)
         onAfterPrint: () => {
-            const relatorio_container = document.querySelector('#relatorio-container')
-            relatorio_container?.classList.remove('w-[calc(141.4vh)]')
+            // const relatorio_container = document.querySelector('#relatorio-container')
+            // relatorio_container?.classList.remove('w-main')
             const button_report = document.querySelectorAll('.button-report')
             button_report.forEach(e => e.classList.remove('hidden'))
             const elements = document.querySelectorAll('.opacity-30');
@@ -121,8 +121,8 @@ export default function RelatorioCompleto(props: propsRelatorio) {
 
         // Lógica para PDF (usando o novo handler)
         if (type === 'pdf') {
-            const relatorio_container = document.querySelector('#relatorio-container')
-            relatorio_container?.classList.add('w-[calc(141.4vh)]')
+            // const relatorio_container = document.querySelector('#relatorio-container')
+            // relatorio_container?.classList.add('w-main')
             const button_report = document.querySelectorAll('.button-report')
             button_report.forEach(e => e.classList.add('hidden'))
             const elements = document.querySelectorAll('.opacity-30')
