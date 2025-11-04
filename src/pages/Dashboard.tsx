@@ -84,7 +84,6 @@ export default function Dashboard() {
   const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
   const date = new Date()
   const [periodo, setPeriodo] = useState(localStorage.getItem('periodo_ph') || 'm-atual')
-  const [totalDiasIntervalo, setTotalDiasIntervalo] = useState(0)
   const [sessao, setSessao] = useState(0)
   const [deData, setDeData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`)
   const [ateData, setAteData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
@@ -142,9 +141,6 @@ export default function Dashboard() {
     despesa: string
     receita_ano_anterior: string
   }[]>([])
-  const [taxaOcupacao, setTaxaOcupacao] = useState<{
-    taxa_ocupacao: number
-  }>()
   const [showTaxaOcu, setShowTaxaOcu] = useState<boolean>(true)
   const [resAc, setResAc] = useState<boolean>(false)
   const [resGestor, setResGestor] = useState<boolean>(false)
@@ -299,10 +295,9 @@ export default function Dashboard() {
     const baseMov = `${apiURL}/movimentacao/${dataToken.id}`;
 
     try {
-      const [ind, comp, taxa, porCanal, qtdHospede, ocupacao] = await Promise.all([
+      const [ind, comp, porCanal, qtdHospede, ocupacao] = await Promise.all([
         fetchJson(`${baseReserva}/ind-ope/${start}/${end}${suffix}`),
         fetchJson(`${baseReserva}/comparativo-ind-ope/${start}/${end}${suffix}`),
-        fetchJson(`${baseReserva}/taxa-ocu/${start}/${end}${suffix}`),
         fetchJson(`${baseReserva}/por-canal/${start}/${end}${suffix}`),
         fetchJson(`${baseReserva}/qtd-hospede/${start}/${end}${suffix}`),
         fetchJson(`${baseMov}/ocupacao-semana/${start}/${end}${suffix}`)
@@ -318,16 +313,10 @@ export default function Dashboard() {
       }
 
       setShowTaxaOcu(false);
-      setTaxaOcupacao({ taxa_ocupacao: taxa.reservadas });
       setReservaCanal(porCanal);
       setQtdHospede(qtdHospede);
 
       if (Array.isArray(ocupacao) && ocupacao.length > 0) {
-        const totalDiasIntervalo = ocupacao.reduce(
-          (sum: number, d: any) => sum + Number(d.total_dias_no_intervalo),
-          0
-        );
-        setTotalDiasIntervalo(totalDiasIntervalo);
         const taxaPorDia = ocupacao.map((d: any) => {
           const totalDias = Number(d.total_dias_no_intervalo) * (filterAC === 'all' ? acomodacao.length : 1);
           const disponiveis = totalDias - Number(d.total_indisponibilidades);
@@ -424,7 +413,7 @@ export default function Dashboard() {
     } else { acomodacoes() }
   }, [filterAC, dataToken, periodo, deData, ateData, acomodacao]);
 
-  useEffect(() => setShowTaxaOcu(true), [taxaOcupacao, acomodacao]);
+  useEffect(() => setShowTaxaOcu(true), [ocupacaoSemana, acomodacao]);
 
   useEffect(() => {
     const storedAc = localStorage.getItem("acfil");
