@@ -477,8 +477,10 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                     </button>
                 </div>
             </div>
-            <div className="flex justify-end">
-                <button className="text-sm underline" onClick={() => { setValorTotal(!valorTotal) }}>{valorTotal ? 'Ocultar' : 'Mostrar'} Valor Total</button>
+            <div className="flex justify-end relative">
+                <button className="absolute top-7 -right-5" onClick={() => { setValorTotal(!valorTotal) }}>{valorTotal ?
+                    <svg className="w-5 h-fit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4 3H20C20.5523 3 21 3.44772 21 4V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3ZM5 5V19H19V5H5ZM7 11H17V13H7V11Z"></path></svg>
+                    : <svg className="w-5 h-fit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4 3H20C20.5523 3 21 3.44772 21 4V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3ZM5 5V19H19V5H5ZM11 11V7H13V11H17V13H13V17H11V13H7V11H11Z"></path></svg>}</button>
             </div>
             <table id="listagem" className="w-full mt-3 border border-zinc-200 rounded-lg grid">
                 <thead className="table table-fixed w-full">
@@ -491,8 +493,8 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                         <th className="text-center">Check-in</th>
                         <th className="text-center">Check-out</th>
                         <th className="text-center">Diárias</th>
-                        {valorTotal && <th className="text-center">Valor Total</th>}
                         <th className="text-center">Valor Líquido</th>
+                        {valorTotal && <th className="text-center">Valor Total</th>}
                     </tr>
                 </thead>
                 <tbody className="overflow-y-scroll block">
@@ -603,8 +605,9 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                         <td className="text-center text-xs font-medium">{formatDate(e.check_in)}</td>
                                         <td className="text-center text-xs font-medium">{formatDate(e.check_out)}</td>
                                         <td className="text-center text-xs font-medium">{calcularDiasEntreDatas(e.check_in, e.check_out)}</td>
-                                        {valorTotal && <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.valor).toFixed(2))}`}</td>}
                                         <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${Number(e.valor_liq_calculado) > 0 ? formatarMoedaBrasileira(Number(e.valor_liq_calculado).toFixed(2)) : formatarMoedaBrasileira(Number(e.valor_liq).toFixed(2))}`}</td>
+                                        {valorTotal && <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.valor).toFixed(2))}`}</td>}
+
                                     </tr>)
                             : null
                     }
