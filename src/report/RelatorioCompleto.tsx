@@ -101,7 +101,22 @@ export default function RelatorioCompleto(props: propsRelatorio) {
         },
 
         // Ajustes de estilo opcionais. Para PDF, 'landscape' é geralmente melhor.
-        pageStyle: `@page { size: A4 landscape; margin: 0px; }`
+        pageStyle: `@page { size: A4 landscape; margin: 0px; }
+        
+        @media print {
+        body {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .no-print {
+            display: none !important;
+        }
+
+        .force-print {
+            display: block !important;
+        }
+    }`
     });
 
     async function clearRelatorio(type: string) {
