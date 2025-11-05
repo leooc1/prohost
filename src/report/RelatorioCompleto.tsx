@@ -571,7 +571,9 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 <img src={props.imagem} alt="" className='bg-primary max-w-56 max-h-28 h-28' />
                             </div>
                             <section className='h-full mt-20 flex items-center'>
-                                <ListaReservaR reservas={listaReservas} />
+                                <ListaReservaR reservas={listaReservas.sort((a, b) => {
+                                    return new Date(a.check_in).getTime() - new Date(b.check_in).getTime();
+                                })} />
                             </section>
 
                         </section>
@@ -662,7 +664,9 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 <img src={props.imagem} alt="" className='bg-primary max-w-56 max-h-28 h-28' />
                             </div>
                             <div className='h-3/4 grid items-center'>
-                                <DespesasR despesas={despesas} />
+                                <DespesasR despesas={despesas.sort((a, b) => {
+                                    return new Date(a.data).getTime() - new Date(b.data).getTime();
+                                })} />
                             </div>
                         </section>
                     </div>
