@@ -88,7 +88,7 @@ function SortableItem({ id, children }: { id: number, children: React.ReactNode 
                             title="Arraste para ordenar"
                         >
                             {/* Ícone de mão estilizado */}
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 11V5a2 2 0 0 1 4 0v6"/><path d="M11 10V4a2 2 0 0 1 4 0v7"/><path d="M15 11V7a2 2 0 0 1 4 0v8a5 5 0 0 1-10 0v-3"/></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 11V5a2 2 0 0 1 4 0v6" /><path d="M11 10V4a2 2 0 0 1 4 0v7" /><path d="M15 11V7a2 2 0 0 1 4 0v8a5 5 0 0 1-10 0v-3" /></svg>
                         </div>
                         {children.props.children}
                     </children.type>
@@ -102,7 +102,7 @@ export default function Acomodacoes() {
     const apiURL = import.meta.env.VITE_API_URL
     useEffect(() => { document.title = 'Acomodações | Prohost' }, [])
 
-    const { dataToken } = useContext(SideBarContext)
+    const { statusData, dataToken } = useContext(SideBarContext)
     const [loaded, setLoaded] = useState(false)
     const [cadastrarAcomodacao, setCadastrarAcomodacao] = useState(false)
     const [proprio, setProprio] = useState<Acomodacao[]>([])
@@ -152,8 +152,12 @@ export default function Acomodacoes() {
                 setTerceiro(terceiroList);
                 setDesativados(desativadoList);
 
+                if ((data.filter((e => !e.desativado)).length) < (statusData?.qtd_acomodacao ?? 1))
+                    setVerifyAcomodacao(true);
+                else
+                    setVerifyAcomodacao(false);
                 // 🔹 Validação de quantidade de acomodações no plano
-                await fetch(`${apiURL}/assinatura/upgrade/${dataToken.id}`, {
+                /* await fetch(`${apiURL}/assinatura/upgrade/${dataToken.id}`, {
                     method: 'GET'
                 })
                     .then(verify => verify.json())
@@ -163,7 +167,7 @@ export default function Acomodacoes() {
                         else
                             setVerifyAcomodacao(false);
                     })
-                    .catch(err => console.log(err));
+                    .catch(err => console.log(err)); */
 
                 setLoaded(true);
             })
@@ -192,7 +196,7 @@ export default function Acomodacoes() {
     }
     useEffect(() => {
         if (dataToken && dataToken.id) acomodacoes()
-    }, [dataToken])
+    }, [dataToken, statusData])
 
     async function desativar(id: number, desativado: boolean) {
         await fetch(`${apiURL}/acomodacao/${id}`, {
@@ -227,7 +231,7 @@ export default function Acomodacoes() {
                 }
             })
             .catch(err => console.log(err))
-    } 
+    }
     async function deletarAcomodacao(id: number) {
         await fetch(`${apiURL}/acomodacao/${id}/del`, {
             method: 'DELETE',
@@ -345,7 +349,7 @@ export default function Acomodacoes() {
                 {/* 🔹 Próprias */}
                 {proprio.length ?
                     <section className="pt-3">
-                        <p className="text-2xl font-medium">Próprias</p>
+                        <p className="text-2xl font-medium">Próprias ({proprio.length})</p>
                         <DndContext
                             sensors={sensors}
                             collisionDetection={closestCenter}
@@ -385,7 +389,7 @@ export default function Acomodacoes() {
                 {/* 🔹 Terceiras */}
                 {terceiro.length ?
                     <section className="py-12">
-                        <p className="text-2xl font-medium">Terceiras</p>
+                        <p className="text-2xl font-medium">Terceiras ({terceiro.length})</p>
                         <DndContext
                             sensors={sensors}
                             collisionDetection={closestCenter}
@@ -451,7 +455,7 @@ export default function Acomodacoes() {
                                                             setNotify({ type: 2, text: 'Seu plano não permite ter mais acomodações!' })
                                                             setShowNotify(true)
                                                             setTimeout(() => {
-                                                                setShowNotify(false); 
+                                                                setShowNotify(false);
                                                             }, 3000)
                                                         }
                                                     }}
