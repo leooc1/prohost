@@ -250,13 +250,30 @@ export default function Dashboard() {
         setComissao(Number(data?.[0]?.comissao ?? 0));
       }
 
-      const [mov, fat, comp] = await Promise.all([
+      const [mov, fat, comp]: [{
+        nome: string
+        cor: string
+        tipo_reserva: string
+        valor_liq: number
+      }[], {
+        mes: string
+        receita: string
+        despesa: string
+        receita_ano_anterior: string
+      }[], {
+        "rentabilidade_imovel": number | null,
+        "faturamento_bruto": string | null,
+        "comissao_plataforma": string | null,
+        "faturamento_liquido": string | null,
+        "despesas": string | null,
+        "lucro": string | null,
+        "diaria_media": string | null,
+        "periodo": string | null
+      }[]] = await Promise.all([
         fetchJson(`${base}/fat-canal/${start}/${end}${suffix}`),
         fetchJson(`${base}/fat-bar/${end}${suffix}`),
         fetchJson(`${base}/comparativo-result-ac/${start}/${end}${suffix}`)
       ]);
-
-      console.log(fat)
 
       setMovimentacao(mov);
       setFaturamento(fat);
@@ -271,17 +288,35 @@ export default function Dashboard() {
         taxa_limpeza: "0",
         rentabilidade_imovel: 0,
         comissao_reservas: 0,
-        comissao_taxa_limpeza: 0
+        comissao_taxa_limpeza: 0,
+        periodo: 'atual'
       }];
 
       setResultadoAcomodacoes(
-        Array.isArray(comp) && comp.length > 0 ? comp.filter((d: any) => d.periodo === 'atual') : resultadoDefault
+        Array.isArray(comp) && comp.length > 0
+          ? comp
+            .filter((d) => d.periodo === 'atual')
+            .map((d) => ({
+              comissao_plataforma: d.comissao_plataforma ?? '0',
+              despesas: d.despesas ?? '0',
+              diaria_media: d.diaria_media ?? '0',
+              faturamento_bruto: d.faturamento_bruto ?? '0',
+              faturamento_liquido: d.faturamento_liquido ?? '0',
+              lucro: d.lucro ?? '0',
+              taxa_limpeza: '0',
+              rentabilidade_imovel: d.rentabilidade_imovel ?? 0,
+              comissao_reservas: 0,
+              comissao_taxa_limpeza: 0,
+              periodo: d.periodo ?? 'atual',
+            }))
+          : resultadoDefault
       );
+
 
       if (Array.isArray(comp) && comp.length > 0) {
         setComparativoRA({
-          atual: comp.filter((d: any) => d.periodo === 'atual'),
-          passado: comp.filter((d: any) => d.periodo === 'ano_anterior')
+          atual: comp.filter((d) => d.periodo === 'atual')[0],
+          passado: comp.filter((d) => d.periodo === 'ano_anterior')[0]
         });
       }
 
