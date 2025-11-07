@@ -1,7 +1,8 @@
 @import url('./input-range.css');
 @import url('./loader.css');
 @import url('./switch.css');
-@import url('./calendar.css');
+@import url('./calendar.css'); 
+@import url('./skeleton-load.css'); 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
