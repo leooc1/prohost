@@ -562,71 +562,93 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
             </div>
 
             {/* Modal de Seleção de Forma de Pagamento */}
-            {isPaymentOpen && info && !showPaymentMethod && !showPixPayment && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-                    <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
-                        <h2 className="text-2xl font-bold text-[#0E3447] mb-6">
-                            Escolha a forma de pagamento
-                        </h2>
+            {isPaymentOpen && info && !showPaymentMethod && !showPixPayment &&
+                <>
+                    {info.qtd_acomodacao < currentPlan.accommodations ?
+                        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+                            <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+                                <h2 className="text-2xl font-bold text-[#0E3447] mb-6">
+                                    Escolha a forma de pagamento
+                                </h2>
 
-                        <div className="mb-6">
-                            <div className="text-sm text-gray-600 mb-2">Plano Selecionado</div>
-                            <div className="text-[#0E3447] font-semibold">
-                                {currentPlan.accommodations}{" "}
-                                {currentPlan.accommodations === 1 ? "Acomodação" : "Acomodações"} -{" "}
-                                {isAnnual ? "Anual" : "Mensal"}
+                                <div className="mb-6">
+                                    <div className="text-sm text-gray-600 mb-2">Plano Selecionado</div>
+                                    <div className="text-[#0E3447] font-semibold">
+                                        {currentPlan.accommodations}{" "}
+                                        {currentPlan.accommodations === 1 ? "Acomodação" : "Acomodações"} -{" "}
+                                        {isAnnual ? "Anual" : "Mensal"}
+                                    </div>
+                                    <div className="text-2xl font-bold text-[#0E3447] mt-2">
+                                        {
+                                            formatCurrency(isAnnual ? (
+                                                upgrade ?
+                                                    ((Number(price.total) - Number(info.valor_ano)) / 12) * (mesesAteDataFutura(info.trial_end) > 0 ? mesesAteDataFutura(info.trial_end) : 1)
+                                                    :
+                                                    Number(price.total)
+                                            )
+                                                : Number(price.monthly))
+                                        }
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4 mb-6">
+                                    <button
+                                        className="w-full py-3 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-3"
+                                        onClick={() => setShowPaymentMethod(true)}
+                                    >
+                                        <svg className='w-6 h-6' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M3.00488 2.99979H21.0049C21.5572 2.99979 22.0049 3.4475 22.0049 3.99979V19.9998C22.0049 20.5521 21.5572 20.9998 21.0049 20.9998H3.00488C2.4526 20.9998 2.00488 20.5521 2.00488 19.9998V3.99979C2.00488 3.4475 2.4526 2.99979 3.00488 2.99979ZM20.0049 10.9998H4.00488V18.9998H20.0049V10.9998ZM20.0049 8.99979V4.99979H4.00488V8.99979H20.0049ZM14.0049 14.9998H18.0049V16.9998H14.0049V14.9998Z"></path>
+                                        </svg>
+                                        Cartão de Crédito
+                                    </button>
+                                    <button
+                                        className="w-full py-3 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-3"
+                                        onClick={() => {
+                                            setShowPixPayment(true);
+                                            gerarPix();
+                                        }}
+                                    >
+                                        <svg className='w-6 h-6' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M5.38545 18.1135L9.52498 22.253C10.8918 23.6199 13.1079 23.6199 14.4747 22.253L18.6143 18.1135C17.5088 18.1824 16.3802 17.7945 15.5354 16.9497L12.5302 13.9445C12.2373 13.6516 11.7624 13.6516 11.4695 13.9445L8.46432 16.9497C7.61954 17.7945 6.49092 18.1824 5.38545 18.1135ZM20.4851 16.2426L22.2529 14.4748C23.6197 13.108 23.6197 10.8919 22.2529 9.5251L20.4851 7.75734C19.3136 6.58576 17.4141 6.58576 16.2425 7.75734L13.2373 10.7625C12.5539 11.446 11.4458 11.446 10.7624 10.7625L7.75721 7.75734C6.58564 6.58576 4.68615 6.58576 3.51457 7.75734L1.74681 9.5251C0.37997 10.8919 0.37997 13.108 1.74681 14.4748L3.51457 16.2426C4.68615 17.4142 6.58564 17.4142 7.75721 16.2426L10.7624 13.2374C11.4458 12.554 12.5539 12.554 13.2373 13.2374L16.2425 16.2426C17.4141 17.4142 19.3136 17.4142 20.4851 16.2426ZM5.38545 5.88646C6.49092 5.81753 7.61954 6.20545 8.46432 7.05023L11.4695 10.0554C11.7624 10.3483 12.2373 10.3483 12.5302 10.0554L15.5354 7.05023C16.3802 6.20545 17.5088 5.81753 18.6143 5.88646L14.4747 1.74693C13.1079 0.380092 10.8918 0.380092 9.52498 1.74693L5.38545 5.88646Z"></path>
+                                        </svg>
+                                        PIX
+                                    </button>
+                                </div>
+
+                                <div className="flex gap-4">
+                                    <button
+                                        className="flex-1 py-2 px-4 border rounded-lg"
+                                        onClick={() => {
+                                            setIsPaymentOpen(false)
+                                            setWait(false)
+                                        }}
+                                    >
+                                        Cancelar
+                                    </button>
+                                </div>
                             </div>
-                            <div className="text-2xl font-bold text-[#0E3447] mt-2">
-                                {
-                                    formatCurrency(isAnnual ? (
-                                        upgrade ?
-                                            ((Number(price.total) - Number(info.valor_ano)) / 12) * (mesesAteDataFutura(info.trial_end) > 0 ? mesesAteDataFutura(info.trial_end) : 1)
-                                            :
-                                            Number(price.total)
-                                    )
-                                        : Number(price.monthly))
-                                }
+                        </div> :
+                        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+                            <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+                                <h2 className="text-2xl text-center font-bold text-[#0E3447] mb-6">
+                                    Seu plano atual já contempla essa quantidade de acomodações.
+                                </h2>
+
+                                <div className="flex gap-4">
+                                    <button
+                                        className="flex-1 py-2 px-4 border rounded-lg"
+                                        onClick={() => {
+                                            setIsPaymentOpen(false)
+                                            setWait(false)
+                                        }}
+                                    >
+                                        Cancelar
+                                    </button>
+                                </div>
                             </div>
                         </div>
-
-                        <div className="space-y-4 mb-6">
-                            <button
-                                className="w-full py-3 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-3"
-                                onClick={() => setShowPaymentMethod(true)}
-                            >
-                                <svg className='w-6 h-6' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M3.00488 2.99979H21.0049C21.5572 2.99979 22.0049 3.4475 22.0049 3.99979V19.9998C22.0049 20.5521 21.5572 20.9998 21.0049 20.9998H3.00488C2.4526 20.9998 2.00488 20.5521 2.00488 19.9998V3.99979C2.00488 3.4475 2.4526 2.99979 3.00488 2.99979ZM20.0049 10.9998H4.00488V18.9998H20.0049V10.9998ZM20.0049 8.99979V4.99979H4.00488V8.99979H20.0049ZM14.0049 14.9998H18.0049V16.9998H14.0049V14.9998Z"></path>
-                                </svg>
-                                Cartão de Crédito
-                            </button>
-                            <button
-                                className="w-full py-3 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-3"
-                                onClick={() => {
-                                    setShowPixPayment(true);
-                                    gerarPix();
-                                }}
-                            >
-                                <svg className='w-6 h-6' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M5.38545 18.1135L9.52498 22.253C10.8918 23.6199 13.1079 23.6199 14.4747 22.253L18.6143 18.1135C17.5088 18.1824 16.3802 17.7945 15.5354 16.9497L12.5302 13.9445C12.2373 13.6516 11.7624 13.6516 11.4695 13.9445L8.46432 16.9497C7.61954 17.7945 6.49092 18.1824 5.38545 18.1135ZM20.4851 16.2426L22.2529 14.4748C23.6197 13.108 23.6197 10.8919 22.2529 9.5251L20.4851 7.75734C19.3136 6.58576 17.4141 6.58576 16.2425 7.75734L13.2373 10.7625C12.5539 11.446 11.4458 11.446 10.7624 10.7625L7.75721 7.75734C6.58564 6.58576 4.68615 6.58576 3.51457 7.75734L1.74681 9.5251C0.37997 10.8919 0.37997 13.108 1.74681 14.4748L3.51457 16.2426C4.68615 17.4142 6.58564 17.4142 7.75721 16.2426L10.7624 13.2374C11.4458 12.554 12.5539 12.554 13.2373 13.2374L16.2425 16.2426C17.4141 17.4142 19.3136 17.4142 20.4851 16.2426ZM5.38545 5.88646C6.49092 5.81753 7.61954 6.20545 8.46432 7.05023L11.4695 10.0554C11.7624 10.3483 12.2373 10.3483 12.5302 10.0554L15.5354 7.05023C16.3802 6.20545 17.5088 5.81753 18.6143 5.88646L14.4747 1.74693C13.1079 0.380092 10.8918 0.380092 9.52498 1.74693L5.38545 5.88646Z"></path>
-                                </svg>
-                                PIX
-                            </button>
-                        </div>
-
-                        <div className="flex gap-4">
-                            <button
-                                className="flex-1 py-2 px-4 border rounded-lg"
-                                onClick={() => {
-                                    setIsPaymentOpen(false)
-                                    setWait(false)
-                                }}
-                            >
-                                Cancelar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+                    }
+                </>}
 
             {/* Modal de Pagamento com Cartão */}
             {showPaymentMethod && info && (
