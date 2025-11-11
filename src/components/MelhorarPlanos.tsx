@@ -405,6 +405,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
         })
             .then(data => data.json())
             .then(data => {
+                console.log(new Date(data.trial_end) >= new Date())
                 setInfo(data)
             })
             .catch(err => console.log(err))
@@ -564,7 +565,27 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
             {/* Modal de Seleção de Forma de Pagamento */}
             {isPaymentOpen && info && !showPaymentMethod && !showPixPayment &&
                 <>
-                    {info.qtd_acomodacao < currentPlan.accommodations ?
+                    {(info.qtd_acomodacao >= currentPlan.accommodations) && (new Date(info.trial_end) >= new Date()) ?
+                        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+                            <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+                                <h2 className="text-2xl text-center font-bold text-[#0E3447] mb-6">
+                                    Seu plano atual já contempla essa quantidade de acomodações.
+                                </h2>
+
+                                <div className="flex gap-4">
+                                    <button
+                                        className="flex-1 py-2 px-4 border rounded-lg"
+                                        onClick={() => {
+                                            setIsPaymentOpen(false)
+                                            setWait(false)
+                                        }}
+                                    >
+                                        Cancelar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        :
                         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
                             <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
                                 <h2 className="text-2xl font-bold text-[#0E3447] mb-6">
@@ -614,25 +635,6 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                                         PIX
                                     </button>
                                 </div>
-
-                                <div className="flex gap-4">
-                                    <button
-                                        className="flex-1 py-2 px-4 border rounded-lg"
-                                        onClick={() => {
-                                            setIsPaymentOpen(false)
-                                            setWait(false)
-                                        }}
-                                    >
-                                        Cancelar
-                                    </button>
-                                </div>
-                            </div>
-                        </div> :
-                        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-                            <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
-                                <h2 className="text-2xl text-center font-bold text-[#0E3447] mb-6">
-                                    Seu plano atual já contempla essa quantidade de acomodações.
-                                </h2>
 
                                 <div className="flex gap-4">
                                     <button
