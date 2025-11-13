@@ -140,9 +140,9 @@ export default function Dashboard() {
   }[]>([])
   const [faturamento, setFaturamento] = useState<{
     mes: string
-    receita: string
-    despesa: string
-    receita_ano_anterior: string
+    ano: string
+    despesas: string
+    faturamento_liquido: string
   }[]>([])
   const [showTaxaOcu, setShowTaxaOcu] = useState<boolean>(true)
   const [resAc, setResAc] = useState<boolean>(false)
@@ -719,24 +719,24 @@ export default function Dashboard() {
               <div className="bg-white border-zinc-300 border rounded-lg flex flex-col items-center h-full row-span-5">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm mb-16 mt-3">Faturamento X Despesas</p>
                 {periodo == 'm-atual' && faturamento.length > 0 ? <FaturamentoxDespesa
-                  dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                  dadosPassado={faturamento.map(fat => Number(fat.despesa))}
+                  dadosAtuais={faturamento.slice(-12).map(fat => Number(fat.faturamento_liquido))}
+                  dadosPassado={faturamento.slice(-12).map(fat => Number(fat.despesas))}
                   mes={date.getMonth() + 1} /> : null}
                 {periodo == 'm-passado' && faturamento.length > 0 ? <FaturamentoxDespesa
-                  dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                  dadosPassado={faturamento.map(fat => Number(fat.despesa))}
+                  dadosAtuais={faturamento.slice(-12).map(fat => Number(fat.faturamento_liquido))}
+                  dadosPassado={faturamento.slice(-12).map(fat => Number(fat.despesas))}
                   mes={date.getMonth() == 0 && faturamento.length > 0 ? 12 : date.getMonth()} /> : null}
                 {periodo == 'a-atual' && faturamento.length > 0 ? <FaturamentoxDespesa
-                  dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                  dadosPassado={faturamento.map(fat => Number(fat.despesa))}
+                  dadosAtuais={faturamento.slice(-12).map(fat => Number(fat.faturamento_liquido))}
+                  dadosPassado={faturamento.slice(-12).map(fat => Number(fat.despesas))}
                   mes={12} /> : null}
                 {periodo == 'a-passado' && faturamento.length > 0 ? <FaturamentoxDespesa
-                  dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                  dadosPassado={faturamento.map(fat => Number(fat.despesa))}
+                  dadosAtuais={faturamento.slice(-12).map(fat => Number(fat.faturamento_liquido))}
+                  dadosPassado={faturamento.slice(-12).map(fat => Number(fat.despesas))}
                   mes={12} /> : null}
                 {periodo == 'personalizado' && faturamento.length > 0 ? <FaturamentoxDespesa
-                  dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                  dadosPassado={faturamento.map(fat => Number(fat.despesa))}
+                  dadosAtuais={faturamento.slice(-12).map(fat => Number(fat.faturamento_liquido))}
+                  dadosPassado={faturamento.slice(-12).map(fat => Number(fat.despesas))}
                   mes={new Date(new Date(ateData).setDate(new Date(ateData).getDate() + 1)).getMonth() + 1} /> : null}
               </div>
               <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center">
@@ -783,24 +783,24 @@ export default function Dashboard() {
               <div className="bg-white border-zinc-300 border rounded-lg flex flex-col items-center h-full row-span-5">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm mb-16 mt-3">Comparativo de Faturamento Líquido</p>
                 {periodo == 'm-atual' && faturamento.length > 0 ? <FaturamentoLiquido
-                  dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                  dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))}
+                  dadosAtuais={faturamento.slice(-12).map(fat => Number(fat.faturamento_liquido))}
+                  dadosPassado={faturamento.slice(0, 12).map(fat => Number(fat.faturamento_liquido))}
                   mes={date.getMonth() + 1} /> : null}
                 {periodo == 'm-passado' && faturamento.length > 0 ? <FaturamentoLiquido
-                  dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                  dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))}
+                  dadosAtuais={faturamento.slice(-12).map(fat => Number(fat.faturamento_liquido))}
+                  dadosPassado={faturamento.slice(0, 12).map(fat => Number(fat.faturamento_liquido))}
                   mes={date.getMonth() == 0 && faturamento.length > 0 ? 12 : date.getMonth()} /> : null}
                 {periodo == 'a-atual' && faturamento.length > 0 ? <FaturamentoLiquido
-                  dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                  dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))}
+                  dadosAtuais={faturamento.slice(-12).map(fat => Number(fat.faturamento_liquido))}
+                  dadosPassado={faturamento.slice(0, 12).map(fat => Number(fat.faturamento_liquido))}
                   mes={12} /> : null}
                 {periodo == 'a-passado' && faturamento.length > 0 ? <FaturamentoLiquido
-                  dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                  dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))}
+                  dadosAtuais={faturamento.slice(-12).map(fat => Number(fat.faturamento_liquido))}
+                  dadosPassado={faturamento.slice(0, 12).map(fat => Number(fat.faturamento_liquido))}
                   mes={12} /> : null}
                 {periodo == 'personalizado' && faturamento.length > 0 ? <FaturamentoLiquido
-                  dadosAtuais={faturamento.map(fat => Number(fat.receita))}
-                  dadosPassado={faturamento.map(fat => Number(fat.receita_ano_anterior))}
+                  dadosAtuais={faturamento.slice(-12).map(fat => Number(fat.faturamento_liquido))}
+                  dadosPassado={faturamento.slice(0, 12).map(fat => Number(fat.faturamento_liquido))}
                   mes={new Date(new Date(ateData).setDate(new Date(ateData).getDate() + 1)).getMonth() + 1} /> : null}
               </div>
               <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center relative"

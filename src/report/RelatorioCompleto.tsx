@@ -627,8 +627,8 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 <HistoricoFaturamento
                                     mes={props.mes}
                                     ano={props.ano}
-                                    dadosFaturamento={historicoFaturamento.faturamento_despesa.map(e => (Number(e.receita)))}
-                                    dadosDespesa={historicoFaturamento.faturamento_despesa.map(e => (Number(e.despesa)))} />}
+                                    dadosFaturamento={historicoFaturamento.faturamento_despesa.slice(-12).map(e => (Number(e.faturamento_liquido)))}
+                                    dadosDespesa={historicoFaturamento.faturamento_despesa.slice(-12).map(e => (Number(e.despesas)))} />}
                             <p className='text-white'>*Valor do imóvel estimado em R$ {new Intl.NumberFormat('pt-BR', {
                                 minimumFractionDigits: 0,
                                 maximumFractionDigits: 0
@@ -656,8 +656,8 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 <ComparativoResultados
                                     mes={props.mes}
                                     ano={props.ano}
-                                    dadosAtuais={historicoFaturamento.faturamento_despesa.map(e => (Number(e.receita)))}
-                                    dadosAnteriores={historicoFaturamento.faturamento_despesa.map(e => (Number(e.receita_ano_anterior)))}
+                                    dadosAtuais={historicoFaturamento.faturamento_despesa.slice(-12).map(e => (Number(e.faturamento_liquido)))}
+                                    dadosAnteriores={historicoFaturamento.faturamento_despesa.slice(0, 12).map(e => (Number(e.faturamento_liquido)))}
                                 />}
                         </section>
                     </div>
