@@ -257,9 +257,9 @@ export default function Dashboard() {
         valor_liq: number
       }[], {
         mes: string
-        receita: string
-        despesa: string
-        receita_ano_anterior: string
+        ano: string
+        despesas: string
+        faturamento_liquido: string
       }[], {
         "rentabilidade_imovel": number | null,
         "faturamento_bruto": string | null,
