@@ -346,6 +346,7 @@ export default function Financeiro() {
         }
     }, [])
 
+    
     const processedMovimentacoes = useMemo(() => {
         let items = movimentacoes.filter(a => filterAC === 'all' || a?.acomodacao?.id === Number(filterAC));
         if (session === 1) { // Receitas
@@ -380,7 +381,6 @@ export default function Financeiro() {
         }
         return items;
     }, [movimentacoes, filterAC, session, vz, lDespesa, sortConfig, agruparMovimentacoes, tipoDespesaFilter]);
-
     return (
         loaded ?
             <div className='w-full'>
@@ -595,7 +595,7 @@ export default function Financeiro() {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Despesa Total</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-xl">{formatarMoedaBrasileira((movimentacoes.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
+                                        <span className="text-xl">{formatarMoedaBrasileira((processedMovimentacoes.filter(a => filterAC == 'all' || a?.acomodacao?.id == Number(filterAC))
                                             .map(mov => !mov.receita ? Number(mov.valor_liq) : 0)
                                             .reduce((acc, valor) => Number(acc) + Number(valor), 0)).toFixed(1))}</span>
                                     </div>

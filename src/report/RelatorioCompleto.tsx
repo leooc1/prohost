@@ -276,7 +276,6 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                         // }])
                     }
                     else {
-                        console.log(data)
                         setDadosReserva(dados => ({
                             ...dados, faturamento: data[0].faturamento_liquido,
                         }))
@@ -293,7 +292,6 @@ export default function RelatorioCompleto(props: propsRelatorio) {
             })
                 .then(data => data.json())
                 .then((data: any[]) => {
-                    console.log(data)
                     setHistoricoFaturamento(dados => ({
                         ...dados,
                         faturamento_periodo: data.slice(-12).reduce((total, item) => {
