@@ -150,7 +150,6 @@ export default function Dashboard() {
   const [indiOpe, setIndiOpe] = useState<boolean>(false)
   const [ocupacaoSemana, setOcupacaoSemana] = useState<[][][]>([])
   const [comissao, setComissao] = useState<number>(0)
-
   async function acomodacoes() {
     if (!dataToken?.id) return;
     try {
@@ -175,7 +174,6 @@ export default function Dashboard() {
       console.error("Erro ao carregar acomodações:", err);
     }
   }
-
   const [comparativoRA, setComparativoRA] = useState<{
     atual: {
       "rentabilidade_imovel": number | null,
@@ -232,13 +230,11 @@ export default function Dashboard() {
       total_reserva: string | null
     } | null
   }>({ atual: null, passado: null })
-
   const fetchJson = async (url: string) => {
     const response = await fetch(url);
     if (!response.ok) throw new Error(`Erro ao buscar: ${url}`);
     return response.json();
   };
-
   async function resultAc([start, end]: [string, string]) {
     const base = `${apiURL}/movimentacao/${dataToken.id}`;
     const suffix = filterAC === 'all' ? '' : `/${filterAC}`;
@@ -326,8 +322,6 @@ export default function Dashboard() {
       setResAc(true);
     }
   }
-
-
   async function indicaOpe([start, end]: [string, string]) {
     const suffix = filterAC === 'all' ? '' : `/${filterAC}`;
     const baseReserva = `${apiURL}/reserva/${dataToken.id}`;
@@ -371,7 +365,6 @@ export default function Dashboard() {
       setIndiOpe(true);
     }
   }
-
   async function resultGest([start, end]: [string, string]) {
     const base = `${apiURL}/movimentacao/${dataToken.id}`;
     const inicioDate = `${start.slice(0, 4)}-01-01`;
@@ -401,7 +394,6 @@ export default function Dashboard() {
       setResGestor(true);
     }
   }
-
   const [permissao, setPermissao] = useState(0)
   async function permissoes() {
     try {
@@ -412,10 +404,8 @@ export default function Dashboard() {
       setPermissao(0);
     }
   }
-
   const [dataBW, setDataBW] = useState<[string, string]>(["", ""]);
   const runningRef = useRef(false);
-
   const loadAll = async (databw: [string, string]) => {
     const params = new URLSearchParams(window.location.search);
     const ss = Number(params.get("ss"));

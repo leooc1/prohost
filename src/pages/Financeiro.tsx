@@ -348,7 +348,7 @@ export default function Financeiro() {
 
     
     const processedMovimentacoes = useMemo(() => {
-        let items = movimentacoes.filter(a => filterAC === 'all' || a?.acomodacao?.id === Number(filterAC));
+        let items = movimentacoes.filter(a => filterAC === 'all' || a?.acomodacao?.id === Number(filterAC)).filter(m => new Date(m.data) >= new Date(dataBW[0]) && new Date(m.data) <= new Date(dataBW[1]));
         if (session === 1) { // Receitas
             const receitas = items.filter(m => m.receita);
             items = vz ? receitas : agruparMovimentacoes(receitas);

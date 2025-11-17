@@ -154,7 +154,7 @@ export default function Reserva() {
 
   return (
     loaded ?
-      <div className='w-full px-8'>
+      <div className='w-full px-8 min-h-screen'>
         {permissao == 0 && <SemPermissao />}
         <div className='mb-7 pt-2 flex gap-5 flex-wrap'>
           <h3 className="text-3xl font-semibold">Reservas</h3>

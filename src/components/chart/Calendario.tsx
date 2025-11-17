@@ -13,8 +13,9 @@ export default function Calendario({ acomodacoes, reservas, initialDate, permiss
     permissao: number
   }) {
   const iframeRef = useRef(null);
-  const altura = 200 + (60 * (acomodacoes.length - 1));
+  const altura = 200 + (56 * (acomodacoes.length));
   const [reservaView, setReservaView] = useState(false)
+  const [expanded, setExpanded] = useState(false)
   const [dados, setDados] = useState<{ event: { id: string } } | null>(null)
 
   useEffect(() => {
@@ -40,13 +41,17 @@ export default function Calendario({ acomodacoes, reservas, initialDate, permiss
   }, []);
 
   return (
-    <>
+    <div className='relative'>
+      <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#003447] hover:bg-[#325B6A] hover:shadow-md shadow-black absolute'
+        onClick={() => {
+          setExpanded(!expanded)
+        }}>{`${expanded ? 'Comprimir' : 'Expandir'}`} Calendário</button>
       <iframe
         id='frame-calendar'
         ref={iframeRef}
         src='/calendar.html'
-        className={`w-full min-h-56 max-h-full border border-zinc-300 rounded-lg`}
-        style={{ height: `${altura}px` }}
+        className={`w-full min-h-[450px] max-h-full border border-zinc-300 rounded-lg mb-24 transition-all duration-500`}
+        style={{ height: `${!expanded ? 450 : altura}px` }}
       />
       <button className='hidden' id='bttn-log' onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
         const value = e.currentTarget.getAttribute('data-value') as string
@@ -59,6 +64,6 @@ export default function Calendario({ acomodacoes, reservas, initialDate, permiss
           close={() => setReservaView(false)}
           id={dados?.event.id || '0'}
         />}
-    </>
+    </div>
   );
 }
