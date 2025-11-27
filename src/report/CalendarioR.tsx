@@ -122,7 +122,7 @@ export default function CalendarioR(props: propsCalendario) {
         >
             <p class='whitespace-nowrap overflow-hidden 
                 ${reserva.tipo == 'start' ? `ml-2 text-transparent` : ''} 
-                ${reserva.tipo == 'end' ? (!ehEndComStartAntes ? `mr-2 text-transparent` : 'mr-2 text-white'):''} 
+                ${reserva.tipo == 'end' ? (!ehEndComStartAntes ? `mr-2 text-transparent` : 'mr-2 text-white') : ''} 
                 ${reserva.tipo == 'middle' ? `mx-2 text-white` : ''}
             '>${reserva.title}</p>
         </div>`
@@ -186,10 +186,13 @@ export default function CalendarioR(props: propsCalendario) {
                     ...new Map(
                         props.reservas.map((r: any) => [r.canal_reserva, { canal: r.canal_reserva, cor: r.color }])
                     ).values()
-                ].map((r: any) => <li className="flex items-center gap-2">
-                    <div className={`w-3 h-3 rounded-full`} style={{ backgroundColor: r.cor }}></div>
-                    <p className="text-white font-light">{r.canal}</p>
-                </li>)}
+                ].map((r: any) => {
+                    console.log(r)
+                    return <li className="flex items-center gap-2">
+                        <div className={`w-3 h-3 rounded-full`} style={{ backgroundColor: r.canal ? r.cor : '#000' }}></div>
+                        <p className="text-white font-light">{r.canal ? r.canal : 'Indisponibilidade'}</p>
+                    </li>
+                })}
             </ul>
         </div>
     );

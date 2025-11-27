@@ -36,6 +36,11 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
     const [periodo, setPeriodo] = useState('m-atual')
     const [deData, setDeData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`)
     const [ateData, setAteData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
+    const [qtdHospede, setQtdHospede] = useState<number>(0)
+    const [qtdDiarias, setQtdDiarias] = useState<number>(0)
+    const [nomeHospede, setNomeHospede] = useState<string>('')
+    
+
 
     function getDaysInMonth(month: number, year: number) {
         switch (month) {
@@ -204,104 +209,126 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
     return (
         <section className="w-full min-h-56 border border-zinc-300 rounded-lg bg-white px-4 py-4">
             {card && <ReservaCardView close={() => setCard(false)} id={idReserva} permissao={permissao} />}
-            <div className="flex gap-4">
-                <label htmlFor="canal" className="flex flex-col text-zinc-600 font-medium text-xs">
-                    Canal
-                    <select name="canal" id="canal" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" onChange={(e) => { setCanalReserva(e.target.value) }}>
-                        <option value="all">Todos os canais</option>
-                        {canaisReserva.length > 0 ?
-                            canaisReserva.map(cr => <option value={cr.id}>{cr.nome}</option>) :
-                            null}
-                    </select>
-                </label>
-                <label htmlFor="tipo" className="flex flex-col text-zinc-600 font-medium text-xs">
-                    Tipo de Evento
-                    <select name="tipo" id="tipo" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" onChange={(e) => { setEvento(e.target.value) }}>
-                        <option value="all">Todos os tipos</option>
-                        <option value="reserva">Reserva</option>
-                        <option value="continuidade">Continuidade</option>
-                        <option value="indisponibilidade">Indisponibilidade</option>
-                    </select>
-                </label>
-                <div className="flex flex-wrap gap-4">
-                    <label htmlFor="periodo" className="flex flex-col text-zinc-600 font-medium text-xs">
-                        Período de Análise
-                        <select name="periodo" id="periodo" value={periodo} onChange={(e) => {
-                            setPeriodo(e.target.value)
-                            localStorage.setItem('periodo_ph', e.target.value)
-                        }} className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm">
-                            <option value="m-atual" className="text-black">Mês Atual</option>
-                            <option value="m-passado" className="text-black">Mês Passado</option>
-                            <option value="a-atual" className="text-black">Ano Atual</option>
-                            <option value="a-passado" className="text-black">Ano Passado</option>
-                            <option value="personalizado" className="text-black">Personalizado</option>
-                        </select>
-                    </label>
-                    {periodo == 'personalizado' ? <>
-                        <label htmlFor="de" className="flex flex-col text-zinc-600 font-medium text-xs">
-                            De:
-                            <input type="date" name="de" id="de" defaultValue={deData} className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" />
+            <div className="grid grid-cols-2 relative">
+                <div>
+                    <div className="flex gap-4">
+                        <label htmlFor="canal" className="flex flex-col text-zinc-600 font-medium text-xs">
+                            Canal
+                            <select name="canal" id="canal" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" onChange={(e) => { setCanalReserva(e.target.value) }}>
+                                <option value="all">Todos os canais</option>
+                                {canaisReserva.length > 0 ?
+                                    canaisReserva.map(cr => <option value={cr.id}>{cr.nome}</option>) :
+                                    null}
+                            </select>
                         </label>
-                        <label htmlFor="ate" className="flex flex-col text-zinc-600 font-medium text-xs">
-                            Até:
-                            <input type="date" name="ate" id="ate" defaultValue={ateData} className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" />
+                        <label htmlFor="tipo" className="flex flex-col text-zinc-600 font-medium text-xs">
+                            Tipo de Evento
+                            <select name="tipo" id="tipo" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" onChange={(e) => { setEvento(e.target.value) }}>
+                                <option value="all">Todos os tipos</option>
+                                <option value="reserva">Reserva</option>
+                                <option value="continuidade">Continuidade</option>
+                                <option value="indisponibilidade">Indisponibilidade</option>
+                            </select>
                         </label>
-                        <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 h-9 self-end font-medium text-white bg-primary hover:shadow-md shadow-black'
-                            onClick={() => {
-                                const inputDe = document.getElementById('de') as HTMLInputElement
-                                const inputAte = document.getElementById('ate') as HTMLInputElement
-                                if (new Date(inputDe.value) >= new Date(inputAte.value)) {
-                                    const newDate = new Date(inputDe.value)
-                                    newDate.setDate(newDate.getDate() + 1)
-                                    const dataFormatada = newDate.toISOString().split('T')[0]
-                                    setDeData(inputDe.value)
-                                    inputAte.value = dataFormatada
-                                    setAteData(dataFormatada)
-                                    localStorage.setItem("datade", inputDe.value);
-                                    localStorage.setItem("dataate", dataFormatada);
-                                } else {
-                                    setDeData(inputDe.value)
-                                    setAteData(inputAte.value)
-                                    localStorage.setItem("datade", inputDe.value);
-                                    localStorage.setItem("dataate", inputAte.value);
-                                }
-                            }}>Aplicar filtro</button>
-                    </> : null}
+                        <div className="flex flex-wrap gap-4">
+                            <label htmlFor="periodo" className="flex flex-col text-zinc-600 font-medium text-xs">
+                                Período de Análise
+                                <select name="periodo" id="periodo" value={periodo} onChange={(e) => {
+                                    setPeriodo(e.target.value)
+                                    localStorage.setItem('periodo_ph', e.target.value)
+                                }} className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm">
+                                    <option value="m-atual" className="text-black">Mês Atual</option>
+                                    <option value="m-passado" className="text-black">Mês Passado</option>
+                                    <option value="a-atual" className="text-black">Ano Atual</option>
+                                    <option value="a-passado" className="text-black">Ano Passado</option>
+                                    <option value="personalizado" className="text-black">Personalizado</option>
+                                </select>
+                            </label>
+                            {periodo == 'personalizado' ? <>
+                                <label htmlFor="de" className="flex flex-col text-zinc-600 font-medium text-xs">
+                                    De:
+                                    <input type="date" name="de" id="de" defaultValue={deData} className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" />
+                                </label>
+                                <label htmlFor="ate" className="flex flex-col text-zinc-600 font-medium text-xs">
+                                    Até:
+                                    <input type="date" name="ate" id="ate" defaultValue={ateData} className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" />
+                                </label>
+                                <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 h-9 self-end font-medium text-white bg-primary hover:shadow-md shadow-black'
+                                    onClick={() => {
+                                        const inputDe = document.getElementById('de') as HTMLInputElement
+                                        const inputAte = document.getElementById('ate') as HTMLInputElement
+                                        if (new Date(inputDe.value) >= new Date(inputAte.value)) {
+                                            const newDate = new Date(inputDe.value)
+                                            newDate.setDate(newDate.getDate() + 1)
+                                            const dataFormatada = newDate.toISOString().split('T')[0]
+                                            setDeData(inputDe.value)
+                                            inputAte.value = dataFormatada
+                                            setAteData(dataFormatada)
+                                            localStorage.setItem("datade", inputDe.value);
+                                            localStorage.setItem("dataate", dataFormatada);
+                                        } else {
+                                            setDeData(inputDe.value)
+                                            setAteData(inputAte.value)
+                                            localStorage.setItem("datade", inputDe.value);
+                                            localStorage.setItem("dataate", inputAte.value);
+                                        }
+                                    }}>Aplicar filtro</button>
+                            </> : null}
+                        </div>
+                    </div>
+                    <div className="flex gap-4 mt-3">
+                        <label htmlFor="acomodacao" className="flex flex-col text-zinc-600 font-medium text-xs">
+                            Acomodação
+                            <select name="acomodacao" id="acomodacao" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" value={acomodacao} onChange={(e) => {
+                                setAcomodacao(e.target.value)
+                                localStorage.setItem("acfil", e.target.value);
+                            }}>
+                                <option value="all">Todas</option>
+                                {acomodacoes.length > 0 ?
+                                    acomodacoes.map(ac => <option value={ac.id}>{ac.nome}</option>) :
+                                    null}
+                            </select>
+                        </label>
+                        <label htmlFor="order" className="flex flex-col text-zinc-600 font-medium text-xs">
+                            Ordenar por:
+                            <select name="order" id="order" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" onChange={(e) => { setCompare(e.target.value) }}>
+                                <option value="all">Padrão</option>
+                                <option value="numero">Número</option>
+                                <option value="checkin">Checkin</option>
+                                <option value="checkout">Checkout</option>
+                                <option value="valor">Valor</option>
+                                <option value="valor-liquido">Valor Líquido</option>
+                            </select>
+                        </label>
+                        <label htmlFor="classificar" className="flex flex-col text-zinc-600 font-medium text-xs">
+                            Classificar por:
+                            <select name="classificar" id="classificar" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" onChange={(e) => { setOrder(e.target.value) }}>
+                                <option value="decrescente" className="text-black">Maior &#10140; Menor</option>
+                                <option value="crescente" className="text-black">Menor &#10140; Maior</option>
+                            </select>
+                        </label>
+                    </div>
                 </div>
-            </div>
-            <div className="flex gap-4 mt-3">
-                <label htmlFor="acomodacao" className="flex flex-col text-zinc-600 font-medium text-xs">
-                    Acomodação
-                    <select name="acomodacao" id="acomodacao" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" value={acomodacao} onChange={(e) => {
-                        setAcomodacao(e.target.value)
-                        localStorage.setItem("acfil", e.target.value);
-                    }}>
-                        <option value="all">Todas</option>
-                        {acomodacoes.length > 0 ?
-                            acomodacoes.map(ac => <option value={ac.id}>{ac.nome}</option>) :
-                            null}
-                    </select>
-                </label>
-                <label htmlFor="order" className="flex flex-col text-zinc-600 font-medium text-xs">
-                    Ordenar por:
-                    <select name="order" id="order" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" onChange={(e) => { setCompare(e.target.value) }}>
-                        <option value="all">Padrão</option>
-                        <option value="numero">Número</option>
-                        <option value="checkin">Checkin</option>
-                        <option value="checkout">Checkout</option>
-                        <option value="valor">Valor</option>
-                        <option value="valor-liquido">Valor Líquido</option>
-                    </select>
-                </label>
-                <label htmlFor="classificar" className="flex flex-col text-zinc-600 font-medium text-xs">
-                    Classificar por:
-                    <select name="classificar" id="classificar" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" onChange={(e) => { setOrder(e.target.value) }}>
-                        <option value="decrescente" className="text-black">Maior &#10140; Menor</option>
-                        <option value="crescente" className="text-black">Menor &#10140; Maior</option>
-                    </select>
-                </label>
-                <div style={{ width: '-webkit-fill-available' }}
-                    className="group relative flex items-end justify-end gap-5">
+                <div className="flex flex-col justify-between">
+                    <label htmlFor="search-hospede" className="flex flex-col text-zinc-600 font-medium text-xs max-w-[45%] relative"><span className="absolute -top-2 right-0">Nome do Hóspede</span>
+                        <input type="text" name="search-hospede" id="search-hospede" placeholder="Nome hóspede" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sx"
+                            onChange={(e) => {
+                                setNomeHospede(e.target.value)
+                            }} />
+                    </label>
+                    <label htmlFor="qtd-hospede" className="flex flex-col text-zinc-600 font-medium text-xs max-w-[45%] relative"><span className="absolute -top-2 right-0">Qtd Hóspede</span>
+                        <input type="number" name="qtd-hospede" id="qtd-hospede" placeholder="Qtd hóspede" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sx"
+                            onChange={(e) => setQtdHospede(Number(e.target.value))}
+                            value={qtdHospede > 0 ? qtdHospede : ''} />
+                    </label>
+                    <label htmlFor="qtd-diaria" className="flex flex-col text-zinc-600 font-medium text-xs max-w-[45%] relative"><span className="absolute -top-2 right-0">Qtd Diária</span>
+                        <input type="number" name="qtd-diaria" id="qtd-diaria" placeholder="Qtd diária
+                        " className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sx"
+                            onChange={(e) => setQtdDiarias(Number(e.target.value))}
+                            value={qtdDiarias > 0 ? qtdDiarias : ''} />
+                    </label>
+                </div>
+                <div className="group absolute right-0 bottom-0 flex items-end justify-end gap-5">
                     {download && <section className='absolute flex gap-5 -top-7 -right-7'>
                         <div className="w-screen h-screen bg-black fixed top-0 right-0 bg-opacity-20" onClick={() => { setDownload(false) }}></div>
                         <button onClick={() => {
@@ -501,6 +528,21 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                     {
                         reservas.length > 0 ?
                             reservas
+                            //filtro nome hospede
+                                .filter((e) => {
+                                    if (nomeHospede.trim() === '') return e
+                                    else return e.hospede?.nome.toLowerCase().includes(nomeHospede.toLowerCase())
+                                })
+                                //qtd hospede
+                                .filter((e) => {
+                                    if (qtdHospede <= 0) return e
+                                    else return e.qtd_hospede == qtdHospede
+                                })
+                                //qtd diarias
+                                .filter((e) => {
+                                    if (qtdDiarias <= 0) return e
+                                    else return calcularDiasEntreDatas(e.check_in, e.check_out) == qtdDiarias
+                                })
                                 //periodo
                                 .filter((e) => {
                                     if (periodo == 'm-atual') {
