@@ -150,7 +150,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                         <input type="text" name="endereco" id="endereco" className={`border ${err[4] ? 'border-red-500' : 'border-zinc-300'} rounded-md px-2 py-1 outline-none`} autoComplete="off"
                             onChange={(e) => {
                                 if (e.target.value.length > 3) {
-                                    enderecaoComplete(e.target.value)
+                                    // enderecaoComplete(e.target.value)
                                 }
                                 else setAutoComplete([])
                             }}
