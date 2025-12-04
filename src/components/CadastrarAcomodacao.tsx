@@ -52,7 +52,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
             .catch(err => console.log(err))
     }
 
-    async function enderecaoComplete(input: string) {
+    /* async function enderecaoComplete(input: string) {
         await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(input)}&limit=5`)
             .then(data => data.json())
             .then(data => {
@@ -64,7 +64,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                 })))
             })
             .catch(err => console.log(err))
-    }
+    } */
 
     return (
         <div className='w-screen h-screen fixed z-10 top-0 right-0'>
