@@ -40,6 +40,12 @@ export default function FaturamentoLiquido({ mes, dadosAtuais, dadosPassado }: {
                 const options: any = {
                     responsive: true,
                     maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            left: 30,
+                            right: 30,
+                        }
+                    },
                     scales: {
                         x: {
                             beginAtZero: true,
@@ -50,9 +56,10 @@ export default function FaturamentoLiquido({ mes, dadosAtuais, dadosPassado }: {
                                 display: false,
                             },
                             grid: {
-                                display: false
-                            }
-                        }
+                                display: false,
+                            },
+                            grace: '10%'
+                        },
                     },
                     plugins: {
                         legend: {

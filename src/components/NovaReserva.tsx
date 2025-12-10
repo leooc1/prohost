@@ -235,6 +235,16 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     useEffect(() => {
+        const total = document.getElementById('tot') as HTMLInputElement | null
+        if (total) {
+            if (Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) < Number(String(showTaxaLimpeza[1]).replace(/[.]/gm, '').replace(/[,]/gm, '')))
+                total.value = '0,00'
+            else
+                total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(String(showTaxaLimpeza[1]).replace(/[.]/gm, '').replace(/[,]/gm, ''))))
+        }
+    }, [showTaxaLimpeza])
+
+    useEffect(() => {
         if (dataToken && dataToken.id) getAll()
     }, [dataToken])
     return (
@@ -254,7 +264,13 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                 cIN.value = (acomodacao.filter(a => a.id == Number(ac.target.value))[0].check_in_p).slice(0, 5)
                                 cOUT.value = (acomodacao.filter(a => a.id == Number(ac.target.value))[0].check_out_p).slice(0, 5)
 
-                                setShowTaxaLimpeza([(acomodacao.filter(a => a.id == Number(ac.target.value))[0].modelo) == 2, (acomodacao.filter(a => a.id == Number(ac.target.value))[0].taxa_limpeza)])
+                                const total = document.getElementById('tot') as HTMLInputElement
+                                total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(String(showTaxaLimpeza[1]).replace(/[.]/gm, '').replace(/[,]/gm, ''))))
+
+                                setShowTaxaLimpeza([
+                                    [2, 3].includes(acomodacao.filter(a => a.id == Number(ac.target.value))[0].modelo),
+                                    (acomodacao.filter(a => a.id == Number(ac.target.value))[0].taxa_limpeza)
+                                ])
                             }}>
                             <option value="" selected disabled className="hidden">Selecione uma acomodação</option>
                             {acomodacao.length &&
@@ -326,14 +342,31 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                         const total = document.getElementById('tot') as HTMLInputElement
                                         const comissao = document.getElementById('com') as HTMLInputElement
                                         const liquido = document.getElementById('liq') as HTMLInputElement
+                                        const limpeza = document.getElementById('taxa_limpeza') as HTMLInputElement
                                         if (comissao.value.length == 0 && liquido.value.length == 0) {
-                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            if (!showTaxaLimpeza[0]) {
+                                                liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            } else {
+                                                liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            }
                                         } else if (comissao.value.length == 0 && liquido.value.length > 0) {
-                                            comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            if (!showTaxaLimpeza[0]) {
+                                                comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            } else {
+                                                comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            }
                                         } else if (comissao.value.length > 0 && liquido.value.length == 0) {
-                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            if (!showTaxaLimpeza[0]) {
+                                                liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            } else {
+                                                liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            }
                                         } else {
-                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            if (!showTaxaLimpeza[0]) {
+                                                liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            } else {
+                                                liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            }
                                         }
                                         total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
                                         comissao.value = formatedNumber(String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
@@ -353,14 +386,23 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                         const total = document.getElementById('tot') as HTMLInputElement
                                         const comissao = document.getElementById('com') as HTMLInputElement
                                         const liquido = document.getElementById('liq') as HTMLInputElement
+                                        const limpeza = document.getElementById('taxa_limpeza') as HTMLInputElement
                                         if (liquido.value.length == 0 && total.value.length == 0) {
                                             return;
                                         } else if (liquido.value.length == 0 && total.value.length > 0) {
-                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            if (!showTaxaLimpeza[0]) {
+                                                liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            } else {
+                                                liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            }
                                         } else if (liquido.value.length > 0 && total.value.length == 0) {
                                             total.value = String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                         } else {
-                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            if (!showTaxaLimpeza[0]) {
+                                                liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            } else {
+                                                liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            }
                                         }
                                         total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
                                         comissao.value = formatedNumber(String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
@@ -377,14 +419,23 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                         const total = document.getElementById('tot') as HTMLInputElement
                                         const comissao = document.getElementById('com') as HTMLInputElement
                                         const liquido = document.getElementById('liq') as HTMLInputElement
+                                        const limpeza = document.getElementById('taxa_limpeza') as HTMLInputElement
                                         if (comissao.value.length == 0 && total.value.length == 0) {
                                             total.value = String(Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                         } else if (comissao.value.length == 0 && total.value.length > 0) {
-                                            comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            if (!showTaxaLimpeza[0]) {
+                                                comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            } else {
+                                                comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            }
                                         } else if (comissao.value.length > 0 && total.value.length == 0) {
                                             total.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                         } else {
-                                            comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            if (!showTaxaLimpeza[0]) {
+                                                comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            } else {
+                                                comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            }
                                         }
                                         total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
                                         comissao.value = formatedNumber(String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
@@ -440,7 +491,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                 const checkinDateTime = new Date(`${checkinDate.value} ${checkinHora.value}:00`);
                                 const checkoutDateTime = new Date(`${checkoutDate.value} ${checkoutHora.value}:00`);
                                 // 
-                                let valorLiqCalculado = 0
+                                /* let valorLiqCalculado = 0
                                 if (taxaLimpeza) {
                                     const calculado = (
                                         (
@@ -463,7 +514,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                     );
 
                                     valorLiqCalculado = Number(calculado.toFixed(2));
-                                }
+                                } */
                                 // 
                                 if (acomodacaoInput.value.length > 0 && canais.value.length > 0 && Number(qtdHospede.value) > 0 && checkinDate.value.length > 0 && checkinHora.value.length > 0 && checkoutDate.value.length > 0 && checkoutHora.value.length > 0 && Number(valorComissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) >= 0 && Number(valorBruto.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) >= 0 && Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')) >= 0 && hospedeInput.value.length > 0 && (checkinDateTime < checkoutDateTime)) {
                                     if (hospede.filter(h => h.nome.toLowerCase() == hospedeInput.value.toLowerCase()).length > 0)
@@ -507,7 +558,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                         "valor_liq": Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                         "valor_prop": vProprietario,
                                         "valor_gestor": vGestor,
-                                        "valor_liq_calculado": valorLiqCalculado,
+                                        "valor_liq_calculado": Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                         "obs": obs.value,
                                         "tipo_reserva": "Reserva",
                                         "continuidade": null

@@ -240,8 +240,8 @@ export default function Financeiro() {
             method: 'GET'
         })
             .then(data => data.json())
-            .then((data: []) => {
-                setMovimentacoes(data)
+            .then((data: any[]) => {
+                setMovimentacoes(data.map(m => ({...m, data: m.data.slice(0,10)})))
                 setLDespesa('')
                 setListagem(true)
             })
@@ -269,11 +269,12 @@ export default function Financeiro() {
         await acomodacoes()
         await getMovimentacao()
         await permissoes()
-        await fetch(`${apiURL}/reserva/index/${dataToken?.id}`, {
+        await fetch(`${apiURL}/reserva/index/${dataToken?.id}/${dataBW[0]}/${dataBW[1]}`, {
             method: 'GET',
         })
             .then(data => data.json())
             .then((data) => {
+                console.log(data)
                 setIds(data)
             })
             .catch(err => console.log(err))

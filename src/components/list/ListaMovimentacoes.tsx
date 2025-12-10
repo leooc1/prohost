@@ -23,6 +23,7 @@ interface Movimentacao {
 
 
 export default function ListaMovimentacoes({ saas, movimentacoes, ids, children }: { saas: number, movimentacoes: Movimentacao[], ids: { id: number, index: number }[], children?:ReactElement }) {
+    
     const [arrayMovimentacoes, setArrayMovimentacoes] = useState<Movimentacao[][]>([])
     const [page, setPage] = useState<number>(0)
     const [editavel, setEditavel] = useState<boolean>(false)
@@ -48,6 +49,11 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children 
         }
         return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
+
+    console.log(arrayMovimentacoes.length)
+    console.log(page)
+    console.log(arrayMovimentacoes[page])
+    console.log(arrayMovimentacoes.length > page && arrayMovimentacoes[page]?.length > 0)
 
     useEffect(() => {
         const grupos = [];
@@ -168,7 +174,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children 
     return (
         <>
             {
-                movimentacoes?.length > 0 && ids?.length > 0 ?
+                movimentacoes?.length > 0 ?
                     <section className="w-full min-h-56 border border-zinc-300 rounded-lg bg-white px-4 py-4 mt-8">
                         {editavel && <EditarMovimentacao
                             close={() => setEditavel(false)}

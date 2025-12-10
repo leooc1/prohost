@@ -190,7 +190,7 @@ export default function CalendarioR(props: propsCalendario) {
                     console.log(r)
                     return <li className="flex items-center gap-2">
                         <div className={`w-3 h-3 rounded-full`} style={{ backgroundColor: r.canal ? r.cor : '#000' }}></div>
-                        <p className="text-white font-light">{r.canal ? r.canal : 'Indisponibilidade'}</p>
+                        <p className="text-white font-light">{r.canal ? r.canal : 'Indisponibilidade    '}</p>
                     </li>
                 })}
             </ul>

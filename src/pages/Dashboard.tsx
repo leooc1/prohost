@@ -108,6 +108,7 @@ export default function Dashboard() {
     rentabilidade_imovel: string | number
     comissao_reservas: string | number
     comissao_taxa_limpeza: string | number
+    repasse: string | number
   }[]>([])
   const [resultadoGestor, setResultadoGestor] = useState<{
     lucro_acomodacoes: string
@@ -149,7 +150,7 @@ export default function Dashboard() {
   const [resGestor, setResGestor] = useState<boolean>(false)
   const [indiOpe, setIndiOpe] = useState<boolean>(false)
   const [ocupacaoSemana, setOcupacaoSemana] = useState<[][][]>([])
-  const [comissao, setComissao] = useState<number>(0)
+  // const [comissao, setComissao] = useState<number>(0)
   async function acomodacoes() {
     if (!dataToken?.id) return;
     try {
@@ -241,10 +242,10 @@ export default function Dashboard() {
 
     try {
       // Busca comissão apenas se houver filtro específico
-      if (filterAC !== 'all') {
+      /* if (filterAC !== 'all') {
         const data = await fetchJson(`${apiURL}/acomodacao/${dataToken.id}/${filterAC}`);
         setComissao(Number(data?.[0]?.comissao ?? 0));
-      }
+      } */
 
       const [mov, fat, comp]: [{
         nome: string
@@ -264,6 +265,10 @@ export default function Dashboard() {
         "despesas": string | null,
         "lucro": string | null,
         "diaria_media": string | null,
+        "comissao_reservas": string | null,
+        "comissao_taxa_limpeza": string | null,
+        "taxa_limpeza": string | null,
+        "repasse": string | null,
         "periodo": string | null
       }[]] = await Promise.all([
         fetchJson(`${base}/fat-canal/${start}/${end}${suffix}`),
@@ -285,6 +290,7 @@ export default function Dashboard() {
         rentabilidade_imovel: 0,
         comissao_reservas: 0,
         comissao_taxa_limpeza: 0,
+        repasse: 0,
         periodo: 'atual'
       }];
 
@@ -299,10 +305,11 @@ export default function Dashboard() {
               faturamento_bruto: d.faturamento_bruto ?? '0',
               faturamento_liquido: d.faturamento_liquido ?? '0',
               lucro: d.lucro ?? '0',
-              taxa_limpeza: '0',
+              taxa_limpeza: d.taxa_limpeza ?? '0',
               rentabilidade_imovel: d.rentabilidade_imovel ?? 0,
-              comissao_reservas: 0,
-              comissao_taxa_limpeza: 0,
+              comissao_reservas: d.comissao_reservas ?? 0,
+              comissao_taxa_limpeza: d.comissao_taxa_limpeza ?? 0,
+              repasse: d.repasse ?? 0,
               periodo: d.periodo ?? 'atual',
             }))
           : resultadoDefault
@@ -806,7 +813,7 @@ export default function Dashboard() {
                 <div className="flex flex-col ml-4">
                   <p className="flex flex-col text-zinc-400 font-medium text-sm">Comissão das Reservas</p>
                   <div className="flex items-end gap-4">
-                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].comissao_reservas).toFixed(2))}</span>
+                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira((Number(resultadoAcomodacoes[0].comissao_plataforma) - Number(resultadoAcomodacoes[0].comissao_taxa_limpeza)).toFixed(2))}</span>
                   </div>
                 </div>
                 <section id="detail-comission" className="absolute flex flex-col top-1/2 -translate-y-1/2 gap-2 -right-32 scale-75 hidden">
@@ -819,7 +826,7 @@ export default function Dashboard() {
                   <div className="flex flex-col bg-white rounded-lg px-2 py-1 shadow-zinc-400 shadow-lg">
                     <p className="flex flex-col text-zinc-400 font-medium text-sm"> Comissão Reservas</p>
                     <div className="flex items-end gap-4">
-                      <span className="text-nowrap text-xl">{formatarMoedaBrasileira(Number(resultadoAcomodacoes[0].comissao_reservas).toFixed(2))}</span>
+                      <span className="text-nowrap text-xl">{formatarMoedaBrasileira((Number(resultadoAcomodacoes[0].comissao_plataforma) - Number(resultadoAcomodacoes[0].comissao_taxa_limpeza)).toFixed(2))}</span>
                     </div>
                   </div>
                 </section>
@@ -869,7 +876,7 @@ export default function Dashboard() {
                 <div className="flex flex-col ml-4">
                   <p className="flex flex-col text-zinc-400 font-medium text-sm">Repasse ao proprietário</p>
                   <div className="flex items-end gap-4">
-                    <span className="text-nowrap text-xl">{filterAC != 'all' ? formatarMoedaBrasileira((Number(resultadoAcomodacoes[0].lucro) * (comissao > 1 ? (100 - comissao) / 100 : 1 - comissao)).toFixed(2)) : '-----'}</span>
+                    <span className="text-nowrap text-xl">{filterAC != 'all' ? formatarMoedaBrasileira((Number(resultadoAcomodacoes[0].repasse)).toFixed(2)) : '-----'}</span>
                   </div>
                 </div>
               </div>

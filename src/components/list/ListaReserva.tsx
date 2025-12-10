@@ -36,8 +36,8 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
     const [periodo, setPeriodo] = useState('m-atual')
     const [deData, setDeData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`)
     const [ateData, setAteData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
-    const [qtdHospede, setQtdHospede] = useState<number>(0)
-    const [qtdDiarias, setQtdDiarias] = useState<number>(0)
+    // const [qtdHospede, setQtdHospede] = useState<number>(0)
+    // const [qtdDiarias, setQtdDiarias] = useState<number>(0)
     const [nomeHospede, setNomeHospede] = useState<string>('')
     
 
@@ -316,7 +316,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                 setNomeHospede(e.target.value)
                             }} />
                     </label>
-                    <label htmlFor="qtd-hospede" className="flex flex-col text-zinc-600 font-medium text-xs max-w-[45%] relative"><span className="absolute -top-2 right-0">Qtd Hóspede</span>
+                    {/* <label htmlFor="qtd-hospede" className="flex flex-col text-zinc-600 font-medium text-xs max-w-[45%] relative"><span className="absolute -top-2 right-0">Qtd Hóspede</span>
                         <input type="number" name="qtd-hospede" id="qtd-hospede" placeholder="Qtd hóspede" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sx"
                             onChange={(e) => setQtdHospede(Number(e.target.value))}
                             value={qtdHospede > 0 ? qtdHospede : ''} />
@@ -326,7 +326,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                         " className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sx"
                             onChange={(e) => setQtdDiarias(Number(e.target.value))}
                             value={qtdDiarias > 0 ? qtdDiarias : ''} />
-                    </label>
+                    </label> */}
                 </div>
                 <div className="group absolute right-0 bottom-0 flex items-end justify-end gap-5">
                     {download && <section className='absolute flex gap-5 -top-7 -right-7'>
@@ -534,15 +534,15 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                     else return e.hospede?.nome.toLowerCase().includes(nomeHospede.toLowerCase())
                                 })
                                 //qtd hospede
-                                .filter((e) => {
+                                /* .filter((e) => {
                                     if (qtdHospede <= 0) return e
                                     else return e.qtd_hospede == qtdHospede
-                                })
+                                }) */
                                 //qtd diarias
-                                .filter((e) => {
+                                /* .filter((e) => {
                                     if (qtdDiarias <= 0) return e
                                     else return calcularDiasEntreDatas(e.check_in, e.check_out) == qtdDiarias
-                                })
+                                }) */
                                 //periodo
                                 .filter((e) => {
                                     if (periodo == 'm-atual') {
