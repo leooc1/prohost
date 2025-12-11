@@ -81,11 +81,10 @@ export default function Assinar() {
                             <p className="text-secondary font-semibold text-xl my-5">Assinatura</p>
                             <div className="flex items-center gap-4 mb-5 bg-[#00D19A] w-fit rounded-xl border-4 border-[#00D19A] overflow-hidden font-black">
                                 <span
-                                    className={`px-4 py-2 rounded-lg font-semibold transition-colors duration-200 ${
-                                        cycle === 'YEARLY'
+                                    className={`px-4 py-2 rounded-lg font-semibold transition-colors duration-200 ${cycle === 'YEARLY'
                                             ? 'bg-[#015A57] text-white'
                                             : 'bg-[#00D19A] text-white shadow-lg'
-                                    } cursor-pointer`}
+                                        } cursor-pointer`}
                                     onClick={() => {
                                         setCycle('YEARLY');
                                         const url = new URL(window.location.href);
@@ -96,11 +95,10 @@ export default function Assinar() {
                                     Anual
                                 </span>
                                 <span
-                                    className={`px-4 py-2 rounded-lg font-semibold transition-colors duration-200 ${
-                                        cycle === 'MONTHLY'
+                                    className={`px-4 py-2 rounded-lg font-semibold transition-colors duration-200 ${cycle === 'MONTHLY'
                                             ? 'bg-[#015A57] text-white'
                                             : 'bg-[#00D19A] text-white shadow-lg'
-                                    } cursor-pointer`}
+                                        } cursor-pointer`}
                                     onClick={() => {
                                         setCycle('MONTHLY');
                                         const url = new URL(window.location.href);
@@ -146,7 +144,7 @@ export default function Assinar() {
                             {origin === 'reservaadoiss' && (
                                 <div className="mt-5 text-zinc-100 flex items-center gap-4">
                                     <p className="text-2xl font-semibold">
-                                     Bem-vindo(a)! <br /> Se você chegou até aqui pelo <strong>Reserva a Dois</strong>, temos uma surpresa pra você 🎁 Ganhe 1 mês grátis para explorar todos os recursos do nosso sistema e descobrir como ele pode facilitar o seu dia a dia.
+                                        Bem-vindo(a)! <br /> Se você chegou até aqui pelo <strong>Reserva a Dois</strong>, temos uma surpresa pra você 🎁 Ganhe 1 mês grátis para explorar todos os recursos do nosso sistema e descobrir como ele pode facilitar o seu dia a dia.
                                     </p>
                                 </div>
                             )}
@@ -155,6 +153,16 @@ export default function Assinar() {
                                     <p className="text-2xl font-semibold">
                                         Parabéns, anfitrião!<br />
                                         Você ganhou 1 mês gratuito para usar o ProHost, seja bem-vindo(a)
+                                    </p>
+                                </div>
+                            )}
+                            {origin === 'oldClass' && (
+                                <div className="mt-5 text-zinc-100 flex items-center gap-4">
+                                    <p className="text-2xl font-semibold">
+                                        Parabéns, anfitrião!<br />
+                                        Você ganhou 1 mês gratuito para usar o ProHost.<br />
+                                        Se for seu primeiro acesso, faça o cadastro ao lado.<br />
+                                        Se já usou antes, solicite ao suporte para liberar o seu mês gratuito.
                                     </p>
                                 </div>
                             )}
