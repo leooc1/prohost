@@ -70,6 +70,7 @@ export default function Reserva() {
       .then(data => data.json())
       .then((data: Reserva[]) => {
         setReserva(data)
+        console.log(data[0])
         getAll(dataToken.id)
       })
       .catch(err => console.log(err))

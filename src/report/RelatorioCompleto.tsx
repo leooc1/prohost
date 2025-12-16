@@ -28,7 +28,7 @@ interface propsRelatorio {
 export default function RelatorioCompleto(props: propsRelatorio) {
     const apiURL = import.meta.env.VITE_API_URL
     const [editPages, setEditPages] = useState([true, true, true, true, true, true, true])
-    const [edit, setEdit] = useState([true, true, true, true, true, true, true])
+    const [edit, setEdit] = useState([true, true, true, true, true, true, true, true])
     const [editCalendar, setEditCalendar] = useState([true, true, true, true])
     function diasDoMes(month: number, year: number) {
         switch (month) {
@@ -192,7 +192,6 @@ export default function RelatorioCompleto(props: propsRelatorio) {
     const [nome, setNome] = useState<string>('')
     const [acIMG, setAcIMG] = useState<string>('')
     const [valorImovel, setValorImovel] = useState<string>('')
-    const [comissao, setComissao] = useState<number>(0)
     const [dadosReserva, setDadosReserva] = useState({ ocupacao_do_imovel: 0, novas_reservas: 0, faturamento: 0 })
     const [resultadoAcomodacoes, setResultadoAcomodacoes] = useState<{
         comissao_plataforma: string
@@ -201,10 +200,12 @@ export default function RelatorioCompleto(props: propsRelatorio) {
         faturamento_bruto: string
         faturamento_liquido: string
         lucro: string
+        periodo: string
         taxa_limpeza: string
         rentabilidade_imovel: string | number
-        comissao_taxa_limpeza: string | number
         comissao_reservas: string | number
+        comissao_taxa_limpeza: string | number
+        repasse: string | number
     }[]>([])
     const [despesas, setDespesas] = useState<any[]>([])
     const [reservas, setReservas] = useState<any[]>([])
@@ -226,7 +227,6 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                     setValorImovel(data[0].valor_imovel)
                     setAcIMG(data[0].foto)
                     setNome(data[0].nome)
-                    setComissao(Number(data[0].comissao))
                 })
                 .catch(err => console.log(err))
         }
@@ -339,7 +339,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                 .catch(err => console.log(err))
         }
         {
-            await fetch(`${apiURL}/movimentacao/${props.saas}/result-ac/${`${props.ano}-${('0' + props.mes).slice(-2)}-${'01'}`}/${`${props.ano}-${('0' + props.mes).slice(-2)}-${diasDoMes(props.mes, props.ano)}`}/${props.acomodacao}`, {
+            await fetch(`${apiURL}/movimentacao/${props.saas}/comparativo-result-ac/${`${props.ano}-${('0' + props.mes).slice(-2)}-${'01'}`}/${`${props.ano}-${('0' + props.mes).slice(-2)}-${diasDoMes(props.mes, props.ano)}`}/${props.acomodacao}`, {
                 method: 'GET'
             })
                 .then(data => data.json())
@@ -354,11 +354,32 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                             lucro: "0",
                             taxa_limpeza: "0",
                             rentabilidade_imovel: 0,
-                            comissao_taxa_limpeza: 0,
                             comissao_reservas: 0,
+                            comissao_taxa_limpeza: 0,
+                            repasse: 0,
+                            periodo: 'atual'
                         }])
-                    else
-                        setResultadoAcomodacoes(data)
+                    else {
+                        setResultadoAcomodacoes(
+                            data
+                                .filter((d:any) => d.periodo === 'atual')
+                                .map((d:any) => ({
+                                    comissao_plataforma: d.comissao_plataforma ?? '0',
+                                    despesas: d.despesas ?? '0',
+                                    diaria_media: d.diaria_media ?? '0',
+                                    faturamento_bruto: d.faturamento_bruto ?? '0',
+                                    faturamento_liquido: d.faturamento_liquido ?? '0',
+                                    lucro: d.lucro ?? '0',
+                                    taxa_limpeza: d.taxa_limpeza ?? '0',
+                                    rentabilidade_imovel: d.rentabilidade_imovel ?? 0,
+                                    comissao_reservas: d.comissao_reservas ?? 0,
+                                    comissao_taxa_limpeza: d.comissao_taxa_limpeza ?? 0,
+                                    repasse: d.repasse ?? 0,
+                                    periodo: d.periodo ?? 'atual',
+                                }))
+                        )
+                        console.log(data)
+                    }
                 })
                 .catch(err => console.log(err))
         }
@@ -843,6 +864,26 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                                 setEdit(field)
                                             }}>{edit[5] ? open : closed}</button>
                                     </div>
+                                    <div className={`bg-white border-zinc-300 border rounded-lg h-full flex items-center py-1 relative ${edit[7] ? 'opacity-100' : 'opacity-30'}`}>
+                                        <div className="bg-[#fde0fe] rounded-md w-fit py-2 px-2 ml-4">
+                                            <svg className="w-6 h-fit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14V16C8.68629 16 6 18.6863 6 22H4C4 17.5817 7.58172 14 12 14ZM12 13C8.685 13 6 10.315 6 7C6 3.685 8.685 1 12 1C15.315 1 18 3.685 18 7C18 10.315 15.315 13 12 13ZM12 11C14.21 11 16 9.21 16 7C16 4.79 14.21 3 12 3C9.79 3 8 4.79 8 7C8 9.21 9.79 11 12 11ZM14.5946 18.8115C14.5327 18.5511 14.5 18.2794 14.5 18C14.5 17.7207 14.5327 17.449 14.5945 17.1886L13.6029 16.6161L14.6029 14.884L15.5952 15.4569C15.9883 15.0851 16.4676 14.8034 17 14.6449V13.5H19V14.6449C19.5324 14.8034 20.0116 15.0851 20.4047 15.4569L21.3971 14.8839L22.3972 16.616L21.4055 17.1885C21.4673 17.449 21.5 17.7207 21.5 18C21.5 18.2793 21.4673 18.551 21.4055 18.8114L22.3972 19.3839L21.3972 21.116L20.4048 20.543C20.0117 20.9149 19.5325 21.1966 19.0001 21.355V22.5H17.0001V21.3551C16.4677 21.1967 15.9884 20.915 15.5953 20.5431L14.603 21.1161L13.6029 19.384L14.5946 18.8115ZM18 19.5C18.8284 19.5 19.5 18.8284 19.5 18C19.5 17.1716 18.8284 16.5 18 16.5C17.1716 16.5 16.5 17.1716 16.5 18C16.5 18.8284 17.1716 19.5 18 19.5Z" fill="#c061c3"></path></svg>
+                                        </div>
+                                        <div className="flex flex-col ml-4">
+                                            <p className="flex flex-col text-zinc-400 font-medium text-sm">Repasse Gestor</p>
+                                            <div className="flex items-end gap-4">
+                                                <span className="text-nowrap text-xl">R$ {new Intl.NumberFormat('pt-BR', {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2
+                                                }).format(Number(resultadoAcomodacoes[0].lucro) - Number(resultadoAcomodacoes[0].repasse))}</span>
+                                            </div>
+                                        </div>
+                                        <button className='absolute right-3'
+                                            onClick={() => {
+                                                let field = edit
+                                                field = (field.map((e, i) => i === 7 ? !e : e))
+                                                setEdit(field)
+                                            }}>{edit[7] ? open : closed}</button>
+                                    </div>
                                 </section>
                                 <section className='flex items-center justify-center'>
                                     <div className='flex flex-col bg-zinc-400 bg-opacity-10 px-2 py-1 rounded-lg gap-2 w-3/4'>
@@ -850,7 +891,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                         <p className='text-xl text-white font-semibold flex text-end pr-4'>R$ <input className='bg-transparent ml-5 w-full' defaultValue={new Intl.NumberFormat('pt-BR', {
                                             minimumFractionDigits: 2,
                                             maximumFractionDigits: 2
-                                        }).format(Number(resultadoAcomodacoes[0].lucro) * (comissao > 1 ? (100 - comissao) / 100 : 1 - comissao) <= 0 ? 0 : Number(resultadoAcomodacoes[0].lucro) * (comissao > 1 ? (100 - comissao) / 100 : 1 - comissao))} type="text"
+                                        }).format(Number(resultadoAcomodacoes[0].repasse))} type="text"
                                             onBlur={(e) => e.target.value = new Intl.NumberFormat('pt-BR', {
                                                 minimumFractionDigits: 2,
                                                 maximumFractionDigits: 2

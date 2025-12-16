@@ -308,26 +308,17 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                             </select>
                         </label>
                     </div>
-                </div>
-                <div className="flex flex-col justify-between">
-                    <label htmlFor="search-hospede" className="flex flex-col text-zinc-600 font-medium text-xs max-w-[45%] relative"><span className="absolute -top-2 right-0">Nome do Hóspede</span>
-                        <input type="text" name="search-hospede" id="search-hospede" placeholder="Nome hóspede" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sx"
+                    <div className="flex flex-col mt-3">
+                    <label htmlFor="search-hospede" className="flex flex-col text-zinc-600 font-medium text-xs">
+                        Nome do Hóspede
+                        <input type="text" name="search-hospede" id="search-hospede" placeholder="Nome hóspede" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm"
                             onChange={(e) => {
                                 setNomeHospede(e.target.value)
                             }} />
                     </label>
-                    {/* <label htmlFor="qtd-hospede" className="flex flex-col text-zinc-600 font-medium text-xs max-w-[45%] relative"><span className="absolute -top-2 right-0">Qtd Hóspede</span>
-                        <input type="number" name="qtd-hospede" id="qtd-hospede" placeholder="Qtd hóspede" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sx"
-                            onChange={(e) => setQtdHospede(Number(e.target.value))}
-                            value={qtdHospede > 0 ? qtdHospede : ''} />
-                    </label>
-                    <label htmlFor="qtd-diaria" className="flex flex-col text-zinc-600 font-medium text-xs max-w-[45%] relative"><span className="absolute -top-2 right-0">Qtd Diária</span>
-                        <input type="number" name="qtd-diaria" id="qtd-diaria" placeholder="Qtd diária
-                        " className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sx"
-                            onChange={(e) => setQtdDiarias(Number(e.target.value))}
-                            value={qtdDiarias > 0 ? qtdDiarias : ''} />
-                    </label> */}
                 </div>
+                </div>
+                
                 <div className="group absolute right-0 bottom-0 flex items-end justify-end gap-5">
                     {download && <section className='absolute flex gap-5 -top-7 -right-7'>
                         <div className="w-screen h-screen bg-black fixed top-0 right-0 bg-opacity-20" onClick={() => { setDownload(false) }}></div>

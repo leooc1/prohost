@@ -22,8 +22,8 @@ interface Movimentacao {
 }
 
 
-export default function ListaMovimentacoes({ saas, movimentacoes, ids, children }: { saas: number, movimentacoes: Movimentacao[], ids: { id: number, index: number }[], children?:ReactElement }) {
-    
+export default function ListaMovimentacoes({ saas, movimentacoes, ids, children, tipo }: { saas: number, movimentacoes: Movimentacao[], ids: { id: number, index: number }[], children?: ReactElement, tipo: number }) {
+
     const [arrayMovimentacoes, setArrayMovimentacoes] = useState<Movimentacao[][]>([])
     const [page, setPage] = useState<number>(0)
     const [editavel, setEditavel] = useState<boolean>(false)
@@ -238,14 +238,14 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children 
                                     <th className="text-center">Categoria</th>
                                     <th className="text-center">Descrição</th>
                                     <th className="text-center">Acomodação</th>
-                                    <th className="text-center">Valor Bruto</th>
+                                    {tipo != 2 && <th className="text-center">Valor Bruto</th>}
                                     <th className="text-center">Valor Líquido</th>
                                 </tr>
                             </thead>
                             <tbody className="">
                                 {
                                     arrayMovimentacoes.length > page && arrayMovimentacoes[page]?.length > 0 ?
-                                        arrayMovimentacoes[page].map((e) =>{ 
+                                        arrayMovimentacoes[page].map((e) => {
                                             return <>
                                                 <tr className={`text-xs bg-white h-12 border border-zinc-200 w-full hover:bg-[#FAFBFD]
                                                 ${e.reserva == null && e.data != '-' ? 'cursor-pointer' : ''}`}
@@ -287,10 +287,11 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children 
                                                         : e.nome}
                                                     </td>
                                                     <td className="text-center text-xs font-normal">{e.acomodacao ? e.acomodacao.nome : ''}</td>
-                                                    <td className="text-center text-xs font-normal">{formatarMoedaBrasileira(String(e.valor))}</td>
+                                                    {tipo != 2 && <td className="text-center text-xs font-normal">{!e.receita ? '--' : formatarMoedaBrasileira(String(e.valor))}</td>}
                                                     <td className="text-center text-xs font-normal">{formatarMoedaBrasileira(String(e.valor_liq))}</td>
                                                 </tr >
-                                            </>})
+                                            </>
+                                        })
                                         : null
                                 }
                             </tbody>
@@ -310,7 +311,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children 
                                         </select>
                                     </td>
                                     <td className="text-center"></td>
-                                    <td className="text-center"></td>
+                                    {tipo != 2 && <td className="text-center"></td>}
                                     <td className="text-center flex items-center h-12 gap-4">
                                         <button disabled={!(arrayMovimentacoes?.length > 1) || !((arrayMovimentacoes[page - 1]))}
                                             onClick={() => {
@@ -330,6 +331,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children 
                                             }}
                                             className={`px-2 py-1 disabled:cursor-no-drop bg-slate-200 border border-slate-300 rounded-md h-fit w-fit ${(!(arrayMovimentacoes?.length > 1) || !((arrayMovimentacoes[page + 1]))) && 'cursor-no-drop'}`}>&gt;</button>
                                     </td>
+                                    {tipo == 2 && <td className="text-center w-6"></td>}
                                 </tr>
                             </tfoot>
                         </table>

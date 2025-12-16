@@ -610,7 +610,7 @@ export default function Financeiro() {
                                     <Loader />
                                 </div>
                             )}
-                            <ListaMovimentacoes ids={ids} saas={dataToken?.id} movimentacoes={processedMovimentacoes} >
+                            <ListaMovimentacoes tipo={0} ids={ids} saas={dataToken?.id} movimentacoes={processedMovimentacoes} >
                                 <div className='flex flex-wrap gap-4 items-end'>
                                     {/* Ordenação */}
                                     <div className="flex flex-col min-w-[220px]">
@@ -655,7 +655,7 @@ export default function Financeiro() {
                                     <Loader />
                                 </div>
                             )}
-                            <ListaMovimentacoes ids={ids} saas={dataToken?.id} movimentacoes={processedMovimentacoes} >
+                            <ListaMovimentacoes tipo={1} ids={ids} saas={dataToken?.id} movimentacoes={processedMovimentacoes} >
                                 <div className='flex flex-wrap gap-4 items-end'>
                                     {/* Ordenação */}
                                     <div className="flex flex-col min-w-[220px]">
@@ -701,7 +701,7 @@ export default function Financeiro() {
                                 </div>
                             )}
                             {/* ...existing code for cards if session==2... */}
-                            <ListaMovimentacoes ids={ids} saas={dataToken?.id} movimentacoes={processedMovimentacoes} >
+                            <ListaMovimentacoes tipo={2} ids={ids} saas={dataToken?.id} movimentacoes={processedMovimentacoes} >
                                 <div className='flex flex-wrap gap-4 items-end'>
                                     {/* Ordenação */}
                                     <div className="flex flex-col min-w-[220px]">
