@@ -24,7 +24,7 @@ interface Reserva {
 
 const apiURL = import.meta.env.VITE_API_URL
 
-export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva, permissao, setListagem }: { reservas: Reserva[], ids: { id: number, index: number }[], acomodacoes: { id: number, nome: string }[], canaisReserva: { id: number, nome: string }[], permissao: number, setListagem: (value: boolean) => void }) {
+export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisReserva, permissao/* , setListagem */ }: { /* reservas: Reserva[], ids: { id: number, index: number }[], */ acomodacoes: { id: number, nome: string }[], canaisReserva: { id: number, nome: string }[], permissao: number/* , setListagem: (value: boolean) => void  */}) {
     const [download, setDownload] = useState(false)
     const [card, setCard] = useState(false)
     const [idReserva, setIdReserva] = useState<string>('')
@@ -37,7 +37,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
     const [order, setOrder] = useState('decrescente')
     const [canalReserva, setCanalReserva] = useState('all')
     const [periodo, setPeriodo] = useState('m-atual')
-    const [reserva, setReserva] = useState([])
+    const [reserva, setReserva] = useState<Reserva[]>([])
     const [deData, setDeData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`)
     const [ateData, setAteData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
     // const [qtdHospede, setQtdHospede] = useState<number>(0)
@@ -369,7 +369,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                     {download && <section className='absolute flex gap-5 -top-7 -right-7'>
                         <div className="w-screen h-screen bg-black fixed top-0 right-0 bg-opacity-20" onClick={() => { setDownload(false) }}></div>
                         <button onClick={() => {
-                            gerarEbaixarCSVreserva(reserva
+                            gerarEbaixarCSVReservas(reserva
                                 .filter((e) => {
                                     if (periodo == 'm-atual') {
                                         return (new Date(e.check_in).getMonth() == date.getMonth() &&
@@ -445,7 +445,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                             .csv
                         </button>
                         <button onClick={() => {
-                            gerarEbaixarExcelreserva(reserva
+                            gerarEbaixarExcelReservas(reserva
                                 .filter((e) => {
                                     if (periodo == 'm-atual') {
                                         return (new Date(e.check_in).getMonth() == date.getMonth() &&

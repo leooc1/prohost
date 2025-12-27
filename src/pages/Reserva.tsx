@@ -64,7 +64,7 @@ export default function Reserva() {
   const [ano, setAno] = useState<number>(new Date().getFullYear());
   const [mes, setMes] = useState<number>(new Date().getMonth() + 1);
   const [canais, setCanais] = useState<Acomodacao[]>([])
-  const [ids, setIds] = useState<{ id: number, index: number }[]>([])
+  // const [ids, setIds] = useState<{ id: number, index: number }[]>([])
 
   async function getReserva() {
     if (!dataToken || !dataToken.id) return
@@ -245,9 +245,9 @@ export default function Reserva() {
             />}
           </>
             : listagem && <> <ListaReserva
-              setListagem={setListagem}
-              ids={ids}
-              reservas={reserva}
+              /* setListagem={setListagem} */
+              /* ids={ids} */
+              /* reservas={reserva} */
               acomodacoes={acomodacao}
               canaisReserva={canais}
               permissao={permissao}
