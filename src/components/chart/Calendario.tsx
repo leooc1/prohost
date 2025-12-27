@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReservaCardView from '../ReservaCardView';
 
-export default function Calendario({ acomodacoes, reservas, initialDate, permissao }:
+export default function Calendario({ acomodacoes, reservas, initialDate, permissao}:
   {
     acomodacoes: { id: string, title: string, image: string }[],
     reservas: {
@@ -10,13 +10,14 @@ export default function Calendario({ acomodacoes, reservas, initialDate, permiss
       bruto: number, liquido: number, comissao: number,
     }[],
     initialDate: null | string,
-    permissao: number
+    permissao: number,
   }) {
   const iframeRef = useRef(null);
   const altura = 200 + (56 * (acomodacoes.length));
   const [reservaView, setReservaView] = useState(false)
   const [expanded, setExpanded] = useState(false)
   const [dados, setDados] = useState<{ event: { id: string } } | null>(null)
+
 
   useEffect(() => {
     localStorage.removeItem('ph-cld-initial-date')
@@ -58,6 +59,7 @@ export default function Calendario({ acomodacoes, reservas, initialDate, permiss
         setReservaView(true)
         setDados(JSON.parse(value))
       }}></button>
+
       {reservaView &&
         <ReservaCardView
           permissao={permissao}

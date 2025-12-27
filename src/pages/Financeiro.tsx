@@ -225,44 +225,47 @@ export default function Financeiro() {
     }
 
     async function acomodacoes() {
-        await fetch(`${apiURL}/acomodacao/${dataToken.id}`, {
-            method: 'GET'
-        })
-            .then(data => data.json())
-            .then((data: Acomodacao[]) => {
-                setAcomodacao(data.filter((e => !e.desativado)))
+        if (dataToken.id)
+            await fetch(`${apiURL}/acomodacao/${dataToken.id}`, {
+                method: 'GET'
             })
-            .catch(err => console.log(err))
+                .then(data => data.json())
+                .then((data: Acomodacao[]) => {
+                    setAcomodacao(data.filter((e => !e.desativado)))
+                })
+                .catch(err => console.log(err))
     }
 
     async function getMovimentacao() {
-        await fetch(`${apiURL}/movimentacao/${dataToken.id}/${dataBW[0]}/${dataBW[1]}`, {
-            method: 'GET'
-        })
-            .then(data => data.json())
-            .then((data: any[]) => {
-                setMovimentacoes(data.map(m => ({...m, data: m.data.slice(0,10)})))
-                setLDespesa('')
-                setListagem(true)
+        if (dataToken.id)
+            await fetch(`${apiURL}/movimentacao/${dataToken.id}/${dataBW[0]}/${dataBW[1]}`, {
+                method: 'GET'
             })
-            .catch(err => console.log(err))
+                .then(data => data.json())
+                .then((data: any[]) => {
+                    setMovimentacoes(data.map(m => ({ ...m, data: m.data.slice(0, 10) })))
+                    setLDespesa('')
+                    setListagem(true)
+                })
+                .catch(err => console.log(err))
     }
 
     const [permissao, setPermissao] = useState(0)
     async function permissoes() {
-        await fetch(`${apiURL}/users/${dataToken.idUsu}`, {
-            method: 'GET'
-        })
-            .then(data => data.json())
-            .then(data => {
-                if (data.financeiro) {
-                    setPermissao(data.financeiro)
-                }
-                else {
-                    setPermissao(0)
-                }
+        if (dataToken.id)
+            await fetch(`${apiURL}/users/${dataToken.idUsu}`, {
+                method: 'GET'
             })
-            .catch(err => console.log(err))
+                .then(data => data.json())
+                .then(data => {
+                    if (data.financeiro) {
+                        setPermissao(data.financeiro)
+                    }
+                    else {
+                        setPermissao(0)
+                    }
+                })
+                .catch(err => console.log(err))
     }
 
     async function loadAll() {
@@ -347,7 +350,7 @@ export default function Financeiro() {
         }
     }, [])
 
-    
+
     const processedMovimentacoes = useMemo(() => {
         let items = movimentacoes.filter(a => filterAC === 'all' || a?.acomodacao?.id === Number(filterAC)).filter(m => new Date(m.data) >= new Date(dataBW[0]) && new Date(m.data) <= new Date(dataBW[1]));
         if (session === 1) { // Receitas

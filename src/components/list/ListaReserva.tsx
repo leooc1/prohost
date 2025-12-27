@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ReservaCardView from "../ReservaCardView";
+import { SideBarContext } from "../../contexts/SideBarMenuContext";
 
 interface Reserva {
     id?: number
@@ -21,11 +22,13 @@ interface Reserva {
     obs: string | null
 }
 
-export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva, permissao }: { reservas: Reserva[], ids: { id: number, index: number }[], acomodacoes: { id: number, nome: string }[], canaisReserva: { id: number, nome: string }[], permissao: number }) {
+const apiURL = import.meta.env.VITE_API_URL
+
+export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva, permissao, setListagem }: { reservas: Reserva[], ids: { id: number, index: number }[], acomodacoes: { id: number, nome: string }[], canaisReserva: { id: number, nome: string }[], permissao: number, setListagem: (value: boolean) => void }) {
     const [download, setDownload] = useState(false)
     const [card, setCard] = useState(false)
     const [idReserva, setIdReserva] = useState<string>('')
-
+    const { dataToken } = useContext(SideBarContext)
     const date = new Date()
     const [evento, setEvento] = useState('all')
     const [valorTotal, setValorTotal] = useState(true)
@@ -34,13 +37,28 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
     const [order, setOrder] = useState('decrescente')
     const [canalReserva, setCanalReserva] = useState('all')
     const [periodo, setPeriodo] = useState('m-atual')
+    const [reserva, setReserva] = useState([])
     const [deData, setDeData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`)
     const [ateData, setAteData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
     // const [qtdHospede, setQtdHospede] = useState<number>(0)
     // const [qtdDiarias, setQtdDiarias] = useState<number>(0)
     const [nomeHospede, setNomeHospede] = useState<string>('')
-    
 
+    async function getReserva(deData: string, ateData: string) {
+        /* const periodoDA = document.getElementById('periodo-lista-reserva') as HTMLInputElement
+        const periodo = periodoDA.value.split(' | ')
+        const de = periodo[0].split('-')[2] + '-' + periodo[0].split('-')[1] + '-' + periodo[0].split('-')[0]
+        const ate = periodo[1].split('-')[2] + '-' + periodo[1].split('-')[1] + '-' + periodo[1].split('-')[0] */
+
+        await fetch(`${apiURL}/reserva/${dataToken.id}/${deData}/${ateData}`, {
+            method: 'GET'
+        })
+            .then(data => data.json())
+            .then((data: Reserva[]) => {
+                setReserva(data)
+            })
+            .catch(err => console.log(err))
+    }
 
     function getDaysInMonth(month: number, year: number) {
         switch (month) {
@@ -99,7 +117,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
     }
 
     function gerarEbaixarCSVReservas(
-        reservas: any[],
+        reserva: any[],
         formatDate: (date: any) => string,
         calcularDias: (inicio: any, fim: any) => number,
         formatarMoeda: (valor: any) => string
@@ -119,7 +137,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
 
         const linhas = [headers.join(",")];
 
-        reservas.forEach((e, index) => {
+        reserva.forEach((e, index) => {
             const isIndisp = e.tipo_reserva === "Indisponibilidade";
             const isCont = e.tipo_reserva === "Continuidade";
 
@@ -158,13 +176,13 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
     }
 
     async function gerarEbaixarExcelReservas(
-        reservas: any[],
+        reserva: any[],
         formatDate: (date: any) => string,
         calcularDias: (inicio: any, fim: any) => number,
         formatarMoeda: (valor: any) => string
     ) {
         const XLSX = await import('xlsx');
-        const dados = reservas.map((e, index) => {
+        const dados = reserva.map((e, index) => {
             const isIndisp = e.tipo_reserva === 'Indisponibilidade';
             const isCont = e.tipo_reserva === 'Continuidade';
 
@@ -205,6 +223,34 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
             }
         }
     }, []);
+
+    useEffect(() => {
+        if (periodo == 'm-atual') {
+            const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+            const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+            setDeData(firstDay.toISOString().split('T')[0]);
+            setAteData(lastDay.toISOString().split('T')[0]);
+        }
+        else if (periodo == 'a-atual') {
+            const firstDay = new Date(date.getFullYear(), 0, 1);
+            const lastDay = new Date(date.getFullYear(), 11, 31);
+            setDeData(firstDay.toISOString().split('T')[0]);
+            setAteData(lastDay.toISOString().split('T')[0]);
+        }
+        else if (periodo == 'm-passado') {
+            const firstDay = new Date(date.getFullYear(), date.getMonth() - 1, 1);
+            const lastDay = new Date(date.getFullYear(), date.getMonth(), 0);
+            setDeData(firstDay.toISOString().split('T')[0]);
+            setAteData(lastDay.toISOString().split('T')[0]);
+        }
+        else if (periodo == 'a-passado') {
+            const firstDay = new Date(date.getFullYear() - 1, 0, 1);
+            const lastDay = new Date(date.getFullYear() - 1, 11, 31);
+            setDeData(firstDay.toISOString().split('T')[0]);
+            setAteData(lastDay.toISOString().split('T')[0]);
+        }
+        getReserva(deData, ateData)
+    }, [deData, ateData, periodo]);
 
     return (
         <section className="w-full min-h-56 border border-zinc-300 rounded-lg bg-white px-4 py-4">
@@ -309,21 +355,21 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                         </label>
                     </div>
                     <div className="flex flex-col mt-3">
-                    <label htmlFor="search-hospede" className="flex flex-col text-zinc-600 font-medium text-xs">
-                        Nome do Hóspede
-                        <input type="text" name="search-hospede" id="search-hospede" placeholder="Nome hóspede" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm"
-                            onChange={(e) => {
-                                setNomeHospede(e.target.value)
-                            }} />
-                    </label>
+                        <label htmlFor="search-hospede" className="flex flex-col text-zinc-600 font-medium text-xs">
+                            Nome do Hóspede
+                            <input type="text" name="search-hospede" id="search-hospede" placeholder="Nome hóspede" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm"
+                                onChange={(e) => {
+                                    setNomeHospede(e.target.value)
+                                }} />
+                        </label>
+                    </div>
                 </div>
-                </div>
-                
+
                 <div className="group absolute right-0 bottom-0 flex items-end justify-end gap-5">
                     {download && <section className='absolute flex gap-5 -top-7 -right-7'>
                         <div className="w-screen h-screen bg-black fixed top-0 right-0 bg-opacity-20" onClick={() => { setDownload(false) }}></div>
                         <button onClick={() => {
-                            gerarEbaixarCSVReservas(reservas
+                            gerarEbaixarCSVreserva(reserva
                                 .filter((e) => {
                                     if (periodo == 'm-atual') {
                                         return (new Date(e.check_in).getMonth() == date.getMonth() &&
@@ -399,7 +445,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                             .csv
                         </button>
                         <button onClick={() => {
-                            gerarEbaixarExcelReservas(reservas
+                            gerarEbaixarExcelreserva(reserva
                                 .filter((e) => {
                                     if (periodo == 'm-atual') {
                                         return (new Date(e.check_in).getMonth() == date.getMonth() &&
@@ -503,7 +549,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
             <table id="listagem" className="w-full mt-3 border border-zinc-200 rounded-lg grid">
                 <thead className="table table-fixed w-full">
                     <tr className="text-xs bg-slate-50 h-12">
-                        <th className="text-center px-3">#</th>
+                        {/*<th className="text-center px-3">#</th>*/}
                         <th className="text-center">Acomodação</th>
                         <th className="text-center">Canal</th>
                         <th className="text-center">Hóspede</th>
@@ -517,9 +563,9 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                 </thead>
                 <tbody className="overflow-y-scroll block">
                     {
-                        reservas.length > 0 ?
-                            reservas
-                            //filtro nome hospede
+                        reserva.length > 0 ?
+                            reserva
+                                //filtro nome hospede
                                 .filter((e) => {
                                     if (nomeHospede.trim() === '') return e
                                     else return e.hospede?.nome.toLowerCase().includes(nomeHospede.toLowerCase())
@@ -613,7 +659,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                 })
                                 .map((e) =>
                                     <tr onClick={() => { setCard(true); setIdReserva(String(e.id)) }} className="text-xs bg-white h-12 border border-zinc-200 table table-fixed w-full">
-                                        <td className="text-center text-xs font-medium">
+                                        {/* <td className="text-center text-xs font-medium">
                                             {e.tipo_reserva == 'Indisponibilidade' ?
                                                 '🚫' :
                                                 <span className="flex items-center justify-center gap-1">
@@ -621,7 +667,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                                     {e.tipo_reserva == 'Continuidade' ? <svg className="w-3 h-fit" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 2.54 2.54" fill-rule="evenodd"><g><circle cx="1.27" cy="1.27" r="1.27" fill="#30c46d" opacity="1" data-original="#48b02c"></circle><g fill="#fff"><path d="M1.143 1.944V.674a.127.127 0 0 1 .254 0v1.27a.127.127 0 0 1-.254 0z" fill="#ffffff" opacity="1" data-original="#ffffff"></path><path d="M.635 1.182h1.27a.127.127 0 0 1 0 .254H.635a.127.127 0 0 1 0-.254z" fill="#ffffff" opacity="1" data-original="#ffffff" ></path></g></g></svg> : null}
                                                 </span>
                                             }
-                                        </td>
+                                        </td> */}
                                         <td className="text-center text-xs font-medium">{e.acomodacao.nome}</td>
                                         <td className="text-center text-xs font-medium text-white">
                                             {e.tipo_reserva != 'Indisponibilidade' && e.tipo_reserva != 'Continuidade' && e.tipo_reserva != 'Cancelamento' ?
@@ -648,7 +694,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                 <tfoot className="table table-fixed w-full">
                     <tr className="text-xs bg-slate-50 h-12">
                         <td className="text-center">Total de Reserva: {
-                            reservas
+                            reserva
                                 //periodo
                                 .filter((e) => {
                                     if (periodo == 'm-atual') {
@@ -704,7 +750,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                 }).filter(e => e.tipo_reserva != 'Indisponibilidade').length
                         }</td>
                         <td className="text-center">Total Bruto: {
-                            formatarMoedaBrasileira((reservas
+                            formatarMoedaBrasileira((reserva
                                 //periodo
                                 .filter((e) => {
                                     if (periodo == 'm-atual') {
@@ -762,7 +808,7 @@ export default function ListaReserva({ reservas, ids, acomodacoes, canaisReserva
                                 .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
                         }</td>
                         <td className="text-center">Total Líquido: {
-                            formatarMoedaBrasileira((reservas
+                            formatarMoedaBrasileira((reserva
                                 //periodo
                                 .filter((e) => {
                                     if (periodo == 'm-atual') {
