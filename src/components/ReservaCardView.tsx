@@ -103,7 +103,7 @@ export default function ReservaCardView(props: propsReserva) {
             .catch(err => console.log(err))
     }
 
-    async function idReserva(idReserva: number, idAcomodacao: number) {
+    /* async function idReserva(idReserva: number, idAcomodacao: number) {
         if (!dataToken || !dataToken.id) return
         await fetch(`${apiURL}/reserva/${dataToken.id}/${idReserva}/${idAcomodacao}`, {
             method: 'GET'
@@ -113,7 +113,7 @@ export default function ReservaCardView(props: propsReserva) {
                 setIdR(data)
             })
             .catch(err => console.log(err))
-    }
+    } */
 
     async function getReserva(id: string) {
         if (!dataToken || !dataToken.id) return
@@ -140,8 +140,9 @@ export default function ReservaCardView(props: propsReserva) {
                     taxaLimpeza: Number(data[0]?.taxa_limpeza),
                     tipoReserva: (data[0]?.tipo_reserva),
                 })
-                if (data[0].tipo_reserva != "Indisponibilidade" && data[0].tipo_reserva != "Continuidade")
-                    idReserva(data[0].id || 0, data[0].acomodacao.id)
+                if (data[0].tipo_reserva != "Indisponibilidade" && data[0].tipo_reserva != "Continuidade") {
+                    // idReserva(data[0].id || 0, data[0].acomodacao.id)
+                }
                 else if (data[0].tipo_reserva == "Continuidade")
                     idContinuidade(data[0].acomodacao.id, data[0].continuidade || 0)
             })
@@ -214,7 +215,7 @@ export default function ReservaCardView(props: propsReserva) {
                         {reserva?.tipo_reserva == 'Indisponibilidade' ?
                             <h5 className="font-semibold text-2xl">{'Indisponibilidade'}</h5> :
                             <h5 className="font-semibold text-2xl">Reserva#{idR} {reserva?.tipo_reserva == 'Continuidade' ? <span className="text-[#008000]"><span className="text-black">-</span> C</span> : <></>}</h5>}
-                        {reserva?.tipo_reserva != 'Indisponibilidade' && reserva?.tipo_reserva != 'Continuidade' ? <div style={{backgroundColor: reserva?.canal_reserva?.cor}} className={`px-2 py-1 text-sm font-medium bg-[${reserva?.canal_reserva?.cor}] text-white rounded-md w-fit`}>{reserva?.canal_reserva?.nome}</div> : <></>}
+                        {reserva?.tipo_reserva != 'Indisponibilidade' && reserva?.tipo_reserva != 'Continuidade' ? <div style={{ backgroundColor: reserva?.canal_reserva?.cor }} className={`px-2 py-1 text-sm font-medium bg-[${reserva?.canal_reserva?.cor}] text-white rounded-md w-fit`}>{reserva?.canal_reserva?.nome}</div> : <></>}
                         {reserva?.tipo_reserva == 'Indisponibilidade' ? <div className="px-2 py-1 text-sm font-medium bg-[#353535] text-white rounded-md w-fit">Indisponibilidade</div> : <></>}
                         {reserva?.tipo_reserva == 'Continuidade' ? <div className="px-2 py-1 text-sm font-medium bg-[#30C46D] text-white rounded-md w-fit">Continuidade</div> : <></>}
                     </div>

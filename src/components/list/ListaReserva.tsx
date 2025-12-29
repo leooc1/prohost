@@ -24,7 +24,7 @@ interface Reserva {
 
 const apiURL = import.meta.env.VITE_API_URL
 
-export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisReserva, permissao/* , setListagem */ }: { /* reservas: Reserva[], ids: { id: number, index: number }[], */ acomodacoes: { id: number, nome: string }[], canaisReserva: { id: number, nome: string }[], permissao: number/* , setListagem: (value: boolean) => void  */}) {
+export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisReserva, permissao/* , setListagem */ }: { /* reservas: Reserva[], ids: { id: number, index: number }[], */ acomodacoes: { id: number, nome: string }[], canaisReserva: { id: number, nome: string }[], permissao: number/* , setListagem: (value: boolean) => void  */ }) {
     const [download, setDownload] = useState(false)
     const [card, setCard] = useState(false)
     const [idReserva, setIdReserva] = useState<string>('')

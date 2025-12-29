@@ -198,52 +198,53 @@ export default function Reserva() {
         <input type="hidden" id="periodo-lista-reserva" />
 
         {render ?
-          calendarioPage && calendario ? <>
-            <div className='flex items-center gap-5 mb-4'>
-              <label htmlFor="mes-calendario" className="flex flex-col text-zinc-600 font-medium text-xs">
-                Mês do Calendário:
-                <input type="number" name="mes-calendario" id="mes-calendario" placeholder="Mês do Calendário" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" defaultValue={mes} />
-              </label>
-              <label htmlFor="ano-calendario" className="flex flex-col text-zinc-600 font-medium text-xs">
-                Ano do Calendário:
-                <input type="number" name="ano-calendario" id="ano-calendario" placeholder="Ano do Calendário" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" defaultValue={ano} />
-              </label>
-              <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#003447] hover:bg-[#325B6A] hover:shadow-md shadow-black self-end'
-                onClick={() => {
-                  const anoInput = document.getElementById('ano-calendario') as HTMLInputElement
-                  const mesInput = document.getElementById('mes-calendario') as HTMLInputElement
-                  setAno(Number(anoInput.value))
-                  setMes(Number(mesInput.value))
-                  setCalendario(false)
-                }}>Aplicar</button>
-            </div>
-            {<Calendario
-              permissao={permissao}
-              acomodacoes={acomodacao.map((a) => ({
-                id: String(a ? a.id : null),
-                title: a.nome,
-                image: a.foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'
-              }))}
+          (calendarioPage ?
+            (calendario && <>
+              <div className='flex items-center gap-5 mb-4'>
+                <label htmlFor="mes-calendario" className="flex flex-col text-zinc-600 font-medium text-xs">
+                  Mês do Calendário:
+                  <input type="number" name="mes-calendario" id="mes-calendario" placeholder="Mês do Calendário" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" defaultValue={mes} />
+                </label>
+                <label htmlFor="ano-calendario" className="flex flex-col text-zinc-600 font-medium text-xs">
+                  Ano do Calendário:
+                  <input type="number" name="ano-calendario" id="ano-calendario" placeholder="Ano do Calendário" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" defaultValue={ano} />
+                </label>
+                <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#003447] hover:bg-[#325B6A] hover:shadow-md shadow-black self-end'
+                  onClick={() => {
+                    const anoInput = document.getElementById('ano-calendario') as HTMLInputElement
+                    const mesInput = document.getElementById('mes-calendario') as HTMLInputElement
+                    setAno(Number(anoInput.value))
+                    setMes(Number(mesInput.value))
+                    setCalendario(false)
+                  }}>Aplicar</button>
+              </div>
+              {<Calendario
+                permissao={permissao}
+                acomodacoes={acomodacao.map((a) => ({
+                  id: String(a ? a.id : null),
+                  title: a.nome,
+                  image: a.foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'
+                }))}
 
-              reservas={reserva.filter(r => r.tipo_reserva != 'Cancelamento').map((r) => ({
-                "resourceId": String(r.acomodacao ? r.acomodacao.id : null),
-                "title": r.hospede?.nome || '',
-                "start": (r.check_in),
-                "end": (r.check_out),
-                "hospedes": r.qtd_hospede,
-                "color": r.tipo_reserva == 'Continuidade' ? '#30C46D'
-                  : r.tipo_reserva == 'Indisponibilidade' ? '#353535'
-                    : r.canal_reserva?.cor || '',
-                "id": String(r ? r.id : null),
-                "tipo": r.tipo_reserva,
-                "obs": r.obs || '',
-                "bruto": r.valor,
-                "liquido": r.valor_liq,
-                "comissao": r.comissao_ota
-              }))}
-              initialDate={initial() ?? `${ano}-${('0' + mes).toString().slice(-2)}-01`}
-            />}
-          </>
+                reservas={reserva.filter(r => r.tipo_reserva != 'Cancelamento').map((r) => ({
+                  "resourceId": String(r.acomodacao ? r.acomodacao.id : null),
+                  "title": r.hospede?.nome || '',
+                  "start": (r.check_in),
+                  "end": (r.check_out),
+                  "hospedes": r.qtd_hospede,
+                  "color": r.tipo_reserva == 'Continuidade' ? '#30C46D'
+                    : r.tipo_reserva == 'Indisponibilidade' ? '#353535'
+                      : r.canal_reserva?.cor || '',
+                  "id": String(r ? r.id : null),
+                  "tipo": r.tipo_reserva,
+                  "obs": r.obs || '',
+                  "bruto": r.valor,
+                  "liquido": r.valor_liq,
+                  "comissao": r.comissao_ota
+                }))}
+                initialDate={initial() ?? `${ano}-${('0' + mes).toString().slice(-2)}-01`}
+              />}
+            </>)
             : listagem && <> <ListaReserva
               /* setListagem={setListagem} */
               /* ids={ids} */
@@ -251,7 +252,7 @@ export default function Reserva() {
               acomodacoes={acomodacao}
               canaisReserva={canais}
               permissao={permissao}
-            /> </>
+            /> </>)
           : null}
       </div>
       :
