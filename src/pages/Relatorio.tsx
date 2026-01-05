@@ -66,6 +66,7 @@ export default function Relatorio() {
                                         const preview = document.getElementById('preview') as HTMLImageElement | null;
                                         const file = e.target.files?.[0];
                                         if (file) {
+                                            console.log(file)
                                             if (preview) {
                                                 preview.classList.remove('hidden')
                                                 input?.classList.add('hidden')
@@ -82,6 +83,7 @@ export default function Relatorio() {
                                         } else {
                                             preview?.classList.add('hidden')
                                             input?.classList.remove('hidden')
+                                            localStorage.removeItem('previewFoto')
                                             setFoto(null)
                                         }
                                     }} />
