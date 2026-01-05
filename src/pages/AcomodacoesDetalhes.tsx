@@ -297,13 +297,17 @@ export default function AcomodacoesDetalhes() {
     const [faturamento, setFaturamento] = useState<{
         mes: string
         receita: string
-        despesa: string
+        despesas: string
+        faturamento_liquido: string
         receita_ano_anterior: string
     }[]>([])
     const [taxaOcupacao, setTaxaOcupacao] = useState<number>(0)
     const [totalDiasIntervalo, setTotalDiasIntervalo] = useState<number>(0)
     const [faturamentoCanal, setFaturamentoCanal] = useState<{
         mes: string
+        nome:string
+        cor:string
+        valor_liq:string
         ano: string
         despesas: string
         faturamento_liquido: string

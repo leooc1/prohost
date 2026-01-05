@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 
 Chart.register(PieController, ArcElement, Tooltip, Legend, Title, ChartDataLabels);
 
-export default function FaturamentoCanalAc({ labels, dados, colors }: { labels: string[], dados: number[], colors: string[] }) {
+export default function FaturamentoCanalAc({ labels, dados, colors }: { labels: string[], dados: any[], colors: string[] }) {
     const chartRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
