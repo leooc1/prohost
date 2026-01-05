@@ -68,7 +68,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children,
     }, [saas, movimentacoes, numPaginacao])
 
     function gerarEbaixarCSVMovimentacoes(movimentacoes: any) {
-        const headers = ["Data", "Categoria", "Descrição", "Acomodação", "Valor Bruto", "Valor Líquido"];
+        const headers = ["Data", "Categoria", "Descrição", "Acomodação", "Valor Total", "Valor Líquido"];
         const linhas = [headers.join(",")];
 
         movimentacoes.forEach((m: any) => {
@@ -151,7 +151,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children,
                 'Categoria': categoria,
                 'Descrição': descricao,
                 'Acomodação': e.acomodacao?.nome || '',
-                'Valor Bruto': valorBruto,
+                'Valor Total': valorBruto,
                 'Valor Líquido': valorLiquido
             };
         });
@@ -238,7 +238,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children,
                                     <th className="text-center">Categoria</th>
                                     <th className="text-center">Descrição</th>
                                     <th className="text-center">Acomodação</th>
-                                    {tipo != 2 && <th className="text-center">Valor Bruto</th>}
+                                    {tipo != 2 && <th className="text-center">Valor Total</th>}
                                     <th className="text-center">Valor Líquido</th>
                                 </tr>
                             </thead>

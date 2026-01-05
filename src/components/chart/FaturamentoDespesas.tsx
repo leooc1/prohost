@@ -4,16 +4,12 @@ import { useEffect, useRef } from 'react';
 
 Chart.register(LineController, LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend, Title, ChartDataLabels);
 
-export default function FaturamentoDespesas({ mes, ano, dadosLucros, dadosDespesas }: { mes: number, ano: number, dadosLucros:number[], dadosDespesas:number[] }) {
+export default function FaturamentoDespesas({ mes, dadosLucros, dadosDespesas }: { mes: number, dadosLucros:number[], dadosDespesas:number[] }) {
     const chartRef = useRef<HTMLCanvasElement>(null);
-    function Meses(numero: number) {
+    function ordenarMeses(numero: number) {
         const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-        const indiceInicio = (numero + 1) % meses.length;
-        const result = meses.slice(0, indiceInicio).map(mes => `${mes}/${ano}`);
-        if (numero == 11)
-            return meses;
-        else
-            return result;
+        const indiceInicio = numero % meses.length;
+        return meses.slice(indiceInicio).concat(meses.slice(0, indiceInicio));
     }
 
     useEffect(() => {
@@ -22,29 +18,29 @@ export default function FaturamentoDespesas({ mes, ano, dadosLucros, dadosDespes
 
             if (ctx) {
                 const data = {
-                    labels: Meses(mes),
+                    labels: ordenarMeses(mes),
                     datasets: [
                         {
-                            label: 'Faturamento Líquido',
+                            label: 'Faturamento do Ano',
                             data: dadosLucros,
-                            borderColor: '#09CF9A',
-                            backgroundColor: '#09CF9A',
+                            borderColor: '#033C50',
+                            backgroundColor: '#033C50',
                             fill: false,
                             tension: 0.3,
                             pointRadius: 5, 
                             pointHoverRadius: 8,
                         },
                         {
-                            label: 'Despesas Totais',
+                            label: 'Despesas do Ano',
                             data: dadosDespesas,
-                            borderColor: '#F0495F',
-                            backgroundColor: '#F0495F',
+                            borderColor: '#ED3E44',
+                            backgroundColor: '#ED3E44',
                             fill: false,
                             tension: 0.3,
                             pointRadius: 5, 
-                            pointHoverRadius: 8, 
-                        },
-                    ],
+                            pointHoverRadius: 8,
+                        }
+                    ]
                 };
 
                 const options: any = {

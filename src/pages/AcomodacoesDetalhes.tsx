@@ -207,6 +207,7 @@ export default function AcomodacoesDetalhes() {
                 .catch(err => console.log(err))
         }
         {
+
             await fetch(`${apiURL}/movimentacao/${dataToken.id}/fat-bar/${dataBar}/${id}`, {
                 method: 'GET'
             })
@@ -302,10 +303,10 @@ export default function AcomodacoesDetalhes() {
     const [taxaOcupacao, setTaxaOcupacao] = useState<number>(0)
     const [totalDiasIntervalo, setTotalDiasIntervalo] = useState<number>(0)
     const [faturamentoCanal, setFaturamentoCanal] = useState<{
-        nome: string
-        cor: string
-        tipo_reserva: string
-        valor_liq: number
+        mes: string
+        ano: string
+        despesas: string
+        faturamento_liquido: string
     }[]>([])
     useEffect(() => {
         getAcomodacao()
@@ -562,31 +563,31 @@ export default function AcomodacoesDetalhes() {
                         {graf && <section className='grid mt-4'>
                             <div className="bg-white border-zinc-300 border rounded-lg flex flex-col px-2 items-center" style={{ gridArea: 'en' }}>
                                 <p className="flex flex-col text-zinc-400 font-medium text-sm mb-14 mt-3">Faturamento x Despesa</p>
-                                {periodo == 'm-atual' ? <FaturamentoDespesas
-                                    ano={date.getFullYear()}
-                                    dadosLucros={faturamento.map(fat => Number(fat.receita))}
-                                    dadosDespesas={faturamento.map(fat => Number(fat.despesa))} mes={date.getMonth()} /> : null}
-                                {periodo == 'm-passado' ? <FaturamentoDespesas
-                                    ano={date.getFullYear()}
-                                    dadosLucros={faturamento.map(fat => Number(fat.receita))}
-                                    dadosDespesas={faturamento.map(fat => Number(fat.despesa))} mes={date.getMonth() == 0 ? 11 : date.getMonth() - 1} /> : null}
-                                {periodo == 'a-atual' ? <FaturamentoDespesas
-                                    ano={date.getFullYear()}
-                                    dadosLucros={faturamento.map(fat => Number(fat.receita))}
-                                    dadosDespesas={faturamento.map(fat => Number(fat.despesa))} mes={11} /> : null}
-                                {periodo == 'a-passado' ? <FaturamentoDespesas
-                                    ano={date.getFullYear()}
-                                    dadosLucros={faturamento.map(fat => Number(fat.receita))}
-                                    dadosDespesas={faturamento.map(fat => Number(fat.despesa))} mes={11} /> : null}
-                                {periodo == 'personalizado' ? <FaturamentoDespesas
-                                    ano={date.getFullYear()}
-                                    dadosLucros={faturamento.map(fat => Number(fat.receita))}
-                                    dadosDespesas={faturamento.map(fat => Number(fat.despesa))} mes={date.getMonth()} /> : null}
+                                {periodo == 'm-atual' && faturamento.length > 0 ? <FaturamentoDespesas
+                                    dadosLucros={faturamento.slice(-12).map(fat => Number(fat.faturamento_liquido))}
+                                    dadosDespesas={faturamento.slice(-12).map(fat => Number(fat.despesas))}
+                                    mes={date.getMonth() + 1} /> : null}
+                                {periodo == 'm-passado' && faturamento.length > 0 ? <FaturamentoDespesas
+                                    dadosLucros={faturamento.slice(-12).map(fat => Number(fat.faturamento_liquido))}
+                                    dadosDespesas={faturamento.slice(-12).map(fat => Number(fat.despesas))}
+                                    mes={date.getMonth() == 0 && faturamento.length > 0 ? 12 : date.getMonth()} /> : null}
+                                {periodo == 'a-atual' && faturamento.length > 0 ? <FaturamentoDespesas
+                                    dadosLucros={faturamento.slice(-12).map(fat => Number(fat.faturamento_liquido))}
+                                    dadosDespesas={faturamento.slice(-12).map(fat => Number(fat.despesas))}
+                                    mes={12} /> : null}
+                                {periodo == 'a-passado' && faturamento.length > 0 ? <FaturamentoDespesas
+                                    dadosLucros={faturamento.slice(-12).map(fat => Number(fat.faturamento_liquido))}
+                                    dadosDespesas={faturamento.slice(-12).map(fat => Number(fat.despesas))}
+                                    mes={12} /> : null}
+                                {periodo == 'personalizado' && faturamento.length > 0 ? <FaturamentoDespesas
+                                    dadosLucros={faturamento.slice(-12).map(fat => Number(fat.faturamento_liquido))}
+                                    dadosDespesas={faturamento.slice(-12).map(fat => Number(fat.despesas))}
+                                    mes={new Date(new Date(ateData).setDate(new Date(ateData).getDate() + 1)).getMonth() + 1} /> : null}
                             </div>
                         </section>}
                     </section>}
-                {
-                    /*{sessao == 1 &&
+                {/*
+                sessao == 1 &&
                         <section className="my-10">
                             <div className='flex justify-between items-start'>
                                 <h5 className="font-semibold text-2xl mb-2 px-4 pb-7">Calendário da Acomodação</h5>
@@ -727,8 +728,7 @@ export default function AcomodacoesDetalhes() {
                                     />
                                 }
                             </div>
-                        </section>} */
-                }
+                        </section>*/}
 
                 {sessao == 2 &&
                     <section className="my-10">
