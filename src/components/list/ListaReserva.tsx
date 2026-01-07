@@ -749,7 +749,7 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
                                     else return e.canal_reserva?.id == Number(canalReserva)
                                 }).filter(e => e.tipo_reserva != 'Indisponibilidade').length
                         }</td>
-                        <td className="text-center">Total Bruto: {
+                        <td className="text-center">Total: {
                             formatarMoedaBrasileira((reserva
                                 //periodo
                                 .filter((e) => {

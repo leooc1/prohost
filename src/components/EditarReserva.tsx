@@ -355,31 +355,35 @@ export default function EditarReserva(props: propsEdicao) {
                                         const total = document.getElementById('tot') as HTMLInputElement
                                         const comissao = document.getElementById('com') as HTMLInputElement
                                         const liquido = document.getElementById('liq') as HTMLInputElement
-                                        const limpeza = document.getElementById('taxa_limpeza') as HTMLInputElement
+                                        // const limpeza = document.getElementById('taxa_limpeza') as HTMLInputElement
                                         if (comissao.value.length == 0 && liquido.value.length == 0) {
-                                            if (!showTaxaLimpeza[0]) {
+                                            // if (!showTaxaLimpeza[0]) {
                                                 liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                            } else {
+                                            //} 
+                                            /* else {
                                                 liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                            }
+                                            } */
                                         } else if (comissao.value.length == 0 && liquido.value.length > 0) {
-                                            if (!showTaxaLimpeza[0]) {
+                                            // if (!showTaxaLimpeza[0]) {
                                                 comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                            } else {
+                                            //} 
+                                            /* else {
                                                 comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                            }
+                                            } */
                                         } else if (comissao.value.length > 0 && liquido.value.length == 0) {
-                                            if (!showTaxaLimpeza[0]) {
+                                            // if (!showTaxaLimpeza[0]) {
                                                 liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                            } else {
+                                            //} 
+                                            /* else {
                                                 liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                            }
+                                            } */
                                         } else {
-                                            if (!showTaxaLimpeza[0]) {
+                                            // if (!showTaxaLimpeza[0]) {
                                                 liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                            } else {
+                                            //} 
+                                            /* else {
                                                 liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                            }
+                                            } */
                                         }
                                         total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
                                         comissao.value = formatedNumber(String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
@@ -403,19 +407,21 @@ export default function EditarReserva(props: propsEdicao) {
                                         if (liquido.value.length == 0 && total.value.length == 0) {
                                             return;
                                         } else if (liquido.value.length == 0 && total.value.length > 0) {
-                                            if (!showTaxaLimpeza[0]) {
+                                            // if (!showTaxaLimpeza[0]) {
                                                 liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                            } else {
+                                            //} 
+                                            /* else {
                                                 liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                            }
+                                            } */
                                         } else if (liquido.value.length > 0 && total.value.length == 0) {
                                             total.value = String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                         } else {
-                                            if (!showTaxaLimpeza[0]) {
+                                            // if (!showTaxaLimpeza[0]) {
                                                 liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                            } else {
+                                            //} 
+                                            /* else {
                                                 liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                            }
+                                            } */
                                         }
                                         total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
                                         comissao.value = formatedNumber(String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
@@ -435,23 +441,25 @@ export default function EditarReserva(props: propsEdicao) {
                                         const total = document.getElementById('tot') as HTMLInputElement
                                         const comissao = document.getElementById('com') as HTMLInputElement
                                         const liquido = document.getElementById('liq') as HTMLInputElement
-                                        const limpeza = document.getElementById('taxa_limpeza') as HTMLInputElement
+                                        // const limpeza = document.getElementById('taxa_limpeza') as HTMLInputElement
                                         if (comissao.value.length == 0 && total.value.length == 0) {
                                             total.value = String(Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                         } else if (comissao.value.length == 0 && total.value.length > 0) {
-                                            if (!showTaxaLimpeza[0]) {
+                                            // if (!showTaxaLimpeza[0]) {
                                                 comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                            } else {
+                                            //} 
+                                            /* else {
                                                 comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                            }
+                                            } */
                                         } else if (comissao.value.length > 0 && total.value.length == 0) {
                                             total.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                         } else {
-                                            if (!showTaxaLimpeza[0]) {
+                                            // if (!showTaxaLimpeza[0]) {
                                                 comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                            } else {
+                                            //} 
+                                            /* else {
                                                 comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
-                                            }
+                                            } */
                                         }
                                         total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
                                         comissao.value = formatedNumber(String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
