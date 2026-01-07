@@ -403,7 +403,7 @@ export default function EditarReserva(props: propsEdicao) {
                                         const total = document.getElementById('tot') as HTMLInputElement
                                         const comissao = document.getElementById('com') as HTMLInputElement
                                         const liquido = document.getElementById('liq') as HTMLInputElement
-                                        const limpeza = document.getElementById('taxa_limpeza') as HTMLInputElement
+                                        // const limpeza = document.getElementById('taxa_limpeza') as HTMLInputElement
                                         if (liquido.value.length == 0 && total.value.length == 0) {
                                             return;
                                         } else if (liquido.value.length == 0 && total.value.length > 0) {
