@@ -749,8 +749,13 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
                                     else return e.canal_reserva?.id == Number(canalReserva)
                                 }).filter(e => e.tipo_reserva != 'Indisponibilidade').length
                         }</td>
-                        <td className="text-center">Total: {
-                            formatarMoedaBrasileira((reserva
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td className="text-center">{/* Total Líquido:  */}{
+                            ((reserva
                                 //periodo
                                 .filter((e) => {
                                     if (periodo == 'm-atual') {
@@ -804,10 +809,10 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
                                         return e
                                     else return e.canal_reserva?.id == Number(canalReserva)
                                 })
-                                .map(r => Number(r.valor))
-                                .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
+                                .map(r => calcularDiasEntreDatas(r.check_in, r.check_out))
+                                .reduce((sum, valor) => sum + valor, 0)))
                         }</td>
-                        <td className="text-center">Total Líquido: {
+                        <td className="text-center">{/* Total Líquido:  */}{
                             formatarMoedaBrasileira((reserva
                                 //periodo
                                 .filter((e) => {
@@ -863,6 +868,64 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
                                     else return e.canal_reserva?.id == Number(canalReserva)
                                 })
                                 .map(r => Number(r.valor_liq_calculado) > 0 ? Number(r.valor_liq_calculado) : Number(r.valor_liq))
+                                .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
+                        }</td>
+                        <td className="text-center">{/* Total:  */}{
+                            formatarMoedaBrasileira((reserva
+                                //periodo
+                                .filter((e) => {
+                                    if (periodo == 'm-atual') {
+                                        return (new Date(e.check_in).getMonth() == date.getMonth() &&
+                                            new Date(e.check_in).getFullYear() == date.getFullYear()) ||
+                                            (new Date(e.check_out).getMonth() == date.getMonth() &&
+                                                new Date(e.check_out).getFullYear() == date.getFullYear())
+                                    }
+                                    else if (periodo == 'm-passado') {
+                                        const datames = new Date()
+                                        datames.setMonth(new Date().getMonth() - 1)
+                                        return (new Date(e.check_in).getMonth() == datames.getMonth() &&
+                                            new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
+                                            (new Date(e.check_out).getMonth() == datames.getMonth() &&
+                                                new Date(e.check_out).getFullYear() == datames.getFullYear())
+
+                                    }
+                                    else if (periodo == 'a-atual') {
+                                        return new Date(e.check_in).getFullYear() == date.getFullYear() ||
+                                            new Date(e.check_out).getFullYear() == date.getFullYear()
+
+                                    }
+                                    else if (periodo == 'a-passado') {
+                                        return new Date(e.check_in).getFullYear() == (date.getFullYear() - 1) ||
+                                            new Date(e.check_out).getFullYear() == (date.getFullYear() - 1)
+
+                                    }
+                                    else {
+                                        return (new Date(e.check_in) >= new Date(deData) &&
+                                            new Date(e.check_in) <= new Date(ateData)) ||
+                                            (new Date(e.check_out) >= new Date(deData) &&
+                                                new Date(e.check_out) <= new Date(ateData))
+                                    }
+
+                                })
+                                //tipo de evento
+                                .filter((e) => {
+                                    if (evento == 'all')
+                                        return e
+                                    else return e.tipo_reserva.toLowerCase() == evento
+                                })
+                                //acomodacao
+                                .filter((e) => {
+                                    if (acomodacao == 'all')
+                                        return e
+                                    else return e.acomodacao.id == Number(acomodacao)
+                                })
+                                //canais de reserva
+                                .filter((e) => {
+                                    if (canalReserva == 'all')
+                                        return e
+                                    else return e.canal_reserva?.id == Number(canalReserva)
+                                })
+                                .map(r => Number(r.valor))
                                 .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
                         }</td>
                     </tr>

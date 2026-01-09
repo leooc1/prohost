@@ -813,7 +813,7 @@ export default function Dashboard() {
                 <div className="flex flex-col ml-4">
                   <p className="flex flex-col text-zinc-400 font-medium text-sm">Comissão das Reservas</p>
                   <div className="flex items-end gap-4">
-                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira((Number(resultadoAcomodacoes[0].comissao_plataforma) - Number(resultadoAcomodacoes[0].comissao_taxa_limpeza)).toFixed(2))}</span>
+                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira((Number(resultadoAcomodacoes[0].comissao_plataforma)/*  - Number(resultadoAcomodacoes[0].comissao_taxa_limpeza) */).toFixed(2))}</span>
                   </div>
                 </div>
                 <section id="detail-comission" className="absolute flex flex-col top-1/2 -translate-y-1/2 gap-2 -right-32 scale-75 hidden">

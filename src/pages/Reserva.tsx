@@ -63,6 +63,7 @@ export default function Reserva() {
   const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
   const [ano, setAno] = useState<number>(new Date().getFullYear());
   const [mes, setMes] = useState<number>(new Date().getMonth() + 1);
+  const anos = Array.from({ length: new Date().getFullYear() - 2010 + 1 }, (_, i) => new Date().getFullYear() - i);
   const [canais, setCanais] = useState<Acomodacao[]>([])
   // const [ids, setIds] = useState<{ id: number, index: number }[]>([])
 
@@ -203,11 +204,31 @@ export default function Reserva() {
               <div className='flex items-center gap-5 mb-4'>
                 <label htmlFor="mes-calendario" className="flex flex-col text-zinc-600 font-medium text-xs">
                   Mês do Calendário:
-                  <input type="number" name="mes-calendario" id="mes-calendario" placeholder="Mês do Calendário" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" defaultValue={mes} />
+                  <select name="mes-calendario" id="mes-calendario" className={`border border-zinc-300 rounded-md px-2 py-1 h-9 outline-none text-base`} defaultValue={mes}>
+                    <option value="1">Janeiro</option>
+                    <option value="2">Fevereiro</option>
+                    <option value="3">Março</option>
+                    <option value="4">Abril</option>
+                    <option value="5">Maio</option>
+                    <option value="6">Junho</option>
+                    <option value="7">Julho</option>
+                    <option value="8">Agosto</option>
+                    <option value="9">Setembro</option>
+                    <option value="10">Outubro</option>
+                    <option value="11">Novembro</option>
+                    <option value="12">Dezembro</option>
+                  </select>
                 </label>
                 <label htmlFor="ano-calendario" className="flex flex-col text-zinc-600 font-medium text-xs">
                   Ano do Calendário:
-                  <input type="number" name="ano-calendario" id="ano-calendario" placeholder="Ano do Calendário" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" defaultValue={ano} />
+                  {/* <input type="number" name="ano-calendario" id="ano-calendario" placeholder="Ano do Calendário" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" defaultValue={ano} /> */}
+                  <select name="ano-calendario" id="ano-calendario" className={`border border-zinc-300 rounded-md px-2 py-1 h-9 outline-none text-base`} defaultValue={ano}>
+                                    {anos.map((ano) => (
+                                        <option key={ano} value={ano}>
+                                            {ano}
+                                        </option>
+                                    ))}
+                                </select>
                 </label>
                 <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#003447] hover:bg-[#325B6A] hover:shadow-md shadow-black self-end'
                   onClick={() => {
