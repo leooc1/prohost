@@ -118,7 +118,8 @@ export default function Config() {
             config: number
             hospede: number
             reserva: number
-            dashboard: number
+            dashboard:
+            { indiOpe: number, resultAc: number, resultGestor: number }
             financeiro: number
             acomodacoes: number
         },
@@ -138,7 +139,7 @@ export default function Config() {
                 }
             })
             .catch(err => console.log(err))
-        
+
         await fetch(`${apiURL}/users/${dataToken.id}/users`, {
             method: 'GET'
         })
@@ -300,7 +301,8 @@ export default function Config() {
                                         senha: senha.value,
                                         saas: Number(dataToken.id),
                                         permissao: {
-                                            dashboard: Number(dash.value),
+                                            dashboard:
+                                                { indiOpe: Number(dash.value), resultAc: Number(dash.value), resultGestor: Number(dash.value) },
                                             reserva: Number(reserva.value),
                                             acomodacoes: Number(acomodacao.value),
                                             hospede: Number(hospede.value),
@@ -421,7 +423,8 @@ export default function Config() {
                                             {
                                                 nome: nomeInput,
                                                 permissao: {
-                                                    dashboard: Number(dashboardPInput),
+                                                    dashboard:
+                                                        { indiOpe: Number(dashboardPInput), resultAc: Number(dashboardPInput), resultGestor: Number(dashboardPInput) },
                                                     reserva: Number(reservaPInput),
                                                     acomodacoes: Number(acomodacaoPInput),
                                                     hospede: Number(hospedePInput),

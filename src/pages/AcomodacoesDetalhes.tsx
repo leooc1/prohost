@@ -790,7 +790,7 @@ export default function AcomodacoesDetalhes() {
                                 </label>
                             </div>
                             {/*  */}
-                            <div className={`grid gap-4 items-center w-full ${modelo == 2 ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                            <div className={`grid gap-4 items-center w-full ${(modelo == 2 || modelo == 3) ? 'grid-cols-2' : 'grid-cols-1'}`}>
                                 <label htmlFor="modelo-negocio" className={`flex flex-col ${status == 'terceiro' ? 'col-span-1' : 'col-span-1'}`}>
                                     <span className="text-zinc-500 font-medium mb-1 text-xs">Modelo {status == 'terceiro' ? 'da Comissão' : 'de Negócio'}
                                         <span className='text-red-500 font-bold'> *</span>
@@ -800,7 +800,7 @@ export default function AcomodacoesDetalhes() {
                                         <option value="2">Taxa de limpeza à parte</option>
                                     </select>
                                 </label>
-                                {modelo == 2 && <label htmlFor="taxa-limpeza" className={`flex flex-col col-span-1`}>
+                                {(modelo == 2 || modelo == 3) && <label htmlFor="taxa-limpeza" className={`flex flex-col col-span-1`}>
                                     <span className="text-zinc-500 font-medium mb-1 text-xs">Taxa Limpeza
                                         <span className='text-red-500 font-bold'> *</span>
                                     </span>
