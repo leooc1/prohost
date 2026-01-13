@@ -8,7 +8,6 @@ import OcupacaoMedia from "../components/chart/OcupacaoMedia";
 import QtdeHospede from "../components/chart/QtdeHospede";
 import ReservasCanal from "../components/chart/ReservasCanal";
 import Loader from "../components/Loader";
-import SemPermissao from "../components/SemPermissao";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 import IndicadoresOperacionaisSkeleton from "../components/skeleton/IndicadoresOperacionaisSkeleton";
 import ResultadosGestorSkeleton from "../components/skeleton/ResultadosGestorSkeleton";
