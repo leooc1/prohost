@@ -63,7 +63,7 @@ export default function Reserva() {
   const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
   const [ano, setAno] = useState<number>(new Date().getFullYear());
   const [mes, setMes] = useState<number>(new Date().getMonth() + 1);
-  const anos = Array.from({ length: new Date().getFullYear() - 2010 + 1 }, (_, i) => new Date().getFullYear() - i);
+  const anos = Array.from({ length: new Date().getFullYear() - 2010 + 1 }, (_, i) => new Date().getFullYear() + 1 - i);
   const [canais, setCanais] = useState<Acomodacao[]>([])
   // const [ids, setIds] = useState<{ id: number, index: number }[]>([])
 

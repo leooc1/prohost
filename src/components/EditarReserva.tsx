@@ -221,7 +221,7 @@ export default function EditarReserva(props: propsEdicao) {
             .then(data => data.json())
             .then((data: Acomodacao[]) => {
                 setAcomodacao(data.filter((e => !e.desativado)))
-                setShowTaxaLimpeza([(data.filter(a => a.id == props.acomodacaoID)[0].modelo) == 2, (data.filter(a => a.id == props.acomodacaoID)[0].taxa_limpeza)])
+                setShowTaxaLimpeza([((data.filter(a => a.id == props.acomodacaoID)[0].modelo) == 2 || (data.filter(a => a.id == props.acomodacaoID)[0].modelo) == 3), (data.filter(a => a.id == props.acomodacaoID)[0].taxa_limpeza)])
             })
             .catch(err => console.log(err))
     }

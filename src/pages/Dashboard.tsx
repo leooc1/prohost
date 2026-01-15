@@ -8,7 +8,6 @@ import OcupacaoMedia from "../components/chart/OcupacaoMedia";
 import QtdeHospede from "../components/chart/QtdeHospede";
 import ReservasCanal from "../components/chart/ReservasCanal";
 import Loader from "../components/Loader";
-import SemPermissao from "../components/SemPermissao";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 import IndicadoresOperacionaisSkeleton from "../components/skeleton/IndicadoresOperacionaisSkeleton";
 import ResultadosGestorSkeleton from "../components/skeleton/ResultadosGestorSkeleton";
@@ -401,14 +400,18 @@ export default function Dashboard() {
       setResGestor(true);
     }
   }
-  const [permissao, setPermissao] = useState(0)
+  const [permissao, setPermissao] = useState(
+    { indiOpe: 0, resultAc: 0, resultGestor: 0 })
   async function permissoes() {
     try {
       const data = await fetchJson(`${apiURL}/users/${dataToken.idUsu}`);
-      setPermissao(data.dashboard || 0);
+      console.log(data)
+      setPermissao(data.dashboard ||
+        { indiOpe: 0, resultAc: 0, resultGestor: 0 });
     } catch (err) {
       console.error('Erro ao carregar permissões:', err);
-      setPermissao(0);
+      setPermissao(
+        { indiOpe: 0, resultAc: 0, resultGestor: 0 });
     }
   }
   const [dataBW, setDataBW] = useState<[string, string]>(["", ""]);
@@ -473,7 +476,6 @@ export default function Dashboard() {
   return (
     loaded ?
       <div className="w-full px-8">
-        {permissao == 0 && <SemPermissao />}
         <h3 className="text-3xl font-semibold mb-7 pt-2">Painel do Negócio</h3>
         <div className="flex flex-wrap gap-4 mb-8">
 
@@ -562,9 +564,9 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="flex flex-wrap gap-6 mb-6">
-          <button className={`hover:bg-slate-200 hover:text-blue-700 font-medium px-4 py-1 rounded-3xl text-lg transition-all ${sessao == 0 ? 'bg-slate-200 text-blue-700' : 'text-zinc-700'}`} onClick={() => { setSessao(0); updateQueryParams({ ss: "0" }) }}>Indicadores Operacionais</button>
-          <button className={`hover:bg-slate-200 hover:text-blue-700 font-medium px-4 py-1 rounded-3xl text-lg transition-all ${sessao == 1 ? 'bg-slate-200 text-blue-700' : 'text-zinc-700'}`} onClick={() => { setSessao(1); updateQueryParams({ ss: "1" }) }}>Resultados das Acomodações</button>
-          <button className={`hover:bg-slate-200 hover:text-blue-700 font-medium px-4 py-1 rounded-3xl text-lg transition-all ${sessao == 2 ? 'bg-slate-200 text-blue-700' : 'text-zinc-700'}`} onClick={() => { setSessao(2); updateQueryParams({ ss: "2" }) }}>Resultados do Gestor</button>
+          {!(permissao.indiOpe == 0) && <button className={`hover:bg-slate-200 hover:text-blue-700 font-medium px-4 py-1 rounded-3xl text-lg transition-all ${sessao == 0 ? 'bg-slate-200 text-blue-700' : 'text-zinc-700'}`} onClick={() => { setSessao(0); updateQueryParams({ ss: "0" }) }}>Indicadores Operacionais</button>}
+          {!(permissao.resultAc == 0) && <button className={`hover:bg-slate-200 hover:text-blue-700 font-medium px-4 py-1 rounded-3xl text-lg transition-all ${sessao == 1 ? 'bg-slate-200 text-blue-700' : 'text-zinc-700'}`} onClick={() => { setSessao(1); updateQueryParams({ ss: "1" }) }}>Resultados das Acomodações</button>}
+          {!(permissao.resultGestor == 0) && <button className={`hover:bg-slate-200 hover:text-blue-700 font-medium px-4 py-1 rounded-3xl text-lg transition-all ${sessao == 2 ? 'bg-slate-200 text-blue-700' : 'text-zinc-700'}`} onClick={() => { setSessao(2); updateQueryParams({ ss: "2" }) }}>Resultados do Gestor</button>}
         </div>
         <h4 className="text-2xl font-semibold mb-6">
           {sessao == 0 ? 'Indicadores Operacionais' : null}
@@ -591,7 +593,10 @@ export default function Dashboard() {
         }
         {
           sessao == 0 &&
-          <>
+          (permissao.indiOpe == 0 ? <div className="bg-gray-300 bg-opacity-50 backdrop-blur-md z-50"><span className=" flex flex-col justify-center items-center">
+            <svg className="w-20 h-fit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(0,0,0,1)"><path d="M6 8V7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7V8H20C20.5523 8 21 8.44772 21 9V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V9C3 8.44772 3.44772 8 4 8H6ZM19 10H5V20H19V10ZM11 15.7324C10.4022 15.3866 10 14.7403 10 14C10 12.8954 10.8954 12 12 12C13.1046 12 14 12.8954 14 14C14 14.7403 13.5978 15.3866 13 15.7324V18H11V15.7324ZM8 8H16V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V8Z"></path></svg>
+            <p className="text-black text-2xl">SEM PERMISSÃO DE VISUALIZAR ESTA PÁGINA</p>
+          </span></div> : <>
             {indiOpe ?
               <section className="grid gap-5 mb-24 grid-cols-3 grid-rows-5 h-[600px]">
                 <div className="relative bg-white border-zinc-300 border rounded-lg flex flex-col justify-between items-center row-span-2 py-1 h-full">
@@ -701,11 +706,14 @@ export default function Dashboard() {
                 </div>
               </section> :
               <IndicadoresOperacionaisSkeleton />}
-          </>
+          </>)
         }
         {
           sessao == 1 &&
-          <>
+          (permissao.resultAc == 0 ? <div className="bg-gray-300 bg-opacity-50 backdrop-blur-md z-50"><span className=" flex flex-col justify-center items-center">
+            <svg className="w-20 h-fit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(0,0,0,1)"><path d="M6 8V7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7V8H20C20.5523 8 21 8.44772 21 9V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V9C3 8.44772 3.44772 8 4 8H6ZM19 10H5V20H19V10ZM11 15.7324C10.4022 15.3866 10 14.7403 10 14C10 12.8954 10.8954 12 12 12C13.1046 12 14 12.8954 14 14C14 14.7403 13.5978 15.3866 13 15.7324V18H11V15.7324ZM8 8H16V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V8Z"></path></svg>
+            <p className="text-black text-2xl">SEM PERMISSÃO DE VISUALIZAR ESTA PÁGINA</p>
+          </span></div> : <>
             {resAc ? <section className="grid gap-5 mb-10 grid-rows-10" style={{ gridTemplateColumns: '1fr 2fr' }}>
               <div className="bg-white border-zinc-300 border rounded-lg flex flex-col items-center h-full row-span-3 w-full">
                 <p className="flex flex-col text-zinc-400 font-medium text-sm mb-7 mt-3">Faturamento por Canal</p>
@@ -811,7 +819,7 @@ export default function Dashboard() {
                   <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ED3E44"><path d="M17.5049 21.0027C15.5719 21.0027 14.0049 19.4357 14.0049 17.5027C14.0049 15.5697 15.5719 14.0027 17.5049 14.0027C19.4379 14.0027 21.0049 15.5697 21.0049 17.5027C21.0049 19.4357 19.4379 21.0027 17.5049 21.0027ZM17.5049 19.0027C18.3333 19.0027 19.0049 18.3312 19.0049 17.5027C19.0049 16.6743 18.3333 16.0027 17.5049 16.0027C16.6765 16.0027 16.0049 16.6743 16.0049 17.5027C16.0049 18.3312 16.6765 19.0027 17.5049 19.0027ZM6.50488 10.0027C4.57189 10.0027 3.00488 8.43574 3.00488 6.50275C3.00488 4.56975 4.57189 3.00275 6.50488 3.00275C8.43788 3.00275 10.0049 4.56975 10.0049 6.50275C10.0049 8.43574 8.43788 10.0027 6.50488 10.0027ZM6.50488 8.00275C7.33331 8.00275 8.00488 7.33117 8.00488 6.50275C8.00488 5.67432 7.33331 5.00275 6.50488 5.00275C5.67646 5.00275 5.00488 5.67432 5.00488 6.50275C5.00488 7.33117 5.67646 8.00275 6.50488 8.00275ZM19.076 3.51747L20.4902 4.93168L4.93382 20.488L3.5196 19.0738L19.076 3.51747Z"></path></svg>
                 </div>
                 <div className="flex flex-col ml-4">
-                  <p className="flex flex-col text-zinc-400 font-medium text-sm">Comissão das Reservas</p>
+                  <p className="flex flex-col text-zinc-400 font-medium text-sm">Comissão das Plataformas</p>
                   <div className="flex items-end gap-4">
                     <span className="text-nowrap text-xl">{formatarMoedaBrasileira((Number(resultadoAcomodacoes[0].comissao_plataforma)/*  - Number(resultadoAcomodacoes[0].comissao_taxa_limpeza) */).toFixed(2))}</span>
                   </div>
@@ -885,17 +893,20 @@ export default function Dashboard() {
                   <svg className="w-6 h-fit" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 480 480"><g><path d="M416 336h-12.528a56.806 56.806 0 0 0-25.312 5.976 40.799 40.799 0 0 1-36.32 0 56.604 56.604 0 0 0-14.4-4.8L343.032 216H360a8 8 0 0 0 8-8v-32a8 8 0 0 0-8-8h-32v-24a8 8 0 0 0-2.344-5.656L288 100.688V75.84l12.128-9.696 20.712 41.432 14.32-7.152-22.256-44.504L322.8 48H352a8 8 0 0 0 8-8V8a8 8 0 0 0-8-8h-80c-39.744.048-71.952 32.256-72 72a8 8 0 0 0 8 8h16v20.688l-21.656 21.656A8 8 0 0 0 200 128v40h-16v-64a7.906 7.906 0 0 0-.584-2.888 8.263 8.263 0 0 0-.496-.904 8.911 8.911 0 0 0-.672-1.208L152 61.2V8a8 8 0 0 0-8-8H96a8 8 0 0 0-8 8v53.2L57.752 99c-.255.385-.48.789-.672 1.208-.184.291-.35.593-.496.904A7.906 7.906 0 0 0 56 104v64H24a8 8 0 0 0-8 8v32a8 8 0 0 0 8 8h16.968l31.096 241.024A8 8 0 0 0 80 464h188.32A47.862 47.862 0 0 0 304 480h12.528a56.806 56.806 0 0 0 25.312-5.976 40.799 40.799 0 0 1 36.32 0A56.806 56.806 0 0 0 403.472 480H416c26.499-.026 47.974-21.501 48-48v-48c-.026-26.499-21.501-47.974-48-48zM328 16h16v16h-16V16zm24 168v16H240v-16h112zM216.568 64c4.013-27.535 27.606-47.965 55.432-48h40v20.16L277.192 64h-60.624zM272 80v16h-32V80h32zm-56 51.312L235.312 112h41.376L312 147.312V168h-96v-36.688zM208 184h16v56a8 8 0 0 0 4.424 7.2l48 24a9.663 9.663 0 0 1 4.92 5.688 10.289 10.289 0 0 1-.8 8 9.343 9.343 0 0 1-12.531 4.194l-.021-.01-32.48-16.24A8 8 0 0 0 224 280v80c0 8.837-7.163 16-16 16v-72h-16v72h-16v-72h-16v72h-16v-72h-16v72c-8.837 0-16-7.163-16-16V184h96zM104 16h32v40h-32V16zm-4.16 56h40.32l19.2 24H80.64l19.2-24zM72 112h96v56H72v-56zm-40 88v-16h64v16H32zm224 184v48a47.818 47.818 0 0 0 2.8 16H87.032L57.096 216H96v144c0 17.673 14.327 32 32 32h80c17.673 0 32-14.327 32-32v-67.056l20.896 10.448c12.627 6.232 27.915 1.048 34.147-11.579l.077-.157a25.896 25.896 0 0 0 1.464-19.8 25.597 25.597 0 0 0-12.96-14.992L240 235.056V216h86.904l-15.488 120H304c-26.499.026-47.974 21.501-48 48zm192 48c0 17.673-14.327 32-32 32h-12.528a40.8 40.8 0 0 1-18.152-4.288 56.903 56.903 0 0 0-50.64 0A40.8 40.8 0 0 1 316.528 464H304c-17.673 0-32-14.327-32-32v-12.32A47.75 47.75 0 0 0 304 432h12.528a56.806 56.806 0 0 0 25.312-5.976 40.799 40.799 0 0 1 36.32 0A56.806 56.806 0 0 0 403.472 432H416a47.75 47.75 0 0 0 32-12.32V432zm-32-16h-12.528a40.8 40.8 0 0 1-18.152-4.288 56.903 56.903 0 0 0-50.64 0A40.8 40.8 0 0 1 316.528 416H304c-17.673 0-32-14.327-32-32 0-17.673 14.327-32 32-32h12.528a40.8 40.8 0 0 1 18.152 4.288 56.935 56.935 0 0 0 50.64 0A40.8 40.8 0 0 1 403.472 352H416c17.673 0 32 14.327 32 32 0 17.673-14.327 32-32 32z" fill="#009ae7" opacity="1" data-original="#000000"></path><path d="M408 368h16v16h-16zM328 368h16v16h-16zM296 376h16v16h-16zM376 376h16v16h-16z" fill="#009ae7" opacity="1" data-original="#000000"></path></g></svg>
                 </div>
                 <div className="flex flex-col ml-4 relative">
-                  <p className="flex flex-col text-zinc-400 font-medium text-sm">Taxa de Limpeza Descontada Comissão OTA</p>
+                  <p className="flex flex-col text-zinc-400 font-medium text-sm">Taxa de Limpeza</p>
                   <div className="flex items-end gap-4">
-                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira((Number(resultadoAcomodacoes[0].taxa_limpeza) - Number(resultadoAcomodacoes[0].comissao_taxa_limpeza)).toFixed(2))}</span>
+                    <span className="text-nowrap text-xl">{formatarMoedaBrasileira((Number(resultadoAcomodacoes[0].taxa_limpeza)/*  - Number(resultadoAcomodacoes[0].comissao_taxa_limpeza) */).toFixed(2))}</span>
                   </div>
                 </div>
               </div>
             </section> : <ResultadosAcomodacoesSkeleton />}
-          </>}
+          </>)}
         {
           sessao == 2 &&
-          <>
+          (permissao.resultGestor == 0 ? <div className="bg-gray-300 bg-opacity-50 backdrop-blur-md z-50"><span className=" flex flex-col justify-center items-center">
+            <svg className="w-20 h-fit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(0,0,0,1)"><path d="M6 8V7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7V8H20C20.5523 8 21 8.44772 21 9V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V9C3 8.44772 3.44772 8 4 8H6ZM19 10H5V20H19V10ZM11 15.7324C10.4022 15.3866 10 14.7403 10 14C10 12.8954 10.8954 12 12 12C13.1046 12 14 12.8954 14 14C14 14.7403 13.5978 15.3866 13 15.7324V18H11V15.7324ZM8 8H16V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V8Z"></path></svg>
+            <p className="text-black text-2xl">SEM PERMISSÃO DE VISUALIZAR ESTA PÁGINA</p>
+          </span></div> : <>
             {resGestor ?
               <section className="grid gap-5 mb-10" style={{
                 gridTemplateAreas:
@@ -991,7 +1002,7 @@ export default function Dashboard() {
                     dadosLucros={lucroXDespesa.map(d => Number(d.lucro_acomodacoes))} dadosDespesas={lucroXDespesa.map(d => Number(d.despesas_negocio))} /> : null}
                 </div>
               </section> : <ResultadosGestorSkeleton />}
-          </>
+          </>)
         }
       </div >
       :
