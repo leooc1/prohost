@@ -116,6 +116,14 @@ export default function SidebarMenu({ route }: { route: string }) {
                             {active && <p className='text-zinc-300'>Configurações</p>}
                         </a>
                     </li>
+                    {dataToken?.is_admin && (
+                        <li>
+                            <a href={'/admin'} className={`${route == '/admin' ? 'nav-active' : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover ${active ? 'w-44' : 'w-fit justify-center'}`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#ACDBFF"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+                                {active && <p className='text-zinc-300'>Admin</p>}
+                            </a>
+                        </li>
+                    )}
                     <li>
                         <a href={'/minha-conta'} className={`${route == '/minha-conta' ? 'nav-active' : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover ${active ? 'w-44' : 'w-fit justify-center'}`}>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24" width="24" fill="#ACDBFF"><path d="M12 2C17.52 2 22 6.48 22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2ZM6.02332 15.4163C7.49083 17.6069 9.69511 19 12.1597 19C14.6243 19 16.8286 17.6069 18.2961 15.4163C16.6885 13.9172 14.5312 13 12.1597 13C9.78821 13 7.63095 13.9172 6.02332 15.4163ZM12 11C13.6569 11 15 9.65685 15 8C15 6.34315 13.6569 5 12 5C10.3431 5 9 6.34315 9 8C9 9.65685 10.3431 11 12 11Z"></path></svg>
