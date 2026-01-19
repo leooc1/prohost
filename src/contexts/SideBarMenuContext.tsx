@@ -12,7 +12,8 @@ export const SideBarProvider = ({ children }: { children: React.JSX.Element }) =
     } | null>(null)
     const [dataToken, setDataToken] = useState<{
         id: number,
-        nome: string
+        nome: string,
+        is_admin?: boolean
     } | null>(null)
 
     return (

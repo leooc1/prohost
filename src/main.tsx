@@ -26,12 +26,18 @@ import Relatorio from './pages/Relatorio.tsx'
 import Reserva from './pages/Reserva.tsx'
 import ImportadorReservas from './pages/ImportAirBnB.tsx'
 
+import Admin from './pages/Admin.tsx'
+
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     errorElement: <NotFound />,
     children: [
+      {
+        path: "/admin",
+        element: <Admin />,
+      },
       {
         path: "/relatorio",
         element: <Relatorio />,
