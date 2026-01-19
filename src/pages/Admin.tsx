@@ -51,8 +51,8 @@ export default function Admin() {
         document.title = 'Admin | Prohost'
         const token = localStorage.getItem('ph_token_acc');
         if (!token) {
-             window.location.href = '/auth';
-             return;
+            window.location.href = '/auth';
+            return;
         }
         fetchStats();
         fetchUsers();
@@ -63,6 +63,7 @@ export default function Admin() {
             const res = await fetch(`${apiURL}/admin/stats`, { headers: { 'Content-Type': 'application/json' } });
             if (res.ok) {
                 const data = await res.json();
+                console.log(data)
                 setStats(data);
             }
         } catch (error) {
@@ -73,6 +74,7 @@ export default function Admin() {
     async function fetchUsers() {
         try {
             const res = await fetch(`${apiURL}/admin/users`, { headers: { 'Content-Type': 'application/json' } });
+            console.log(res)
             if (res.ok) {
                 const data = await res.json();
                 setUsers(data);
@@ -119,7 +121,7 @@ export default function Admin() {
             }
             return newFilters;
         });
-        setCurrentPage(1); 
+        setCurrentPage(1);
     };
 
     const filteredAndSortedUsers = useMemo(() => {
@@ -128,7 +130,7 @@ export default function Admin() {
         // Global Search
         if (search) {
             const lowerSearch = search.toLowerCase();
-            result = result.filter(u => 
+            result = result.filter(u =>
                 (u.nome && u.nome.toLowerCase().includes(lowerSearch)) ||
                 (u.email && u.email.toLowerCase().includes(lowerSearch))
             );
@@ -179,7 +181,7 @@ export default function Admin() {
     }
 
     async function sendRecovery(email: string) {
-        if(!confirm(`Enviar email de recuperação para ${email}?`)) return;
+        if (!confirm(`Enviar email de recuperação para ${email}?`)) return;
         try {
             await fetch(`${apiURL}/admin/users/recover-password`, {
                 method: 'POST',
@@ -213,7 +215,7 @@ export default function Admin() {
         const isActive = Boolean(user.is_active_saas);
         const payments = Number(user.pagamentos_realizados || 0);
         const status = user.assinatura_status;
-        
+
         // Default: Inactive (Red)
         let style = 'bg-red-50 hover:bg-red-100 border-l-4 border-red-500 text-red-900';
 
@@ -244,7 +246,7 @@ export default function Admin() {
         <div className="p-6 w-full bg-gray-50 min-h-screen overflow-hidden">
             {showNotify && <Notify type={notify.type} text={notify.text} />}
             {trialModal.open && <AddTrialModal close={() => setTrialModal({ open: false, saasId: 0 })} saasId={trialModal.saasId} />}
-            
+
             <div className="flex flex-col gap-4 max-w-[100vw]">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-lg shadow-sm">
@@ -257,7 +259,7 @@ export default function Admin() {
                             <span className="flex items-center gap-1"><div className="w-3 h-3 bg-red-500 rounded-full"></div> Inativo</span>
                         </div>
                     </div>
-                    
+
                     <div className="flex gap-4 items-center w-full md:w-auto">
                         <div className="flex flex-col items-end">
                             <span className="text-xs text-gray-500">Usuários</span>
@@ -271,9 +273,9 @@ export default function Admin() {
                             <span className="text-xs text-gray-500">Pagantes</span>
                             <span className="font-bold text-lg text-green-600">{stats.paying_active_users}</span>
                         </div>
-                        <input 
-                            type="text" 
-                            placeholder="Pesquisar usuário..." 
+                        <input
+                            type="text"
+                            placeholder="Pesquisar usuário..."
                             className="border border-gray-300 rounded-lg px-4 py-2 w-64 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ml-4"
                             value={search}
                             onChange={e => { setSearch(e.target.value); setCurrentPage(1); }}
@@ -291,12 +293,12 @@ export default function Admin() {
                                     <th className="px-4 py-3 cursor-pointer" onClick={() => handleSort('nome')}>Nome</th>
                                     <th className="px-4 py-3 cursor-pointer" onClick={() => handleSort('email')}>Email</th>
                                     <th className="px-4 py-3">Celular</th>
-                                    
+
                                     {/* Origin with Filter */}
                                     <th className="px-4 py-3 relative">
                                         <div className="flex items-center gap-1 cursor-pointer" onClick={() => handleSort('origin')}>
                                             Origem
-                                            <button 
+                                            <button
                                                 onClick={(e) => { e.stopPropagation(); setShowFilterDropdown(showFilterDropdown === 'origin' ? null : 'origin'); }}
                                                 className="p-1 hover:bg-gray-300 rounded text-gray-500"
                                             >
@@ -309,8 +311,8 @@ export default function Admin() {
                                                     <button className="text-xs text-blue-600 hover:underline" onClick={() => { handleFilter('origin', 'all'); setShowFilterDropdown(null); }}>Limpar Filtro</button>
                                                 </div>
                                                 {filterOptions['origin']?.map(opt => (
-                                                    <div 
-                                                        key={opt} 
+                                                    <div
+                                                        key={opt}
                                                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-xs"
                                                         onClick={() => { handleFilter('origin', opt); setShowFilterDropdown(null); }}
                                                     >
@@ -339,7 +341,7 @@ export default function Admin() {
                                         <td className="px-4 py-3 text-center font-bold">{user.pagamentos_realizados}</td>
                                         <td className="px-4 py-3 font-medium">
                                             {formatDate(user.trial_end)}
-                                            <button 
+                                            <button
                                                 className="ml-2 text-current opacity-60 hover:opacity-100 hover:scale-110 transition-transform"
                                                 onClick={() => setTrialModal({ open: true, saasId: user.saas_id })}
                                                 title="Adicionar dias de Trial"
@@ -351,21 +353,21 @@ export default function Admin() {
                                             {user.acomodacoes_cadastradas} <span className="text-[10px] opacity-70">/ {user.plano_qtd_acomodacao || 1}</span>
                                         </td>
                                         <td className="px-4 py-3 flex justify-center gap-3">
-                                            <button 
+                                            <button
                                                 onClick={() => impersonate(user.user_id)}
                                                 className="text-current hover:text-purple-700 transition-colors"
                                                 title="Acessar conta (Impersonate)"
                                             >
                                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
                                             </button>
-                                            <button 
+                                            <button
                                                 onClick={() => sendRecovery(user.email)}
                                                 className="text-current hover:text-blue-700 transition-colors"
                                                 title="Enviar email de recuperação de senha"
                                             >
                                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                                             </button>
-                                            <button 
+                                            <button
                                                 onClick={() => getLink(user.user_id)}
                                                 className="text-current hover:text-gray-700 transition-colors"
                                                 title="Copiar link de redefinição de senha"
@@ -384,7 +386,7 @@ export default function Admin() {
                             Mostrando {Math.min((currentPage - 1) * itemsPerPage + 1, filteredAndSortedUsers.length)} - {Math.min(currentPage * itemsPerPage, filteredAndSortedUsers.length)} de {filteredAndSortedUsers.length}
                         </span>
                         <div className="flex gap-2">
-                            <button 
+                            <button
                                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                                 disabled={currentPage === 1}
                                 className="px-3 py-1 bg-white border border-gray-300 rounded text-xs hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -392,7 +394,7 @@ export default function Admin() {
                                 Anterior
                             </button>
                             <span className="px-3 py-1 text-xs font-medium self-center">Página {currentPage} de {totalPages || 1}</span>
-                            <button 
+                            <button
                                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                                 disabled={currentPage === totalPages}
                                 className="px-3 py-1 bg-white border border-gray-300 rounded text-xs hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
