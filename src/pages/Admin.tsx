@@ -1,7 +1,7 @@
-import { useEffect, useState, useMemo, useContext } from "react";
+import { useEffect, useMemo, useState } from "react";
 import AddTrialModal from "../components/admin/AddTrialModal";
 import Notify from "../components/notify/Notify";
-import { SideBarContext } from "../contexts/SideBarMenuContext";
+// import { SideBarContext } from "../contexts/SideBarMenuContext";
 
 interface AdminUser {
     user_id: number;
@@ -29,7 +29,7 @@ interface AdminStats {
 
 export default function Admin() {
     const apiURL = import.meta.env.VITE_API_URL
-    const { dataToken } = useContext(SideBarContext)
+    // const { dataToken } = useContext(SideBarContext)
     const [users, setUsers] = useState<AdminUser[]>([])
     const [stats, setStats] = useState<AdminStats>({ active_users: 0, paying_active_users: 0, total_users: 0 })
     const [trialModal, setTrialModal] = useState<{ open: boolean, saasId: number }>({ open: false, saasId: 0 })

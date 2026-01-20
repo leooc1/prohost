@@ -277,7 +277,6 @@ export default function Financeiro() {
         })
             .then(data => data.json())
             .then((data) => {
-                console.log(data)
                 setIds(data)
             })
             .catch(err => console.log(err))
