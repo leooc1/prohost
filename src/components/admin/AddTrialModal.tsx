@@ -8,11 +8,13 @@ export default function AddTrialModal({ close, saasId }: { close: () => void, sa
     const [showNotify, setShowNotify] = useState<boolean>(false)
 
     async function addTrial() {
+        const token = localStorage.getItem('ph_token_acc');
         await fetch(`${apiURL}/admin/users/${saasId}/trial`, {
             method: 'POST',
             body: JSON.stringify({ days }),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             }
         })
             .then(data => data.json())

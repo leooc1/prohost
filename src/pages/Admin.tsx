@@ -54,13 +54,18 @@ export default function Admin() {
             window.location.href = '/auth';
             return;
         }
-        fetchStats();
-        fetchUsers();
+        fetchStats(token);
+        fetchUsers(token);
     }, [])
 
-    async function fetchStats() {
+    async function fetchStats(token: string) {
         try {
-            const res = await fetch(`${apiURL}/admin/stats`, { headers: { 'Content-Type': 'application/json' } });
+            const res = await fetch(`${apiURL}/admin/stats`, { 
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` 
+                } 
+            });
             if (res.ok) {
                 const data = await res.json();
                 console.log(data)
@@ -71,9 +76,14 @@ export default function Admin() {
         }
     }
 
-    async function fetchUsers() {
+    async function fetchUsers(token: string) {
         try {
-            const res = await fetch(`${apiURL}/admin/users`, { headers: { 'Content-Type': 'application/json' } });
+            const res = await fetch(`${apiURL}/admin/users`, { 
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` 
+                } 
+            });
             console.log(res)
             if (res.ok) {
                 const data = await res.json();
@@ -169,7 +179,14 @@ export default function Admin() {
 
     async function impersonate(userId: number) {
         try {
-            const res = await fetch(`${apiURL}/admin/users/${userId}/impersonate`, { method: 'POST' })
+            const token = localStorage.getItem('ph_token_acc');
+            const res = await fetch(`${apiURL}/admin/users/${userId}/impersonate`, { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            })
             const data = await res.json()
             if (data.token) {
                 localStorage.setItem('ph_token_acc', data.token)
@@ -183,9 +200,13 @@ export default function Admin() {
     async function sendRecovery(email: string) {
         if (!confirm(`Enviar email de recuperação para ${email}?`)) return;
         try {
+            const token = localStorage.getItem('ph_token_acc');
             await fetch(`${apiURL}/admin/users/recover-password`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify({ email })
             })
             setNotify({ type: 1, text: 'Email enviado!' })
@@ -198,7 +219,12 @@ export default function Admin() {
 
     async function getLink(userId: number) {
         try {
-            const res = await fetch(`${apiURL}/admin/users/${userId}/recover-link`)
+            const token = localStorage.getItem('ph_token_acc');
+            const res = await fetch(`${apiURL}/admin/users/${userId}/recover-link`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
             const data = await res.json()
             if (data.link) {
                 await navigator.clipboard.writeText(window.location.origin + data.link)
