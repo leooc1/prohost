@@ -172,7 +172,7 @@ export default function ComparativoResultados({
 
     return (
         <div className="h-96 w-full mt-20 bg-slate-200 rounded-lg relative">
-            <div className='text-[#333] absolute left-3 top-3 font-mono font-semibold'>{ordenarMeses(mes)[0]}.{ano - 1} - {ordenarMeses(mes)[11]}.{ano}</div>
+            <div className='text-[#333] absolute left-3 top-3 font-mono font-semibold'>{ordenarMeses(mes)[0]}.{ordenarMeses(mes)[11] == 'Dez' ? ano : ano - 1} - {ordenarMeses(mes)[11]}.{ano}</div>
             <canvas ref={chartRef} style={{ maxWidth: '100%'}}></canvas>
         </div>
     );

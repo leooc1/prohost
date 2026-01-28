@@ -39,6 +39,7 @@ export default function MinhaConta() {
         })
             .then(data => data.json())
             .then((data: any) => {
+                console.log(data.nome)
                 setFoto(data.foto)
                 setUser({ nome: data.nome, email: data.master })
                 setNome(data.nome)

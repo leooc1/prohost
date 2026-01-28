@@ -153,7 +153,7 @@ export default function Config() {
     const [idEdit, setIdEdit] = useState<number>()
     const [nomeInput, setNomeInput] = useState<string>("")
     const [emailInput, setEmailInput] = useState<string>("")
-    const [dashboardPInput, setDashboardPInput] = useState<string>("")
+    const [dashboardPInput, setDashboardPInput] = useState<{ indOpe: string, resultAc: string, resultGestor: string }>({ indOpe: '', resultAc: '', resultGestor: '' })
     const [reservaPInput, setReservaPInput] = useState<string>("")
     const [acomodacaoPInput, setAcomodacaoPInput] = useState<string>("")
     const [hospedePInput, setHospedePInput] = useState<string>("")
@@ -170,6 +170,8 @@ export default function Config() {
             }
         }
     }, [statusData, dataToken])
+
+    console.log((dashboardPInput))
 
     return (
         <div className="flex flex-col w-full min-h-screen h-full">
@@ -228,15 +230,34 @@ export default function Config() {
                     </label>
                     <span className="text-zinc-500 font-medium text-sm">Permissões</span>
                     <section className="grid grid-cols-2 gap-4">
-                        <label htmlFor="dash-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
-                            Página Dashboard
-                            <select name="dash-permissao" id="dash-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
+                        <label htmlFor="dash-permissao-ind-ope" className="flex flex-col text-zinc-600 font-medium text-sm">
+                            <p>Página Dashboard <strong>(Indicadores Operacionais)</strong></p>
+                            <select name="dash-permissao-ind-ope" id="dash-permissao-ind-ope" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
                                 <option value="0" className="text-black">Sem Visualização</option>
                                 <option value="1" className="text-black">Apenas Visualização</option>
                                 <option value="3" className="text-black">Visualização, Adição e Edição</option>
                                 <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
                             </select>
                         </label>
+                        <label htmlFor="dash-permissao-result-ac" className="flex flex-col text-zinc-600 font-medium text-sm">
+                            <p>Página Dashboard <strong>(Resultados das Acomodações)</strong></p>
+                            <select name="dash-permissao-result-ac" id="dash-permissao-result-ac" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
+                                <option value="0" className="text-black">Sem Visualização</option>
+                                <option value="1" className="text-black">Apenas Visualização</option>
+                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                            </select>
+                        </label>
+                        <label htmlFor="dash-permissao-result-gestor" className="flex flex-col text-zinc-600 font-medium text-sm">
+                            <p>Página Dashboard <strong>(Resultados do Gestor)</strong></p>
+                            <select name="dash-permissao-result-gestor" id="dash-permissao-result-gestor" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
+                                <option value="0" className="text-black">Sem Visualização</option>
+                                <option value="1" className="text-black">Apenas Visualização</option>
+                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                            </select>
+                        </label>
+
                         <label htmlFor="hospede-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
                             Página Hóspedes
                             <select name="hospede-permissao" id="hospede-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
@@ -281,8 +302,12 @@ export default function Config() {
                                     getElementById('email') as HTMLInputElement
                                 const senha = document.
                                     getElementById('senha') as HTMLInputElement
-                                const dash = document.
-                                    getElementById('dash-permissao') as HTMLSelectElement
+                                const dashIndOpe = document.
+                                    getElementById('dash-permissao-ind-ope') as HTMLSelectElement
+                                const dashResultAc = document.
+                                    getElementById('dash-permissao-result-ac') as HTMLSelectElement
+                                const dashResultGestor = document.
+                                    getElementById('dash-permissao-result-gestor') as HTMLSelectElement
                                 const reserva = document.
                                     getElementById('reserva-permissao') as HTMLSelectElement
                                 const acomodacao = document.
@@ -302,7 +327,7 @@ export default function Config() {
                                         saas: Number(dataToken.id),
                                         permissao: {
                                             dashboard:
-                                                { indiOpe: Number(dash.value), resultAc: Number(dash.value), resultGestor: Number(dash.value) },
+                                                { indiOpe: Number(dashIndOpe.value), resultAc: Number(dashResultAc.value), resultGestor: Number(dashResultGestor.value) },
                                             reserva: Number(reserva.value),
                                             acomodacoes: Number(acomodacao.value),
                                             hospede: Number(hospede.value),
@@ -324,7 +349,7 @@ export default function Config() {
                                 setIdEdit(Number(u.id))
                                 setNomeInput(u.nome)
                                 setEmailInput(u.email)
-                                setDashboardPInput(String(u.permissao.dashboard))
+                                setDashboardPInput({ indOpe: String(u.permissao.dashboard.indiOpe), resultAc: String(u.permissao.dashboard.resultAc), resultGestor: String(u.permissao.dashboard.resultGestor) })
                                 setReservaPInput(String(u.permissao.reserva))
                                 setAcomodacaoPInput(String(u.permissao.acomodacoes))
                                 setHospedePInput(String(u.permissao.hospede))
@@ -372,8 +397,26 @@ export default function Config() {
                         <span className="text-zinc-500 font-medium text-sm">Permissões</span>
                         <section className="grid grid-cols-2 gap-4">
                             <label className="flex flex-col text-zinc-600 font-medium text-sm">
-                                Página Dashboard
-                                <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setDashboardPInput(e.target.value) }} defaultValue={dashboardPInput}>
+                                <p>Página Dashboard <strong>(Indicadores Operacionais)</strong></p>
+                                <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setDashboardPInput({ ...dashboardPInput, indOpe: e.target.value }) }} defaultValue={dashboardPInput.indOpe}>
+                                    <option value="0" className="text-black">Sem Visualização</option>
+                                    <option value="1" className="text-black">Apenas Visualização</option>
+                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                </select>
+                            </label>
+                            <label className="flex flex-col text-zinc-600 font-medium text-sm">
+                                <p>Página Dashboard <strong>(Resultados das Acomodações)</strong></p>
+                                <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setDashboardPInput({ ...dashboardPInput, resultAc: e.target.value }) }} defaultValue={dashboardPInput.resultAc}>
+                                    <option value="0" className="text-black">Sem Visualização</option>
+                                    <option value="1" className="text-black">Apenas Visualização</option>
+                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                </select>
+                            </label>
+                            <label className="flex flex-col text-zinc-600 font-medium text-sm">
+                                <p>Página Dashboard <strong>(Resultados do Gestor)</strong></p>
+                                <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setDashboardPInput({ ...dashboardPInput, resultGestor: e.target.value }) }} defaultValue={dashboardPInput.resultGestor}>
                                     <option value="0" className="text-black">Sem Visualização</option>
                                     <option value="1" className="text-black">Apenas Visualização</option>
                                     <option value="3" className="text-black">Visualização, Adição e Edição</option>
@@ -424,7 +467,7 @@ export default function Config() {
                                                 nome: nomeInput,
                                                 permissao: {
                                                     dashboard:
-                                                        { indiOpe: Number(dashboardPInput), resultAc: Number(dashboardPInput), resultGestor: Number(dashboardPInput) },
+                                                        { indiOpe: Number(dashboardPInput.indOpe), resultAc: Number(dashboardPInput.resultAc), resultGestor: Number(dashboardPInput.resultGestor) },
                                                     reserva: Number(reservaPInput),
                                                     acomodacoes: Number(acomodacaoPInput),
                                                     hospede: Number(hospedePInput),

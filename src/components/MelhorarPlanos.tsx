@@ -153,7 +153,6 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                 if (data.id) {
 
                     if (upgrade) {
-
                         await updateAssinatura({
                             "saas": dataToken.id,
                             "plano": {

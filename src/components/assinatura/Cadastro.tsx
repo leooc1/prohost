@@ -18,7 +18,7 @@ export default function Cadastro() {
     const [bairro, setBairro] = useState<string>('')
     const [maskCpfCnpj, setMaskCpfCnpj] = useState<string>("xxx.xxx.xxx-xx")
     const [camposObrigatorios, setCamposObrigatorios] = useState<boolean[]>([false, false, false, false, false, false, false, false])
-    
+
     // URLs dos PDFs
     const termosUrl = '/termos-de-uso.pdf'
     const politicaUrl = '/politica-de-privacidade.pdf'
@@ -87,6 +87,7 @@ export default function Cadastro() {
                     if (data.length > 0) {
                         getPlano = data[0]
                         getPlano = { ...getPlano, valor_ano: Number(getPlano.valor_ano), valor_mes: Number(getPlano.valor_mes), qtd_acomodacao: Number(getPlano.qtd_acomodacao) }
+                        setButton(true)
                     }
                     else {
                         await fetch(`${apiURL}/plano/`, {
@@ -105,6 +106,7 @@ export default function Cadastro() {
                             .then(data => {
                                 getPlano = data
                                 getPlano = { ...getPlano, valor_ano: Number(getPlano.valor_ano), valor_mes: Number(getPlano.valor_mes), qtd_acomodacao: Number(getPlano.qtd_acomodacao) }
+                                setButton(true)
                             })
                             .catch(err => console.log(err))
                     }
@@ -230,6 +232,7 @@ export default function Cadastro() {
                                 trial.setFullYear(trial.getFullYear() + 1);
                         */}
                         trial.setDate(trial.getDate() + 15)
+                        setButton(false)
                         criarConta({
                             assinatura: null,
                             master: email.value,
@@ -253,7 +256,7 @@ export default function Cadastro() {
                             }
                             , 'trial15'
                         )
-                    }}>Testar dias grátis</button>
+                    }} disabled={!button}>Testar dias grátis</button>
                     <button className="bg-primary border-2 border-primary rounded-md p-2 mx-auto font-semibold w-10/12 text-white" onClick={() => {
                         const celular = document.getElementById('celular') as HTMLInputElement
                         const cpf_cnpj = document.getElementById('cpfCnpj') as HTMLInputElement
@@ -272,7 +275,7 @@ export default function Cadastro() {
                                 trial.setFullYear(trial.getFullYear() + 1);
                         */}
                         trial.setDate(trial.getDate() + 15)
-
+                        setButton(false)
                         criarConta({
                             assinatura: null,
                             master: email.value,
@@ -296,7 +299,7 @@ export default function Cadastro() {
                             }
                             , ''
                         )
-                    }}>Garantir o acesso ao ProHost</button>
+                    }} disabled={!button}>Garantir o acesso ao ProHost</button>
                 </section>
             </div>}
             {showNotify && <Notify type={notify.type} text={notify.text} />}
@@ -306,7 +309,7 @@ export default function Cadastro() {
                     Nome Completo
                     <svg className='h-fit w-4 fill-zinc-300 absolute top-9 left-2' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20 22H4V20C4 17.2386 6.23858 15 9 15H15C17.7614 15 20 17.2386 20 20V22ZM12 13C8.68629 13 6 10.3137 6 7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7C18 10.3137 15.3137 13 12 13Z"></path></svg>
                     <input id='nome' type="text"
-                        className={`border bg-transparent text-base py-1 pr-2 pl-7 ${!camposObrigatorios[0]?'outline-red-500 border-red-500':'border-zinc-300 outline-secondary'} text-black rounded-md`} />
+                        className={`border bg-transparent text-base py-1 pr-2 pl-7 ${!camposObrigatorios[0] ? 'outline-red-500 border-red-500' : 'border-zinc-300 outline-secondary'} text-black rounded-md`} />
                 </label>
                 <label className='w-full text-zinc-500 flex flex-col text-sm gap-2 relative'>
                     CPF/CNPJ
@@ -322,14 +325,14 @@ export default function Cadastro() {
                             }
                         }}
                         id='cpfCnpj' type="text"
-                        className={`border bg-transparent text-base py-1 pr-2 pl-7 ${!camposObrigatorios[1]?'outline-red-500 border-red-500':'border-zinc-300 outline-secondary'} text-black rounded-md`} />
+                        className={`border bg-transparent text-base py-1 pr-2 pl-7 ${!camposObrigatorios[1] ? 'outline-red-500 border-red-500' : 'border-zinc-300 outline-secondary'} text-black rounded-md`} />
                 </label>
                 <div className='grid md:grid-cols-3 gap-5 w-full'>
                     <label className='w-full text-zinc-500 flex flex-col text-sm gap-2 relative col-span-2'>
                         E-mail
                         <svg className='h-fit w-4 fill-zinc-300 absolute top-9 left-2' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM12.0606 11.6829L5.64722 6.2377L4.35278 7.7623L12.0731 14.3171L19.6544 7.75616L18.3456 6.24384L12.0606 11.6829Z"></path></svg>
                         <input id='email' type="email"
-                            className={`border bg-transparent text-base py-1 pr-2 pl-7 ${!camposObrigatorios[2]?'outline-red-500 border-red-500':'border-zinc-300 outline-secondary'} text-black rounded-md`} />
+                            className={`border bg-transparent text-base py-1 pr-2 pl-7 ${!camposObrigatorios[2] ? 'outline-red-500 border-red-500' : 'border-zinc-300 outline-secondary'} text-black rounded-md`} />
                     </label>
                     <label className='w-full text-zinc-500 flex flex-col text-sm gap-2 relative'>
                         Telefone celular
@@ -338,7 +341,7 @@ export default function Cadastro() {
                             mask="(xx) x xxxx-xxxx"
                             replacement={{ x: /\d/ }}
                             id='celular' type="tel"
-                            className={`border bg-transparent text-base py-1 pr-2 pl-7 ${!camposObrigatorios[3]?'outline-red-500 border-red-500':'border-zinc-300 outline-secondary'} text-black rounded-md`} />
+                            className={`border bg-transparent text-base py-1 pr-2 pl-7 ${!camposObrigatorios[3] ? 'outline-red-500 border-red-500' : 'border-zinc-300 outline-secondary'} text-black rounded-md`} />
                     </label>
                 </div>
                 <div className='grid md:grid-cols-4 gap-5 w-full'>
@@ -353,7 +356,7 @@ export default function Cadastro() {
                                 if (e.target.value.length == 9)
                                     buscarCEP(e.target.value)
                             }}
-                            className={`border bg-transparent text-base py-1 pr-2 pl-7 ${!camposObrigatorios[4]?'outline-red-500 border-red-500':'border-zinc-300 outline-secondary'} text-black rounded-md`} />
+                            className={`border bg-transparent text-base py-1 pr-2 pl-7 ${!camposObrigatorios[4] ? 'outline-red-500 border-red-500' : 'border-zinc-300 outline-secondary'} text-black rounded-md`} />
                     </label>
                     <label className='w-full text-zinc-500 flex flex-col text-sm gap-2 relative col-span-2'>
                         Rua
@@ -369,7 +372,7 @@ export default function Cadastro() {
                                 buscarRua(e.target.value)
                             }}
                             id='rua' type="text"
-                            className={`border bg-transparent text-base py-1 pr-2 pl-7 ${!camposObrigatorios[5]?'outline-red-500 border-red-500':'border-zinc-300 outline-secondary'} text-black rounded-md`} />
+                            className={`border bg-transparent text-base py-1 pr-2 pl-7 ${!camposObrigatorios[5] ? 'outline-red-500 border-red-500' : 'border-zinc-300 outline-secondary'} text-black rounded-md`} />
                         {ruas.length > 0 && (false) && <section className="absolute bg-white top-full w-full z-10">
                             <ul className="flex flex-col w-full gap-2 bg-white">
                                 {ruas.map(r => <li onClick={(e) => {
@@ -388,14 +391,14 @@ export default function Cadastro() {
                         Número
                         <svg className='h-fit w-4 fill-zinc-300 absolute top-9 left-2' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20 20C20 20.5523 19.5523 21 19 21H5C4.44772 21 4 20.5523 4 20V11L1 11L11.3273 1.6115C11.7087 1.26475 12.2913 1.26475 12.6727 1.6115L23 11L20 11V20ZM11 13V19H13V13H11Z"></path></svg>
                         <input id='num' type="text"
-                            className={`border bg-transparent text-base py-1 pr-2 pl-7 ${!camposObrigatorios[6]?'outline-red-500 border-red-500':'border-zinc-300 outline-secondary'} text-black rounded-md`} />
+                            className={`border bg-transparent text-base py-1 pr-2 pl-7 ${!camposObrigatorios[6] ? 'outline-red-500 border-red-500' : 'border-zinc-300 outline-secondary'} text-black rounded-md`} />
                     </label>
                 </div>
                 <label className='w-full text-zinc-500 flex flex-col text-sm gap-2 relative'>
                     Crie uma senha
                     <svg className='h-fit w-4 fill-zinc-300 absolute top-9 left-2' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 10H20C20.5523 10 21 10.4477 21 11V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V11C3 10.4477 3.44772 10 4 10H5V9C5 5.13401 8.13401 2 12 2C15.866 2 19 5.13401 19 9V10ZM17 10V9C17 6.23858 14.7614 4 12 4C9.23858 4 7 6.23858 7 9V10H17ZM11 14V18H13V14H11Z"></path></svg>
                     <input id='senha' type="password"
-                        className={`border bg-transparent text-base py-1 pr-2 pl-7 ${!camposObrigatorios[7]?'outline-red-500 border-red-500':'border-zinc-300 outline-secondary'} text-black rounded-md`} />
+                        className={`border bg-transparent text-base py-1 pr-2 pl-7 ${!camposObrigatorios[7] ? 'outline-red-500 border-red-500' : 'border-zinc-300 outline-secondary'} text-black rounded-md`} />
                 </label>
                 <section className='flex gap-10 mt-4'>
                     <button className={`py-2 text-white text-xl font-medium px-10 rounded-lg ${button ? 'bg-primary' : 'bg-zinc-400 cursor-no-drop'}`}
@@ -414,6 +417,7 @@ export default function Cadastro() {
                                 /* const cycle = new URL(location.href).searchParams.get('cycle') || '' */
                                 const trial = new Date();
                                 if (origem === 'newStudents') {
+                                    setButton(false)
                                     trial.setMonth(trial.getMonth() + 6);
                                     criarConta({
                                         assinatura: null,
@@ -439,6 +443,7 @@ export default function Cadastro() {
                                         origem
                                     )
                                 } else if (origem === 'newClassmates') {
+                                    setButton(false)
                                     trial.setFullYear(trial.getFullYear() + 1);
                                     criarConta({
                                         assinatura: null,
@@ -464,6 +469,7 @@ export default function Cadastro() {
                                         origem
                                     )
                                 } else if (origem === 'newAnfitriao' || origem === 'reservaadoiss' || origem === 'oldClass') {
+                                    setButton(false)
                                     trial.setMonth(trial.getMonth() + 1);
                                     criarConta({
                                         assinatura: null,
@@ -529,7 +535,7 @@ export default function Cadastro() {
                                 setCamposObrigatorios(erro)
                             }
                         }}
-                    >Avançar</button>
+                        disabled={!button}>Avançar</button>
                     <label htmlFor="termos" className='flex gap-2 items-center font-light'>
                         <input type="checkbox" name="termos" id="termos" className='cursor-pointer' onChange={(e) => setButton(e.target.checked)} />
                         Aceito os <a href="#"
