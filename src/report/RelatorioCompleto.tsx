@@ -362,8 +362,8 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                     else {
                         setResultadoAcomodacoes(
                             data
-                                .filter((d:any) => d.periodo === 'atual')
-                                .map((d:any) => ({
+                                .filter((d: any) => d.periodo === 'atual')
+                                .map((d: any) => ({
                                     comissao_plataforma: d.comissao_plataforma ?? '0',
                                     despesas: d.despesas ?? '0',
                                     diaria_media: d.diaria_media ?? '0',
@@ -408,7 +408,19 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                 <div id='relatorio-container' className="flex flex-col relative gap-1" ref={pdfRef} >
                     {/* RELATORIO */}
                     <section id='relatorio' className={`flex flex-col justify-between p-10 h-screen relative bg-[#003347]`}>
-                        <div className='flex items-center absolute bottom-1 right-2 gap-2'>
+                        <div onClick={() => {
+                            const logos = document.querySelectorAll('.logo-ph')
+                            if (logos[0].classList.contains('opacity-30'))
+                                logos.forEach(l => {
+                                    l.classList.remove('opacity-30')
+                                    l.classList.add('opacity-100')
+                                })
+                            else
+                                logos.forEach(l => {
+                                    l.classList.remove('opacity-100')
+                                    l.classList.add('opacity-30')
+                                })
+                        }} className='flex items-center absolute bottom-1 right-2 gap-2 logo-ph cursor-pointer'>
                             <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                             <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
                         </div>
@@ -440,7 +452,19 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                     </section>
                     {/* AGENDA */}
                     <section id='agenda' className={`flex flex-col justify-between p-10 h-screen relative bg-[#003347]`}>
-                        <div className='flex items-center absolute bottom-1 right-2 gap-2'>
+                        <div onClick={() => {
+                            const logos = document.querySelectorAll('.logo-ph')
+                            if (logos[0].classList.contains('opacity-30'))
+                                logos.forEach(l => {
+                                    l.classList.remove('opacity-30')
+                                    l.classList.add('opacity-100')
+                                })
+                            else
+                                logos.forEach(l => {
+                                    l.classList.remove('opacity-100')
+                                    l.classList.add('opacity-30')
+                                })
+                        }} className='flex items-center absolute bottom-1 right-2 gap-2 logo-ph cursor-pointer'>
                             <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                             <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
                         </div>
@@ -522,7 +546,19 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                             setEditPages(error)
                         }} className={`button-report absolute left-3 top-1 py-1 px-2 z-20 ${editPages[0] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[0] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
                         <section id='calendario' className={`${!editPages[0] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
-                            <div className='flex items-center absolute bottom-1 right-2 gap-2'>
+                            <div onClick={() => {
+                                const logos = document.querySelectorAll('.logo-ph')
+                                if (logos[0].classList.contains('opacity-30'))
+                                    logos.forEach(l => {
+                                        l.classList.remove('opacity-30')
+                                        l.classList.add('opacity-100')
+                                    })
+                                else
+                                    logos.forEach(l => {
+                                        l.classList.remove('opacity-100')
+                                        l.classList.add('opacity-30')
+                                    })
+                            }} className='flex items-center absolute bottom-1 right-2 gap-2 logo-ph cursor-pointer'>
                                 <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                                 <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
                             </div>
@@ -597,7 +633,19 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                             setEditPages(error)
                         }} className={`button-report absolute left-3 top-1 py-1 px-2 z-20 ${editPages[1] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[1] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
                         <section id='detalhamento-reservas' className={`${!editPages[1] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
-                            <div className='flex items-center absolute bottom-1 right-2 gap-2'>
+                            <div onClick={() => {
+                                const logos = document.querySelectorAll('.logo-ph')
+                                if (logos[0].classList.contains('opacity-30'))
+                                    logos.forEach(l => {
+                                        l.classList.remove('opacity-30')
+                                        l.classList.add('opacity-100')
+                                    })
+                                else
+                                    logos.forEach(l => {
+                                        l.classList.remove('opacity-100')
+                                        l.classList.add('opacity-30')
+                                    })
+                            }} className='flex items-center absolute bottom-1 right-2 gap-2 logo-ph cursor-pointer'>
                                 <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                                 <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
                             </div>
@@ -622,7 +670,19 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                             setEditPages(error)
                         }} className={`button-report absolute left-3 top-1 py-1 px-2 z-20 ${editPages[2] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[2] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
                         <section id='desempenho-imovel' className={`${!editPages[2] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
-                            <div className='flex items-center absolute bottom-1 right-2 gap-2'>
+                            <div onClick={() => {
+                                const logos = document.querySelectorAll('.logo-ph')
+                                if (logos[0].classList.contains('opacity-30'))
+                                    logos.forEach(l => {
+                                        l.classList.remove('opacity-30')
+                                        l.classList.add('opacity-100')
+                                    })
+                                else
+                                    logos.forEach(l => {
+                                        l.classList.remove('opacity-100')
+                                        l.classList.add('opacity-30')
+                                    })
+                            }} className='flex items-center absolute bottom-1 right-2 gap-2 logo-ph cursor-pointer'>
                                 <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                                 <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
                             </div>
@@ -664,7 +724,19 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                             setEditPages(error)
                         }} className={`button-report absolute left-3 top-1 py-1 px-2 z-20 ${editPages[3] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[3] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
                         <section id='comparativo-faturamento' className={`${!editPages[3] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
-                            <div className='flex items-center absolute bottom-1 right-2 gap-2'>
+                            <div onClick={() => {
+                                const logos = document.querySelectorAll('.logo-ph')
+                                if (logos[0].classList.contains('opacity-30'))
+                                    logos.forEach(l => {
+                                        l.classList.remove('opacity-30')
+                                        l.classList.add('opacity-100')
+                                    })
+                                else
+                                    logos.forEach(l => {
+                                        l.classList.remove('opacity-100')
+                                        l.classList.add('opacity-30')
+                                    })
+                            }} className='flex items-center absolute bottom-1 right-2 gap-2 logo-ph cursor-pointer'>
                                 <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                                 <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
                             </div>
@@ -690,7 +762,19 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                             setEditPages(error)
                         }} className={`button-report absolute left-3 top-1 py-1 px-2 z-20 ${editPages[4] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[4] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
                         <section id='detalhamento-despesas' className={`${!editPages[4] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
-                            <div className='flex items-center absolute bottom-1 right-2 gap-2'>
+                            <div onClick={() => {
+                                const logos = document.querySelectorAll('.logo-ph')
+                                if (logos[0].classList.contains('opacity-30'))
+                                    logos.forEach(l => {
+                                        l.classList.remove('opacity-30')
+                                        l.classList.add('opacity-100')
+                                    })
+                                else
+                                    logos.forEach(l => {
+                                        l.classList.remove('opacity-100')
+                                        l.classList.add('opacity-30')
+                                    })
+                            }} className='flex items-center absolute bottom-1 right-2 gap-2 logo-ph cursor-pointer'>
                                 <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                                 <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
                             </div>
@@ -714,7 +798,19 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                             setEditPages(error)
                         }} className={`button-report absolute left-3 top-1 py-1 px-2 z-20 ${editPages[5] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[5] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
                         <section id='resultado-acomodacao' className={`${!editPages[5] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
-                            <div className='flex items-center absolute bottom-1 right-2 gap-2'>
+                            <div onClick={() => {
+                                const logos = document.querySelectorAll('.logo-ph')
+                                if (logos[0].classList.contains('opacity-30'))
+                                    logos.forEach(l => {
+                                        l.classList.remove('opacity-30')
+                                        l.classList.add('opacity-100')
+                                    })
+                                else
+                                    logos.forEach(l => {
+                                        l.classList.remove('opacity-100')
+                                        l.classList.add('opacity-30')
+                                    })
+                            }} className='flex items-center absolute bottom-1 right-2 gap-2 logo-ph cursor-pointer'>
                                 <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                                 <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
                             </div>
@@ -915,7 +1011,19 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                             setEditPages(error)
                         }} className={`button-report absolute left-3 top-1 py-1 px-2 z-20 ${editPages[6] ? 'bg-red-300' : 'bg-green-300'} rounded-lg pointer-events-auto`}>{editPages[6] ? 'Ocultar no relatório' : 'Mostrar no relatório'}</button>
                         <section id='final' className={`${!editPages[6] && 'pointer-events-none opacity-30'} flex flex-col justify-between p-10 h-screen bg-[#003347] relative`}>
-                            <div className='flex items-center absolute bottom-1 right-2 gap-2'>
+                            <div onClick={() => {
+                                const logos = document.querySelectorAll('.logo-ph')
+                                if (logos[0].classList.contains('opacity-30'))
+                                    logos.forEach(l => {
+                                        l.classList.remove('opacity-30')
+                                        l.classList.add('opacity-100')
+                                    })
+                                else
+                                    logos.forEach(l => {
+                                        l.classList.remove('opacity-100')
+                                        l.classList.add('opacity-30')
+                                    })
+                            }} className='flex items-center absolute bottom-1 right-2 gap-2 logo-ph cursor-pointer'>
                                 <img src={ph} alt="" className='w-4 h-fit drop-shadow' />
                                 <p className='text-white font-bold text-lg tracking-tight'>prohost</p>
                             </div>
