@@ -401,9 +401,9 @@ export default function RelatorioCompleto(props: propsRelatorio) {
     return (
         <>
             <div className='flex justify-center gap-10 absolute top-2 left-1/2 -translate-x-1/2'>
-                <button onClick={() => location.assign('/relatorio')} className='w-fit py-1 px-2 bg-blue-300'>
+                {/* <button onClick={() => location.assign('/relatorio')} className='w-fit py-1 px-2 bg-blue-300'>
                     Seleção de relatório
-                </button>
+                </button> */}
                 <button onClick={() => clearRelatorio('pptx')} className='w-fit py-1 px-2 bg-orange-300'>
                     Baixar como PPTX
                 </button>
