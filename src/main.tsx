@@ -27,6 +27,7 @@ import Reserva from './pages/Reserva.tsx'
 import ImportadorReservas from './pages/ImportAirBnB.tsx'
 
 import Admin from './pages/Admin.tsx'
+import AreaProprietario from './pages/AreaProprietario.tsx'
 
 const router = createBrowserRouter([
   {
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
       {
         path: "/acomodacoes",
         element: <Acomodacoes />,
+      },
+      {
+        path: "/proprietario",
+        element: <AreaProprietario />,
       },
       {
         path: "/acomodacoes/:id",

@@ -405,7 +405,6 @@ export default function Dashboard() {
   async function permissoes() {
     try {
       const data = await fetchJson(`${apiURL}/users/${dataToken.idUsu}`);
-      console.log(data)
       setPermissao(data.dashboard ||
         { indiOpe: 0, resultAc: 0, resultGestor: 0 });
     } catch (err) {

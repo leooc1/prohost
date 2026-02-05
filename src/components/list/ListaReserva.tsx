@@ -20,6 +20,8 @@ interface Reserva {
     valor_gestor: number
     tipo_reserva: string
     obs: string | null
+    comissao_gestor:string
+    valor_sem_comissao:string
 }
 
 const apiURL = import.meta.env.VITE_API_URL
@@ -557,8 +559,10 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
                         <th className="text-center">Check-in</th>
                         <th className="text-center">Check-out</th>
                         <th className="text-center">Diárias</th>
-                        <th className="text-center">Valor Líquido</th>
                         {valorTotal && <th className="text-center">Valor Total</th>}
+                        <th className="text-center">Valor Líquido</th>
+                        <th className="text-center">Comissão Gestor</th>
+                        <th className="text-center">Repasse Proprietário</th>
                     </tr>
                 </thead>
                 <tbody className="overflow-y-scroll block">
@@ -684,9 +688,10 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
                                         <td className="text-center text-xs font-medium">{formatDate(e.check_in)}</td>
                                         <td className="text-center text-xs font-medium">{formatDate(e.check_out)}</td>
                                         <td className="text-center text-xs font-medium">{calcularDiasEntreDatas(e.check_in, e.check_out)}</td>
-                                        <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${Number(e.valor_liq_calculado) > 0 ? formatarMoedaBrasileira(Number(e.valor_liq_calculado).toFixed(2)) : formatarMoedaBrasileira(Number(e.valor_liq).toFixed(2))}`}</td>
                                         {valorTotal && <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.valor).toFixed(2))}`}</td>}
-
+                                        <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${Number(e.valor_liq_calculado) > 0 ? formatarMoedaBrasileira(Number(e.valor_liq_calculado).toFixed(2)) : formatarMoedaBrasileira(Number(e.valor_liq).toFixed(2))}`}</td>
+                                        <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.comissao_gestor).toFixed(2))}`}</td>
+                                        <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.valor_sem_comissao).toFixed(2))}`}</td>
                                     </tr>)
                             : null
                     }
@@ -754,7 +759,7 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td className="text-center">{/* Total Líquido:  */}{
+                        <td className="text-center">{/* Total Diárias:  */}{
                             ((reserva
                                 //periodo
                                 .filter((e) => {
@@ -812,6 +817,64 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
                                 .map(r => calcularDiasEntreDatas(r.check_in, r.check_out))
                                 .reduce((sum, valor) => sum + valor, 0)))
                         }</td>
+                        {valorTotal&&<td className="text-center">{/* Total:  */}{
+                            formatarMoedaBrasileira((reserva
+                                //periodo
+                                .filter((e) => {
+                                    if (periodo == 'm-atual') {
+                                        return (new Date(e.check_in).getMonth() == date.getMonth() &&
+                                            new Date(e.check_in).getFullYear() == date.getFullYear()) ||
+                                            (new Date(e.check_out).getMonth() == date.getMonth() &&
+                                                new Date(e.check_out).getFullYear() == date.getFullYear())
+                                    }
+                                    else if (periodo == 'm-passado') {
+                                        const datames = new Date()
+                                        datames.setMonth(new Date().getMonth() - 1)
+                                        return (new Date(e.check_in).getMonth() == datames.getMonth() &&
+                                            new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
+                                            (new Date(e.check_out).getMonth() == datames.getMonth() &&
+                                                new Date(e.check_out).getFullYear() == datames.getFullYear())
+
+                                    }
+                                    else if (periodo == 'a-atual') {
+                                        return new Date(e.check_in).getFullYear() == date.getFullYear() ||
+                                            new Date(e.check_out).getFullYear() == date.getFullYear()
+
+                                    }
+                                    else if (periodo == 'a-passado') {
+                                        return new Date(e.check_in).getFullYear() == (date.getFullYear() - 1) ||
+                                            new Date(e.check_out).getFullYear() == (date.getFullYear() - 1)
+
+                                    }
+                                    else {
+                                        return (new Date(e.check_in) >= new Date(deData) &&
+                                            new Date(e.check_in) <= new Date(ateData)) ||
+                                            (new Date(e.check_out) >= new Date(deData) &&
+                                                new Date(e.check_out) <= new Date(ateData))
+                                    }
+
+                                })
+                                //tipo de evento
+                                .filter((e) => {
+                                    if (evento == 'all')
+                                        return e
+                                    else return e.tipo_reserva.toLowerCase() == evento
+                                })
+                                //acomodacao
+                                .filter((e) => {
+                                    if (acomodacao == 'all')
+                                        return e
+                                    else return e.acomodacao.id == Number(acomodacao)
+                                })
+                                //canais de reserva
+                                .filter((e) => {
+                                    if (canalReserva == 'all')
+                                        return e
+                                    else return e.canal_reserva?.id == Number(canalReserva)
+                                })
+                                .map(r => Number(r.valor))
+                                .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
+                        }</td>}
                         <td className="text-center">{/* Total Líquido:  */}{
                             formatarMoedaBrasileira((reserva
                                 //periodo
@@ -870,64 +933,8 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
                                 .map(r => Number(r.valor_liq_calculado) > 0 ? Number(r.valor_liq_calculado) : Number(r.valor_liq))
                                 .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
                         }</td>
-                        <td className="text-center">{/* Total:  */}{
-                            formatarMoedaBrasileira((reserva
-                                //periodo
-                                .filter((e) => {
-                                    if (periodo == 'm-atual') {
-                                        return (new Date(e.check_in).getMonth() == date.getMonth() &&
-                                            new Date(e.check_in).getFullYear() == date.getFullYear()) ||
-                                            (new Date(e.check_out).getMonth() == date.getMonth() &&
-                                                new Date(e.check_out).getFullYear() == date.getFullYear())
-                                    }
-                                    else if (periodo == 'm-passado') {
-                                        const datames = new Date()
-                                        datames.setMonth(new Date().getMonth() - 1)
-                                        return (new Date(e.check_in).getMonth() == datames.getMonth() &&
-                                            new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
-                                            (new Date(e.check_out).getMonth() == datames.getMonth() &&
-                                                new Date(e.check_out).getFullYear() == datames.getFullYear())
-
-                                    }
-                                    else if (periodo == 'a-atual') {
-                                        return new Date(e.check_in).getFullYear() == date.getFullYear() ||
-                                            new Date(e.check_out).getFullYear() == date.getFullYear()
-
-                                    }
-                                    else if (periodo == 'a-passado') {
-                                        return new Date(e.check_in).getFullYear() == (date.getFullYear() - 1) ||
-                                            new Date(e.check_out).getFullYear() == (date.getFullYear() - 1)
-
-                                    }
-                                    else {
-                                        return (new Date(e.check_in) >= new Date(deData) &&
-                                            new Date(e.check_in) <= new Date(ateData)) ||
-                                            (new Date(e.check_out) >= new Date(deData) &&
-                                                new Date(e.check_out) <= new Date(ateData))
-                                    }
-
-                                })
-                                //tipo de evento
-                                .filter((e) => {
-                                    if (evento == 'all')
-                                        return e
-                                    else return e.tipo_reserva.toLowerCase() == evento
-                                })
-                                //acomodacao
-                                .filter((e) => {
-                                    if (acomodacao == 'all')
-                                        return e
-                                    else return e.acomodacao.id == Number(acomodacao)
-                                })
-                                //canais de reserva
-                                .filter((e) => {
-                                    if (canalReserva == 'all')
-                                        return e
-                                    else return e.canal_reserva?.id == Number(canalReserva)
-                                })
-                                .map(r => Number(r.valor))
-                                .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
-                        }</td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 </tfoot>
             </table>

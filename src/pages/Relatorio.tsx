@@ -146,6 +146,16 @@ export default function Relatorio() {
                         mes={chooseMes}
                         ano={chooseAno}
                         imagem={foto || ''}
+                        /* cores={{
+                            letra: '#ffffff',
+                            primario: '#003347',
+                            secundario: '#08fab8'
+                        }} */
+                        cores={{
+                            letra: '#9fe6ff',
+                            primario: '#000037',
+                            secundario: '#5cb0ff'
+                        }}
                     />}
                 </>
                 {/* 

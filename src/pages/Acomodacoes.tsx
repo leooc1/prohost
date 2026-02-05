@@ -347,10 +347,10 @@ export default function Acomodacoes() {
                                 <ul className="border border-zinc-300 w-full mt-5 rounded-md pt-px pb-1 px-px flex overflow-x-scroll gap-10">
                                     {proprio.map((e) =>
                                         <SortableItem key={e.id} id={e.id}>
-                                            <li className="bg-white min-w-52 min-h-56 border border-zinc-200 rounded-md p-5 cursor-pointer"
+                                            <li className="bg-white w-52 min-h-56 border border-zinc-200 rounded-md p-5 cursor-pointer"
                                                 onClick={() => location.assign(`/acomodacoes/${e.id}`)}>
                                                 <img src={e.foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'} className="object-cover h-24 w-48 rounded-md" />
-                                                <p className="font-semibold mt-4 text-lg">{e.nome}</p>
+                                                <p className="font-semibold mt-4 text-lg text-nowrap text-ellipsis overflow-hidden" title={e.nome}>{e.nome}</p>
                                                 <div className="mt-4 flex justify-between items-center">
                                                     <div className="flex items-center gap-1 bg-[#CCD6DA] h-fit w-fit px-2 py-1 rounded-md">
                                                         <div className="bg-[#1266B5] w-2 h-2 rounded-full"></div>
@@ -387,10 +387,10 @@ export default function Acomodacoes() {
                                 <ul className="border border-zinc-300 w-full mt-5 rounded-md pt-px pb-1 px-px flex overflow-x-scroll gap-10">
                                     {terceiro.map((e) =>
                                         <SortableItem key={e.id} id={e.id}>
-                                            <li className="bg-white min-w-52 min-h-56 border border-zinc-200 rounded-md p-5 cursor-pointer"
+                                            <li className="bg-white w-52 min-h-56 border border-zinc-200 rounded-md p-5 cursor-pointer"
                                                 onClick={() => location.assign(`/acomodacoes/${e.id}`)}>
                                                 <img src={e.foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'} className="object-cover h-24 w-48 rounded-md" />
-                                                <p className="font-semibold mt-4 text-lg">{e.nome}</p>
+                                                <p className="font-semibold mt-4 text-lg text-nowrap text-ellipsis overflow-hidden">{e.nome}</p>
                                                 <div className="mt-4 flex justify-between items-center">
                                                     <div className="flex items-center gap-1 bg-[#CCD6DA] h-fit w-fit px-2 py-1 rounded-md">
                                                         <div className="bg-[#3A8E71] w-2 h-2 rounded-full"></div>
@@ -427,9 +427,9 @@ export default function Acomodacoes() {
                                 <ul className="border border-zinc-300 w-full mt-5 rounded-md pt-px pb-1 px-px flex overflow-x-scroll gap-10">
                                     {desativados.map((e) =>
                                         <SortableItem key={e.id} id={e.id}>
-                                            <li className="bg-white min-w-52 min-h-56 border border-zinc-200 rounded-md p-5 cursor-pointer opacity-75 brightness-75">
+                                            <li className="bg-white w-52 min-h-56 border border-zinc-200 rounded-md p-5 cursor-pointer opacity-75 brightness-75">
                                                 <img src={e.foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'} className="object-cover h-24 w-48 rounded-md" />
-                                                <p className="font-semibold mt-4 text-lg">{e.nome}</p>
+                                                <p className="font-semibold mt-4 text-lg text-nowrap text-ellipsis overflow-hidden">{e.nome}</p>
                                                 <div className="mt-4 flex justify-between items-center">
                                                     <div className="flex items-center gap-1 bg-[#CCD6DA] h-fit w-fit px-2 py-1 rounded-md">
                                                         <div className={`bg-[${e?.tipo == 'proprio' ? '#1266B5' : '#3A8E71'}] w-2 h-2 rounded-full`}></div>
