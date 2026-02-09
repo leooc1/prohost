@@ -795,9 +795,9 @@ export default function AcomodacoesDetalhes() {
                                     <span className="text-zinc-500 font-medium mb-1 text-xs">Modelo {status == 'terceiro' ? 'da Comissão' : 'de Negócio'}
                                         <span className='text-red-500 font-bold'> *</span>
                                     </span>
-                                    <select name="modelo-negocio" id="modelo-negocio" className={`border border-zinc-300 rounded-md px-2 py-1 outline-none`} value={String(modelo)} onChange={(e) => { setModelo(Number(e.target.value)) }}>
+                                    <select name="modelo-negocio" id="modelo-negocio" className={`border border-zinc-300 rounded-md px-2 py-1 outline-none`} value={(modelo == 2 || modelo == 3) ? '3': '1'} onChange={(e) => { setModelo(Number(e.target.value)) }}>
                                         <option value="1">Taxa de limpeza inclusa</option>
-                                        <option value="2">Taxa de limpeza à parte</option>
+                                        <option value="3">Taxa de limpeza à parte</option>
                                     </select>
                                 </label>
                                 {(modelo == 2 || modelo == 3) && <label htmlFor="taxa-limpeza" className={`flex flex-col col-span-1`}>
