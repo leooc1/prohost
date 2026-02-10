@@ -82,7 +82,6 @@ export default function Reserva() {
     }
   }
 
-
   async function getAcomodacoes() {
     if (!dataToken || !dataToken.id) return
     await fetch(`${apiURL}/acomodacao/${dataToken.id}`, {
@@ -106,17 +105,6 @@ export default function Reserva() {
       })
       .catch(err => console.log(err))
   }
-
-  /* async function getAll(saas: number) {
-    await fetch(`${apiURL}/reserva/index/${saas}`, {
-      method: 'GET',
-    })
-      .then(data => data.json())
-      .then((data) => {
-        setIds(data)
-      })
-      .catch(err => console.log(err))
-  } */
 
   const [permissao, setPermissao] = useState(0)
   async function permissoes() {
