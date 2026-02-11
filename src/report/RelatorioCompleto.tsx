@@ -441,7 +441,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                     <p style={{ color: props.cores.secundario }} className={`text-[${props.cores.secundario}] text-3xl`}>{nome}</p>
                                     <p style={{ color: props.cores.letra }} className={`text-[${props.cores.letra}] text-2xl`}>{meses[props.mes - 1]}.{props.ano}</p>
                                     <div className='flex justify-end'>
-                                        <img src={props.imagem} alt="" className='max-w-56 max-h-28 h-28' />
+                                        <img src={props.imagem} className='max-w-56 max-h-28 h-28' />
                                     </div>
                                 </div>
                                 <div className='flex items-end'>
@@ -453,7 +453,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 </div>
                             </section>
                             <section className='flex items-center pl-5'>
-                                <img src={acIMG} alt={nome} className='h-fit' />
+                                <img src={acIMG} alt={nome} className='h-fit max-h-[650px]' />
                             </section>
                         </section>
                     </section>

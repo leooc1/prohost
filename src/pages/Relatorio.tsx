@@ -42,10 +42,10 @@ export default function Relatorio() {
                                 <p className="text-2xl font-medium text-center -mb-4">Escolha a acomodação para o relatório</p>
                                 <ul className="border border-zinc-300 w-full mt-5 rounded-md pt-px pb-1 px-px flex gap-5 flex-wrap justify-center h-[60vh] overflow-y-scroll">
                                     {acomodacoes.map((e: any) =>
-                                        <li key={e.id} className={`min-w-52 h-44 border border-zinc-200 rounded-xl p-5 cursor-pointer ${e.id == chooseAc ? 'bg-green-200' : 'bg-white'}`}
+                                        <li key={e.id} className={`border-zinc-200 w-52 h-56 border rounded-md p-5 cursor-pointer ${e.id == chooseAc ? 'bg-green-200' : 'bg-white'}`}
                                             onClick={() => setChooseAc(e.id)}>
                                             <img src={e.foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'} className="object-cover h-24 w-48 rounded-md" />
-                                            <p className="font-semibold mt-4 text-lg">{e.nome}</p>
+                                            <p className="font-semibold mt-4 text-lg text-nowrap text-ellipsis overflow-hidden" title={e.nome}>{e.nome}</p>
                                         </li>)}
                                 </ul>
                             </section>
