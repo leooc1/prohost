@@ -546,7 +546,7 @@ export default function Acomodacoes() {
           message={`Ao suspender a acomodação "${acomodacaoToSuspender.nome}", ela ficará desativada e não poderá ser utilizada em reservas nem aparecerá em dashboards. Para reativá-la, acesse a seção de acomodações desativadas.`}
           onClose={fecharModalSuspender}
           onConfirm={confirmarSuspensao}
-          confirmText="Suspender permanentemente"
+          confirmText="Suspender"
           cancelText="Cancelar"
           colorButton="blue"
         />
