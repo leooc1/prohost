@@ -266,9 +266,6 @@ export default function Acomodacoes() {
             setShowNotify(false);
           }, 3000);
           if (desativado) {
-            alert(
-              "Ao suspender a acomodação, ela ficará desativada e não poderá ser utilizada em reservas nem aparecerá em dashboards. Para reativá-la, acesse a seção de acomodações desativadas.",
-            );
             setNotify({ type: 1, text: "Desativado!" });
             setShowNotify(true);
             setTimeout(() => {
