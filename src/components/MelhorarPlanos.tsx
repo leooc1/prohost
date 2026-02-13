@@ -411,7 +411,8 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
     }
 
     const currentPlan = getCurrentPlan();
-    const price = calculatePrice(currentPlan);
+    const [price, setPrice] = useState<{ monthly: string, total: string, savings: string }>(calculatePrice(currentPlan));
+    // let price = calculatePrice(currentPlan);
 
     function mesesAteDataFutura(dataFuturaStr: string): number {
         const hoje = new Date();
@@ -450,6 +451,8 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
             return () => clearTimeout(timer);
         }
     }, [showNotify]);
+
+    useEffect(() => { }, [price]);
 
     return (
         <div className="min-h-screen bg-[#F4F4F5] p-8">
@@ -590,7 +593,27 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                                 <h2 className="text-2xl font-bold text-[#0E3447] mb-6">
                                     Escolha a forma de pagamento
                                 </h2>
-
+                                {isAnnual && !upgrade && <section className="flex justify-between gap-2">
+                                    <input placeholder="CUPOM" type="text" name="cupom" id="cupom" className="uppercase" />
+                                    <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary" onClick={() => {
+                                        // let cupom = 0
+                                        if ((document.getElementById('cupom') as HTMLInputElement).value.toUpperCase() === 'MENTORIA3R') {
+                                            setPrice({
+                                                monthly: calculatePrice(currentPlan).monthly,
+                                                savings: calculatePrice(currentPlan).savings,
+                                                total: (Number(calculatePrice(currentPlan).total) -
+                                                    (Number(calculatePrice(currentPlan).total) * 0.1)).toFixed(2)
+                                            })
+                                        } else {
+                                            setPrice({
+                                                monthly: calculatePrice(currentPlan).monthly,
+                                                savings: calculatePrice(currentPlan).savings,
+                                                total: calculatePrice(currentPlan).total
+                                            })
+                                        }
+                                    }
+                                    }>APLICAR</button>
+                                </section>}
                                 <div className="mb-6">
                                     <div className="text-sm text-gray-600 mb-2">Plano Selecionado</div>
                                     <div className="text-[#0E3447] font-semibold">
@@ -609,6 +632,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                                                 : Number(price.monthly))
                                         }
                                     </div>
+
                                 </div>
 
                                 <div className="space-y-4 mb-6">
