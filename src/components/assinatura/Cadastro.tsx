@@ -104,6 +104,7 @@ export default function Cadastro() {
                         })
                             .then(data => data.json())
                             .then(data => {
+                                console.log(data)
                                 getPlano = data
                                 getPlano = { ...getPlano, valor_ano: Number(getPlano.valor_ano), valor_mes: Number(getPlano.valor_mes), qtd_acomodacao: Number(getPlano.qtd_acomodacao) }
                                 setButton(true)
