@@ -315,7 +315,7 @@ export default function Relatorio() {
               </section>
               {acomodacoes.length ? (
                 <section className="py-py max-w-6xl mx-auto px-4">
-                  <ul className="w-full p-2 mt-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  <ul className="w-full mt-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {acomodacoes.map((e: any) => {
                       const isSelected = e.id === chooseAc;
 
