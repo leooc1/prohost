@@ -452,7 +452,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
         }
     }, [showNotify]);
 
-    useEffect(() => { }, [price]);
+    useEffect(() => { setPrice(calculatePrice(getCurrentPlan())) }, [selectedAccommodations]);
 
     return (
         <div className="min-h-screen bg-[#F4F4F5] p-8">
