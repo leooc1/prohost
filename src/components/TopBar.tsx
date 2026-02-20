@@ -116,7 +116,7 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
                 {children}
             </div>
             <div className="flex items-center gap-7">
-                <section className="relative">
+                <section className="relative flex items-center">
                     <button onClick={() => {
                         setNotifyDespesas(!notifyDespesas)
                         if (!notifyDespesas) setNotifyMinhaConta(false)
