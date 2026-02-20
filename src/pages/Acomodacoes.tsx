@@ -425,13 +425,23 @@ export default function Acomodacoes() {
                       className="bg-white w-52 min-h-56 border border-zinc-200 rounded-md p-5 cursor-pointer"
                       onClick={() => location.assign(`/acomodacoes/${e.id}`)}
                     >
-                      <img
-                        src={
-                          e.foto ||
-                          "https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max"
-                        }
-                        className="object-cover h-24 w-48 rounded-md"
-                      />
+                      {e.foto ? (
+                        <img
+                          src={e.foto}
+                          className="object-cover h-24 w-48 rounded-md"
+                        />
+                      ) : (
+                        <div className="h-24 w-42 rounded-md border border-zinc-300 bg-zinc-100 flex items-center justify-center">
+                          <svg
+                            className="w-10 h-10"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="#777777"
+                          >
+                            <path d="M2.9918 21C2.44405 21 2 20.5551 2 20.0066V3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918ZM20 15V5H4V19L14 9L20 15ZM20 17.8284L14 11.8284L6.82843 19H20V17.8284ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path>
+                          </svg>
+                        </div>
+                      )}
                       <p
                         className="font-semibold mt-4 text-lg text-nowrap text-ellipsis overflow-hidden"
                         title={e.nome}
@@ -488,13 +498,23 @@ export default function Acomodacoes() {
                       className="bg-white w-52 min-h-56 border border-zinc-200 rounded-md p-5 cursor-pointer"
                       onClick={() => location.assign(`/acomodacoes/${e.id}`)}
                     >
-                      <img
-                        src={
-                          e.foto ||
-                          "https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max"
-                        }
-                        className="object-cover h-24 w-48 rounded-md"
-                      />
+                      {e.foto ? (
+                        <img
+                          src={e.foto}
+                          className="object-cover h-24 w-48 rounded-md"
+                        />
+                      ) : (
+                        <div className="h-24 w-42 rounded-md border border-zinc-300 bg-zinc-100 flex items-center justify-center">
+                          <svg
+                            className="w-10 h-10"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="#777777"
+                          >
+                            <path d="M2.9918 21C2.44405 21 2 20.5551 2 20.0066V3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918ZM20 15V5H4V19L14 9L20 15ZM20 17.8284L14 11.8284L6.82843 19H20V17.8284ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path>
+                          </svg>
+                        </div>
+                      )}
                       <p className="font-semibold mt-4 text-lg text-nowrap text-ellipsis overflow-hidden">
                         {e.nome}
                       </p>
@@ -567,13 +587,23 @@ export default function Acomodacoes() {
                 {desativados.map((e) => (
                   <SortableItem key={e.id} id={e.id}>
                     <li className="bg-white w-52 min-h-56 border border-zinc-200 rounded-md p-5 cursor-pointer opacity-75 brightness-75">
-                      <img
-                        src={
-                          e.foto ||
-                          "https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max"
-                        }
-                        className="object-cover h-24 w-48 rounded-md"
-                      />
+                      {e.foto ? (
+                        <img
+                          src={e.foto}
+                          className="object-cover h-24 w-48 rounded-md"
+                        />
+                      ) : (
+                        <div className="h-24 w-42 rounded-md border border-zinc-300 bg-zinc-100 flex items-center justify-center">
+                          <svg
+                            className="w-10 h-10"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="#777777"
+                          >
+                            <path d="M2.9918 21C2.44405 21 2 20.5551 2 20.0066V3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918ZM20 15V5H4V19L14 9L20 15ZM20 17.8284L14 11.8284L6.82843 19H20V17.8284ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path>
+                          </svg>
+                        </div>
+                      )}
                       <p className="font-semibold mt-4 text-lg text-nowrap text-ellipsis overflow-hidden">
                         {e.nome}
                       </p>
