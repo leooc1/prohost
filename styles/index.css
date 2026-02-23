@@ -3,6 +3,7 @@
 @import url('./switch.css');
 @import url('./calendar.css'); 
 @import url('./skeleton-load.css'); 
+@import url('./checkbox.css'); 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
