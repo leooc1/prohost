@@ -73,6 +73,7 @@ export default function Dashboard() {
   useEffect(() => { document.title = 'Dashboard | Prohost' }, [])
 
   const { dataToken } = useContext(SideBarContext);
+  
   const [loaded, setLoaded] = useState(false)
   function formatarMoedaBrasileira(valor: string | number | null | undefined) {
     const valorNumerico = parseFloat(String(valor));

@@ -12,9 +12,11 @@ export default function Config() {
     const { statusData, dataToken } = useContext(SideBarContext)
     const [session, setSession] = useState(0)
     const [assinatura, setAssinatura] = useState(true)
+    const [proprietario, setProprietario] = useState(false)
     const [edicao, setEdicao] = useState(false)
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
+    const [terceiro, setTerceiro] = useState<any[]>([])
 
     function dateFormat(dataISO: string) {
         if (dataISO == '')
@@ -123,6 +125,7 @@ export default function Config() {
             financeiro: number
             acomodacoes: number
         },
+        acomodacoes: string[]
     }[]>([])
     const [permissao, setPermissao] = useState(0)
     async function permissoes() {
@@ -148,6 +151,19 @@ export default function Config() {
                 setUsers(data)
             })
             .catch(err => console.log(err))
+
+        await acomodacoes()
+    }
+
+    async function acomodacoes() {
+        await fetch(`${apiURL}/acomodacao/` + dataToken.id, {
+            method: "GET",
+        })
+            .then((data) => data.json())
+            .then(async (data: any[]) => {
+                setTerceiro(data.filter(
+                    (e) => e.tipo == "terceiro" && !e.desativado));
+            })
     }
 
     const [idEdit, setIdEdit] = useState<number>()
@@ -158,6 +174,7 @@ export default function Config() {
     const [acomodacaoPInput, setAcomodacaoPInput] = useState<string>("")
     const [hospedePInput, setHospedePInput] = useState<string>("")
     const [financeiroPInput, setFinanceiroPInput] = useState<string>("")
+    const [acomodacoesSelected, setAcomodacoesSelected] = useState<string[] | null>(null)
 
     useEffect(() => {
         if (dataToken && dataToken.id && dataToken.idUsu)
@@ -171,7 +188,6 @@ export default function Config() {
         }
     }, [statusData, dataToken])
 
-    console.log((dashboardPInput))
 
     return (
         <div className="flex flex-col w-full min-h-screen h-full">
@@ -216,6 +232,22 @@ export default function Config() {
                     style={{ width: '-webkit-fill-available' }}
                     className="flex rounded-md flex-col px-4 pb-3 gap-4 min-w-72 mb-20 bg-white pt-2">
                     <h5 className="font-semibold text-2xl mb-2">Criar usuário filiado</h5>
+
+                    <label className="checkbox-wrapper">
+                        <input checked={proprietario} type="checkbox" defaultChecked={proprietario} onChange={(e) => { setProprietario(e.target.checked) }} />
+                        <div className="checkmark">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path
+                                    d="M20 6L9 17L4 12"
+                                    stroke-width="3"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                ></path>
+                            </svg>
+                        </div>
+                        <span className="label">É um proprietário?</span>
+                    </label>
+
                     <label htmlFor="nome" className="flex flex-col">
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Nome</span>
                         <input type="text" name="nome" id="nome" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
@@ -228,116 +260,166 @@ export default function Config() {
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Senha</span>
                         <input type="password" name="senha" id="senha" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" />
                     </label>
-                    <span className="text-zinc-500 font-medium text-sm">Permissões</span>
-                    <section className="grid grid-cols-2 gap-4">
-                        <label htmlFor="dash-permissao-ind-ope" className="flex flex-col text-zinc-600 font-medium text-sm">
-                            <p>Página Dashboard <strong>(Indicadores Operacionais)</strong></p>
-                            <select name="dash-permissao-ind-ope" id="dash-permissao-ind-ope" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
-                                <option value="0" className="text-black">Sem Visualização</option>
-                                <option value="1" className="text-black">Apenas Visualização</option>
-                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                            </select>
-                        </label>
-                        <label htmlFor="dash-permissao-result-ac" className="flex flex-col text-zinc-600 font-medium text-sm">
-                            <p>Página Dashboard <strong>(Resultados das Acomodações)</strong></p>
-                            <select name="dash-permissao-result-ac" id="dash-permissao-result-ac" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
-                                <option value="0" className="text-black">Sem Visualização</option>
-                                <option value="1" className="text-black">Apenas Visualização</option>
-                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                            </select>
-                        </label>
-                        <label htmlFor="dash-permissao-result-gestor" className="flex flex-col text-zinc-600 font-medium text-sm">
-                            <p>Página Dashboard <strong>(Resultados do Gestor)</strong></p>
-                            <select name="dash-permissao-result-gestor" id="dash-permissao-result-gestor" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
-                                <option value="0" className="text-black">Sem Visualização</option>
-                                <option value="1" className="text-black">Apenas Visualização</option>
-                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                            </select>
-                        </label>
+                    <span className="text-zinc-500 font-medium text-sm">{proprietario ? 'Quais acomodaçoes ele poderá visualizar?' : 'Permissões'}</span>
+                    {!proprietario ?
+                        <section className="grid grid-cols-2 gap-4">
+                            <label htmlFor="dash-permissao-ind-ope" className="flex flex-col text-zinc-600 font-medium text-sm">
+                                <p>Página Dashboard <strong>(Indicadores Operacionais)</strong></p>
+                                <select name="dash-permissao-ind-ope" id="dash-permissao-ind-ope" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
+                                    <option value="0" className="text-black">Sem Visualização</option>
+                                    <option value="1" className="text-black">Apenas Visualização</option>
+                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                </select>
+                            </label>
+                            <label htmlFor="dash-permissao-result-ac" className="flex flex-col text-zinc-600 font-medium text-sm">
+                                <p>Página Dashboard <strong>(Resultados das Acomodações)</strong></p>
+                                <select name="dash-permissao-result-ac" id="dash-permissao-result-ac" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
+                                    <option value="0" className="text-black">Sem Visualização</option>
+                                    <option value="1" className="text-black">Apenas Visualização</option>
+                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                </select>
+                            </label>
+                            <label htmlFor="dash-permissao-result-gestor" className="flex flex-col text-zinc-600 font-medium text-sm">
+                                <p>Página Dashboard <strong>(Resultados do Gestor)</strong></p>
+                                <select name="dash-permissao-result-gestor" id="dash-permissao-result-gestor" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
+                                    <option value="0" className="text-black">Sem Visualização</option>
+                                    <option value="1" className="text-black">Apenas Visualização</option>
+                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                </select>
+                            </label>
 
-                        <label htmlFor="hospede-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
-                            Página Hóspedes
-                            <select name="hospede-permissao" id="hospede-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
-                                <option value="0" className="text-black">Sem Visualização</option>
-                                <option value="1" className="text-black">Apenas Visualização</option>
-                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                            </select>
-                        </label>
-                        <label htmlFor="reserva-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
-                            Página Reserva
-                            <select name="reserva-permissao" id="reserva-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
-                                <option value="0" className="text-black">Sem Visualização</option>
-                                <option value="1" className="text-black">Apenas Visualização</option>
-                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                            </select>
-                        </label>
-                        <label htmlFor="financeiro-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
-                            Página Financeiro
-                            <select name="financeiro-permissao" id="financeiro-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
-                                <option value="0" className="text-black">Sem Visualização</option>
-                                <option value="1" className="text-black">Apenas Visualização</option>
-                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                            </select>
-                        </label>
-                        <label htmlFor="acomodacao-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
-                            Página Acomodações
-                            <select name="acomodacao-permissao" id="acomodacao-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
-                                <option value="0" className="text-black">Sem Visualização</option>
-                                <option value="1" className="text-black">Apenas Visualização</option>
-                                <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                            </select>
-                        </label>
-                        <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
-                            onClick={() => {
-                                const nome = document.
-                                    getElementById('nome') as HTMLInputElement
-                                const email = document.
-                                    getElementById('email') as HTMLInputElement
-                                const senha = document.
-                                    getElementById('senha') as HTMLInputElement
-                                const dashIndOpe = document.
-                                    getElementById('dash-permissao-ind-ope') as HTMLSelectElement
-                                const dashResultAc = document.
-                                    getElementById('dash-permissao-result-ac') as HTMLSelectElement
-                                const dashResultGestor = document.
-                                    getElementById('dash-permissao-result-gestor') as HTMLSelectElement
-                                const reserva = document.
-                                    getElementById('reserva-permissao') as HTMLSelectElement
-                                const acomodacao = document.
-                                    getElementById('acomodacao-permissao') as HTMLSelectElement
-                                const hospede = document.
-                                    getElementById('hospede-permissao') as HTMLSelectElement
-                                const financeiro = document.
-                                    getElementById('financeiro-permissao') as HTMLSelectElement
-                                if (nome.value.length > 0 &&
-                                    email.value.length > 0 &&
-                                    senha.value.length > 0 &&
-                                    dataToken.id) {
-                                    criarUsuario({
-                                        nome: nome.value,
-                                        email: email.value,
-                                        senha: senha.value,
-                                        saas: Number(dataToken.id),
-                                        permissao: {
-                                            dashboard:
-                                                { indiOpe: Number(dashIndOpe.value), resultAc: Number(dashResultAc.value), resultGestor: Number(dashResultGestor.value) },
-                                            reserva: Number(reserva.value),
-                                            acomodacoes: Number(acomodacao.value),
-                                            hospede: Number(hospede.value),
-                                            financeiro: Number(financeiro.value),
-                                            config: 0
-                                        },
-                                    })
-                                }
-                            }}>Criar usuário</button>
-                    </section>
+                            <label htmlFor="hospede-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
+                                Página Hóspedes
+                                <select name="hospede-permissao" id="hospede-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
+                                    <option value="0" className="text-black">Sem Visualização</option>
+                                    <option value="1" className="text-black">Apenas Visualização</option>
+                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                </select>
+                            </label>
+                            <label htmlFor="reserva-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
+                                Página Reserva
+                                <select name="reserva-permissao" id="reserva-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
+                                    <option value="0" className="text-black">Sem Visualização</option>
+                                    <option value="1" className="text-black">Apenas Visualização</option>
+                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                </select>
+                            </label>
+                            <label htmlFor="financeiro-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
+                                Página Financeiro
+                                <select name="financeiro-permissao" id="financeiro-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
+                                    <option value="0" className="text-black">Sem Visualização</option>
+                                    <option value="1" className="text-black">Apenas Visualização</option>
+                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                </select>
+                            </label>
+                            <label htmlFor="acomodacao-permissao" className="flex flex-col text-zinc-600 font-medium text-sm">
+                                Página Acomodações
+                                <select name="acomodacao-permissao" id="acomodacao-permissao" className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit">
+                                    <option value="0" className="text-black">Sem Visualização</option>
+                                    <option value="1" className="text-black">Apenas Visualização</option>
+                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                </select>
+                            </label>
+                            <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
+                                onClick={() => {
+                                    const nome = document.
+                                        getElementById('nome') as HTMLInputElement
+                                    const email = document.
+                                        getElementById('email') as HTMLInputElement
+                                    const senha = document.
+                                        getElementById('senha') as HTMLInputElement
+                                    const dashIndOpe = document.
+                                        getElementById('dash-permissao-ind-ope') as HTMLSelectElement
+                                    const dashResultAc = document.
+                                        getElementById('dash-permissao-result-ac') as HTMLSelectElement
+                                    const dashResultGestor = document.
+                                        getElementById('dash-permissao-result-gestor') as HTMLSelectElement
+                                    const reserva = document.
+                                        getElementById('reserva-permissao') as HTMLSelectElement
+                                    const acomodacao = document.
+                                        getElementById('acomodacao-permissao') as HTMLSelectElement
+                                    const hospede = document.
+                                        getElementById('hospede-permissao') as HTMLSelectElement
+                                    const financeiro = document.
+                                        getElementById('financeiro-permissao') as HTMLSelectElement
+                                    if (nome.value.length > 0 &&
+                                        email.value.length > 0 &&
+                                        senha.value.length > 0 &&
+                                        dataToken.id) {
+                                        criarUsuario({
+                                            nome: nome.value,
+                                            email: email.value,
+                                            senha: senha.value,
+                                            saas: Number(dataToken.id),
+                                            permissao: {
+                                                dashboard:
+                                                    { indiOpe: Number(dashIndOpe.value), resultAc: Number(dashResultAc.value), resultGestor: Number(dashResultGestor.value) },
+                                                reserva: Number(reserva.value),
+                                                acomodacoes: Number(acomodacao.value),
+                                                hospede: Number(hospede.value),
+                                                financeiro: Number(financeiro.value),
+                                                config: 0
+                                            },
+                                        })
+                                    }
+                                }}>Criar usuário</button>
+                        </section>
+                        :
+                        <section className="gap-4 flex flex-col">
+                            <ul className="grid grid-cols-3 gap-5">
+                                {terceiro.map(a =>
+                                    <li>
+                                        <label htmlFor={a.id} className="flex">
+                                            <input type="checkbox" name={a.nome} id={a.id} className="prop-ac" title={a.nome} />
+                                            <p className="ml-2 text-nowrap text-ellipsis overflow-hidden">{a.nome}</p>
+                                        </label>
+                                    </li>)}
+                            </ul>
+                            <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
+                                onClick={() => {
+                                    const nome = document.
+                                        getElementById('nome') as HTMLInputElement
+                                    const email = document.
+                                        getElementById('email') as HTMLInputElement
+                                    const senha = document.
+                                        getElementById('senha') as HTMLInputElement
+
+                                    const acomodacoes = document.querySelectorAll('.prop-ac') as NodeListOf<HTMLInputElement>
+                                    const acomodacoesSelecionadas = Array.from(acomodacoes)
+                                        .filter(checkbox => checkbox.checked)
+                                        .map(checkbox => checkbox.id)
+                                    console.log(acomodacoesSelecionadas)
+                                    if (nome.value.length > 0 &&
+                                        email.value.length > 0 &&
+                                        senha.value.length > 0 &&
+                                        dataToken.id) {
+                                        criarUsuario({
+                                            nome: nome.value,
+                                            email: email.value,
+                                            senha: senha.value,
+                                            saas: Number(dataToken.id),
+                                            permissao: {
+                                                dashboard:
+                                                    { indiOpe: 1, resultAc: 1, resultGestor: 1 },
+                                                reserva: 0,
+                                                acomodacoes: 0,
+                                                hospede: 0,
+                                                financeiro: 0,
+                                                config: 0
+                                            },
+                                            acomodacoes: acomodacoesSelecionadas
+                                        })
+                                    }
+                                }}>Criar usuário</button>
+                        </section>
+                    }
                 </form>
                 <hr />
                 <section className="top-full bg-white p-2 gap-4 rounded-xl">
@@ -345,6 +427,7 @@ export default function Config() {
                     <ul className="flex flex-col gap-1 mb-20">
                         {users.map(u =>
                             <li className="border-y border-zinc-400 px-2 py-1 cursor-pointer flex justify-between" onClick={() => {
+                                if (u?.acomodacoes && u.acomodacoes.length > 0) { setProprietario(true) }
                                 setEdicao(true)
                                 setIdEdit(Number(u.id))
                                 setNomeInput(u.nome)
@@ -354,6 +437,7 @@ export default function Config() {
                                 setAcomodacaoPInput(String(u.permissao.acomodacoes))
                                 setHospedePInput(String(u.permissao.hospede))
                                 setFinanceiroPInput(String(u.permissao.financeiro))
+                                setAcomodacoesSelected(u.acomodacoes)
                             }}>
                                 Nome: {u.nome}<br />
                                 Email: {u.email}
@@ -394,90 +478,148 @@ export default function Config() {
                             </span>
                             <input disabled type="email" className="border border-zinc-300 rounded-md px-2 py-1 outline-none" defaultValue={emailInput} />
                         </label>
-                        <span className="text-zinc-500 font-medium text-sm">Permissões</span>
-                        <section className="grid grid-cols-2 gap-4">
-                            <label className="flex flex-col text-zinc-600 font-medium text-sm">
-                                <p>Página Dashboard <strong>(Indicadores Operacionais)</strong></p>
-                                <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setDashboardPInput({ ...dashboardPInput, indOpe: e.target.value }) }} defaultValue={dashboardPInput.indOpe}>
-                                    <option value="0" className="text-black">Sem Visualização</option>
-                                    <option value="1" className="text-black">Apenas Visualização</option>
-                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                                </select>
-                            </label>
-                            <label className="flex flex-col text-zinc-600 font-medium text-sm">
-                                <p>Página Dashboard <strong>(Resultados das Acomodações)</strong></p>
-                                <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setDashboardPInput({ ...dashboardPInput, resultAc: e.target.value }) }} defaultValue={dashboardPInput.resultAc}>
-                                    <option value="0" className="text-black">Sem Visualização</option>
-                                    <option value="1" className="text-black">Apenas Visualização</option>
-                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                                </select>
-                            </label>
-                            <label className="flex flex-col text-zinc-600 font-medium text-sm">
-                                <p>Página Dashboard <strong>(Resultados do Gestor)</strong></p>
-                                <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setDashboardPInput({ ...dashboardPInput, resultGestor: e.target.value }) }} defaultValue={dashboardPInput.resultGestor}>
-                                    <option value="0" className="text-black">Sem Visualização</option>
-                                    <option value="1" className="text-black">Apenas Visualização</option>
-                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                                </select>
-                            </label>
-                            <label className="flex flex-col text-zinc-600 font-medium text-sm">
-                                Página Hóspedes
-                                <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setHospedePInput(e.target.value) }} defaultValue={hospedePInput}>
-                                    <option value="0" className="text-black">Sem Visualização</option>
-                                    <option value="1" className="text-black">Apenas Visualização</option>
-                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                                </select>
-                            </label>
-                            <label className="flex flex-col text-zinc-600 font-medium text-sm">
-                                Página Reserva
-                                <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setReservaPInput(e.target.value) }} defaultValue={reservaPInput}>
-                                    <option value="0" className="text-black">Sem Visualização</option>
-                                    <option value="1" className="text-black">Apenas Visualização</option>
-                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                                </select>
-                            </label>
-                            <label className="flex flex-col text-zinc-600 font-medium text-sm">
-                                Página Financeiro
-                                <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setFinanceiroPInput(e.target.value) }} defaultValue={financeiroPInput}>
-                                    <option value="0" className="text-black">Sem Visualização</option>
-                                    <option value="1" className="text-black">Apenas Visualização</option>
-                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                                </select>
-                            </label>
-                            <label className="flex flex-col text-zinc-600 font-medium text-sm">
-                                Página Acomodações
-                                <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setAcomodacaoPInput(e.target.value) }} defaultValue={acomodacaoPInput}>
-                                    <option value="0" className="text-black">Sem Visualização</option>
-                                    <option value="1" className="text-black">Apenas Visualização</option>
-                                    <option value="3" className="text-black">Visualização, Adição e Edição</option>
-                                    <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
-                                </select>
-                            </label>
-                            <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
-                                onClick={() => {
-                                    if (dataToken.id) {
-                                        editarUsuario(idEdit || 0,
-                                            {
-                                                nome: nomeInput,
-                                                permissao: {
-                                                    dashboard:
-                                                        { indiOpe: Number(dashboardPInput.indOpe), resultAc: Number(dashboardPInput.resultAc), resultGestor: Number(dashboardPInput.resultGestor) },
-                                                    reserva: Number(reservaPInput),
-                                                    acomodacoes: Number(acomodacaoPInput),
-                                                    hospede: Number(hospedePInput),
-                                                    financeiro: Number(financeiroPInput),
-                                                    config: 0
-                                                },
-                                            })
-                                    }
-                                }}>Editar usuário</button>
-                        </section>
+                        <label className="checkbox-wrapper">
+                            <input checked={proprietario} type="checkbox" defaultChecked={proprietario} onChange={(e) => { setProprietario(e.target.checked) }} />
+                            <div className="checkmark">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path
+                                        d="M20 6L9 17L4 12"
+                                        stroke-width="3"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    ></path>
+                                </svg>
+                            </div>
+                            <span className="label">É um proprietário?</span>
+                        </label>
+                        <span className="text-zinc-500 font-medium text-sm">{proprietario ? 'Quais acomodaçoes ele poderá visualizar?' : 'Permissões'}</span>
+                        {!proprietario ?
+                            <section className="grid grid-cols-2 gap-4">
+                                <label className="flex flex-col text-zinc-600 font-medium text-sm">
+                                    <p>Página Dashboard <strong>(Indicadores Operacionais)</strong></p>
+                                    <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setDashboardPInput({ ...dashboardPInput, indOpe: e.target.value }) }} defaultValue={dashboardPInput.indOpe}>
+                                        <option value="0" className="text-black">Sem Visualização</option>
+                                        <option value="1" className="text-black">Apenas Visualização</option>
+                                        <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                        <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                    </select>
+                                </label>
+                                <label className="flex flex-col text-zinc-600 font-medium text-sm">
+                                    <p>Página Dashboard <strong>(Resultados das Acomodações)</strong></p>
+                                    <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setDashboardPInput({ ...dashboardPInput, resultAc: e.target.value }) }} defaultValue={dashboardPInput.resultAc}>
+                                        <option value="0" className="text-black">Sem Visualização</option>
+                                        <option value="1" className="text-black">Apenas Visualização</option>
+                                        <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                        <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                    </select>
+                                </label>
+                                <label className="flex flex-col text-zinc-600 font-medium text-sm">
+                                    <p>Página Dashboard <strong>(Resultados do Gestor)</strong></p>
+                                    <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setDashboardPInput({ ...dashboardPInput, resultGestor: e.target.value }) }} defaultValue={dashboardPInput.resultGestor}>
+                                        <option value="0" className="text-black">Sem Visualização</option>
+                                        <option value="1" className="text-black">Apenas Visualização</option>
+                                        <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                        <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                    </select>
+                                </label>
+                                <label className="flex flex-col text-zinc-600 font-medium text-sm">
+                                    Página Hóspedes
+                                    <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setHospedePInput(e.target.value) }} defaultValue={hospedePInput}>
+                                        <option value="0" className="text-black">Sem Visualização</option>
+                                        <option value="1" className="text-black">Apenas Visualização</option>
+                                        <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                        <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                    </select>
+                                </label>
+                                <label className="flex flex-col text-zinc-600 font-medium text-sm">
+                                    Página Reserva
+                                    <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setReservaPInput(e.target.value) }} defaultValue={reservaPInput}>
+                                        <option value="0" className="text-black">Sem Visualização</option>
+                                        <option value="1" className="text-black">Apenas Visualização</option>
+                                        <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                        <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                    </select>
+                                </label>
+                                <label className="flex flex-col text-zinc-600 font-medium text-sm">
+                                    Página Financeiro
+                                    <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setFinanceiroPInput(e.target.value) }} defaultValue={financeiroPInput}>
+                                        <option value="0" className="text-black">Sem Visualização</option>
+                                        <option value="1" className="text-black">Apenas Visualização</option>
+                                        <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                        <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                    </select>
+                                </label>
+                                <label className="flex flex-col text-zinc-600 font-medium text-sm">
+                                    Página Acomodações
+                                    <select className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit" onChange={(e) => { setAcomodacaoPInput(e.target.value) }} defaultValue={acomodacaoPInput}>
+                                        <option value="0" className="text-black">Sem Visualização</option>
+                                        <option value="1" className="text-black">Apenas Visualização</option>
+                                        <option value="3" className="text-black">Visualização, Adição e Edição</option>
+                                        <option value="4" className="text-black">Visualização, Adição, Edição e Exclusão</option>
+                                    </select>
+                                </label>
+                                <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
+                                    onClick={() => {
+                                        if (dataToken.id) {
+                                            editarUsuario(idEdit || 0,
+                                                {
+                                                    nome: nomeInput,
+                                                    permissao: {
+                                                        dashboard:
+                                                            { indiOpe: Number(dashboardPInput.indOpe), resultAc: Number(dashboardPInput.resultAc), resultGestor: Number(dashboardPInput.resultGestor) },
+                                                        reserva: Number(reservaPInput),
+                                                        acomodacoes: Number(acomodacaoPInput),
+                                                        hospede: Number(hospedePInput),
+                                                        financeiro: Number(financeiroPInput),
+                                                        config: 0
+                                                    },
+                                                    acomodacoes: null
+                                                })
+                                        }
+                                    }}>Editar usuário</button>
+                            </section>
+                            :
+                            <section className="gap-4 flex flex-col">
+                                <ul className="grid grid-cols-2 gap-5">
+                                    {terceiro.map(a =>
+                                        <li>
+                                            <label htmlFor={`edit-${a.id}`} className="flex">
+                                                <input type="checkbox"
+                                                    onChange={(e) => {
+                                                        acomodacoesSelected && setAcomodacoesSelected(prev => {
+                                                            if (e.target.checked) {
+                                                                return prev ? [...prev, String(a.id)] : [String(a.id)]
+                                                            } else {
+                                                                return prev ? prev.filter(id => id !== String(a.id)) : null
+                                                            }
+                                                        })
+                                                    }} checked={acomodacoesSelected && acomodacoesSelected.includes(String(a.id)) ? true : false}
+                                                    name={a.nome} id={`edit-${a.id}`} className="prop-ac" title={a.nome} />
+                                                <p className="ml-2 text-nowrap text-ellipsis overflow-hidden">{a.nome}</p>
+                                            </label>
+                                        </li>)}
+                                </ul>
+                                <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
+                                    onClick={() => {
+                                        if (dataToken.id) {
+                                            editarUsuario(idEdit || 0,
+                                                {
+                                                    nome: nomeInput,
+                                                    permissao: {
+                                                        dashboard:
+                                                            { indiOpe: 1, resultAc: 1, resultGestor: 1 },
+                                                        reserva: 0,
+                                                        acomodacoes: 0,
+                                                        hospede: 0,
+                                                        financeiro: 0,
+                                                        config: 0
+                                                    },
+                                                    acomodacoes: acomodacoesSelected
+                                                })
+                                        }
+                                    }}>Editar usuário</button>
+                            </section>
+                        }
                     </form>
                 </div>}
         </div >
