@@ -18,6 +18,7 @@ interface propsRelatorio {
     ano: number,
     imagem?: string,
     cores: { primario: string, secundario: string, letra: string },
+    onReady?: () => void,
 }
 
 export default function RelatorioCompleto(props: propsRelatorio) {
@@ -216,115 +217,109 @@ export default function RelatorioCompleto(props: propsRelatorio) {
     }>({ faturamento_periodo: 0, rentabilidade_imovel: 0, faturamento_despesa: [] })
     const [listaReservas, setListaReservas] = useState<any[]>([])
 
+    async function getJson<T>(url: string, fallback: T): Promise<T> {
+        try {
+            const response = await fetch(url, { method: 'GET' })
+            if (!response.ok) {
+                console.log(`Erro ${response.status} em ${url}`)
+                return fallback
+            }
+            return await response.json()
+        } catch (err) {
+            console.log(err)
+            return fallback
+        }
+    }
+
 
     async function getData() {
+        const dataInicio = `${props.ano}-${('0' + props.mes).slice(-2)}-01`
+        const dataFim = `${props.ano}-${('0' + props.mes).slice(-2)}-${diasDoMes(props.mes, props.ano)}`
+        const resultadoPadrao = {
+            comissao_plataforma: "0",
+            despesas: "0",
+            diaria_media: "0",
+            faturamento_bruto: "0",
+            faturamento_liquido: "0",
+            lucro: "0",
+            taxa_limpeza: "0",
+            rentabilidade_imovel: 0,
+            comissao_reservas: 0,
+            comissao_taxa_limpeza: 0,
+            repasse: 0,
+            periodo: 'atual'
+        }
+
         {
-            await fetch(`${apiURL}/acomodacao/${props.saas}/${props.acomodacao}`, {
-                method: 'GET'
-            })
-                .then(data => data.json())
-                .then((data) => {
-                    setValorImovel(data[0].valor_imovel)
-                    setAcIMG(data[0].foto)
-                    setNome(data[0].nome)
-                })
-                .catch(err => console.log(err))
+            const bySaas = await getJson<any>(`${apiURL}/acomodacao/${props.saas}/${props.acomodacao}`, null)
+            let acomodacaoData = Array.isArray(bySaas) ? bySaas[0] : bySaas
+            if (!acomodacaoData) {
+                const byId = await getJson<any>(`${apiURL}/acomodacao/${props.acomodacao}`, null)
+                acomodacaoData = Array.isArray(byId) ? byId[0] : byId
+            }
+
+            if (acomodacaoData) {
+                setValorImovel(acomodacaoData.valor_imovel || '0')
+                setAcIMG(acomodacaoData.foto || '')
+                setNome(acomodacaoData.nome || '')
+            }
         }
         {
-            await fetch(`${apiURL}/movimentacao/${props.saas}/ocupacao-semana/${`${props.ano}-${('0' + props.mes).slice(-2)}-${'01'}`}/${`${props.ano}-${('0' + props.mes).slice(-2)}-${diasDoMes(props.mes, props.ano)}`}/${props.acomodacao}`, {
-                method: 'GET'
-            })
-                .then(data => data.json())
-                .then((data: any[]) => {
-                    setDadosReserva(dados => ({
-                        ...dados,
-                        ocupacao_do_imovel: data.map((d: any) => {
-                            const totalDias = Number(d.total_dias_no_intervalo);
-                            const disponiveis = totalDias - Number(d.total_indisponibilidades);
-                            const taxa = disponiveis > 0 ? (Number(d.total_movimentacoes) / disponiveis) * 100 : 0;
-                            return [d.dia_da_semana, taxa];
-                        }).map((d) => d[1])
-                            .reduce((a: any, b: any) => a + b, 0) / 7
-                    }))
-                })
-                .catch(err => console.log(err))
+            const data = await getJson<any[]>(`${apiURL}/movimentacao/${props.saas}/ocupacao-semana/${dataInicio}/${dataFim}/${props.acomodacao}`, [])
+            if (Array.isArray(data) && data.length > 0) {
+                setDadosReserva(dados => ({
+                    ...dados,
+                    ocupacao_do_imovel: data.map((d: any) => {
+                        const totalDias = Number(d.total_dias_no_intervalo);
+                        const disponiveis = totalDias - Number(d.total_indisponibilidades);
+                        const taxa = disponiveis > 0 ? (Number(d.total_movimentacoes) / disponiveis) * 100 : 0;
+                        return [d.dia_da_semana, taxa];
+                    }).map((d) => d[1])
+                        .reduce((a: any, b: any) => a + b, 0) / 7
+                }))
+            }
         }
         {
-            await fetch(`${apiURL}/reserva/${props.saas}/ind-ope/${`${props.ano}-${('0' + props.mes).slice(-2)}-${'01'}`}/${`${props.ano}-${('0' + props.mes).slice(-2)}-${diasDoMes(props.mes, props.ano)}`}/${props.acomodacao}`, {
-                method: 'GET'
-            })
-                .then(data => data.json())
-                .then((data) => {
-                    if (data.length > 0 && data[0].total_reserva)
-                        setDadosReserva(dados => ({
-                            ...dados,
-                            novas_reservas: Number(data[0].total_reserva)
-                        }))
-                })
-                .catch(err => console.log(err))
+            const data = await getJson<any[]>(`${apiURL}/reserva/${props.saas}/ind-ope/${dataInicio}/${dataFim}/${props.acomodacao}`, [])
+            if (Array.isArray(data) && data.length > 0 && data[0].total_reserva) {
+                setDadosReserva(dados => ({
+                    ...dados,
+                    novas_reservas: Number(data[0].total_reserva)
+                }))
+            }
         }
         {
-            await fetch(`${apiURL}/movimentacao/${props.saas}/result-ac/${`${props.ano}-${('0' + props.mes).slice(-2)}-${'01'}`}/${`${props.ano}-${('0' + props.mes).slice(-2)}-${diasDoMes(props.mes, props.ano)}`}/${props.acomodacao}`, {
-                method: 'GET'
-            })
-                .then(data => data.json())
-                .then((data) => {
-                    if (data.statusCode == 500 || data.length == 0) {
-                        // setRentabilidade([{
-                        //     comissao_plataforma: "0",
-                        //     despesas: "0",
-                        //     diaria_media: "0",
-                        //     faturamento_bruto: "0",
-                        //     faturamento_liquido: "0",
-                        //     lucro: "0",
-                        //     rentabilidade_imovel: "0",
-                        // }])
-                    }
-                    else {
-                        setDadosReserva(dados => ({
-                            ...dados, faturamento: data[0].faturamento_liquido,
-                        }))
-                        setHistoricoFaturamento(dados => ({
-                            ...dados, rentabilidade_imovel: data[0].rentabilidade_imovel,
-                        }))
-                    }
-                })
-                .catch(err => console.log(err))
+            const data = await getJson<any>(`${apiURL}/movimentacao/${props.saas}/result-ac/${dataInicio}/${dataFim}/${props.acomodacao}`, [])
+            if (Array.isArray(data) && data.length > 0) {
+                setDadosReserva(dados => ({
+                    ...dados, faturamento: data[0].faturamento_liquido,
+                }))
+                setHistoricoFaturamento(dados => ({
+                    ...dados, rentabilidade_imovel: data[0].rentabilidade_imovel,
+                }))
+            }
         }
         {
-            await fetch(`${apiURL}/movimentacao/${props.saas}/fat-bar/${`${props.ano}-${('0' + props.mes).slice(-2)}-${diasDoMes(props.mes, props.ano)}`}/${props.acomodacao}`, {
-                method: 'GET'
-            })
-                .then(data => data.json())
-                .then((data: any[]) => {
-                    setHistoricoFaturamento(dados => ({
-                        ...dados,
-                        faturamento_periodo: data.slice(-12).reduce((total, item) => {
-                            return total + parseFloat((item.faturamento_liquido) || 0);
-                        }, 0),
-                        faturamento_despesa: data
-                    }))
-                })
-                .catch(err => console.log(err))
+            const data = await getJson<any[]>(`${apiURL}/movimentacao/${props.saas}/fat-bar/${dataFim}/${props.acomodacao}`, [])
+            if (Array.isArray(data)) {
+                setHistoricoFaturamento(dados => ({
+                    ...dados,
+                    faturamento_periodo: data.slice(-12).reduce((total, item) => {
+                        return total + parseFloat((item.faturamento_liquido) || 0);
+                    }, 0),
+                    faturamento_despesa: data
+                }))
+            }
         }
         {
-            await fetch(`${apiURL}/movimentacao/${props.saas}/relatorio/${props.acomodacao}/${`${props.ano}-${('0' + props.mes).slice(-2)}-${'01'}`}/${`${props.ano}-${('0' + props.mes).slice(-2)}-${diasDoMes(props.mes, props.ano)}`}`, {
-                method: 'GET'
-            })
-                .then(data => data.json())
-                .then((data: any[]) => {
-                    setDespesas(data)
-                })
-                .catch(err => console.log(err))
+            const data = await getJson<any[]>(`${apiURL}/movimentacao/${props.saas}/relatorio/${props.acomodacao}/${dataInicio}/${dataFim}`, [])
+            setDespesas(Array.isArray(data) ? data : [])
         }
         {
-            await fetch(`${apiURL}/reserva/ac/${props.acomodacao}/${props.mes}/${props.ano}`, {
-                method: 'GET'
-            })
-                .then(data => data.json())
-                .then((data: any) => {
-                    setListaReservas(data)
-                    setReservas(data.map((item: any, index: any) => ({
+            const data = await getJson<any[]>(`${apiURL}/reserva/ac/${props.acomodacao}/${props.mes}/${props.ano}`, [])
+            if (Array.isArray(data)) {
+                setListaReservas(data)
+                setReservas(data.map((item: any, index: any) => ({
                         title: item.hospede ? item.hospede.nome : 'Indisponibilidade',
                         start: item.check_in.slice(0, 19).replace('T', ' '),
                         end: item.check_out.slice(0, 19).replace('T', ' '),
@@ -340,52 +335,34 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                         liquido: parseFloat(item.valor_liq),
                         comissao: parseFloat(item.comissao_ota)
                     })))
-                })
-                .catch(err => console.log(err))
+            } else {
+                setListaReservas([])
+                setReservas([])
+            }
         }
         {
-            await fetch(`${apiURL}/movimentacao/${props.saas}/comparativo-result-ac/${`${props.ano}-${('0' + props.mes).slice(-2)}-${'01'}`}/${`${props.ano}-${('0' + props.mes).slice(-2)}-${diasDoMes(props.mes, props.ano)}`}/${props.acomodacao}`, {
-                method: 'GET'
-            })
-                .then(data => data.json())
-                .then((data) => {
-                    if (data.statusCode == 500 || data.length == 0)
-                        setResultadoAcomodacoes([{
-                            comissao_plataforma: "0",
-                            despesas: "0",
-                            diaria_media: "0",
-                            faturamento_bruto: "0",
-                            faturamento_liquido: "0",
-                            lucro: "0",
-                            taxa_limpeza: "0",
-                            rentabilidade_imovel: 0,
-                            comissao_reservas: 0,
-                            comissao_taxa_limpeza: 0,
-                            repasse: 0,
-                            periodo: 'atual'
-                        }])
-                    else {
-                        setResultadoAcomodacoes(
-                            data
-                                .filter((d: any) => d.periodo === 'atual')
-                                .map((d: any) => ({
-                                    comissao_plataforma: d.comissao_plataforma ?? '0',
-                                    despesas: d.despesas ?? '0',
-                                    diaria_media: d.diaria_media ?? '0',
-                                    faturamento_bruto: d.faturamento_bruto ?? '0',
-                                    faturamento_liquido: d.faturamento_liquido ?? '0',
-                                    lucro: d.lucro ?? '0',
-                                    taxa_limpeza: d.taxa_limpeza ?? '0',
-                                    rentabilidade_imovel: d.rentabilidade_imovel ?? 0,
-                                    comissao_reservas: d.comissao_reservas ?? 0,
-                                    comissao_taxa_limpeza: d.comissao_taxa_limpeza ?? 0,
-                                    repasse: d.repasse ?? 0,
-                                    periodo: d.periodo ?? 'atual',
-                                }))
-                        )
-                    }
-                })
-                .catch(err => console.log(err))
+            const data = await getJson<any>(`${apiURL}/movimentacao/${props.saas}/comparativo-result-ac/${dataInicio}/${dataFim}/${props.acomodacao}`, [])
+            if (!Array.isArray(data) || data.length == 0) {
+                setResultadoAcomodacoes([resultadoPadrao])
+            } else {
+                const atual = data
+                    .filter((d: any) => d.periodo === 'atual')
+                    .map((d: any) => ({
+                        comissao_plataforma: d.comissao_plataforma ?? '0',
+                        despesas: d.despesas ?? '0',
+                        diaria_media: d.diaria_media ?? '0',
+                        faturamento_bruto: d.faturamento_bruto ?? '0',
+                        faturamento_liquido: d.faturamento_liquido ?? '0',
+                        lucro: d.lucro ?? '0',
+                        taxa_limpeza: d.taxa_limpeza ?? '0',
+                        rentabilidade_imovel: d.rentabilidade_imovel ?? 0,
+                        comissao_reservas: d.comissao_reservas ?? 0,
+                        comissao_taxa_limpeza: d.comissao_taxa_limpeza ?? 0,
+                        repasse: d.repasse ?? 0,
+                        periodo: d.periodo ?? 'atual',
+                    }))
+                setResultadoAcomodacoes(atual.length > 0 ? atual : [resultadoPadrao])
+            }
         }
         setLoaded(true)
     }
@@ -393,10 +370,10 @@ export default function RelatorioCompleto(props: propsRelatorio) {
     useEffect(() => {
 
         setLoaded(false)
-        if (props) {
-            getData()
-        }
-    }, [props])
+        getData().finally(() => {
+            props.onReady?.()
+        })
+    }, [props.saas, props.acomodacao, props.mes, props.ano])
 
     return (
         <>
