@@ -98,6 +98,7 @@ export default function Relatorio() {
               onClose={fecharModalAlert}
               onConfirm={confirmarModal}
               confirmText="Entendido"
+              cancelText=''
               colorButton="green"
             />
           )}
