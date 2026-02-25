@@ -428,6 +428,7 @@ export default function Config() {
                         {users.map(u =>
                             <li className="border-y border-zinc-400 px-2 py-1 cursor-pointer flex justify-between" onClick={() => {
                                 if (u?.acomodacoes && u.acomodacoes.length > 0) { setProprietario(true) }
+                                else { setProprietario(false) }
                                 setEdicao(true)
                                 setIdEdit(Number(u.id))
                                 setNomeInput(u.nome)

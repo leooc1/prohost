@@ -50,10 +50,10 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children,
         return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
 
-    console.log(arrayMovimentacoes.length)
+    /* console.log(arrayMovimentacoes.length)
     console.log(page)
     console.log(arrayMovimentacoes[page])
-    console.log(arrayMovimentacoes.length > page && arrayMovimentacoes[page]?.length > 0)
+    console.log(arrayMovimentacoes.length > page && arrayMovimentacoes[page]?.length > 0) */
 
     useEffect(() => {
         const grupos = [];

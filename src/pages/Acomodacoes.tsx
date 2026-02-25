@@ -573,7 +573,7 @@ export default function Acomodacoes() {
             )}
             {desativados.length ? (
                 <section className="py-12">
-                    <p className="text-2xl font-medium">Desativadas</p>
+                    <p className="text-2xl font-medium">Suspensas</p>
                     <DndContext
                         sensors={sensors}
                         collisionDetection={closestCenter}

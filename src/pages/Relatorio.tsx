@@ -21,6 +21,10 @@ export default function Relatorio() {
     const [chooseAno, setChooseAno] = useState<number>(new Date().getFullYear());
     const [isGenerating, setIsGenerating] = useState(false);
 
+    const [corPrimaria, setCorPrimaria] = useState("#003347");
+    const [corSecundaria, setCorSecundaria] = useState("#08fab8");
+    const [corLetra, setCorLetra] = useState("#ffffff");
+
     const anos = Array.from(
         { length: new Date().getFullYear() - 2010 + 1 },
         (_, i) => new Date().getFullYear() - i,
@@ -409,6 +413,56 @@ export default function Relatorio() {
                                                 ))}
                                             </select>
                                         </label>
+                                        <section className="max-w-md mx-auto p-6 rounded-2xl">
+
+                                            <h2 className="text-base font-semibold text-gray-800 mb-4">
+                                                Personalização de Cores
+                                            </h2>
+
+                                            <div className="flex items-center justify-between">
+                                                <label htmlFor="cor-primaria" className="text-sm font-medium text-gray-700">
+                                                    Cor Primária
+                                                </label>
+                                                <input
+                                                    value={corPrimaria}
+                                                    onChange={(e) => setCorPrimaria(e.target.value)}
+                                                    type="color"
+                                                    id="cor-primaria"
+                                                    name="cor-primaria"
+                                                    className="w-14 h-10 rounded-lg border border-gray-300 cursor-pointer scale-80 hover:scale-90 transition-transform duration-200"
+                                                />
+                                            </div>
+
+                                            <div className="flex items-center justify-between">
+                                                <label htmlFor="cor-secundaria" className="text-sm font-medium text-gray-700">
+                                                    Cor Secundária
+                                                </label>
+                                                <input
+                                                    value={corSecundaria}
+                                                    onChange={(e) => setCorSecundaria(e.target.value)}
+                                                    type="color"
+                                                    id="cor-secundaria"
+                                                    name="cor-secundaria"
+                                                    className="w-14 h-10 rounded-lg border border-gray-300 cursor-pointer scale-80 hover:scale-90 transition-transform duration-200"
+                                                />
+                                            </div>
+
+                                            <div className="flex items-center justify-between">
+                                                <label htmlFor="cor-letra" className="text-sm font-medium text-gray-700">
+                                                    Cor da Letra
+                                                </label>
+                                                <input
+                                                    value={corLetra}
+                                                    onChange={(e) => setCorLetra(e.target.value)}
+                                                    type="color"
+                                                    id="cor-letra"
+                                                    name="cor-letra"
+                                                    className="w-14 h-10 rounded-lg border border-gray-300 cursor-pointer scale-80 hover:scale-90 transition-transform duration-200"
+                                                />
+                                            </div>
+
+
+                                        </section>
                                         <button
                                             className="w-full px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#003447] hover:bg-[#325B6A] hover:shadow-md shadow-black h-12"
                                             onClick={() => {
@@ -437,9 +491,9 @@ export default function Relatorio() {
                             imagem={foto || ""}
                             onReady={() => setIsGenerating(false)}
                             cores={{
-                                letra: "#ffffff",
-                                primario: "#003347",
-                                secundario: "#08fab8",
+                                letra: corLetra,
+                                primario: corPrimaria,
+                                secundario: corSecundaria,
                             }}
                         /* cores={{
                                       letra: '#9fe6ff',
