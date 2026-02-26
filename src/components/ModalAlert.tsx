@@ -30,12 +30,14 @@ export function ModalAlert({
                 <p className="mt-2 text-zinc-600">{message}</p>
 
                 <div className="mt-6 flex justify-end gap-2">
-                    <button
+                    {cancelText && (
+                        <button
                         className="px-4 py-2 bg rounded-md border border-zinc-300"
                         onClick={onClose}
                     >
                         {cancelText}
                     </button>
+                    )}
                     <button
                         className={`px-4 py-2 rounded-md ${colorMap[colorButton as keyof typeof colorMap] || "bg-red-600 hover:bg-red-700"} text-white`}
                         onClick={onConfirm}
