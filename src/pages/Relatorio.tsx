@@ -21,6 +21,7 @@ export default function Relatorio() {
   const [chooseAno, setChooseAno] = useState<number>(new Date().getFullYear());
   const [isGenerating, setIsGenerating] = useState(false);
 
+<<<<<<< HEAD
   const anos = Array.from(
     { length: new Date().getFullYear() - 2010 + 1 },
     (_, i) => new Date().getFullYear() - i,
@@ -60,6 +61,15 @@ export default function Relatorio() {
       allAcomodacoes.filter((acomodacao: any) =>
         acomodacao.nome.toLowerCase().includes(normalized),
       ),
+=======
+    const [corPrimaria, setCorPrimaria] = useState("#003347");
+    const [corSecundaria, setCorSecundaria] = useState("#08fab8");
+    const [corLetra, setCorLetra] = useState("#ffffff");
+
+    const anos = Array.from(
+        { length: new Date().getFullYear() - 2010 + 1 },
+        (_, i) => new Date().getFullYear() - i,
+>>>>>>> 604dd11b360ab5f007778bd55bc05a49c2944b0b
     );
   }
 
@@ -248,6 +258,7 @@ export default function Relatorio() {
                   )}
                 </div>
 
+<<<<<<< HEAD
                 <aside className="md:col-span-4 xl:col-span-3 md:row-start-2 rounded-xl border border-zinc-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 shadow-sm lg:sticky lg:top-4">
                   <div className="px-4 py-3 border-b border-zinc-200">
                     <h2 className="text-xl font-semibold text-[#1B2B44]">
@@ -327,6 +338,299 @@ export default function Relatorio() {
                                 localStorage.removeItem("previewFoto");
                                 setFoto(null);
                               }
+=======
+                                                            <p
+                                                                className="mt-2 text-base font-semibold text-[#0A3D66] truncate"
+                                                                title={e.nome}
+                                                            >
+                                                                {e.nome}
+                                                            </p>
+
+                                                            <button
+                                                                type="button"
+                                                                className={`mt-3 w-full rounded-md py-2 text-sm font-medium ${isSelected
+                                                                    ? "bg-[#0A4A73] text-white"
+                                                                    : "border border-zinc-300 bg-transparent text-[#1F2937]"
+                                                                    }`}
+                                                                onClick={(ev) => {
+                                                                    ev.stopPropagation();
+                                                                    setChooseAc(e.id);
+                                                                }}
+                                                            >
+                                                                {isSelected ? "Selecionado" : "Selecionar"}
+                                                            </button>
+                                                        </li>
+                                                    );
+                                                })}
+                                            </ul>
+                                        </section>
+                                    ) : (
+                                        <section className="w-full flex justify-center">
+                                            <div className="w-full rounded-lg border border-zinc-200 bg-white p-5 text-center">
+                                                <p className="text-sm text-zinc-600">
+                                                    {searchAcomodacao.trim().length > 0 ? (
+                                                        <>
+                                                            Nenhuma acomodação encontrada para{" "}
+                                                            <span className="font-medium">
+                                                                "{searchAcomodacao}"
+                                                            </span>
+                                                            .
+                                                        </>
+                                                    ) : (
+                                                        <>Nenhuma acomodação disponível no momento.</>
+                                                    )}
+                                                </p>
+                                            </div>
+                                        </section>
+                                    )}
+                                </div>
+
+                                <aside className="md:col-span-4 xl:col-span-3 md:row-start-2 rounded-xl border border-zinc-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 shadow-sm lg:sticky lg:top-4">
+                                    <div className="px-4 py-3 border-b border-zinc-200">
+                                        <h2 className="text-xl font-semibold text-[#1B2B44]">
+                                            Painel de filtros
+                                        </h2>
+                                    </div>
+                                    <div className="p-4 flex flex-col gap-4">
+                                        <div className="flex flex-col gap-2">
+                                            <span className="text-zinc-700 font-medium text-sm">
+                                                Logo da empresa (opcional)
+                                            </span>
+                                            <div className="flex gap-2 items-end">
+                                                <label
+                                                    htmlFor="imagem"
+                                                    className={`flex-1 flex flex-col gap-1`}
+                                                >
+                                                    <div
+                                                        id="input-file"
+                                                        className={`${foto ? "hidden" : ""} w-full h-24 cursor-pointer flex border border-zinc-300 rounded-md px-1 py-1 outline-none items-center`}
+                                                    >
+                                                        <svg
+                                                            className="w-24"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 24 24"
+                                                            fill="#777777"
+                                                        >
+                                                            <path d="M2.9918 21C2.44405 21 2 20.5551 2 20.0066V3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918ZM20 15V5H4V19L14 9L20 15ZM20 17.8284L14 11.8284L6.82843 19H20V17.8284ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path>
+                                                        </svg>
+                                                        <p className="text-zinc-400 p-1 text-center text-sm">
+                                                            Clique ou arraste uma imagem aqui
+                                                        </p>
+                                                    </div>
+                                                    <img
+                                                        id="preview"
+                                                        src={foto || ""}
+                                                        alt="Pré-Visualização da Imagem"
+                                                        className={`${foto ? "" : "hidden"} w-full h-24 object-contain cursor-pointer border border-zinc-300 rounded-md px-1 py-1 outline-none`}
+                                                    />
+                                                    <input
+                                                        type="file"
+                                                        name="imagem"
+                                                        id="imagem"
+                                                        accept=".jpg, .jpeg, .jfif, .pjpeg, .pjp, .png, .gif, .bmp, .dib, .tif, .tiff, .webp, .heic, .heif, .svg, .ico, .cur, .apng"
+                                                        className={"hidden"}
+                                                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                                            const input = document.getElementById(
+                                                                "input-file",
+                                                            ) as HTMLInputElement | null;
+                                                            const preview = document.getElementById(
+                                                                "preview",
+                                                            ) as HTMLImageElement | null;
+                                                            const file = e.target.files?.[0];
+                                                            if (file) {
+                                                                console.log(file);
+                                                                if (preview) {
+                                                                    preview.classList.remove("hidden");
+                                                                    input?.classList.add("hidden");
+                                                                    const reader = new FileReader();
+                                                                    reader.onload = (
+                                                                        event: ProgressEvent<FileReader>,
+                                                                    ) => {
+                                                                        if (event.target) {
+                                                                            preview.src = event.target
+                                                                                .result as string;
+                                                                            localStorage.setItem(
+                                                                                "previewFoto",
+                                                                                preview.src,
+                                                                            );
+                                                                            setFoto(preview.src);
+                                                                        }
+                                                                    };
+                                                                    reader.readAsDataURL(file);
+                                                                }
+                                                            } else {
+                                                                preview?.classList.add("hidden");
+                                                                input?.classList.remove("hidden");
+                                                                localStorage.removeItem("previewFoto");
+                                                                setFoto(null);
+                                                            }
+                                                        }}
+                                                    />
+                                                </label>
+                                                <div className="flex flex-col justify-end gap-1 pb-1">
+                                                    <button
+                                                        onClick={() => {
+                                                            const input = document.getElementById(
+                                                                "imagem",
+                                                            ) as HTMLInputElement | null;
+                                                            input?.click();
+                                                        }}
+                                                    >
+                                                        <svg
+                                                            className="w-5 h-fit fill-blue-600"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 24 24"
+                                                            fill="currentColor"
+                                                        >
+                                                            <path d="M15.7279 9.57627L14.3137 8.16206L5 17.4758V18.89H6.41421L15.7279 9.57627ZM17.1421 8.16206L18.5563 6.74785L17.1421 5.33363L15.7279 6.74785L17.1421 8.16206ZM7.24264 20.89H3V16.6473L16.435 3.21231C16.8256 2.82179 17.4587 2.82179 17.8492 3.21231L20.6777 6.04074C21.0682 6.43126 21.0682 7.06443 20.6777 7.45495L7.24264 20.89Z"></path>
+                                                        </svg>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            localStorage.removeItem("previewFoto");
+                                                            setFoto(null);
+                                                        }}
+                                                    >
+                                                        <svg
+                                                            className="w-5 h-fit fill-red-600"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 24 24"
+                                                            fill="currentColor"
+                                                        >
+                                                            <path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 4V6H15V4H9Z"></path>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <label
+                                            htmlFor="mes"
+                                            className={`flex flex-col text-zinc-600 font-medium text-sm`}
+                                        >
+                                            Mês
+                                            <select
+                                                name="mes"
+                                                id="mes"
+                                                className={`border border-zinc-300 rounded-md px-2 py-1 h-12 outline-none text-base`}
+                                                value={chooseMes}
+                                                onChange={(e) => setChooseMes(Number(e.target.value))}
+                                            >
+                                                <option value="1">Janeiro</option>
+                                                <option value="2">Fevereiro</option>
+                                                <option value="3">Março</option>
+                                                <option value="4">Abril</option>
+                                                <option value="5">Maio</option>
+                                                <option value="6">Junho</option>
+                                                <option value="7">Julho</option>
+                                                <option value="8">Agosto</option>
+                                                <option value="9">Setembro</option>
+                                                <option value="10">Outubro</option>
+                                                <option value="11">Novembro</option>
+                                                <option value="12">Dezembro</option>
+                                            </select>
+                                        </label>
+                                        <label
+                                            htmlFor="ano"
+                                            className={`flex flex-col text-zinc-600 font-medium text-sm`}
+                                        >
+                                            Ano
+                                            <select
+                                                name="ano"
+                                                id="ano"
+                                                className={`border border-zinc-300 rounded-md px-2 py-1 h-12 outline-none text-base`}
+                                                value={chooseAno}
+                                                onChange={(e) => setChooseAno(Number(e.target.value))}
+                                            >
+                                                {anos.map((ano) => (
+                                                    <option key={ano} value={ano}>
+                                                        {ano}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </label>
+                                        <section className="max-w-md mx-auto p-6 rounded-2xl">
+
+                                            <h2 className="text-base font-semibold text-gray-800 mb-4">
+                                                Personalização de Cores
+                                            </h2>
+
+                                            <div className="flex items-center justify-between">
+                                                <label htmlFor="cor-primaria" className="text-sm font-medium text-gray-700">
+                                                    Cor Primária
+                                                </label>
+                                                <input
+                                                    value={corPrimaria}
+                                                    onChange={(e) => setCorPrimaria(e.target.value)}
+                                                    type="color"
+                                                    id="cor-primaria"
+                                                    name="cor-primaria"
+                                                    className="w-14 h-10 rounded-lg border border-gray-300 cursor-pointer scale-80 hover:scale-90 transition-transform duration-200"
+                                                />
+                                            </div>
+
+                                            <div className="flex items-center justify-between">
+                                                <label htmlFor="cor-secundaria" className="text-sm font-medium text-gray-700">
+                                                    Cor Secundária
+                                                </label>
+                                                <input
+                                                    value={corSecundaria}
+                                                    onChange={(e) => setCorSecundaria(e.target.value)}
+                                                    type="color"
+                                                    id="cor-secundaria"
+                                                    name="cor-secundaria"
+                                                    className="w-14 h-10 rounded-lg border border-gray-300 cursor-pointer scale-80 hover:scale-90 transition-transform duration-200"
+                                                />
+                                            </div>
+
+                                            <div className="flex items-center justify-between">
+                                                <label htmlFor="cor-letra" className="text-sm font-medium text-gray-700">
+                                                    Cor da Letra
+                                                </label>
+                                                <input
+                                                    value={corLetra}
+                                                    onChange={(e) => setCorLetra(e.target.value)}
+                                                    type="color"
+                                                    id="cor-letra"
+                                                    name="cor-letra"
+                                                    className="w-14 h-10 rounded-lg border border-gray-300 cursor-pointer scale-80 hover:scale-90 transition-transform duration-200"
+                                                />
+                                            </div>
+
+
+                                        </section>
+                                        <button
+                                            className="w-full px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#003447] hover:bg-[#325B6A] hover:shadow-md shadow-black h-12"
+                                            onClick={() => {
+                                                if (!chooseAc) {
+                                                    abrirModalAlert("choose-acomodacao");
+                                                    return;
+                                                }
+
+                                                setIsGenerating(true);
+                                                setRelatorio(true);
+                                            }}
+                                        >
+                                            Gerar relatório
+                                        </button>
+                                    </div>
+                                </aside>
+                            </section>
+                        </section>
+                    )}
+                    {chooseAc && relatorio && (
+                        <RelatorioCompleto
+                            saas={Number(dataToken.id)}
+                            acomodacao={chooseAc}
+                            mes={chooseMes}
+                            ano={chooseAno}
+                            imagem={foto || ""}
+                            onReady={() => setIsGenerating(false)}
+                            cores={{
+                                letra: corLetra,
+                                primario: corPrimaria,
+                                secundario: corSecundaria,
+>>>>>>> 604dd11b360ab5f007778bd55bc05a49c2944b0b
                             }}
                           />
                         </label>
