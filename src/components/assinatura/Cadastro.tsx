@@ -68,6 +68,7 @@ export default function Cadastro() {
             })
             .catch(err => console.log(err))
     }
+
     async function criarConta(saas: any, user: any, origem: string) {
         let idSaas = null
         let assinatura: any = null
@@ -76,7 +77,7 @@ export default function Cadastro() {
 
         {
             const cycle = new URL(location.href).searchParams.get('cycle')
-            await fetch(`${apiURL}/plano/${planoDTO.qtd_acomodacao}/${cycle == 'MONTHLY' ? planoDTO.valor_mes : planoDTO.valor_ano}`, {
+            await fetch(`${apiURL}/plano/${planoDTO.qtd_acomodacao}/${cycle == 'MONTHLY' ? planoDTO.valor_mes : planoDTO.valor_ano}/${cycle}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -99,7 +100,8 @@ export default function Cadastro() {
                                 "qtd_acomodacao": Number(planoDTO.qtd_acomodacao),
                                 "permicao": 1,
                                 "valor_mes": Number((Number(planoDTO.valor_ano) / 10).toFixed(2)),
-                                "valor_ano": Number(planoDTO.valor_ano)
+                                "valor_ano": Number(planoDTO.valor_ano),
+                                "cycle": planoDTO.cycle
                             })
                         })
                             .then(data => data.json())
@@ -226,12 +228,7 @@ export default function Cadastro() {
                         const senha = document.getElementById('senha') as HTMLInputElement
                         // const cycle = new URL(location.href).searchParams.get('cycle') || ''
                         const trial = new Date();
-                        {/*
-                            if (cycle == 'MONTHLY')
-                                trial.setMonth(trial.getMonth() + 1);
-                            else
-                                trial.setFullYear(trial.getFullYear() + 1);
-                        */}
+                        
                         trial.setDate(trial.getDate() + 15)
                         setButton(false)
                         criarConta({

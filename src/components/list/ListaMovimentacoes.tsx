@@ -233,7 +233,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children,
                         </div>
                         <table className="w-full mt-3 border border-zinc-200 rounded-lg">
                             <thead className="w-full">
-                                <tr className="text-sm bg-slate-50 h-12">
+                                <tr className="text-sm bg-green-100 h-12">
                                     <th className="text-center">Data</th>
                                     <th className="text-center">Categoria</th>
                                     <th className="text-center">Descrição</th>
@@ -295,7 +295,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children,
                                         : null
                                 }
                             </tbody>
-                            <tfoot className="text-xs bg-slate-50 h-12">
+                            <tfoot className="text-xs bg-green-100 h-12">
                                 <tr >
                                     <td className="text-center">
                                         Mostrando {page != 0 ? (page * numPaginacao) + 1 : '1'}-{(arrayMovimentacoes.length > page && (arrayMovimentacoes[page].length) >= numPaginacao) ? (page * numPaginacao) + (arrayMovimentacoes.length > page ? arrayMovimentacoes[page].length : 0) :
