@@ -154,7 +154,7 @@ export default function Dashboard() {
   async function acomodacoes() {
     if (!dataToken?.id) return;
     try {
-      const data: Acomodacao[] = await fetchJson(`${apiURL}/acomodacao/${dataToken.id}`);
+      const data: Acomodacao[] = await fetchJson(`${apiURL}/acomodacao/names/${dataToken.id}`);
       setAcomodacao(data.filter(e => !e.desativado).length > 0 ? data.filter(e => !e.desativado) : [{
         id: 0,
         tipo: '',

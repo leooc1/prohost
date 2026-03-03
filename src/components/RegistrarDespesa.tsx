@@ -68,7 +68,7 @@ export default function RegistrarDespesa({ close, saas, despesa, idNotify, onSuc
 
     async function getAcomodacoes() {
         if (!dataToken || !dataToken.id) return
-        await fetch(`${apiURL}/acomodacao/` + dataToken.id, {
+        await fetch(`${apiURL}/acomodacao/names/` + dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())

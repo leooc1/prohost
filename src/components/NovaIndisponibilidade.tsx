@@ -47,7 +47,7 @@ export default function NovaIndisponibilidade({ close }: { close: () => void }) 
 
     async function getAcomodacoes() {
         if (!dataToken || !dataToken.id) return
-        await fetch(`${apiURL}/acomodacao/` + dataToken.id, {
+        await fetch(`${apiURL}/acomodacao/names/` + dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())

@@ -192,11 +192,12 @@ export default function NovaReserva({ close }: { close: () => void }) {
 
     async function getAcomodacoes() {
         if (!dataToken || !dataToken.id) return
-        await fetch(`${apiURL}/acomodacao/${dataToken.id}`, {
+        await fetch(`${apiURL}/acomodacao/names/${dataToken.id}`, {
             method: 'GET'
         })
             .then(data => data.json())
             .then((data: Acomodacao[]) => {
+                console.log(data)
                 setAcomodacao(data.filter((e => !e.desativado)))
             })
             .catch(err => console.log(err))

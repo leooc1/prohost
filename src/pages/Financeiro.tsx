@@ -226,7 +226,7 @@ export default function Financeiro() {
 
     async function acomodacoes() {
         if (dataToken.id)
-            await fetch(`${apiURL}/acomodacao/${dataToken.id}`, {
+            await fetch(`${apiURL}/acomodacao/names/${dataToken.id}`, {
                 method: 'GET'
             })
                 .then(data => data.json())

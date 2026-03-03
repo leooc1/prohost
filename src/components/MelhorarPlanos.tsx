@@ -18,6 +18,14 @@ const plans: Plan[] = [
     { accommodations: 30, monthlyPrice: 179.9 },
 ];
 
+const cupons = [
+    {
+        name: 'CUPOMPH10',
+        discount: 0.1,
+        until: new Date('2026-03-10')
+    }
+]
+
 const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {
         style: "currency",
@@ -491,10 +499,6 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                             </p>
                         </div>
 
-                        <div className="text-center text-sm text-gray-500">
-                            EXPERIMENTE 15 DIAS GRÁTIS*
-                        </div>
-
                         <button
                             className="w-full py-2 px-4 bg-[#76EAB7] hover:bg-[#79EECE] text-[#0E3447] rounded-lg font-semibold"
                             onClick={() => {
@@ -546,10 +550,6 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                             </p>
                         </div>
 
-                        <div className="text-center text-sm opacity-75">
-                            EXPERIMENTE 15 DIAS GRÁTIS*
-                        </div>
-
                         <button
                             className="w-full py-2 px-4 bg-[#76EAB7] hover:bg-[#79EECE] text-[#0E3447] rounded-lg font-semibold"
                             onClick={() => {
@@ -595,8 +595,8 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                                 {isAnnual && !upgrade && <section className="flex justify-between gap-2">
                                     <input placeholder="CUPOM" type="text" name="cupom" id="cupom" className="uppercase border rounded-xl pl-1" />
                                     <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary" onClick={() => {
-                                        // let cupom = 0
-                                        if ((document.getElementById('cupom') as HTMLInputElement).value.toUpperCase() === 'MENTORIA3R') {
+                                        const cupomInput = document.getElementById('cupom') as HTMLInputElement;
+                                        if (cupons.some(c => c.name === cupomInput.value.toUpperCase() && c.until >= new Date())) {
                                             document.getElementById('cupom')?.classList.remove('border-red-500')
                                             document.getElementById('cupom')?.classList.add('border-green-500')
                                             setPrice({

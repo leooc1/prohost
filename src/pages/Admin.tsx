@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import AddTrialModal from "../components/admin/AddTrialModal";
 import Notify from "../components/notify/Notify";
+import { ModalAlert } from "../components/ModalAlert";
 // import { SideBarContext } from "../contexts/SideBarMenuContext";
 
 interface AdminUser {
@@ -47,6 +48,10 @@ export default function Admin() {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 100;
 
+    // Confirmation Modal State
+    const [confirmToSendEmail, setConfirmToSendEmail] = useState<string>("");
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+
     useEffect(() => {
         document.title = 'Admin | Prohost'
         const token = localStorage.getItem('ph_token_acc');
@@ -57,6 +62,22 @@ export default function Admin() {
         fetchStats(token);
         fetchUsers(token);
     }, [])
+
+    function openModalConfirmation(email: string) {
+        setConfirmToSendEmail(email);
+        setShowConfirmModal(true);
+    }
+
+    function closeModalConfirmation() {
+        setConfirmToSendEmail("");
+        setShowConfirmModal(false);
+    }
+
+    function confirmSendRecovery() {
+        if (!confirmToSendEmail) return;
+        sendRecovery(confirmToSendEmail);
+        closeModalConfirmation();
+    }
 
     async function fetchStats(token: string) {
         try {
@@ -198,7 +219,6 @@ export default function Admin() {
     }
 
     async function sendRecovery(email: string) {
-        if (!confirm(`Enviar email de recuperação para ${email}?`)) return;
         try {
             const token = localStorage.getItem('ph_token_acc');
             await fetch(`${apiURL}/admin/users/recover-password`, {
@@ -272,7 +292,16 @@ export default function Admin() {
         <div className="p-6 w-full bg-gray-50 min-h-screen overflow-hidden">
             {showNotify && <Notify type={notify.type} text={notify.text} />}
             {trialModal.open && <AddTrialModal close={() => setTrialModal({ open: false, saasId: 0 })} saasId={trialModal.saasId} />}
-
+            {showConfirmModal && (
+                <ModalAlert
+                    title="Confirmar Envio"
+                    onClose={closeModalConfirmation}
+                    onConfirm={confirmSendRecovery}
+                    message={`Tem certeza que deseja enviar o email de recuperação para ${confirmToSendEmail}?`}
+                    cancelText='Cancelar'
+                    colorButton="green"
+                />
+            )}
             <div className="flex flex-col gap-4 max-w-[100vw]">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-lg shadow-sm">
@@ -387,7 +416,7 @@ export default function Admin() {
                                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
                                             </button>
                                             <button
-                                                onClick={() => sendRecovery(user.email)}
+                                                onClick={() => openModalConfirmation(user.email)}
                                                 className="text-current hover:text-blue-700 transition-colors"
                                                 title="Enviar email de recuperação de senha"
                                             >

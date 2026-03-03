@@ -56,7 +56,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
     const [categoria, setCategoria] = useState(['', '#000000'])
     async function getAcomodacoes() {
         if (!dataToken || !dataToken.id) return
-        await fetch(`${apiURL}/acomodacao/` + dataToken.id, {
+        await fetch(`${apiURL}/acomodacao/names/` + dataToken.id, {
             method: 'GET'
         })
             .then(data => data.json())
