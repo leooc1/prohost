@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import CanaisDeReserva from '../components/CanaisDeReserva'
 import NovaIndisponibilidade from '../components/NovaIndisponibilidade'
 import NovaReserva from '../components/NovaReserva'
@@ -65,6 +65,7 @@ export default function Reserva() {
   const [mes, setMes] = useState<number>(new Date().getMonth() + 1);
   const anos = Array.from({ length: new Date().getFullYear() - 2010 + 1 }, (_, i) => new Date().getFullYear() + 1 - i);
   const [canais, setCanais] = useState<Acomodacao[]>([])
+  const [images, setImages] = useState<{ id: number, foto: string }[]>([])
   // const [ids, setIds] = useState<{ id: number, index: number }[]>([])
 
   async function getReserva() {
@@ -82,9 +83,21 @@ export default function Reserva() {
     }
   }
 
+  async function getImagesAc() {
+    if (!dataToken || !dataToken.id) return
+    await fetch(`${apiURL}/acomodacao/images/${dataToken.id}`, {
+      method: 'GET'
+    })
+      .then(data => data.json())
+      .then((data) => {
+        setImages(data)
+      })
+      .catch(err => console.log(err))
+  }
+
   async function getAcomodacoes() {
     if (!dataToken || !dataToken.id) return
-    await fetch(`${apiURL}/acomodacao/${dataToken.id}`, {
+    await fetch(`${apiURL}/acomodacao/names/${dataToken.id}`, {
       method: 'GET'
     })
       .then(data => data.json())
@@ -144,11 +157,31 @@ export default function Reserva() {
     else return null
   }
 
-
+  useEffect(() => {
+    if (dataToken?.id) {
+      getImagesAc()
+    }
+  }, [dataToken])
 
   useEffect(() => {
-    if (dataToken && dataToken.id) calendar()
+    if (dataToken && dataToken.id) {
+      calendar()
+    }
   }, [calendarioPage, calendario, dataToken, ano, mes])
+
+  const acomodacoesFormatadas = useMemo(() => {
+    const imagesMap = Object.fromEntries(
+      images.map(img => [img.id, img.foto])
+    )
+
+    return acomodacao.map(a => ({
+      id: String(a?.id ?? ''),
+      title: a.nome,
+      image:
+        imagesMap[a.id] ||
+        'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'
+    }))
+  }, [acomodacao, images])
 
   return (
     loaded ?
@@ -211,12 +244,12 @@ export default function Reserva() {
                   Ano do Calendário:
                   {/* <input type="number" name="ano-calendario" id="ano-calendario" placeholder="Ano do Calendário" className="border border-zinc-300 rounded-md px-2 py-1 mt-2 outline-none text-sm" defaultValue={ano} /> */}
                   <select name="ano-calendario" id="ano-calendario" className={`border border-zinc-300 rounded-md px-2 py-1 h-9 outline-none text-base`} defaultValue={ano}>
-                                    {anos.map((ano) => (
-                                        <option key={ano} value={ano}>
-                                            {ano}
-                                        </option>
-                                    ))}
-                                </select>
+                    {anos.map((ano) => (
+                      <option key={ano} value={ano}>
+                        {ano}
+                      </option>
+                    ))}
+                  </select>
                 </label>
                 <button className='px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#003447] hover:bg-[#325B6A] hover:shadow-md shadow-black self-end'
                   onClick={() => {
@@ -229,11 +262,7 @@ export default function Reserva() {
               </div>
               {<Calendario
                 permissao={permissao}
-                acomodacoes={acomodacao.map((a) => ({
-                  id: String(a ? a.id : null),
-                  title: a.nome,
-                  image: a.foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'
-                }))}
+                acomodacoes={acomodacoesFormatadas}
 
                 reservas={reserva.filter(r => r.tipo_reserva != 'Cancelamento').map((r) => ({
                   "resourceId": String(r.acomodacao ? r.acomodacao.id : null),

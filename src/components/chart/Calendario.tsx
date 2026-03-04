@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import ReservaCardView from '../ReservaCardView';
 
-export default function Calendario({ acomodacoes, reservas, initialDate, permissao}:
+export default function Calendario({ acomodacoes, reservas, initialDate, permissao }:
   {
     acomodacoes: { id: string, title: string, image: string }[],
     reservas: {
@@ -18,11 +18,11 @@ export default function Calendario({ acomodacoes, reservas, initialDate, permiss
   const [expanded, setExpanded] = useState(false)
   const [dados, setDados] = useState<{ event: { id: string } } | null>(null)
 
-
   useEffect(() => {
     localStorage.removeItem('ph-cld-initial-date')
     const iframe = iframeRef.current as HTMLIFrameElement | null
     if (iframe) {
+      iframe.classList.add('hidden')
       const handleLoad = () => {
         const data = {
           resources: acomodacoes,
@@ -32,6 +32,7 @@ export default function Calendario({ acomodacoes, reservas, initialDate, permiss
         if (iframe.contentWindow)
           iframe.contentWindow.postMessage(data, '*');
       };
+      iframe.classList.remove('hidden')
       iframe.addEventListener('load', handleLoad);
 
       return () => {
@@ -39,7 +40,11 @@ export default function Calendario({ acomodacoes, reservas, initialDate, permiss
       };
     }
 
-  }, []);
+  }, [acomodacoes]);
+
+  const iframeKey = useMemo(() => {
+  return JSON.stringify(acomodacoes.map(a => a.image))
+}, [acomodacoes])
 
   return (
     <div className='relative'>
@@ -49,6 +54,7 @@ export default function Calendario({ acomodacoes, reservas, initialDate, permiss
         }}>{`${expanded ? 'Comprimir' : 'Expandir'}`} Calendário</button>
       <iframe
         id='frame-calendar'
+        key={iframeKey}
         ref={iframeRef}
         src='/calendar.html'
         className={`w-full min-h-[450px] max-h-full border border-zinc-300 rounded-lg mb-24 transition-all duration-500`}
