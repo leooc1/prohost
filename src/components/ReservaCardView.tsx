@@ -288,7 +288,7 @@ export default function ReservaCardView(props: propsReserva) {
                             <p className="font-semibold text-sm ml-2">{reserva.obs}</p>
                         </div>
                     </div> : null}
-                    {reserva?.tipo_reserva != 'Indisponibilidade' && reserva?.tipo_reserva != 'Continuidade' ? <div className="flex justify-between mt-3">
+                    {reserva?.tipo_reserva != 'Indisponibilidade' && reserva?.tipo_reserva != 'Continuidade' && (props.permissao >= 2) ? <div className="flex justify-between mt-3">
                         <button
                             onClick={() => {
                                 setCancelamento(true)
@@ -305,9 +305,9 @@ export default function ReservaCardView(props: propsReserva) {
                                 setContinuidade(true)
                             }}
                             className="px-2 py-1 text-sm font-medium bg-green-100 text-green-500 rounded-md"
-                            disabled={!(props.permissao >= 2)}>Estender Reserva</button>
+                            disabled={!(props.permissao >= 3)}>Estender Reserva</button>
                     </div> : null}
-                    {reserva?.tipo_reserva == 'Continuidade' ? <div className="flex justify-between mt-3">
+                    {reserva?.tipo_reserva == 'Continuidade' && (props.permissao >= 2) ? <div className="flex justify-between mt-3">
                         <button
                             onClick={() => {
                                 setCancelamento(true)
@@ -321,7 +321,7 @@ export default function ReservaCardView(props: propsReserva) {
                             className="px-2 py-1 text-sm font-medium bg-blue-100 text-blue-500 rounded-md"
                             disabled={!(props.permissao >= 3)}>Editar Continuidade</button>
                     </div> : null}
-                    {reserva?.tipo_reserva == 'Indisponibilidade' ? <div className="flex justify-between mt-3">
+                    {reserva?.tipo_reserva == 'Indisponibilidade' && (props.permissao >= 2) ? <div className="flex justify-between mt-3">
                         <button
                             onClick={() => {
                                 const confirma = confirm('Tem certeza que deseja excluir esta indisponibilidade?')

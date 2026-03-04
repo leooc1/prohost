@@ -592,20 +592,24 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                                 <h2 className="text-2xl font-bold text-[#0E3447] mb-6">
                                     Escolha a forma de pagamento
                                 </h2>
-                                {isAnnual && !upgrade && <section className="flex justify-between gap-2">
+                                {isAnnual && !upgrade && <section className="relative flex justify-between gap-2">
+                                    <p id='cupom-info' className="absolute text-sm -top-5 text-zinc-500"></p>
                                     <input placeholder="CUPOM" type="text" name="cupom" id="cupom" className="uppercase border rounded-xl pl-1" />
                                     <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary" onClick={() => {
                                         const cupomInput = document.getElementById('cupom') as HTMLInputElement;
+                                        const cupomInfo = document.getElementById('cupom-info') as HTMLInputElement;
                                         if (cupons.some(c => c.name === cupomInput.value.toUpperCase() && c.until >= new Date())) {
                                             document.getElementById('cupom')?.classList.remove('border-red-500')
                                             document.getElementById('cupom')?.classList.add('border-green-500')
+                                            cupomInfo.textContent = `${Number(cupons.find(c => c.name === cupomInput.value.toUpperCase())?.discount || 0)*100}% de desconto aplicados`
                                             setPrice({
                                                 monthly: calculatePrice(currentPlan).monthly,
                                                 savings: calculatePrice(currentPlan).savings,
                                                 total: (Number(calculatePrice(currentPlan).total) -
-                                                    (Number(calculatePrice(currentPlan).total) * 0.1)).toFixed(2)
+                                                    (Number(calculatePrice(currentPlan).total) * (cupons.find(c => c.name === cupomInput.value.toUpperCase())?.discount || 0))).toFixed(2)
                                             })
                                         } else {
+                                            cupomInfo.textContent = 'Cupom inválido ou expirado'
                                             document.getElementById('cupom')?.classList.remove('border-green-500')
                                             document.getElementById('cupom')?.classList.add('border-red-500')
                                             setPrice({

@@ -963,7 +963,7 @@ export default function AreaProprietario() {
                       }}>Aplicar</button>
                   </div>
                   {<Calendario
-                    permissao={2}
+                    permissao={1}
                     acomodacoes={acomodacao.map((a) => ({
                       id: String(a ? a.id : null),
                       title: a.nome,
