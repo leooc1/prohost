@@ -575,7 +575,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                                 error = (error.map((e, i) => i === 1 ? !e : e))
                                                 setEditCalendar(error)
                                             }}>{editCalendar[1] ? open : closed}</button>
-                                        <span style={{ color: props.cores.letra }} className={`text-xl text-[${props.cores.letra}]`}>Novas reservas</span>
+                                        <span style={{ color: props.cores.letra }} className={`text-xl text-[${props.cores.letra}]`}>Reservas</span>
                                         <span style={{ color: props.cores.letra }} className={`text-xl text-[${props.cores.letra}] font-semibold text-end pr-4`}>{dadosReserva.novas_reservas}</span>
                                     </li>
                                     <li className={`flex flex-col bg-zinc-400 bg-opacity-10 px-2 py-1 rounded-lg relative ${editCalendar[2] ? 'opacity-100' : 'opacity-30'}`}>
