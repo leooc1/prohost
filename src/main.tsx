@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import '../styles/index.css'
 import App from './App.tsx'
 import Boleto from './components/assinatura/Boleto.tsx'
+import CadastroSemTrial from './pages/CadastroSemTrial.tsx'
 import Cadastro from './components/assinatura/Cadastro.tsx'
 import CartaoCredito from './components/assinatura/CartaoCredito.tsx'
 import FormaPagamento from './components/assinatura/FormaPagamento.tsx'
@@ -105,6 +106,10 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <Cadastro />,
+      },
+      {
+        path: "sem-trial",
+        element: <CadastroSemTrial />,
       },
       {
         path: "forma-pagamento",

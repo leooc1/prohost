@@ -127,6 +127,7 @@ export default function Cadastro() {
             })
                 .then(data => data.json())
                 .then((data) => {
+                    console.log(data)
                     if (data.id) {
                         assinatura = data
                         pay = data.pagamento
