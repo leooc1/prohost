@@ -10,10 +10,12 @@ interface AdminUser {
     email: string;
     celular: string;
     create_date: string | null;
+    last_login: string | null;
     saas_id: number;
     trial_end: string;
     origin?: string;
     assinatura_status: string;
+    sub: string;
     ciclo: string;
     valor_pago: string;
     plano_qtd_acomodacao: number;
@@ -105,7 +107,6 @@ export default function Admin() {
                     'Authorization': `Bearer ${token}` 
                 } 
             });
-            console.log(res)
             if (res.ok) {
                 const data = await res.json();
                 setUsers(data);
@@ -197,7 +198,7 @@ export default function Admin() {
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
-
+console.log(paginatedUsers)
     async function impersonate(userId: number) {
         try {
             const token = localStorage.getItem('ph_token_acc');
@@ -258,25 +259,27 @@ export default function Admin() {
     }
 
     const getRowStyle = (user: AdminUser) => {
-        const isActive = Boolean(user.is_active_saas);
-        const payments = Number(user.pagamentos_realizados || 0);
+        // const isActive = Boolean(user.is_active_saas);
+        const isActive = Boolean(user.sub.length>0);
         const status = user.assinatura_status;
+        const last_login = user.last_login || user.create_date || new Date().toISOString();
+        const trial_end = user.trial_end;
 
         // Default: Inactive (Red)
         let style = 'bg-red-50 hover:bg-red-100 border-l-4 border-red-500 text-red-900';
 
-        if (isActive) {
-            if (status === 'CONFIRMED' || status === 'ACTIVE' || status === 'RECEIVED' || payments > 0) {
+        if (isActive && (status === 'CONFIRMED' || status === 'ACTIVE' || status === 'RECEIVED')) {
+            if ((new Date(last_login).getTime() >= new Date().setDate(new Date().getDate() - 15)) && (new Date(trial_end).getTime() >= new Date().getTime())) {
                 // Active & Paying (Green)
                 style = 'bg-green-50 hover:bg-green-100 border-l-4 border-green-500 text-green-900';
             } else {
-                // Trial Active (Blue)
-                style = 'bg-blue-50 hover:bg-blue-100 border-l-4 border-blue-500 text-blue-900';
-            }
-        } else {
-            if (status === 'CONFIRMED' || status === 'ACTIVE' || status === 'RECEIVED' || payments > 0) {
                 // Paying but Inactive (Yellow)
                 style = 'bg-yellow-50 hover:bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900';
+            }
+        } else {
+            if ((new Date(trial_end).getTime() >= new Date().getTime())) {
+                // Trial Active (Blue)
+                style = 'bg-blue-50 hover:bg-blue-100 border-l-4 border-blue-500 text-blue-900';
             }
         }
         return style;
