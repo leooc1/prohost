@@ -43,7 +43,7 @@ export default function SidebarMenu({ route }: { route: string }) {
             .then(data => data.json())
             .then(data => {
                 const page = location.pathname
-                if (data.status != "CONFIRMED" && (new Date(data.trial_end) <= new Date(new Date().setDate(new Date().getDate() + 1))) && page != '/assinatura') {
+                if (data.status != "CONFIRMED" && (new Date(data.trial_end) < new Date(new Date().setDate(new Date().getDate()))) && page != '/assinatura') {
                     location.assign('/assinatura')
                 } else if (dataToken?.acomodacoes && dataToken.acomodacoes.length > 0 && page != '/proprietario') {
                     location.assign('/proprietario')
