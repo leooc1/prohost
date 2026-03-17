@@ -254,6 +254,7 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
         getReserva(deData, ateData)
     }, [deData, ateData, periodo]);
 
+
     return (
         <section className="w-full min-h-56 border border-zinc-300 rounded-lg bg-white px-4 py-4">
             {card && <ReservaCardView close={() => setCard(false)} id={idReserva} permissao={permissao} />}
@@ -569,11 +570,6 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
                     {
                         reserva.length > 0 ?
                             reserva
-                                //filtro nome hospede
-                                .filter((e) => {
-                                    if (nomeHospede.trim() === '') return e
-                                    else return e.hospede?.nome.toLowerCase().includes(nomeHospede.toLowerCase())
-                                })
                                 //qtd hospede
                                 /* .filter((e) => {
                                     if (qtdHospede <= 0) return e
@@ -636,6 +632,11 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
                                     if (canalReserva == 'all')
                                         return e
                                     else return e.canal_reserva?.id == Number(canalReserva)
+                                })
+                                //filtro nome hospede
+                                .filter((e) => {
+                                    if (nomeHospede.trim() === '') return e
+                                    else return e.hospede?.nome?.toLowerCase().includes(nomeHospede.toLowerCase())
                                 })
                                 //ornedar
                                 .sort((a, b) => {
@@ -747,6 +748,11 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
                                         return e
                                     else return e.acomodacao.id == Number(acomodacao)
                                 })
+                                //nome hospede
+                                .filter((e) => {
+                                    if (nomeHospede.trim() === '') return e
+                                    else return e.hospede?.nome?.toLowerCase().includes(nomeHospede.toLowerCase())
+                                })
                                 //canais de reserva
                                 .filter((e) => {
                                     if (canalReserva == 'all')
@@ -808,6 +814,11 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
                                         return e
                                     else return e.acomodacao.id == Number(acomodacao)
                                 })
+                                //nome hospede
+                                .filter((e) => {
+                                    if (nomeHospede.trim() === '') return e
+                                    else return e.hospede?.nome?.toLowerCase().includes(nomeHospede.toLowerCase())
+                                })
                                 //canais de reserva
                                 .filter((e) => {
                                     if (canalReserva == 'all')
@@ -866,6 +877,11 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
                                         return e
                                     else return e.acomodacao.id == Number(acomodacao)
                                 })
+                                //nome hospede
+                                .filter((e) => {
+                                    if (nomeHospede.trim() === '') return e
+                                    else return e.hospede?.nome?.toLowerCase().includes(nomeHospede.toLowerCase())
+                                })
                                 //canais de reserva
                                 .filter((e) => {
                                     if (canalReserva == 'all')
@@ -923,6 +939,11 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
                                     if (acomodacao == 'all')
                                         return e
                                     else return e.acomodacao.id == Number(acomodacao)
+                                })
+                                //nome hospede
+                                .filter((e) => {
+                                    if (nomeHospede.trim() === '') return e
+                                    else return e.hospede?.nome?.toLowerCase().includes(nomeHospede.toLowerCase())
                                 })
                                 //canais de reserva
                                 .filter((e) => {

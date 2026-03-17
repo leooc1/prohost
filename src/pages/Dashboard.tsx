@@ -73,7 +73,7 @@ export default function Dashboard() {
   useEffect(() => { document.title = 'Dashboard | Prohost' }, [])
 
   const { dataToken } = useContext(SideBarContext);
-  
+
   const [loaded, setLoaded] = useState(false)
   function formatarMoedaBrasileira(valor: string | number | null | undefined) {
     const valorNumerico = parseFloat(String(valor));
@@ -241,12 +241,6 @@ export default function Dashboard() {
     const suffix = filterAC === 'all' ? '' : `/${filterAC}`;
 
     try {
-      // Busca comissão apenas se houver filtro específico
-      /* if (filterAC !== 'all') {
-        const data = await fetchJson(`${apiURL}/acomodacao/${dataToken.id}/${filterAC}`);
-        setComissao(Number(data?.[0]?.comissao ?? 0));
-      } */
-
       const [mov, fat, comp]: [{
         nome: string
         cor: string
