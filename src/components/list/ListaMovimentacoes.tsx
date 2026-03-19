@@ -259,7 +259,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children,
                                                     setEdiAcomodacao(e.acomodacao?.id || null)
                                                     setEdiData(e.data || null)
                                                     setEdiValor(e.valor || null)
-                                                    setEdiPago(e.pago || null)
+                                                    setEdiPago(e?.pago)
                                                     setEdiObs(e.obs || null)
                                                 }
                                             }}>

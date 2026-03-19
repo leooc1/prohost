@@ -318,7 +318,7 @@ export default function EditarMovimentacao(props: propsEditar) {
                         <div className="flex flex-col">
                             <span className="text-zinc-500 font-medium mb-2 text-sm">Pago?</span>
                             <label className="switch">
-                                <input type="checkbox" id="pago" defaultChecked={props.pago || true} />
+                                <input type="checkbox" id="pago" defaultChecked={props.pago} />
                                 <div className="slider">
                                     <div className="circle">
                                         <svg className="cross" viewBox="0 0 365.696 365.696" y="0" x="0" height="6" width="6" version="1.1" xmlns="http://www.w3.org/2000/svg">
