@@ -33,7 +33,7 @@ interface propsEditar {
     acomodacao: number | null
     data: string | null
     valor: string | null
-    pago: boolean | null
+    pago: boolean 
     saas: number | null
     tipo_despesa: string | null
     obs: string | null

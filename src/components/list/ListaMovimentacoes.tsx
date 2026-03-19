@@ -35,7 +35,7 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children,
     const [ediAcomodacao, setEdiAcomodacao] = useState<number | null>(null)
     const [ediData, setEdiData] = useState<string | null>(null)
     const [ediValor, setEdiValor] = useState<string | null>(null)
-    const [ediPago, setEdiPago] = useState<boolean | null>(null)
+    const [ediPago, setEdiPago] = useState<boolean>(true)
     const [despesa, setDespesa] = useState<boolean>(false)
     const [ediObs, setEdiObs] = useState<string | null>(null)
     const [numPaginacao, setNumPaginacao] = useState<number>(10)
