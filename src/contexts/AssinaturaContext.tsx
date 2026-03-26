@@ -11,16 +11,6 @@ export const AssinaturaProvider = ({ children }: { children: React.JSX.Element }
         origin: string
     } | null>(null)
     const [userDTO, setUserDTO] = useState<{
-        asaas_id: { id: string }
-        celular: string
-        cpf_cnpj: string
-        end_rua: string
-        end_num: string
-        end_bairro: string
-        end_comp: string
-        end_cep: string
-        nome: string
-        saas: { id: number }
         email: string
         senha: string
     } | null>(null)

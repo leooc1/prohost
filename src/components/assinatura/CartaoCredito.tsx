@@ -1,12 +1,54 @@
 import { InputMask } from "@react-input/mask"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Notify from "../notify/Notify"
 
 
 export default function CartaoCredito() {
-        const apiURL = import.meta.env.VITE_API_URL
-        const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
+    const apiURL = import.meta.env.VITE_API_URL
+    const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
+
     const [showNotify, setShowNotify] = useState<boolean>(false)
+    const [user, setUser] = useState<{ email: string, senha: string }>({ email: '', senha: '' })
+    async function logar(login: { email: string, senha: string }) {
+        await fetch(`${apiURL}/users/auth`, {
+            method: 'POST',
+            body: JSON.stringify({
+                email: login.email,
+                senha: login.senha
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => {
+                if (data.status == 200)
+                    return data.json();
+                else return null
+            })
+            .then((data) => {
+                if (data) {
+                    if (data.token === true) {
+                        window.localStorage.setItem('ph_reset_msg', "Por motivos de segurança, estamos solicitando que você redefina sua senha.");
+                        window.location.assign('/reset-senha?email=' + encodeURIComponent(login.email));
+                    } else if (data.token && data.token != true) {
+                        window.localStorage.setItem('ph_token_acc', data.token)
+                        window.localStorage.removeItem('ph_user_data_lg')
+                        window.location.assign('/')
+                    }
+                }
+                else {
+                    setNotify({ type: 2, text: 'Dados incorretos!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
+                }
+            })
+            .catch(err => console.log(err))
+    }
+    useEffect(() => {
+        setUser(JSON.parse(localStorage.getItem('ph_user_data_lg') || '{"email":"","senha":""}'))
+    }, [])
 
     async function pagamento(pbody: any) {
         const storage = window.localStorage.getItem('ph_pay_acc')
@@ -14,14 +56,14 @@ export default function CartaoCredito() {
         await fetch(`${apiURL}/assinatura/${storage}`, {
             method: 'GET'
         })
-        .then(data => data.json())
-        .then(data => {
-            pay = data
-        })
+            .then(data => data.json())
+            .then(data => {
+                pay = data
+            })
             .catch(err => console.error(err))
         await fetch(`${apiURL}/assinatura/credit-card/${pay}`, {
             method: 'POST',
-            body: JSON.stringify({cardForm:pbody}),
+            body: JSON.stringify({ cardForm: pbody }),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -34,7 +76,8 @@ export default function CartaoCredito() {
                     setTimeout(() => {
                         setShowNotify(false);
                     }, 3000)
-                    location.assign('/auth')
+                    // location.assign('/auth')
+                    logar({ email: user.email, senha: user.senha })
                 }
                 else {
                     setNotify({ type: 2, text: 'Algo deu errado, tente novamente!' })

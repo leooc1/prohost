@@ -39,6 +39,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
     const [isAnnual, setIsAnnual] = useState(false);
     const [wait, setWait] = useState(false);
     const [selectedAccommodations, setSelectedAccommodations] = useState([1]);
+    const [acomodacoesAtivas, setAcomodacoesAtivas] = useState(0);
     const [isPaymentOpen, setIsPaymentOpen] = useState(false);
     const [showPaymentMethod, setShowPaymentMethod] = useState(false);
     const [showPixPayment, setShowPixPayment] = useState(false);
@@ -415,6 +416,14 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                 setInfo(data)
             })
             .catch(err => console.log(err))
+        await fetch(`${apiURL}/acomodacao/names/${dataToken.id}`, {
+            method: 'GET'
+        })
+            .then(data => data.json())
+            .then((data: any[]) => {
+                setAcomodacoesAtivas(data.filter((e => !e.desativado)).length)
+            })
+            .catch(err => console.log(err))
     }
 
     const currentPlan = getCurrentPlan();
@@ -566,11 +575,11 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
             {/* Modal de Seleção de Forma de Pagamento */}
             {isPaymentOpen && info && !showPaymentMethod && !showPixPayment &&
                 <>
-                    {(info.qtd_acomodacao >= currentPlan.accommodations) && (new Date(info.trial_end) > new Date()) ?
+                    {((info.qtd_acomodacao >= currentPlan.accommodations) && (new Date(info.trial_end) > new Date()) || (acomodacoesAtivas > currentPlan.accommodations)) ?
                         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
                             <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
                                 <h2 className="text-2xl text-center font-bold text-[#0E3447] mb-6">
-                                    Seu plano atual já contempla essa quantidade de acomodações.
+                                    {!upgrade ? 'Você tem mais acomodações ativas do que o plano selecionado permite.' : 'Seu plano atual já contempla essa quantidade de acomodações.'}
                                 </h2>
 
                                 <div className="flex gap-4">
@@ -601,7 +610,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                                         if (cupons.some(c => c.name === cupomInput.value.toUpperCase() && c.until >= new Date())) {
                                             document.getElementById('cupom')?.classList.remove('border-red-500')
                                             document.getElementById('cupom')?.classList.add('border-green-500')
-                                            cupomInfo.textContent = `${Number(cupons.find(c => c.name === cupomInput.value.toUpperCase())?.discount || 0)*100}% de desconto aplicados`
+                                            cupomInfo.textContent = `${Number(cupons.find(c => c.name === cupomInput.value.toUpperCase())?.discount || 0) * 100}% de desconto aplicados`
                                             setPrice({
                                                 monthly: calculatePrice(currentPlan).monthly,
                                                 savings: calculatePrice(currentPlan).savings,

@@ -68,6 +68,43 @@ export default function Cadastro() {
             })
             .catch(err => console.log(err))
     }
+    async function logar(login: { email: string, senha: string }) {
+        await fetch(`${apiURL}/users/auth`, {
+            method: 'POST',
+            body: JSON.stringify({
+                email: login.email,
+                senha: login.senha
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => {
+                if (data.status == 200)
+                    return data.json();
+                else return null
+            })
+            .then((data) => {
+                if (data) {
+                    if (data.token === true) {
+                        window.localStorage.setItem('ph_reset_msg', "Por motivos de segurança, estamos solicitando que você redefina sua senha.");
+                        window.location.assign('/reset-senha?email=' + encodeURIComponent(login.email));
+                    } else if (data.token && data.token != true) {
+                        window.localStorage.setItem('ph_token_acc', data.token)
+                        window.localStorage.removeItem('ph_user_data_lg')
+                        window.location.assign('/')
+                    }
+                }
+                else {
+                    setNotify({ type: 2, text: 'Dados incorretos!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
+                }
+            })
+            .catch(err => console.log(err))
+    }
 
     async function criarConta(saas: any, user: any, origem: string) {
         let idSaas = null
@@ -127,7 +164,6 @@ export default function Cadastro() {
             })
                 .then(data => data.json())
                 .then((data) => {
-                    console.log(data)
                     if (data.id) {
                         assinatura = data
                         pay = data.pagamento
@@ -191,8 +227,10 @@ export default function Cadastro() {
                     .then((data) => {
                         window.localStorage.setItem('ph_pay_acc', data)
                         if (origem === 'newStudents' || origem === 'newClassmates' || origem === 'newAnfitriao' || origem === 'trial15' || origem === 'reservaadoiss' || origem === 'oldClass') {
-                            location.assign('/auth')
+                            logar({ email: user.email, senha: user.senha })
+                            // location.assign('/auth')
                         } else {
+                            localStorage.setItem('ph_user_data_lg', JSON.stringify({ email: user.email, senha: user.senha }))
                             location.assign('/assinar/forma-pagamento')
                         }
                     })

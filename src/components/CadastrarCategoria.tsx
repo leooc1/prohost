@@ -14,6 +14,12 @@ interface CategoriaFinanceiro {
   saas: { id: number };
 }
 
+interface PendingCategoriaUpdate {
+  id: number;
+  body: Partial<CategoriaFinanceiro>;
+  message: string;
+}
+
 export default function GerenciadorDeCategoria({ close, permissao }: { close: () => void; permissao: number; }) {
   const apiURL = import.meta.env.VITE_API_URL;
   const { dataToken } = useContext(SideBarContext);
@@ -29,6 +35,9 @@ export default function GerenciadorDeCategoria({ close, permissao }: { close: ()
   const [categoriaToDelete, setCategoriaToDelete] = useState<CategoriaFinanceiro | null>(null);
   const [showModalAlert, setShowModalAlert] = useState(false);
   const [modalAlertData, setModalAlertData] = useState<{ title: string; message: string; } | null>(null);
+  const [pendingUpdate, setPendingUpdate] = useState<PendingCategoriaUpdate | null>(null);
+
+  const formatTipoDespesa = (tipo: string | null | undefined) => tipo ?? "Sem tipo";
 
   // --- API CALLS ---
   const triggerNotify = (text: string, type: number = 1) => {
@@ -44,6 +53,7 @@ export default function GerenciadorDeCategoria({ close, permissao }: { close: ()
       const data: CategoriaFinanceiro[] = await response.json();
       setDespesas(data.filter((e) => !e.receita));
       setReceitas(data.filter((e) => e.receita));
+      console.log(data.filter((e) => !e.receita)[0].tipo_despesa)
     } catch (err) { console.error("Erro ao buscar categorias", err); }
   }
 
@@ -76,10 +86,12 @@ export default function GerenciadorDeCategoria({ close, permissao }: { close: ()
     }
   }
 
-  async function handleUpdate(id: number, pbody: any) {
-    const response = await fetch(`${apiURL}/categoria_financeiro/${id}`, {
+  async function confirmUpdate() {
+    if (!pendingUpdate) return;
+
+    const response = await fetch(`${apiURL}/categoria_financeiro/${pendingUpdate.id}`, {
       method: "PUT",
-      body: JSON.stringify(pbody),
+      body: JSON.stringify(pendingUpdate.body),
       headers: { "Content-Type": "application/json" },
     });
     const data = await response.json();
@@ -87,6 +99,47 @@ export default function GerenciadorDeCategoria({ close, permissao }: { close: ()
       triggerNotify("Atualizado com sucesso!");
       getCategorias();
     }
+    setPendingUpdate(null);
+  }
+
+  async function handleUpdate(id: number, pbody: Partial<CategoriaFinanceiro>) {
+    const categoriaAtual = [...receitas, ...despesas].find((categoria) => categoria.id === id);
+
+    if (!categoriaAtual) {
+      setPendingUpdate({
+        id,
+        body: pbody,
+        message: "Deseja confirmar a atualização desta categoria?",
+      });
+      return;
+    }
+
+    const alteracoes: string[] = [];
+
+    if (categoriaAtual.nome !== pbody.nome) {
+      alteracoes.push(`Nome: "${categoriaAtual.nome}" -> "${pbody.nome}"`);
+    }
+
+    if (categoriaAtual.cor !== pbody.cor) {
+      alteracoes.push(`Cor: ${categoriaAtual.cor} -> ${pbody.cor}`);
+    }
+
+    if (categoriaAtual.tipo_despesa !== pbody.tipo_despesa) {
+      alteracoes.push(
+        `Tipo: ${formatTipoDespesa(categoriaAtual.tipo_despesa)} -> ${formatTipoDespesa(pbody.tipo_despesa)}`
+      );
+    }
+
+    if (!alteracoes.length) {
+      triggerNotify("Nenhuma alteração identificada.", 2);
+      return;
+    }
+
+    setPendingUpdate({
+      id,
+      body: pbody,
+      message: `Confirme a atualização da categoria "${categoriaAtual.nome}":\n\n${alteracoes.join("\n")}`,
+    });
   }
 
   async function confirmDelete() {
@@ -123,6 +176,18 @@ export default function GerenciadorDeCategoria({ close, permissao }: { close: ()
           onConfirm={confirmDelete}
           confirmText="Excluir"
           colorButton="red"
+        />
+      )}
+
+      {pendingUpdate && (
+        <ModalAlert
+          title="Confirmar Atualização"
+          message={pendingUpdate.message+"\n\n(As alterações serão aplicadas imediatamente após a confirmação, para movimentações futuras. Movimentações passadas não serão alteradas)"}
+          onClose={() => setPendingUpdate(null)}
+          onConfirm={confirmUpdate}
+          confirmText="Atualizar"
+          cancelText="Cancelar"
+          colorButton="blue"
         />
       )}
 

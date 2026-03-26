@@ -27,7 +27,7 @@ export function ModalAlert({
             <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl">
                 <h2 className="text-xl font-semibold">{title}</h2>
                 <hr className="my-4" />
-                <p className="mt-2 text-zinc-600">{message}</p>
+                <p className="mt-2 text-zinc-600 whitespace-pre-line">{message}</p>
 
                 <div className="mt-6 flex justify-end gap-2">
                     {cancelText && (

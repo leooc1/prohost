@@ -32,6 +32,7 @@ export default function Auth() {
                         window.location.assign('/reset-senha?email=' + encodeURIComponent(login.email));
                     } else if (data.token && data.token != true) {
                         window.localStorage.setItem('ph_token_acc', data.token)
+                        window.localStorage.removeItem('ph_user_data_lg')
                         window.location.assign('/')
                     }
                 }

@@ -8,6 +8,7 @@ export default function Pix() {
     const [paymentId, setPaymentId] = useState('');
     const initialExpireDate = localStorage.getItem('expireDate') || '';
     const [expireDate, setExpireDate] = useState(initialExpireDate);
+    const [user, setUser] = useState<{ email: string, senha: string }>({ email: '', senha: '' })
     const [qr, setQr] = useState('');
 
     const [notify, setNotify] = useState({ type: 1, text: '' });
@@ -41,9 +42,47 @@ export default function Pix() {
             console.error(err);
         }
     }
+    async function logar(login: { email: string, senha: string }) {
+        await fetch(`${apiURL}/users/auth`, {
+            method: 'POST',
+            body: JSON.stringify({
+                email: login.email,
+                senha: login.senha
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => {
+                if (data.status == 200)
+                    return data.json();
+                else return null
+            })
+            .then((data) => {
+                if (data) {
+                    if (data.token === true) {
+                        window.localStorage.setItem('ph_reset_msg', "Por motivos de segurança, estamos solicitando que você redefina sua senha.");
+                        window.location.assign('/reset-senha?email=' + encodeURIComponent(login.email));
+                    } else if (data.token && data.token != true) {
+                        window.localStorage.setItem('ph_token_acc', data.token)
+                        window.localStorage.removeItem('ph_user_data_lg')
+                        window.location.assign('/')
+                    }
+                }
+                else {
+                    setNotify({ type: 2, text: 'Dados incorretos!' })
+                    setShowNotify(true)
+                    setTimeout(() => {
+                        setShowNotify(false);
+                    }, 3000)
+                }
+            })
+            .catch(err => console.log(err))
+    }
 
     // Geração do QR e contador regressivo
     useEffect(() => {
+        setUser(JSON.parse(localStorage.getItem('ph_user_data_lg') || '{"email":"","senha":""}'))
         const storage = window.localStorage.getItem('ph_pay_acc') || '';
         gerarQR(storage);
 
@@ -73,6 +112,7 @@ export default function Pix() {
                     setNotify({ type: 1, text: 'Pagamento confirmado! Redirecionando...' });
                     setShowNotify(true);
                     setTimeout(() => {
+                        logar({ email: user.email, senha: user.senha })
                         location.assign('/auth');
                     }, 2000);
                 }
