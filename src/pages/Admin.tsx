@@ -30,6 +30,8 @@ interface AdminStats {
     total_users: number;
 }
 
+type UserStatusFilter = 'paying-active' | 'trial-active' | 'paying-inactive' | 'inactive';
+
 export default function Admin() {
     const apiURL = import.meta.env.VITE_API_URL
     // const { dataToken } = useContext(SideBarContext)
@@ -45,6 +47,7 @@ export default function Admin() {
     const [filters, setFilters] = useState<Record<string, string>>({});
     const [filterOptions, setFilterOptions] = useState<Record<string, string[]>>({});
     const [showFilterDropdown, setShowFilterDropdown] = useState<string | null>(null);
+    const [selectedStatusFilter, setSelectedStatusFilter] = useState<UserStatusFilter | null>(null);
 
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1);
@@ -83,11 +86,11 @@ export default function Admin() {
 
     async function fetchStats(token: string) {
         try {
-            const res = await fetch(`${apiURL}/admin/stats`, { 
-                headers: { 
+            const res = await fetch(`${apiURL}/admin/stats`, {
+                headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` 
-                } 
+                    'Authorization': `Bearer ${token}`
+                }
             });
             if (res.ok) {
                 const data = await res.json();
@@ -101,11 +104,11 @@ export default function Admin() {
 
     async function fetchUsers(token: string) {
         try {
-            const res = await fetch(`${apiURL}/admin/users`, { 
-                headers: { 
+            const res = await fetch(`${apiURL}/admin/users`, {
+                headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` 
-                } 
+                    'Authorization': `Bearer ${token}`
+                }
             });
             if (res.ok) {
                 const data = await res.json();
@@ -118,6 +121,43 @@ export default function Admin() {
             console.error("Error fetching users:", error);
         }
     }
+
+    const getWhatsappLink = (phone: string) => {
+        const digits = phone.replace(/\D/g, '');
+
+        if (!digits) return null;
+
+        if (digits.length === 10 || digits.length === 11) {
+            return `https://wa.me/55${digits}`;
+        }
+
+        if (digits.length === 12 || digits.length === 13) {
+            return `https://wa.me/${digits}`;
+        }
+
+        return null;
+    };
+
+    const getUserStatus = (user: AdminUser): UserStatusFilter => {
+        const isActive = Boolean(user.sub.length > 0);
+        const status = user.assinatura_status;
+        const last_login = user.last_login || user.create_date || new Date().toISOString();
+        const trial_end = user.trial_end;
+
+        if (isActive && (status === 'CONFIRMED' || status === 'ACTIVE' || status === 'RECEIVED')) {
+            if ((new Date(last_login).getTime() >= new Date().setDate(new Date().getDate() - 15)) && (new Date(trial_end).getTime() >= new Date().getTime())) {
+                return 'paying-active';
+            }
+
+            return 'paying-inactive';
+        }
+
+        if ((new Date(trial_end).getTime() >= new Date().getTime())) {
+            return 'trial-active';
+        }
+
+        return 'inactive';
+    };
 
     const generateFilterOptions = (data: AdminUser[]) => {
         const options: Record<string, Set<string>> = {
@@ -177,6 +217,10 @@ export default function Admin() {
             });
         });
 
+        if (selectedStatusFilter) {
+            result = result.filter(user => getUserStatus(user) === selectedStatusFilter);
+        }
+
         // Sorting
         if (sortConfig.key) {
             result.sort((a, b) => {
@@ -190,7 +234,8 @@ export default function Admin() {
         }
 
         return result;
-    }, [users, filters, sortConfig, search]);
+    }, [users, filters, sortConfig, search, selectedStatusFilter]);
+    console.log((filteredAndSortedUsers[0]))
 
     // Pagination
     const totalPages = Math.ceil(filteredAndSortedUsers.length / itemsPerPage);
@@ -198,11 +243,11 @@ export default function Admin() {
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
-console.log(paginatedUsers)
+    // console.log(paginatedUsers)
     async function impersonate(userId: number) {
         try {
             const token = localStorage.getItem('ph_token_acc');
-            const res = await fetch(`${apiURL}/admin/users/${userId}/impersonate`, { 
+            const res = await fetch(`${apiURL}/admin/users/${userId}/impersonate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -224,7 +269,7 @@ console.log(paginatedUsers)
             const token = localStorage.getItem('ph_token_acc');
             await fetch(`${apiURL}/admin/users/recover-password`, {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
@@ -259,30 +304,21 @@ console.log(paginatedUsers)
     }
 
     const getRowStyle = (user: AdminUser) => {
-        // const isActive = Boolean(user.is_active_saas);
-        const isActive = Boolean(user.sub.length>0);
-        const status = user.assinatura_status;
-        const last_login = user.last_login || user.create_date || new Date().toISOString();
-        const trial_end = user.trial_end;
+        const status = getUserStatus(user);
 
-        // Default: Inactive (Red)
-        let style = 'bg-red-50 hover:bg-red-100 border-l-4 border-red-500 text-red-900';
-
-        if (isActive && (status === 'CONFIRMED' || status === 'ACTIVE' || status === 'RECEIVED')) {
-            if ((new Date(last_login).getTime() >= new Date().setDate(new Date().getDate() - 15)) && (new Date(trial_end).getTime() >= new Date().getTime())) {
-                // Active & Paying (Green)
-                style = 'bg-green-50 hover:bg-green-100 border-l-4 border-green-500 text-green-900';
-            } else {
-                // Paying but Inactive (Yellow)
-                style = 'bg-yellow-50 hover:bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900';
-            }
-        } else {
-            if ((new Date(trial_end).getTime() >= new Date().getTime())) {
-                // Trial Active (Blue)
-                style = 'bg-blue-50 hover:bg-blue-100 border-l-4 border-blue-500 text-blue-900';
-            }
+        if (status === 'paying-active') {
+            return 'bg-green-50 hover:bg-green-100 border-l-4 border-green-500 text-green-900';
         }
-        return style;
+
+        if (status === 'trial-active') {
+            return 'bg-blue-50 hover:bg-blue-100 border-l-4 border-blue-500 text-blue-900';
+        }
+
+        if (status === 'paying-inactive') {
+            return 'bg-yellow-50 hover:bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900';
+        }
+
+        return 'bg-red-50 hover:bg-red-100 border-l-4 border-red-500 text-red-900';
     };
 
     const formatDate = (dateString: string | null) => {
@@ -290,6 +326,13 @@ console.log(paginatedUsers)
         const d = new Date(dateString);
         return isNaN(d.getTime()) ? 'N/A' : d.toLocaleDateString('pt-BR');
     }
+
+    const statusLegendItems: { key: UserStatusFilter; label: string; dotClassName: string }[] = [
+        { key: 'paying-active', label: 'Ativo Pagante', dotClassName: 'bg-green-500' },
+        { key: 'trial-active', label: 'Trial Ativo', dotClassName: 'bg-blue-500' },
+        { key: 'paying-inactive', label: 'Pagante Inativo', dotClassName: 'bg-yellow-500' },
+        { key: 'inactive', label: 'Inativo', dotClassName: 'bg-red-500' },
+    ];
 
     return (
         <div className="p-6 w-full bg-gray-50 min-h-screen overflow-hidden">
@@ -310,11 +353,40 @@ console.log(paginatedUsers)
                 <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-lg shadow-sm">
                     <div className="flex flex-col gap-1">
                         <h1 className="text-2xl font-bold text-gray-800">Painel Admin</h1>
-                        <div className="flex gap-3 text-xs font-semibold">
-                            <span className="flex items-center gap-1"><div className="w-3 h-3 bg-green-500 rounded-full"></div> Ativo Pagante</span>
-                            <span className="flex items-center gap-1"><div className="w-3 h-3 bg-blue-500 rounded-full"></div> Trial Ativo</span>
-                            <span className="flex items-center gap-1"><div className="w-3 h-3 bg-yellow-500 rounded-full"></div> Pagante Inativo</span>
-                            <span className="flex items-center gap-1"><div className="w-3 h-3 bg-red-500 rounded-full"></div> Inativo</span>
+                        <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
+                            {statusLegendItems.map(item => {
+                                const isSelected = selectedStatusFilter === item.key;
+
+                                return (
+                                    <button
+                                        key={item.key}
+                                        type="button"
+                                        onClick={() => {
+                                            setSelectedStatusFilter(prev => prev === item.key ? null : item.key);
+                                            setCurrentPage(1);
+                                        }}
+                                        className={`flex items-center gap-2 rounded-full border px-3 py-1 transition-colors ${isSelected
+                                                ? 'border-gray-800 bg-gray-100 text-gray-900'
+                                                : 'border-transparent bg-transparent text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+                                            }`}
+                                    >
+                                        <div className={`w-3 h-3 rounded-full ${item.dotClassName}`}></div>
+                                        <span>{item.label}</span>
+                                    </button>
+                                );
+                            })}
+                            {selectedStatusFilter && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setSelectedStatusFilter(null);
+                                        setCurrentPage(1);
+                                    }}
+                                    className="text-xs font-semibold text-blue-600 hover:text-blue-700"
+                                >
+                                    Limpar filtro
+                                </button>
+                            )}
                         </div>
                     </div>
 
@@ -411,6 +483,21 @@ console.log(paginatedUsers)
                                             {user.acomodacoes_cadastradas} <span className="text-[10px] opacity-70">/ {user.plano_qtd_acomodacao || 1}</span>
                                         </td>
                                         <td className="px-4 py-3 flex justify-center gap-3">
+                                            <button
+                                                onClick={() => {
+                                                    const whatsappLink = getWhatsappLink(user.celular);
+                                                    if (whatsappLink) {
+                                                        window.open(whatsappLink, '_blank', 'noopener,noreferrer');
+                                                    }
+                                                }}
+                                                className="text-current hover:text-green-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                                                title={getWhatsappLink(user.celular) ? "Abrir conversa no WhatsApp" : "Número inválido para WhatsApp"}
+                                                disabled={!getWhatsappLink(user.celular)}
+                                            >
+                                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M20.52 3.48A11.8 11.8 0 0012.07 0C5.56 0 .24 5.3.24 11.82c0 2.08.54 4.11 1.58 5.9L0 24l6.46-1.69a11.8 11.8 0 005.61 1.43h.01c6.51 0 11.83-5.3 11.83-11.82 0-3.16-1.23-6.13-3.39-8.44ZM12.08 21.74h-.01a9.77 9.77 0 01-4.98-1.36l-.36-.21-3.83 1 1.02-3.73-.24-.38a9.8 9.8 0 01-1.5-5.24C2.18 6.44 6.61 2 12.07 2c2.62 0 5.08 1.02 6.92 2.87a9.72 9.72 0 012.86 6.94c0 5.46-4.44 9.93-9.77 9.93Zm5.37-7.43c-.29-.15-1.71-.84-1.98-.94-.27-.1-.46-.15-.66.15-.19.29-.76.94-.93 1.13-.17.2-.34.22-.63.07-.29-.15-1.23-.45-2.34-1.45-.86-.77-1.44-1.73-1.61-2.02-.17-.3-.02-.46.13-.61.13-.13.29-.34.44-.51.15-.17.2-.29.29-.49.1-.19.05-.37-.02-.52-.07-.15-.66-1.59-.9-2.17-.24-.58-.48-.49-.66-.5h-.56c-.2 0-.52.08-.79.37-.27.3-1.04 1.01-1.04 2.46 0 1.45 1.07 2.85 1.21 3.05.15.2 2.1 3.21 5.08 4.5.71.31 1.27.49 1.7.63.71.23 1.35.2 1.86.12.57-.09 1.71-.7 1.95-1.38.24-.68.24-1.27.17-1.38-.07-.12-.27-.2-.56-.35Z" />
+                                                </svg>
+                                            </button>
                                             <button
                                                 onClick={() => impersonate(user.user_id)}
                                                 className="text-current hover:text-purple-700 transition-colors"
