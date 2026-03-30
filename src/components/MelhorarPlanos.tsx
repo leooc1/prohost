@@ -22,7 +22,7 @@ const cupons = [
     {
         name: 'CUPOMPH10',
         discount: 0.1,
-        until: new Date('2026-03-10')
+        until: new Date('2026-04-02')
     }
 ]
 
