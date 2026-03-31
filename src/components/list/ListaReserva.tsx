@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import ReservaCardView from "../ReservaCardView";
 import { SideBarContext } from "../../contexts/SideBarMenuContext";
+import { set } from "date-fns";
 
 interface Reserva {
     id?: number
@@ -34,6 +35,7 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
     const date = new Date()
     const [evento, setEvento] = useState('all')
     const [valorTotal, setValorTotal] = useState(true)
+    const [loading, setLoading] = useState(true)
     const [acomodacao, setAcomodacao] = useState('all')
     const [compare, setCompare] = useState('all')
     const [order, setOrder] = useState('decrescente')
@@ -52,12 +54,15 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
         const de = periodo[0].split('-')[2] + '-' + periodo[0].split('-')[1] + '-' + periodo[0].split('-')[0]
         const ate = periodo[1].split('-')[2] + '-' + periodo[1].split('-')[1] + '-' + periodo[1].split('-')[0] */
 
+        setLoading(true)
         await fetch(`${apiURL}/reserva/${dataToken.id}/${deData}/${ateData}`, {
             method: 'GET'
         })
             .then(data => data.json())
             .then((data: Reserva[]) => {
+                console.log(data)
                 setReserva(data)
+                setLoading(false)
             })
             .catch(err => console.log(err))
     }
@@ -549,122 +554,136 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
                     <svg className="w-5 h-fit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4 3H20C20.5523 3 21 3.44772 21 4V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3ZM5 5V19H19V5H5ZM7 11H17V13H7V11Z"></path></svg>
                     : <svg className="w-5 h-fit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4 3H20C20.5523 3 21 3.44772 21 4V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3ZM5 5V19H19V5H5ZM11 11V7H13V11H17V13H13V17H11V13H7V11H11Z"></path></svg>}</button>
             </div>
-            <table id="listagem" className="w-full mt-3 border border-zinc-200 rounded-lg grid">
-                <thead className="table table-fixed w-full">
-                    <tr className="text-xs bg-slate-50 h-12">
-                        {/*<th className="text-center px-3">#</th>*/}
-                        <th className="text-center">Acomodação</th>
-                        <th className="text-center">Canal</th>
-                        <th className="text-center">Hóspede</th>
-                        <th className="text-center">Qtd. Hóspede</th>
-                        <th className="text-center">Check-in</th>
-                        <th className="text-center">Check-out</th>
-                        <th className="text-center">Diárias</th>
-                        {valorTotal && <th className="text-center">Valor Total</th>}
-                        <th className="text-center">Valor Líquido</th>
-                        <th className="text-center">Comissão Gestor</th>
-                        <th className="text-center">Repasse Proprietário</th>
-                    </tr>
-                </thead>
-                <tbody className="overflow-y-scroll block">
-                    {
-                        reserva.length > 0 ?
-                            reserva
-                                //qtd hospede
-                                /* .filter((e) => {
-                                    if (qtdHospede <= 0) return e
-                                    else return e.qtd_hospede == qtdHospede
-                                }) */
-                                //qtd diarias
-                                /* .filter((e) => {
-                                    if (qtdDiarias <= 0) return e
-                                    else return calcularDiasEntreDatas(e.check_in, e.check_out) == qtdDiarias
-                                }) */
-                                //periodo
-                                .filter((e) => {
-                                    if (periodo == 'm-atual') {
-                                        return (new Date(e.check_in).getMonth() == date.getMonth() &&
-                                            new Date(e.check_in).getFullYear() == date.getFullYear()) ||
-                                            (new Date(e.check_out).getMonth() == date.getMonth() &&
-                                                new Date(e.check_out).getFullYear() == date.getFullYear())
-                                    }
-                                    else if (periodo == 'm-passado') {
-                                        const datames = new Date()
-                                        datames.setMonth(new Date().getMonth() - 1)
-                                        return (new Date(e.check_in).getMonth() == datames.getMonth() &&
-                                            new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
-                                            (new Date(e.check_out).getMonth() == datames.getMonth() &&
-                                                new Date(e.check_out).getFullYear() == datames.getFullYear())
+            {
+                loading ?
+                    <div className="flex justify-center items-center mt-20">
+                        <div className="flex flex-row gap-2">
+                            <div className="w-4 h-4 rounded-full bg-red-500 animate-bounce"></div>
+                            <div
+                                className="w-4 h-4 rounded-full bg-red-500 animate-bounce [animation-delay:-.3s]"
+                            ></div>
+                            <div
+                                className="w-4 h-4 rounded-full bg-red-500 animate-bounce [animation-delay:-.5s]"
+                            ></div>
+                        </div>
 
-                                    }
-                                    else if (periodo == 'a-atual') {
-                                        return new Date(e.check_in).getFullYear() == date.getFullYear() ||
-                                            new Date(e.check_out).getFullYear() == date.getFullYear()
+                    </div> :
+                    <table id="listagem" className="w-full mt-3 border border-zinc-200 rounded-lg grid">
+                        <thead className="table table-fixed w-full">
+                            <tr className="text-xs bg-slate-50 h-12">
+                                {/*<th className="text-center px-3">#</th>*/}
+                                <th className="text-center">Acomodação</th>
+                                <th className="text-center">Canal</th>
+                                <th className="text-center">Hóspede</th>
+                                <th className="text-center">Qtd. Hóspede</th>
+                                <th className="text-center">Check-in</th>
+                                <th className="text-center">Check-out</th>
+                                <th className="text-center">Diárias</th>
+                                {valorTotal && <th className="text-center">Valor Total</th>}
+                                <th className="text-center">Valor Líquido</th>
+                                <th className="text-center">Comissão Gestor</th>
+                                <th className="text-center">Repasse Proprietário</th>
+                            </tr>
+                        </thead>
+                        <tbody className="overflow-y-scroll block">
+                            {
+                                reserva.length > 0 ?
+                                    reserva
+                                        //qtd hospede
+                                        /* .filter((e) => {
+                                            if (qtdHospede <= 0) return e
+                                            else return e.qtd_hospede == qtdHospede
+                                        }) */
+                                        //qtd diarias
+                                        /* .filter((e) => {
+                                            if (qtdDiarias <= 0) return e
+                                            else return calcularDiasEntreDatas(e.check_in, e.check_out) == qtdDiarias
+                                        }) */
+                                        //periodo
+                                        .filter((e) => {
+                                            if (periodo == 'm-atual') {
+                                                return (new Date(e.check_in).getMonth() == date.getMonth() &&
+                                                    new Date(e.check_in).getFullYear() == date.getFullYear()) ||
+                                                    (new Date(e.check_out).getMonth() == date.getMonth() &&
+                                                        new Date(e.check_out).getFullYear() == date.getFullYear())
+                                            }
+                                            else if (periodo == 'm-passado') {
+                                                const datames = new Date()
+                                                datames.setMonth(new Date().getMonth() - 1)
+                                                return (new Date(e.check_in).getMonth() == datames.getMonth() &&
+                                                    new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
+                                                    (new Date(e.check_out).getMonth() == datames.getMonth() &&
+                                                        new Date(e.check_out).getFullYear() == datames.getFullYear())
 
-                                    }
-                                    else if (periodo == 'a-passado') {
-                                        return new Date(e.check_in).getFullYear() == (date.getFullYear() - 1) ||
-                                            new Date(e.check_out).getFullYear() == (date.getFullYear() - 1)
+                                            }
+                                            else if (periodo == 'a-atual') {
+                                                return new Date(e.check_in).getFullYear() == date.getFullYear() ||
+                                                    new Date(e.check_out).getFullYear() == date.getFullYear()
 
-                                    }
-                                    else {
-                                        return (new Date(e.check_in) >= new Date(deData) &&
-                                            new Date(e.check_in) <= new Date(ateData)) ||
-                                            (new Date(e.check_out) >= new Date(deData) &&
-                                                new Date(e.check_out) <= new Date(ateData))
-                                    }
+                                            }
+                                            else if (periodo == 'a-passado') {
+                                                return new Date(e.check_in).getFullYear() == (date.getFullYear() - 1) ||
+                                                    new Date(e.check_out).getFullYear() == (date.getFullYear() - 1)
 
-                                })
-                                //tipo de evento
-                                .filter((e) => {
-                                    if (evento == 'all')
-                                        return e
-                                    else return e.tipo_reserva.toLowerCase() == evento
-                                })
-                                //acomodacao
-                                .filter((e) => {
-                                    if (acomodacao == 'all')
-                                        return e
-                                    else return e.acomodacao.id == Number(acomodacao)
-                                })
-                                //canais de reserva
-                                .filter((e) => {
-                                    if (canalReserva == 'all')
-                                        return e
-                                    else return e.canal_reserva?.id == Number(canalReserva)
-                                })
-                                //filtro nome hospede
-                                .filter((e) => {
-                                    if (nomeHospede.trim() === '') return e
-                                    else return e.hospede?.nome?.toLowerCase().includes(nomeHospede.toLowerCase())
-                                })
-                                //ornedar
-                                .sort((a, b) => {
-                                    if (compare == 'numero') {
-                                        if (order == 'crescente') { return (a.id || 0) - (b.id || 0) }
-                                        else { return (b.id || 0) - (a.id || 0) }
-                                    }
-                                    else if (compare == 'checkin') {
-                                        if (order == 'crescente') { return Number(new Date(a.check_in)) - Number(new Date(b.check_in)) }
-                                        else { return Number(new Date(b.check_in)) - Number(new Date(a.check_in)) }
-                                    }
-                                    else if (compare == 'checkout') {
-                                        if (order == 'crescente') { return Number(new Date(a.check_out)) - Number(new Date(b.check_out)) }
-                                        else { return Number(new Date(b.check_out)) - Number(new Date(a.check_out)) }
-                                    }
-                                    else if (compare == 'valor') {
-                                        if (order == 'crescente') { return a.valor - b.valor }
-                                        else { return b.valor - a.valor }
-                                    }
-                                    else if (compare == 'valor-liquido') {
-                                        if (order == 'crescente') { return a.valor_liq - b.valor_liq }
-                                        else { return b.valor_liq - a.valor_liq }
-                                    }
-                                    else return (a.id || 0) - (b.id || 0)
-                                })
-                                .map((e) =>
-                                    <tr onClick={() => { setCard(true); setIdReserva(String(e.id)) }} className="text-xs bg-white h-12 border border-zinc-200 table table-fixed w-full">
-                                        {/* <td className="text-center text-xs font-medium">
+                                            }
+                                            else {
+                                                return (new Date(e.check_in) >= new Date(deData) &&
+                                                    new Date(e.check_in) <= new Date(ateData)) ||
+                                                    (new Date(e.check_out) >= new Date(deData) &&
+                                                        new Date(e.check_out) <= new Date(ateData))
+                                            }
+
+                                        })
+                                        //tipo de evento
+                                        .filter((e) => {
+                                            if (evento == 'all')
+                                                return e
+                                            else return e.tipo_reserva.toLowerCase() == evento
+                                        })
+                                        //acomodacao
+                                        .filter((e) => {
+                                            if (acomodacao == 'all')
+                                                return e
+                                            else return e.acomodacao.id == Number(acomodacao)
+                                        })
+                                        //canais de reserva
+                                        .filter((e) => {
+                                            if (canalReserva == 'all')
+                                                return e
+                                            else return e.canal_reserva?.id == Number(canalReserva)
+                                        })
+                                        //filtro nome hospede
+                                        .filter((e) => {
+                                            if (nomeHospede.trim() === '') return e
+                                            else return e.hospede?.nome?.toLowerCase().includes(nomeHospede.toLowerCase())
+                                        })
+                                        //ornedar
+                                        .sort((a, b) => {
+                                            if (compare == 'numero') {
+                                                if (order == 'crescente') { return (a.id || 0) - (b.id || 0) }
+                                                else { return (b.id || 0) - (a.id || 0) }
+                                            }
+                                            else if (compare == 'checkin') {
+                                                if (order == 'crescente') { return Number(new Date(a.check_in)) - Number(new Date(b.check_in)) }
+                                                else { return Number(new Date(b.check_in)) - Number(new Date(a.check_in)) }
+                                            }
+                                            else if (compare == 'checkout') {
+                                                if (order == 'crescente') { return Number(new Date(a.check_out)) - Number(new Date(b.check_out)) }
+                                                else { return Number(new Date(b.check_out)) - Number(new Date(a.check_out)) }
+                                            }
+                                            else if (compare == 'valor') {
+                                                if (order == 'crescente') { return a.valor - b.valor }
+                                                else { return b.valor - a.valor }
+                                            }
+                                            else if (compare == 'valor-liquido') {
+                                                if (order == 'crescente') { return a.valor_liq - b.valor_liq }
+                                                else { return b.valor_liq - a.valor_liq }
+                                            }
+                                            else return (a.id || 0) - (b.id || 0)
+                                        })
+                                        .map((e) =>
+                                            <tr onClick={() => { setCard(true); setIdReserva(String(e.id)) }} className="text-xs bg-white h-12 border border-zinc-200 table table-fixed w-full">
+                                                {/* <td className="text-center text-xs font-medium">
                                             {e.tipo_reserva == 'Indisponibilidade' ?
                                                 '🚫' :
                                                 <span className="flex items-center justify-center gap-1">
@@ -673,410 +692,410 @@ export default function ListaReserva({ /* reservas, ids, */ acomodacoes, canaisR
                                                 </span>
                                             }
                                         </td> */}
-                                        <td className="text-center text-xs font-medium">{e.acomodacao.nome}</td>
-                                        <td className="text-center text-xs font-medium text-white">
-                                            {e.tipo_reserva != 'Indisponibilidade' && e.tipo_reserva != 'Continuidade' && e.tipo_reserva != 'Cancelamento' ?
-                                                <div className="py-1 w-full rounded-md" style={{ backgroundColor: e.canal_reserva?.cor }}>{e.canal_reserva?.nome}</div> : null}
-                                            {e.tipo_reserva == 'Continuidade' ?
-                                                <div className="bg-[#30C46D] py-1 w-full rounded-md">Continuidade</div> : null}
-                                            {e.tipo_reserva == 'Indisponibilidade' ?
-                                                <div className="bg-[#353535] py-1 w-full rounded-md">Indisponibilidade</div> : null}
-                                            {e.tipo_reserva == 'Cancelamento' ?
-                                                <div className="bg-[#f67828] py-1 w-full rounded-md">Cancelamento</div> : null}
-                                        </td>
-                                        <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && e.hospede?.nome}</td>
-                                        <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && e.qtd_hospede}</td>
-                                        <td className="text-center text-xs font-medium">{formatDate(e.check_in)}</td>
-                                        <td className="text-center text-xs font-medium">{formatDate(e.check_out)}</td>
-                                        <td className="text-center text-xs font-medium">{calcularDiasEntreDatas(e.check_in, e.check_out)}</td>
-                                        {valorTotal && <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.valor).toFixed(2))}`}</td>}
-                                        <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${Number(e.valor_liq_calculado) > 0 ? formatarMoedaBrasileira(Number(e.valor_liq_calculado).toFixed(2)) : formatarMoedaBrasileira(Number(e.valor_liq).toFixed(2))}`}</td>
-                                        <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.comissao_gestor).toFixed(2))}`}</td>
-                                        <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.valor_sem_comissao).toFixed(2))}`}</td>
-                                    </tr>)
-                            : null
-                    }
-                </tbody>
-                <tfoot className="table table-fixed w-full">
-                    <tr className="text-xs bg-slate-50 h-12">
-                        <td className="text-center">Total de Reserva: {
-                            reserva
-                                //periodo
-                                .filter((e) => {
-                                    if (periodo == 'm-atual') {
-                                        return (new Date(e.check_in).getMonth() == date.getMonth() &&
-                                            new Date(e.check_in).getFullYear() == date.getFullYear()) ||
-                                            (new Date(e.check_out).getMonth() == date.getMonth() &&
-                                                new Date(e.check_out).getFullYear() == date.getFullYear())
-                                    }
-                                    else if (periodo == 'm-passado') {
-                                        const datames = new Date()
-                                        datames.setMonth(new Date().getMonth() - 1)
-                                        return (new Date(e.check_in).getMonth() == datames.getMonth() &&
-                                            new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
-                                            (new Date(e.check_out).getMonth() == datames.getMonth() &&
-                                                new Date(e.check_out).getFullYear() == datames.getFullYear())
-
-                                    }
-                                    else if (periodo == 'a-atual') {
-                                        return new Date(e.check_in).getFullYear() == date.getFullYear() ||
-                                            new Date(e.check_out).getFullYear() == date.getFullYear()
-
-                                    }
-                                    else if (periodo == 'a-passado') {
-                                        return new Date(e.check_in).getFullYear() == (date.getFullYear() - 1) ||
-                                            new Date(e.check_out).getFullYear() == (date.getFullYear() - 1)
-
-                                    }
-                                    else {
-                                        return (new Date(e.check_in) >= new Date(deData) &&
-                                            new Date(e.check_in) <= new Date(ateData)) ||
-                                            (new Date(e.check_out) >= new Date(deData) &&
-                                                new Date(e.check_out) <= new Date(ateData))
-                                    }
-
-                                })
-                                //tipo de evento
-                                .filter((e) => {
-                                    if (evento == 'all')
-                                        return e
-                                    else return e.tipo_reserva.toLowerCase() == evento
-                                })
-                                //acomodacao
-                                .filter((e) => {
-                                    if (acomodacao == 'all')
-                                        return e
-                                    else return e.acomodacao.id == Number(acomodacao)
-                                })
-                                //nome hospede
-                                .filter((e) => {
-                                    if (nomeHospede.trim() === '') return e
-                                    else return e.hospede?.nome?.toLowerCase().includes(nomeHospede.toLowerCase())
-                                })
-                                //canais de reserva
-                                .filter((e) => {
-                                    if (canalReserva == 'all')
-                                        return e
-                                    else return e.canal_reserva?.id == Number(canalReserva)
-                                }).filter(e => e.tipo_reserva != 'Indisponibilidade').length
-                        }</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td className="text-center">{/* Total Diárias:  */}{
-                            ((reserva
-                                //periodo
-                                .filter((e) => {
-                                    if (periodo == 'm-atual') {
-                                        return (new Date(e.check_in).getMonth() == date.getMonth() &&
-                                            new Date(e.check_in).getFullYear() == date.getFullYear()) ||
-                                            (new Date(e.check_out).getMonth() == date.getMonth() &&
-                                                new Date(e.check_out).getFullYear() == date.getFullYear())
-                                    }
-                                    else if (periodo == 'm-passado') {
-                                        const datames = new Date()
-                                        datames.setMonth(new Date().getMonth() - 1)
-                                        return (new Date(e.check_in).getMonth() == datames.getMonth() &&
-                                            new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
-                                            (new Date(e.check_out).getMonth() == datames.getMonth() &&
-                                                new Date(e.check_out).getFullYear() == datames.getFullYear())
-
-                                    }
-                                    else if (periodo == 'a-atual') {
-                                        return new Date(e.check_in).getFullYear() == date.getFullYear() ||
-                                            new Date(e.check_out).getFullYear() == date.getFullYear()
-
-                                    }
-                                    else if (periodo == 'a-passado') {
-                                        return new Date(e.check_in).getFullYear() == (date.getFullYear() - 1) ||
-                                            new Date(e.check_out).getFullYear() == (date.getFullYear() - 1)
-
-                                    }
-                                    else {
-                                        return (new Date(e.check_in) >= new Date(deData) &&
-                                            new Date(e.check_in) <= new Date(ateData)) ||
-                                            (new Date(e.check_out) >= new Date(deData) &&
-                                                new Date(e.check_out) <= new Date(ateData))
-                                    }
-
-                                })
-                                //tipo de evento
-                                .filter((e) => {
-                                    if (evento == 'all')
-                                        return e
-                                    else return e.tipo_reserva.toLowerCase() == evento
-                                })
-                                //acomodacao
-                                .filter((e) => {
-                                    if (acomodacao == 'all')
-                                        return e
-                                    else return e.acomodacao.id == Number(acomodacao)
-                                })
-                                //nome hospede
-                                .filter((e) => {
-                                    if (nomeHospede.trim() === '') return e
-                                    else return e.hospede?.nome?.toLowerCase().includes(nomeHospede.toLowerCase())
-                                })
-                                //canais de reserva
-                                .filter((e) => {
-                                    if (canalReserva == 'all')
-                                        return e
-                                    else return e.canal_reserva?.id == Number(canalReserva)
-                                })
-                                .map(r => calcularDiasEntreDatas(r.check_in, r.check_out))
-                                .reduce((sum, valor) => sum + valor, 0)))
-                        }</td>
-                        <td className="text-center">{/* Total:  */}{
-                            formatarMoedaBrasileira((reserva
-                                //periodo
-                                .filter((e) => {
-                                    if (periodo == 'm-atual') {
-                                        return (new Date(e.check_in).getMonth() == date.getMonth() &&
-                                            new Date(e.check_in).getFullYear() == date.getFullYear()) ||
-                                            (new Date(e.check_out).getMonth() == date.getMonth() &&
-                                                new Date(e.check_out).getFullYear() == date.getFullYear())
-                                    }
-                                    else if (periodo == 'm-passado') {
-                                        const datames = new Date()
-                                        datames.setMonth(new Date().getMonth() - 1)
-                                        return (new Date(e.check_in).getMonth() == datames.getMonth() &&
-                                            new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
-                                            (new Date(e.check_out).getMonth() == datames.getMonth() &&
-                                                new Date(e.check_out).getFullYear() == datames.getFullYear())
-
-                                    }
-                                    else if (periodo == 'a-atual') {
-                                        return new Date(e.check_in).getFullYear() == date.getFullYear() ||
-                                            new Date(e.check_out).getFullYear() == date.getFullYear()
-
-                                    }
-                                    else if (periodo == 'a-passado') {
-                                        return new Date(e.check_in).getFullYear() == (date.getFullYear() - 1) ||
-                                            new Date(e.check_out).getFullYear() == (date.getFullYear() - 1)
-
-                                    }
-                                    else {
-                                        return (new Date(e.check_in) >= new Date(deData) &&
-                                            new Date(e.check_in) <= new Date(ateData)) ||
-                                            (new Date(e.check_out) >= new Date(deData) &&
-                                                new Date(e.check_out) <= new Date(ateData))
-                                    }
-
-                                })
-                                //tipo de evento
-                                .filter((e) => {
-                                    if (evento == 'all')
-                                        return e
-                                    else return e.tipo_reserva.toLowerCase() == evento
-                                })
-                                //acomodacao
-                                .filter((e) => {
-                                    if (acomodacao == 'all')
-                                        return e
-                                    else return e.acomodacao.id == Number(acomodacao)
-                                })
-                                //nome hospede
-                                .filter((e) => {
-                                    if (nomeHospede.trim() === '') return e
-                                    else return e.hospede?.nome?.toLowerCase().includes(nomeHospede.toLowerCase())
-                                })
-                                //canais de reserva
-                                .filter((e) => {
-                                    if (canalReserva == 'all')
-                                        return e
-                                    else return e.canal_reserva?.id == Number(canalReserva)
-                                })
-                                .map(r => Number(r.valor))
-                                .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
-                        }</td>
-                        <td className="text-center">{/* Total Líquido:  */}{
-                            formatarMoedaBrasileira((reserva
-                                //periodo
-                                .filter((e) => {
-                                    if (periodo == 'm-atual') {
-                                        return (new Date(e.check_in).getMonth() == date.getMonth() &&
-                                            new Date(e.check_in).getFullYear() == date.getFullYear()) ||
-                                            (new Date(e.check_out).getMonth() == date.getMonth() &&
-                                                new Date(e.check_out).getFullYear() == date.getFullYear())
-                                    }
-                                    else if (periodo == 'm-passado') {
-                                        const datames = new Date()
-                                        datames.setMonth(new Date().getMonth() - 1)
-                                        return (new Date(e.check_in).getMonth() == datames.getMonth() &&
-                                            new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
-                                            (new Date(e.check_out).getMonth() == datames.getMonth() &&
-                                                new Date(e.check_out).getFullYear() == datames.getFullYear())
-
-                                    }
-                                    else if (periodo == 'a-atual') {
-                                        return new Date(e.check_in).getFullYear() == date.getFullYear() ||
-                                            new Date(e.check_out).getFullYear() == date.getFullYear()
-
-                                    }
-                                    else if (periodo == 'a-passado') {
-                                        return new Date(e.check_in).getFullYear() == (date.getFullYear() - 1) ||
-                                            new Date(e.check_out).getFullYear() == (date.getFullYear() - 1)
-
-                                    }
-                                    else {
-                                        return (new Date(e.check_in) >= new Date(deData) &&
-                                            new Date(e.check_in) <= new Date(ateData)) ||
-                                            (new Date(e.check_out) >= new Date(deData) &&
-                                                new Date(e.check_out) <= new Date(ateData))
-                                    }
-
-                                })
-                                //tipo de evento
-                                .filter((e) => {
-                                    if (evento == 'all')
-                                        return e
-                                    else return e.tipo_reserva.toLowerCase() == evento
-                                })
-                                //acomodacao
-                                .filter((e) => {
-                                    if (acomodacao == 'all')
-                                        return e
-                                    else return e.acomodacao.id == Number(acomodacao)
-                                })
-                                //nome hospede
-                                .filter((e) => {
-                                    if (nomeHospede.trim() === '') return e
-                                    else return e.hospede?.nome?.toLowerCase().includes(nomeHospede.toLowerCase())
-                                })
-                                //canais de reserva
-                                .filter((e) => {
-                                    if (canalReserva == 'all')
-                                        return e
-                                    else return e.canal_reserva?.id == Number(canalReserva)
-                                })
-                                .map(r => Number(r.valor_liq_calculado) > 0 ? Number(r.valor_liq_calculado) : Number(r.valor_liq))
-                                .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
-                        }</td>
-                        <td>
-                            {
-                                formatarMoedaBrasileira((reserva
-                                    //periodo
-                                    .filter((e) => {
-                                        if (periodo == 'm-atual') {
-                                            return (new Date(e.check_in).getMonth() == date.getMonth() &&
-                                                new Date(e.check_in).getFullYear() == date.getFullYear()) ||
-                                                (new Date(e.check_out).getMonth() == date.getMonth() &&
-                                                    new Date(e.check_out).getFullYear() == date.getFullYear())
-                                        }
-                                        else if (periodo == 'm-passado') {
-                                            const datames = new Date()
-                                            datames.setMonth(new Date().getMonth() - 1)
-                                            return (new Date(e.check_in).getMonth() == datames.getMonth() &&
-                                                new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
-                                                (new Date(e.check_out).getMonth() == datames.getMonth() &&
-                                                    new Date(e.check_out).getFullYear() == datames.getFullYear())
-
-                                        }
-                                        else if (periodo == 'a-atual') {
-                                            return new Date(e.check_in).getFullYear() == date.getFullYear() ||
-                                                new Date(e.check_out).getFullYear() == date.getFullYear()
-
-                                        }
-                                        else if (periodo == 'a-passado') {
-                                            return new Date(e.check_in).getFullYear() == (date.getFullYear() - 1) ||
-                                                new Date(e.check_out).getFullYear() == (date.getFullYear() - 1)
-
-                                        }
-                                        else {
-                                            return (new Date(e.check_in) >= new Date(deData) &&
-                                                new Date(e.check_in) <= new Date(ateData)) ||
-                                                (new Date(e.check_out) >= new Date(deData) &&
-                                                    new Date(e.check_out) <= new Date(ateData))
-                                        }
-
-                                    })
-                                    //tipo de evento
-                                    .filter((e) => {
-                                        if (evento == 'all')
-                                            return e
-                                        else return e.tipo_reserva.toLowerCase() == evento
-                                    })
-                                    //acomodacao
-                                    .filter((e) => {
-                                        if (acomodacao == 'all')
-                                            return e
-                                        else return e.acomodacao.id == Number(acomodacao)
-                                    })
-                                    //canais de reserva
-                                    .filter((e) => {
-                                        if (canalReserva == 'all')
-                                            return e
-                                        else return e.canal_reserva?.id == Number(canalReserva)
-                                    })
-                                    .map(r => Number(r.comissao_gestor))
-                                    .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
+                                                <td className="text-center text-xs font-medium">{e.acomodacao.nome}</td>
+                                                <td className="text-center text-xs font-medium text-white">
+                                                    {e.tipo_reserva != 'Indisponibilidade' && e.tipo_reserva != 'Continuidade' && e.tipo_reserva != 'Cancelamento' ?
+                                                        <div className="py-1 w-full rounded-md" style={{ backgroundColor: e.canal_reserva?.cor }}>{e.canal_reserva?.nome}</div> : null}
+                                                    {e.tipo_reserva == 'Continuidade' ?
+                                                        <div className="bg-[#30C46D] py-1 w-full rounded-md">Continuidade</div> : null}
+                                                    {e.tipo_reserva == 'Indisponibilidade' ?
+                                                        <div className="bg-[#353535] py-1 w-full rounded-md">Indisponibilidade</div> : null}
+                                                    {e.tipo_reserva == 'Cancelamento' ?
+                                                        <div className="bg-[#f67828] py-1 w-full rounded-md">Cancelamento</div> : null}
+                                                </td>
+                                                <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && e.hospede?.nome}</td>
+                                                <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && e.qtd_hospede}</td>
+                                                <td className="text-center text-xs font-medium">{formatDate(e.check_in)}</td>
+                                                <td className="text-center text-xs font-medium">{formatDate(e.check_out)}</td>
+                                                <td className="text-center text-xs font-medium">{calcularDiasEntreDatas(e.check_in, e.check_out)}</td>
+                                                {valorTotal && <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.valor).toFixed(2))}`}</td>}
+                                                <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${Number(e.valor_liq_calculado) > 0 ? formatarMoedaBrasileira(Number(e.valor_liq_calculado).toFixed(2)) : formatarMoedaBrasileira(Number(e.valor_liq).toFixed(2))}`}</td>
+                                                <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.comissao_gestor).toFixed(2))}`}</td>
+                                                <td className="text-center text-xs font-medium">{!(e.tipo_reserva == 'Indisponibilidade') && `${formatarMoedaBrasileira(Number(e.valor_sem_comissao).toFixed(2))}`}</td>
+                                            </tr>)
+                                    : null
                             }
-                        </td>
-                        <td>
-                            {
-                                formatarMoedaBrasileira((reserva
-                                    //periodo
-                                    .filter((e) => {
-                                        if (periodo == 'm-atual') {
-                                            return (new Date(e.check_in).getMonth() == date.getMonth() &&
-                                                new Date(e.check_in).getFullYear() == date.getFullYear()) ||
-                                                (new Date(e.check_out).getMonth() == date.getMonth() &&
-                                                    new Date(e.check_out).getFullYear() == date.getFullYear())
-                                        }
-                                        else if (periodo == 'm-passado') {
-                                            const datames = new Date()
-                                            datames.setMonth(new Date().getMonth() - 1)
-                                            return (new Date(e.check_in).getMonth() == datames.getMonth() &&
-                                                new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
-                                                (new Date(e.check_out).getMonth() == datames.getMonth() &&
-                                                    new Date(e.check_out).getFullYear() == datames.getFullYear())
+                        </tbody>
+                        <tfoot className="table table-fixed w-full">
+                            <tr className="text-xs bg-slate-50 h-12">
+                                <td className="text-center">Total de Reserva: {
+                                    reserva
+                                        //periodo
+                                        .filter((e) => {
+                                            if (periodo == 'm-atual') {
+                                                return (new Date(e.check_in).getMonth() == date.getMonth() &&
+                                                    new Date(e.check_in).getFullYear() == date.getFullYear()) ||
+                                                    (new Date(e.check_out).getMonth() == date.getMonth() &&
+                                                        new Date(e.check_out).getFullYear() == date.getFullYear())
+                                            }
+                                            else if (periodo == 'm-passado') {
+                                                const datames = new Date()
+                                                datames.setMonth(new Date().getMonth() - 1)
+                                                return (new Date(e.check_in).getMonth() == datames.getMonth() &&
+                                                    new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
+                                                    (new Date(e.check_out).getMonth() == datames.getMonth() &&
+                                                        new Date(e.check_out).getFullYear() == datames.getFullYear())
 
-                                        }
-                                        else if (periodo == 'a-atual') {
-                                            return new Date(e.check_in).getFullYear() == date.getFullYear() ||
-                                                new Date(e.check_out).getFullYear() == date.getFullYear()
+                                            }
+                                            else if (periodo == 'a-atual') {
+                                                return new Date(e.check_in).getFullYear() == date.getFullYear() ||
+                                                    new Date(e.check_out).getFullYear() == date.getFullYear()
 
-                                        }
-                                        else if (periodo == 'a-passado') {
-                                            return new Date(e.check_in).getFullYear() == (date.getFullYear() - 1) ||
-                                                new Date(e.check_out).getFullYear() == (date.getFullYear() - 1)
+                                            }
+                                            else if (periodo == 'a-passado') {
+                                                return new Date(e.check_in).getFullYear() == (date.getFullYear() - 1) ||
+                                                    new Date(e.check_out).getFullYear() == (date.getFullYear() - 1)
 
-                                        }
-                                        else {
-                                            return (new Date(e.check_in) >= new Date(deData) &&
-                                                new Date(e.check_in) <= new Date(ateData)) ||
-                                                (new Date(e.check_out) >= new Date(deData) &&
-                                                    new Date(e.check_out) <= new Date(ateData))
-                                        }
+                                            }
+                                            else {
+                                                return (new Date(e.check_in) >= new Date(deData) &&
+                                                    new Date(e.check_in) <= new Date(ateData)) ||
+                                                    (new Date(e.check_out) >= new Date(deData) &&
+                                                        new Date(e.check_out) <= new Date(ateData))
+                                            }
 
-                                    })
-                                    //tipo de evento
-                                    .filter((e) => {
-                                        if (evento == 'all')
-                                            return e
-                                        else return e.tipo_reserva.toLowerCase() == evento
-                                    })
-                                    //acomodacao
-                                    .filter((e) => {
-                                        if (acomodacao == 'all')
-                                            return e
-                                        else return e.acomodacao.id == Number(acomodacao)
-                                    })
-                                    //canais de reserva
-                                    .filter((e) => {
-                                        if (canalReserva == 'all')
-                                            return e
-                                        else return e.canal_reserva?.id == Number(canalReserva)
-                                    })
-                                    .map(r => Number(r.valor_sem_comissao))
-                                    .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
-                            }
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+                                        })
+                                        //tipo de evento
+                                        .filter((e) => {
+                                            if (evento == 'all')
+                                                return e
+                                            else return e.tipo_reserva.toLowerCase() == evento
+                                        })
+                                        //acomodacao
+                                        .filter((e) => {
+                                            if (acomodacao == 'all')
+                                                return e
+                                            else return e.acomodacao.id == Number(acomodacao)
+                                        })
+                                        //nome hospede
+                                        .filter((e) => {
+                                            if (nomeHospede.trim() === '') return e
+                                            else return e.hospede?.nome?.toLowerCase().includes(nomeHospede.toLowerCase())
+                                        })
+                                        //canais de reserva
+                                        .filter((e) => {
+                                            if (canalReserva == 'all')
+                                                return e
+                                            else return e.canal_reserva?.id == Number(canalReserva)
+                                        }).filter(e => e.tipo_reserva != 'Indisponibilidade').length
+                                }</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td className="text-center">{/* Total Diárias:  */}{
+                                    ((reserva
+                                        //periodo
+                                        .filter((e) => {
+                                            if (periodo == 'm-atual') {
+                                                return (new Date(e.check_in).getMonth() == date.getMonth() &&
+                                                    new Date(e.check_in).getFullYear() == date.getFullYear()) ||
+                                                    (new Date(e.check_out).getMonth() == date.getMonth() &&
+                                                        new Date(e.check_out).getFullYear() == date.getFullYear())
+                                            }
+                                            else if (periodo == 'm-passado') {
+                                                const datames = new Date()
+                                                datames.setMonth(new Date().getMonth() - 1)
+                                                return (new Date(e.check_in).getMonth() == datames.getMonth() &&
+                                                    new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
+                                                    (new Date(e.check_out).getMonth() == datames.getMonth() &&
+                                                        new Date(e.check_out).getFullYear() == datames.getFullYear())
+
+                                            }
+                                            else if (periodo == 'a-atual') {
+                                                return new Date(e.check_in).getFullYear() == date.getFullYear() ||
+                                                    new Date(e.check_out).getFullYear() == date.getFullYear()
+
+                                            }
+                                            else if (periodo == 'a-passado') {
+                                                return new Date(e.check_in).getFullYear() == (date.getFullYear() - 1) ||
+                                                    new Date(e.check_out).getFullYear() == (date.getFullYear() - 1)
+
+                                            }
+                                            else {
+                                                return (new Date(e.check_in) >= new Date(deData) &&
+                                                    new Date(e.check_in) <= new Date(ateData)) ||
+                                                    (new Date(e.check_out) >= new Date(deData) &&
+                                                        new Date(e.check_out) <= new Date(ateData))
+                                            }
+
+                                        })
+                                        //tipo de evento
+                                        .filter((e) => {
+                                            if (evento == 'all')
+                                                return e
+                                            else return e.tipo_reserva.toLowerCase() == evento
+                                        })
+                                        //acomodacao
+                                        .filter((e) => {
+                                            if (acomodacao == 'all')
+                                                return e
+                                            else return e.acomodacao.id == Number(acomodacao)
+                                        })
+                                        //nome hospede
+                                        .filter((e) => {
+                                            if (nomeHospede.trim() === '') return e
+                                            else return e.hospede?.nome?.toLowerCase().includes(nomeHospede.toLowerCase())
+                                        })
+                                        //canais de reserva
+                                        .filter((e) => {
+                                            if (canalReserva == 'all')
+                                                return e
+                                            else return e.canal_reserva?.id == Number(canalReserva)
+                                        })
+                                        .map(r => calcularDiasEntreDatas(r.check_in, r.check_out))
+                                        .reduce((sum, valor) => sum + valor, 0)))
+                                }</td>
+                                <td className="text-center">{/* Total:  */}{
+                                    formatarMoedaBrasileira((reserva
+                                        //periodo
+                                        .filter((e) => {
+                                            if (periodo == 'm-atual') {
+                                                return (new Date(e.check_in).getMonth() == date.getMonth() &&
+                                                    new Date(e.check_in).getFullYear() == date.getFullYear()) ||
+                                                    (new Date(e.check_out).getMonth() == date.getMonth() &&
+                                                        new Date(e.check_out).getFullYear() == date.getFullYear())
+                                            }
+                                            else if (periodo == 'm-passado') {
+                                                const datames = new Date()
+                                                datames.setMonth(new Date().getMonth() - 1)
+                                                return (new Date(e.check_in).getMonth() == datames.getMonth() &&
+                                                    new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
+                                                    (new Date(e.check_out).getMonth() == datames.getMonth() &&
+                                                        new Date(e.check_out).getFullYear() == datames.getFullYear())
+
+                                            }
+                                            else if (periodo == 'a-atual') {
+                                                return new Date(e.check_in).getFullYear() == date.getFullYear() ||
+                                                    new Date(e.check_out).getFullYear() == date.getFullYear()
+
+                                            }
+                                            else if (periodo == 'a-passado') {
+                                                return new Date(e.check_in).getFullYear() == (date.getFullYear() - 1) ||
+                                                    new Date(e.check_out).getFullYear() == (date.getFullYear() - 1)
+
+                                            }
+                                            else {
+                                                return (new Date(e.check_in) >= new Date(deData) &&
+                                                    new Date(e.check_in) <= new Date(ateData)) ||
+                                                    (new Date(e.check_out) >= new Date(deData) &&
+                                                        new Date(e.check_out) <= new Date(ateData))
+                                            }
+
+                                        })
+                                        //tipo de evento
+                                        .filter((e) => {
+                                            if (evento == 'all')
+                                                return e
+                                            else return e.tipo_reserva.toLowerCase() == evento
+                                        })
+                                        //acomodacao
+                                        .filter((e) => {
+                                            if (acomodacao == 'all')
+                                                return e
+                                            else return e.acomodacao.id == Number(acomodacao)
+                                        })
+                                        //nome hospede
+                                        .filter((e) => {
+                                            if (nomeHospede.trim() === '') return e
+                                            else return e.hospede?.nome?.toLowerCase().includes(nomeHospede.toLowerCase())
+                                        })
+                                        //canais de reserva
+                                        .filter((e) => {
+                                            if (canalReserva == 'all')
+                                                return e
+                                            else return e.canal_reserva?.id == Number(canalReserva)
+                                        })
+                                        .map(r => Number(r.valor))
+                                        .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
+                                }</td>
+                                <td className="text-center">{/* Total Líquido:  */}{
+                                    formatarMoedaBrasileira((reserva
+                                        //periodo
+                                        .filter((e) => {
+                                            if (periodo == 'm-atual') {
+                                                return (new Date(e.check_in).getMonth() == date.getMonth() &&
+                                                    new Date(e.check_in).getFullYear() == date.getFullYear()) ||
+                                                    (new Date(e.check_out).getMonth() == date.getMonth() &&
+                                                        new Date(e.check_out).getFullYear() == date.getFullYear())
+                                            }
+                                            else if (periodo == 'm-passado') {
+                                                const datames = new Date()
+                                                datames.setMonth(new Date().getMonth() - 1)
+                                                return (new Date(e.check_in).getMonth() == datames.getMonth() &&
+                                                    new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
+                                                    (new Date(e.check_out).getMonth() == datames.getMonth() &&
+                                                        new Date(e.check_out).getFullYear() == datames.getFullYear())
+
+                                            }
+                                            else if (periodo == 'a-atual') {
+                                                return new Date(e.check_in).getFullYear() == date.getFullYear() ||
+                                                    new Date(e.check_out).getFullYear() == date.getFullYear()
+
+                                            }
+                                            else if (periodo == 'a-passado') {
+                                                return new Date(e.check_in).getFullYear() == (date.getFullYear() - 1) ||
+                                                    new Date(e.check_out).getFullYear() == (date.getFullYear() - 1)
+
+                                            }
+                                            else {
+                                                return (new Date(e.check_in) >= new Date(deData) &&
+                                                    new Date(e.check_in) <= new Date(ateData)) ||
+                                                    (new Date(e.check_out) >= new Date(deData) &&
+                                                        new Date(e.check_out) <= new Date(ateData))
+                                            }
+
+                                        })
+                                        //tipo de evento
+                                        .filter((e) => {
+                                            if (evento == 'all')
+                                                return e
+                                            else return e.tipo_reserva.toLowerCase() == evento
+                                        })
+                                        //acomodacao
+                                        .filter((e) => {
+                                            if (acomodacao == 'all')
+                                                return e
+                                            else return e.acomodacao.id == Number(acomodacao)
+                                        })
+                                        //nome hospede
+                                        .filter((e) => {
+                                            if (nomeHospede.trim() === '') return e
+                                            else return e.hospede?.nome?.toLowerCase().includes(nomeHospede.toLowerCase())
+                                        })
+                                        //canais de reserva
+                                        .filter((e) => {
+                                            if (canalReserva == 'all')
+                                                return e
+                                            else return e.canal_reserva?.id == Number(canalReserva)
+                                        })
+                                        .map(r => Number(r.valor_liq_calculado) > 0 ? Number(r.valor_liq_calculado) : Number(r.valor_liq))
+                                        .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
+                                }</td>
+                                <td>
+                                    {
+                                        formatarMoedaBrasileira((reserva
+                                            //periodo
+                                            .filter((e) => {
+                                                if (periodo == 'm-atual') {
+                                                    return (new Date(e.check_in).getMonth() == date.getMonth() &&
+                                                        new Date(e.check_in).getFullYear() == date.getFullYear()) ||
+                                                        (new Date(e.check_out).getMonth() == date.getMonth() &&
+                                                            new Date(e.check_out).getFullYear() == date.getFullYear())
+                                                }
+                                                else if (periodo == 'm-passado') {
+                                                    const datames = new Date()
+                                                    datames.setMonth(new Date().getMonth() - 1)
+                                                    return (new Date(e.check_in).getMonth() == datames.getMonth() &&
+                                                        new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
+                                                        (new Date(e.check_out).getMonth() == datames.getMonth() &&
+                                                            new Date(e.check_out).getFullYear() == datames.getFullYear())
+
+                                                }
+                                                else if (periodo == 'a-atual') {
+                                                    return new Date(e.check_in).getFullYear() == date.getFullYear() ||
+                                                        new Date(e.check_out).getFullYear() == date.getFullYear()
+
+                                                }
+                                                else if (periodo == 'a-passado') {
+                                                    return new Date(e.check_in).getFullYear() == (date.getFullYear() - 1) ||
+                                                        new Date(e.check_out).getFullYear() == (date.getFullYear() - 1)
+
+                                                }
+                                                else {
+                                                    return (new Date(e.check_in) >= new Date(deData) &&
+                                                        new Date(e.check_in) <= new Date(ateData)) ||
+                                                        (new Date(e.check_out) >= new Date(deData) &&
+                                                            new Date(e.check_out) <= new Date(ateData))
+                                                }
+
+                                            })
+                                            //tipo de evento
+                                            .filter((e) => {
+                                                if (evento == 'all')
+                                                    return e
+                                                else return e.tipo_reserva.toLowerCase() == evento
+                                            })
+                                            //acomodacao
+                                            .filter((e) => {
+                                                if (acomodacao == 'all')
+                                                    return e
+                                                else return e.acomodacao.id == Number(acomodacao)
+                                            })
+                                            //canais de reserva
+                                            .filter((e) => {
+                                                if (canalReserva == 'all')
+                                                    return e
+                                                else return e.canal_reserva?.id == Number(canalReserva)
+                                            })
+                                            .map(r => Number(r.comissao_gestor))
+                                            .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
+                                    }
+                                </td>
+                                <td>
+                                    {
+                                        formatarMoedaBrasileira((reserva
+                                            //periodo
+                                            .filter((e) => {
+                                                if (periodo == 'm-atual') {
+                                                    return (new Date(e.check_in).getMonth() == date.getMonth() &&
+                                                        new Date(e.check_in).getFullYear() == date.getFullYear()) ||
+                                                        (new Date(e.check_out).getMonth() == date.getMonth() &&
+                                                            new Date(e.check_out).getFullYear() == date.getFullYear())
+                                                }
+                                                else if (periodo == 'm-passado') {
+                                                    const datames = new Date()
+                                                    datames.setMonth(new Date().getMonth() - 1)
+                                                    return (new Date(e.check_in).getMonth() == datames.getMonth() &&
+                                                        new Date(e.check_in).getFullYear() == datames.getFullYear()) ||
+                                                        (new Date(e.check_out).getMonth() == datames.getMonth() &&
+                                                            new Date(e.check_out).getFullYear() == datames.getFullYear())
+
+                                                }
+                                                else if (periodo == 'a-atual') {
+                                                    return new Date(e.check_in).getFullYear() == date.getFullYear() ||
+                                                        new Date(e.check_out).getFullYear() == date.getFullYear()
+
+                                                }
+                                                else if (periodo == 'a-passado') {
+                                                    return new Date(e.check_in).getFullYear() == (date.getFullYear() - 1) ||
+                                                        new Date(e.check_out).getFullYear() == (date.getFullYear() - 1)
+
+                                                }
+                                                else {
+                                                    return (new Date(e.check_in) >= new Date(deData) &&
+                                                        new Date(e.check_in) <= new Date(ateData)) ||
+                                                        (new Date(e.check_out) >= new Date(deData) &&
+                                                            new Date(e.check_out) <= new Date(ateData))
+                                                }
+
+                                            })
+                                            //tipo de evento
+                                            .filter((e) => {
+                                                if (evento == 'all')
+                                                    return e
+                                                else return e.tipo_reserva.toLowerCase() == evento
+                                            })
+                                            //acomodacao
+                                            .filter((e) => {
+                                                if (acomodacao == 'all')
+                                                    return e
+                                                else return e.acomodacao.id == Number(acomodacao)
+                                            })
+                                            //canais de reserva
+                                            .filter((e) => {
+                                                if (canalReserva == 'all')
+                                                    return e
+                                                else return e.canal_reserva?.id == Number(canalReserva)
+                                            })
+                                            .map(r => Number(r.valor_sem_comissao))
+                                            .reduce((sum, valor) => sum + valor, 0)).toFixed(2))
+                                    }
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>}
         </section>
     )
 }
