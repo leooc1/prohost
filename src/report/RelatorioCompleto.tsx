@@ -21,6 +21,30 @@ interface propsRelatorio {
     onReady?: () => void,
 }
 
+const RESULTADO_PADRAO = {
+    comissao_plataforma: "0",
+    despesas: "0",
+    diaria_media: "0",
+    faturamento_bruto: "0",
+    faturamento_liquido: "0",
+    lucro: "0",
+    taxa_limpeza: "0",
+    rentabilidade_imovel: 0,
+    comissao_reservas: 0,
+    comissao_taxa_limpeza: 0,
+    repasse: 0,
+    periodo: 'atual'
+}
+
+type LoadingState = {
+    acomodacao: boolean
+    resumo: boolean
+    reservas: boolean
+    historico: boolean
+    despesas: boolean
+    resultado: boolean
+}
+
 export default function RelatorioCompleto(props: propsRelatorio) {
     const chart = <svg className='w-10 h-fit' xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 512 512"><g><path fill-rule="evenodd" d="M411.867 151.37h68.62V439.5h-68.62zM72.5 439.499h68.62V329.594H72.5zm113.123 0h68.62V227.278h-68.62zm113.122 0h68.62V267.836h-68.62zM498.5 485.998c0-6.907-5.592-12.498-12.504-12.498H38.497V26.001c0-6.906-5.592-12.503-12.498-12.503s-12.498 5.597-12.498 12.503v459.997c0 6.901 5.597 12.503 12.498 12.503h459.997c6.912 0 12.504-5.602 12.504-12.503zM94.356 269.903l146.704-146.71 60.257 76.15a12.507 12.507 0 0 0 9.071 4.726 12.544 12.544 0 0 0 9.573-3.643L445.286 75.102l-1.927 13.47c-.982 6.833 3.77 13.164 10.597 14.14 6.833.982 13.174-3.77 14.151-10.603l7.229-50.605a12.477 12.477 0 0 0-3.337-10.412 12.51 12.51 0 0 0-10.259-3.796l-52.49 5.196c-6.869.681-11.891 6.801-11.21 13.67s6.801 11.875 13.67 11.204l17.699-1.748L312.21 172.821l-60.262-76.156a12.475 12.475 0 0 0-9.071-4.72 12.518 12.518 0 0 0-9.567 3.638L76.678 252.219c-4.879 4.884-4.879 12.794 0 17.683 2.439 2.439 5.639 3.659 8.839 3.659s6.394-1.22 8.839-3.659z" fill={props.cores.secundario} opacity="1" data-original="#000000" className=""></path></g></svg>
 
@@ -187,9 +211,6 @@ export default function RelatorioCompleto(props: propsRelatorio) {
         })
 
     }
-
-
-    const [loaded, setLoaded] = useState<boolean>(false)
     const [nome, setNome] = useState<string>('')
     const [acIMG, setAcIMG] = useState<string>('')
     const [valorImovel, setValorImovel] = useState<string>('')
@@ -207,7 +228,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
         comissao_reservas: string | number
         comissao_taxa_limpeza: string | number
         repasse: string | number
-    }[]>([])
+    }[]>([RESULTADO_PADRAO])
     const [despesas, setDespesas] = useState<any[]>([])
     const [reservas, setReservas] = useState<any[]>([])
     const [historicoFaturamento, setHistoricoFaturamento] = useState<{
@@ -216,6 +237,14 @@ export default function RelatorioCompleto(props: propsRelatorio) {
         faturamento_despesa: any[]
     }>({ faturamento_periodo: 0, rentabilidade_imovel: 0, faturamento_despesa: [] })
     const [listaReservas, setListaReservas] = useState<any[]>([])
+    const [loadingState, setLoadingState] = useState<LoadingState>({
+        acomodacao: true,
+        resumo: true,
+        reservas: true,
+        historico: true,
+        despesas: true,
+        resultado: true,
+    })
     const sortedListaReservas = useMemo(() => [...listaReservas].sort((a, b) => {
         return new Date(a.check_in).getTime() - new Date(b.check_in).getTime();
     }), [listaReservas])
@@ -253,23 +282,13 @@ export default function RelatorioCompleto(props: propsRelatorio) {
         return acomodacaoData
     }
 
+    function getLoadingClass(isLoaded: boolean) {
+        return isLoaded ? 'opacity-100 transition-opacity duration-300' : 'opacity-40 transition-opacity duration-300'
+    }
+
     async function getData() {
         const dataInicio = `${props.ano}-${('0' + props.mes).slice(-2)}-01`
         const dataFim = `${props.ano}-${('0' + props.mes).slice(-2)}-${diasDoMes(props.mes, props.ano)}`
-        const resultadoPadrao = {
-            comissao_plataforma: "0",
-            despesas: "0",
-            diaria_media: "0",
-            faturamento_bruto: "0",
-            faturamento_liquido: "0",
-            lucro: "0",
-            taxa_limpeza: "0",
-            rentabilidade_imovel: 0,
-            comissao_reservas: 0,
-            comissao_taxa_limpeza: 0,
-            repasse: 0,
-            periodo: 'atual'
-        }
 
         getAcomodacao().then((acomodacaoData) => {
             if (!acomodacaoData) return
@@ -277,119 +296,138 @@ export default function RelatorioCompleto(props: propsRelatorio) {
             setValorImovel(acomodacaoData.valor_imovel || '0')
             setAcIMG(acomodacaoData.foto || '')
             setNome(acomodacaoData.nome || '')
+            setLoadingState((current) => ({ ...current, acomodacao: false }))
         })
 
-        const [
-            ocupacaoSemana,
-            indicadoresReserva,
-            resultadoAc,
-            faturamentoHistorico,
-            despesasData,
-            reservasData,
-            comparativoResultado,
-        ] = await Promise.all([
+        Promise.all([
             getJson<any[]>(`${apiURL}/movimentacao/${props.saas}/ocupacao-semana/${dataInicio}/${dataFim}/${props.acomodacao}`, []),
             getJson<any[]>(`${apiURL}/reserva/${props.saas}/ind-ope/${dataInicio}/${dataFim}/${props.acomodacao}`, []),
             getJson<any>(`${apiURL}/movimentacao/${props.saas}/result-ac/${dataInicio}/${dataFim}/${props.acomodacao}`, []),
-            getJson<any[]>(`${apiURL}/movimentacao/${props.saas}/fat-bar/${dataFim}/${props.acomodacao}`, []),
-            getJson<any[]>(`${apiURL}/movimentacao/${props.saas}/relatorio/${props.acomodacao}/${dataInicio}/${dataFim}`, []),
-            getJson<any[]>(`${apiURL}/reserva/ac/${props.acomodacao}/${props.mes}/${props.ano}`, []),
-            getJson<any>(`${apiURL}/movimentacao/${props.saas}/comparativo-result-ac/${dataInicio}/${dataFim}/${props.acomodacao}`, []),
-        ])
+        ]).then(([ocupacaoSemana, indicadoresReserva, resultadoAc]) => {
+            const ocupacaoDoImovel = Array.isArray(ocupacaoSemana) && ocupacaoSemana.length > 0
+                ? ocupacaoSemana.map((d: any) => {
+                    const totalDias = Number(d.total_dias_no_intervalo);
+                    const disponiveis = totalDias - Number(d.total_indisponibilidades);
+                    return disponiveis > 0 ? (Number(d.total_movimentacoes) / disponiveis) * 100 : 0;
+                }).reduce((a: number, b: number) => a + b, 0) / 7
+                : 0
 
-        const ocupacaoDoImovel = Array.isArray(ocupacaoSemana) && ocupacaoSemana.length > 0
-            ? ocupacaoSemana.map((d: any) => {
-                const totalDias = Number(d.total_dias_no_intervalo);
-                const disponiveis = totalDias - Number(d.total_indisponibilidades);
-                return disponiveis > 0 ? (Number(d.total_movimentacoes) / disponiveis) * 100 : 0;
-            }).reduce((a: number, b: number) => a + b, 0) / 7
-            : 0
+            const novasReservas = Array.isArray(indicadoresReserva) && indicadoresReserva.length > 0 && indicadoresReserva[0].total_reserva
+                ? Number(indicadoresReserva[0].total_reserva)
+                : 0
 
-        const novasReservas = Array.isArray(indicadoresReserva) && indicadoresReserva.length > 0 && indicadoresReserva[0].total_reserva
-            ? Number(indicadoresReserva[0].total_reserva)
-            : 0
+            const faturamento = Array.isArray(resultadoAc) && resultadoAc.length > 0
+                ? Number(resultadoAc[0].faturamento_liquido || 0)
+                : 0
 
-        const faturamento = Array.isArray(resultadoAc) && resultadoAc.length > 0
-            ? Number(resultadoAc[0].faturamento_liquido || 0)
-            : 0
-
-        setDadosReserva({
-            ocupacao_do_imovel: ocupacaoDoImovel,
-            novas_reservas: novasReservas,
-            faturamento,
+            setDadosReserva({
+                ocupacao_do_imovel: ocupacaoDoImovel,
+                novas_reservas: novasReservas,
+                faturamento,
+            })
+            setLoadingState((current) => ({ ...current, resumo: false }))
         })
 
-        if (Array.isArray(faturamentoHistorico)) {
-            setHistoricoFaturamento({
-                faturamento_periodo: faturamentoHistorico.slice(-12).reduce((total, item) => {
-                    return total + parseFloat(item.faturamento_liquido || 0);
-                }, 0),
-                rentabilidade_imovel: Array.isArray(resultadoAc) && resultadoAc.length > 0 ? Number(resultadoAc[0].rentabilidade_imovel || 0) : 0,
-                faturamento_despesa: faturamentoHistorico
-            })
-        } else {
-            setHistoricoFaturamento({
-                faturamento_periodo: 0,
-                rentabilidade_imovel: 0,
-                faturamento_despesa: []
-            })
-        }
+        getJson<any[]>(`${apiURL}/reserva/ac/${props.acomodacao}/${props.mes}/${props.ano}`, []).then((reservasData) => {
+            if (Array.isArray(reservasData)) {
+                setListaReservas(reservasData)
+                setReservas(reservasData.map((item: any, index: any) => ({
+                    title: item.hospede ? item.hospede.nome : 'Indisponibilidade',
+                    start: item.check_in.slice(0, 19).replace('T', ' '),
+                    end: item.check_out.slice(0, 19).replace('T', ' '),
+                    hospedes: item.qtd_hospede,
+                    color: item.tipo_reserva == 'Continuidade' ? '#30C46D'
+                        : item.tipo_reserva == 'Indisponibilidade' ? '#353535'
+                            : item.canal_reserva?.cor || '',
+                    canal_reserva: item.canal_reserva?.nome,
+                    id: String(index + 1),
+                    tipo: item.tipo_reserva,
+                    obs: item.obs,
+                    bruto: parseFloat(item.valor),
+                    liquido: parseFloat(item.valor_liq),
+                    comissao: parseFloat(item.comissao_ota)
+                })))
+            } else {
+                setListaReservas([])
+                setReservas([])
+            }
+            setLoadingState((current) => ({ ...current, reservas: false }))
+        })
 
-        setDespesas(Array.isArray(despesasData) ? despesasData : [])
+        Promise.all([
+            getJson<any>(`${apiURL}/movimentacao/${props.saas}/result-ac/${dataInicio}/${dataFim}/${props.acomodacao}`, []),
+            getJson<any[]>(`${apiURL}/movimentacao/${props.saas}/fat-bar/${dataFim}/${props.acomodacao}`, []),
+        ]).then(([resultadoAc, faturamentoHistorico]) => {
+            if (Array.isArray(faturamentoHistorico)) {
+                setHistoricoFaturamento({
+                    faturamento_periodo: faturamentoHistorico.slice(-12).reduce((total, item) => {
+                        return total + parseFloat(item.faturamento_liquido || 0);
+                    }, 0),
+                    rentabilidade_imovel: Array.isArray(resultadoAc) && resultadoAc.length > 0 ? Number(resultadoAc[0].rentabilidade_imovel || 0) : 0,
+                    faturamento_despesa: faturamentoHistorico
+                })
+            } else {
+                setHistoricoFaturamento({
+                    faturamento_periodo: 0,
+                    rentabilidade_imovel: 0,
+                    faturamento_despesa: []
+                })
+            }
+            setLoadingState((current) => ({ ...current, historico: false }))
+        })
 
-        if (Array.isArray(reservasData)) {
-            setListaReservas(reservasData)
-            setReservas(reservasData.map((item: any, index: any) => ({
-                title: item.hospede ? item.hospede.nome : 'Indisponibilidade',
-                start: item.check_in.slice(0, 19).replace('T', ' '),
-                end: item.check_out.slice(0, 19).replace('T', ' '),
-                hospedes: item.qtd_hospede,
-                color: item.tipo_reserva == 'Continuidade' ? '#30C46D'
-                    : item.tipo_reserva == 'Indisponibilidade' ? '#353535'
-                        : item.canal_reserva?.cor || '',
-                canal_reserva: item.canal_reserva?.nome,
-                id: String(index + 1),
-                tipo: item.tipo_reserva,
-                obs: item.obs,
-                bruto: parseFloat(item.valor),
-                liquido: parseFloat(item.valor_liq),
-                comissao: parseFloat(item.comissao_ota)
-            })))
-        } else {
-            setListaReservas([])
-            setReservas([])
-        }
+        getJson<any[]>(`${apiURL}/movimentacao/${props.saas}/relatorio/${props.acomodacao}/${dataInicio}/${dataFim}`, []).then((despesasData) => {
+            setDespesas(Array.isArray(despesasData) ? despesasData : [])
+            setLoadingState((current) => ({ ...current, despesas: false }))
+        })
 
-        if (!Array.isArray(comparativoResultado) || comparativoResultado.length == 0) {
-            setResultadoAcomodacoes([resultadoPadrao])
-        } else {
-            const atual = comparativoResultado
-                .filter((d: any) => d.periodo === 'atual')
-                .map((d: any) => ({
-                    comissao_plataforma: d.comissao_plataforma ?? '0',
-                    despesas: d.despesas ?? '0',
-                    diaria_media: d.diaria_media ?? '0',
-                    faturamento_bruto: d.faturamento_bruto ?? '0',
-                    faturamento_liquido: d.faturamento_liquido ?? '0',
-                    lucro: d.lucro ?? '0',
-                    taxa_limpeza: d.taxa_limpeza ?? '0',
-                    rentabilidade_imovel: d.rentabilidade_imovel ?? 0,
-                    comissao_reservas: d.comissao_reservas ?? 0,
-                    comissao_taxa_limpeza: d.comissao_taxa_limpeza ?? 0,
-                    repasse: d.repasse ?? 0,
-                    periodo: d.periodo ?? 'atual',
-                }))
-            setResultadoAcomodacoes(atual.length > 0 ? atual : [resultadoPadrao])
-        }
-        setLoaded(true)
+        getJson<any>(`${apiURL}/movimentacao/${props.saas}/comparativo-result-ac/${dataInicio}/${dataFim}/${props.acomodacao}`, []).then((comparativoResultado) => {
+            if (!Array.isArray(comparativoResultado) || comparativoResultado.length == 0) {
+                setResultadoAcomodacoes([RESULTADO_PADRAO])
+            } else {
+                const atual = comparativoResultado
+                    .filter((d: any) => d.periodo === 'atual')
+                    .map((d: any) => ({
+                        comissao_plataforma: d.comissao_plataforma ?? '0',
+                        despesas: d.despesas ?? '0',
+                        diaria_media: d.diaria_media ?? '0',
+                        faturamento_bruto: d.faturamento_bruto ?? '0',
+                        faturamento_liquido: d.faturamento_liquido ?? '0',
+                        lucro: d.lucro ?? '0',
+                        taxa_limpeza: d.taxa_limpeza ?? '0',
+                        rentabilidade_imovel: d.rentabilidade_imovel ?? 0,
+                        comissao_reservas: d.comissao_reservas ?? 0,
+                        comissao_taxa_limpeza: d.comissao_taxa_limpeza ?? 0,
+                        repasse: d.repasse ?? 0,
+                        periodo: d.periodo ?? 'atual',
+                    }))
+                setResultadoAcomodacoes(atual.length > 0 ? atual : [RESULTADO_PADRAO])
+            }
+            setLoadingState((current) => ({ ...current, resultado: false }))
+        })
     }
 
     useEffect(() => {
-
-        setLoaded(false)
-        getData().finally(() => {
-            props.onReady?.()
+        setNome('')
+        setAcIMG('')
+        setValorImovel('0')
+        setDadosReserva({ ocupacao_do_imovel: 0, novas_reservas: 0, faturamento: 0 })
+        setResultadoAcomodacoes([RESULTADO_PADRAO])
+        setDespesas([])
+        setReservas([])
+        setHistoricoFaturamento({ faturamento_periodo: 0, rentabilidade_imovel: 0, faturamento_despesa: [] })
+        setListaReservas([])
+        setLoadingState({
+            acomodacao: true,
+            resumo: true,
+            reservas: true,
+            historico: true,
+            despesas: true,
+            resultado: true,
         })
+
+        props.onReady?.()
+        getData()
     }, [props.saas, props.acomodacao, props.mes, props.ano])
 
     return (
@@ -405,8 +443,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                     Baixar como PDF
                 </button>
             </div>
-            {loaded &&
-                <div id='relatorio-container' className="flex flex-col relative gap-1" ref={pdfRef} >
+            <div id='relatorio-container' className="flex flex-col relative gap-1" ref={pdfRef} >
                     {/* RELATORIO */}
                     <section style={{ backgroundColor: props.cores.primario }} id='relatorio' className={`flex flex-col justify-between p-10 h-screen relative bg-[${props.cores.primario}]`}>
                         <div onClick={() => {
@@ -431,7 +468,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                     <p style={{ color: props.cores.letra }} className={`text-[${props.cores.letra}] text-3xl`}>Relatório de Resultados</p>
                                     <span>{chart}</span>
                                 </div>
-                                <div className='flex flex-col justify-center'>
+                                <div className={`flex flex-col justify-center ${getLoadingClass(!loadingState.acomodacao)}`}>
                                     <p style={{ color: props.cores.secundario }} className={`text-[${props.cores.secundario}] text-3xl`}>{nome}</p>
                                     <p style={{ color: props.cores.letra }} className={`text-[${props.cores.letra}] text-2xl`}>{meses[props.mes - 1]}.{props.ano}</p>
                                     <div className='flex justify-end'>
@@ -446,7 +483,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                     </p>
                                 </div>
                             </section>
-                            <section className='flex items-center pl-5'>
+                            <section className={`flex items-center pl-5 ${getLoadingClass(!loadingState.acomodacao)}`}>
                                 <img src={acIMG} alt={nome} className='h-fit max-h-[650px]' />
                             </section>
                         </section>
@@ -569,12 +606,12 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 <img src={props.imagem} alt="" className='bg-primary max-w-56 max-h-28 h-28' />
                             </div>
                             <section className='grid grid-cols-3 gap-10 h-full mt-20 items-center'>
-                                <div className='col-span-2 h-full'>
+                                <div className={`col-span-2 h-full ${getLoadingClass(!loadingState.reservas)}`}>
                                     <CalendarioR
                                         data={`${props.ano}-${('0' + props.mes).slice(-2)}-01 00:00:00`}
                                         reservas={reservas} />
                                 </div>
-                                <ul className='flex flex-col gap-5 self-start mt-6'>
+                                <ul className={`flex flex-col gap-5 self-start mt-6 ${getLoadingClass(!loadingState.resumo)}`}>
                                     <li className={`flex flex-col bg-zinc-400 bg-opacity-10 px-2 py-1 rounded-lg relative ${editCalendar[0] ? 'opacity-100' : 'opacity-30'}`}>
                                         <button className='absolute right-2 invert'
                                             onClick={() => {
@@ -655,7 +692,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 <div style={{ backgroundColor: props.cores.primario }} className={`w-full h-px bg-[${props.cores.primario}]`}></div>
                                 <img src={props.imagem} alt="" className='bg-primary max-w-56 max-h-28 h-28' />
                             </div>
-                            <section className='h-full mt-20 flex items-center'>
+                            <section className={`h-full mt-20 flex items-center ${getLoadingClass(!loadingState.reservas)}`}>
                                 <ListaReservaR reservas={sortedListaReservas} />
                             </section>
 
@@ -690,7 +727,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 <div style={{ backgroundColor: props.cores.primario }} className={`w-full h-px bg-[${props.cores.primario}]`}></div>
                                 <img src={props.imagem} alt="" className='bg-primary max-w-56 max-h-28 h-28' />
                             </div>
-                            <section className='flex gap-10 mt-16'>
+                            <section className={`flex gap-10 mt-16 ${getLoadingClass(!loadingState.historico)}`}>
                                 <div className='bg-zinc-400 bg-opacity-10 px-2 py-1 rounded-lg h-fit'>
                                     <div style={{ color: props.cores.letra }} className={`w-40 text-[${props.cores.letra}]`}>Faturamento do período</div>
                                     <div style={{ color: props.cores.letra }} className={`text-end text-[${props.cores.letra}] font-medium`}><span className='text-base pr-3'>R$</span>{new Intl.NumberFormat('pt-BR', {
@@ -703,13 +740,15 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                     <div style={{ color: props.cores.letra }} className={`text-end text-[${props.cores.letra}] font-medium`}>{((Number(historicoFaturamento.faturamento_periodo) / Number(valorImovel)) * 100).toFixed(1)}%</div>
                                 </div>
                             </section>
-                            {historicoFaturamento.faturamento_despesa.length > 0 &&
-                                <HistoricoFaturamento
-                                    mes={props.mes}
-                                    ano={props.ano}
-                                    dadosFaturamento={dadosFaturamento}
-                                    dadosDespesa={dadosDespesa} />}
-                            <p style={{ color: props.cores.letra }} className={`text-[${props.cores.letra}]`}>*Valor do imóvel estimado em R$ {new Intl.NumberFormat('pt-BR', {
+                            <div className={getLoadingClass(!loadingState.historico)}>
+                                {historicoFaturamento.faturamento_despesa.length > 0 &&
+                                    <HistoricoFaturamento
+                                        mes={props.mes}
+                                        ano={props.ano}
+                                        dadosFaturamento={dadosFaturamento}
+                                        dadosDespesa={dadosDespesa} />}
+                            </div>
+                            <p style={{ color: props.cores.letra }} className={`text-[${props.cores.letra}] ${getLoadingClass(!loadingState.acomodacao)}`}>*Valor do imóvel estimado em R$ {new Intl.NumberFormat('pt-BR', {
                                 minimumFractionDigits: 0,
                                 maximumFractionDigits: 0
                             }).format(Number(valorImovel))}</p>
@@ -744,13 +783,15 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 <div style={{ backgroundColor: props.cores.primario }} className={`w-full h-px bg-[${props.cores.primario}]`}></div>
                                 <img src={props.imagem} alt="" className='bg-primary max-w-56 max-h-28 h-28' />
                             </div>
-                            {historicoFaturamento.faturamento_despesa.length > 0 &&
-                                <ComparativoResultados
-                                    mes={props.mes}
-                                    ano={props.ano}
-                                    dadosAtuais={dadosFaturamento}
-                                    dadosAnteriores={dadosAnteriores}
-                                />}
+                            <div className={getLoadingClass(!loadingState.historico)}>
+                                {historicoFaturamento.faturamento_despesa.length > 0 &&
+                                    <ComparativoResultados
+                                        mes={props.mes}
+                                        ano={props.ano}
+                                        dadosAtuais={dadosFaturamento}
+                                        dadosAnteriores={dadosAnteriores}
+                                    />}
+                            </div>
                         </section>
                     </div>
                     {/* DETALHAMENTO DAS DESPESAS */}
@@ -782,7 +823,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 <div style={{ backgroundColor: props.cores.primario }} className={`w-full h-px bg-[${props.cores.primario}]`}></div>
                                 <img src={props.imagem} alt="" className='bg-primary max-w-56 max-h-28 h-28' />
                             </div>
-                            <div className='h-3/4 grid items-center'>
+                            <div className={`h-3/4 grid items-center ${getLoadingClass(!loadingState.despesas)}`}>
                                 <DespesasR despesas={sortedDespesas} />
                             </div>
                         </section>
@@ -816,7 +857,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 <div style={{ backgroundColor: props.cores.primario }} className={`w-full h-px bg-[${props.cores.primario}]`}></div>
                                 <img src={props.imagem} alt="" className='bg-primary max-w-56 max-h-28 h-28' />
                             </div>
-                            <section className="grid gap-2 grid-cols-3 h-full mt-20">
+                            <section className={`grid gap-2 grid-cols-3 h-full mt-20 ${getLoadingClass(!loadingState.resultado)}`}>
                                 <section className="grid gap-5 grid-cols-2 col-span-2">
                                     <div className={`bg-white border-zinc-300 border rounded-lg h-full flex items-center py-1 relative ${edit[0] ? 'opacity-100' : 'opacity-30'}`}>
                                         <div className="bg-[#D1F0FF] rounded-md w-fit py-2 px-2 ml-4">
@@ -1048,7 +1089,6 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                         </section>
                     </div>
                 </div >
-            }
         </>
     )
 }
