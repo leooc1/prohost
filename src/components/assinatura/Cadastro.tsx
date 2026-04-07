@@ -381,7 +381,7 @@ export default function Cadastro() {
                             className={`border bg-transparent text-base py-1 pr-2 pl-7 ${!camposObrigatorios[3] ? 'outline-red-500 border-red-500' : 'border-zinc-300 outline-secondary'} text-black rounded-md`} />
                     </label>
                 </div>
-                <div className='grid md:grid-cols-4 gap-5 w-full'>
+                <div className='grid md:grid-cols-4 gap-5 w-full hidden'>
                     <label className='w-full text-zinc-500 flex flex-col text-sm gap-2 relative'>
                         CEP
                         <svg className='h-fit w-4 fill-zinc-300 absolute top-9 left-2' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.364 17.364L12 23.7279L5.63604 17.364C2.12132 13.8492 2.12132 8.15076 5.63604 4.63604C9.15076 1.12132 14.8492 1.12132 18.364 4.63604C21.8787 8.15076 21.8787 13.8492 18.364 17.364ZM12 13C13.1046 13 14 12.1046 14 11C14 9.89543 13.1046 9 12 9C10.8954 9 10 9.89543 10 11C10 12.1046 10.8954 13 12 13Z"></path></svg>
@@ -442,13 +442,13 @@ export default function Cadastro() {
                         onClick={() => {
                             const celular = document.getElementById('celular') as HTMLInputElement
                             const cpf_cnpj = document.getElementById('cpfCnpj') as HTMLInputElement
-                            const end_rua = document.getElementById('rua') as HTMLInputElement
-                            const end_num = document.getElementById('num') as HTMLInputElement
-                            const end_cep = document.getElementById('cep') as HTMLInputElement
+                            const end_rua = {value:''}/* document.getElementById('rua') as HTMLInputElement */
+                            const end_num = {value:''}/* document.getElementById('num') as HTMLInputElement */
+                            const end_cep = {value:''}/* document.getElementById('cep') as HTMLInputElement */
                             const nome = document.getElementById('nome') as HTMLInputElement
                             const email = document.getElementById('email') as HTMLInputElement
                             const senha = document.getElementById('senha') as HTMLInputElement
-                            if (celular.value.length > 0 && cpf_cnpj.value.length > 0 && end_rua.value.length > 0 && end_num.value.length > 0 && end_cep.value.length > 0 && nome.value.length > 0 && email.value.length > 0 && senha.value.length > 0 && button) {
+                            if (celular.value.length > 0 && cpf_cnpj.value.length > 0 && /* end_rua.value.length > 0 && */ /* end_num.value.length > 0 && */ /* end_cep.value.length > 0 && */ nome.value.length > 0 && email.value.length > 0 && senha.value.length > 0 && button) {
 
                                 const origem = new URL(location.href).searchParams.get('origin') || ''
                                 /* const cycle = new URL(location.href).searchParams.get('cycle') || '' */
@@ -553,7 +553,7 @@ export default function Cadastro() {
                                     erro = (erro.map((e, i) => i === 3 ? true : e))
                                 }
                                 else { erro = (erro.map((e, i) => i === 3 ? false : e)) }
-                                if (end_cep.value.length > 0) {
+                                /* if (end_cep.value.length > 0) {
                                     erro = (erro.map((e, i) => i === 4 ? true : e))
                                 }
                                 else { erro = (erro.map((e, i) => i === 4 ? false : e)) }
@@ -564,7 +564,7 @@ export default function Cadastro() {
                                 if (end_num.value.length > 0) {
                                     erro = (erro.map((e, i) => i === 6 ? true : e))
                                 }
-                                else { erro = (erro.map((e, i) => i === 6 ? false : e)) }
+                                else { erro = (erro.map((e, i) => i === 6 ? false : e)) } */
                                 if (senha.value.length > 0) {
                                     erro = (erro.map((e, i) => i === 7 ? true : e))
                                 }

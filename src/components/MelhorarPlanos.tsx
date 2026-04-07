@@ -22,7 +22,7 @@ const cupons = [
     {
         name: 'CUPOMPH10',
         discount: 0.1,
-        until: new Date('2026-04-02')
+        until: new Date('2026-04-21')
     }
 ]
 
@@ -85,12 +85,14 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                 monthly: (annualPrice / 10).toFixed(2),
                 total: annualPrice.toFixed(2),
                 savings: savings.toFixed(2),
+                antigo: (0).toFixed(2)
             };
         }
         return {
             monthly: monthlyPrice.toFixed(2),
             total: (monthlyPrice * 10).toFixed(2),
             savings: ((monthlyPrice * 12) - (monthlyPrice * 10)).toFixed(2),
+            antigo: (0).toFixed(2)
         };
     };
 
@@ -427,7 +429,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
     }
 
     const currentPlan = getCurrentPlan();
-    const [price, setPrice] = useState<{ monthly: string, total: string, savings: string }>(calculatePrice(currentPlan));
+    const [price, setPrice] = useState<{ monthly: string, total: string, savings: string, antigo: string }>(calculatePrice(currentPlan));
     // let price = calculatePrice(currentPlan);
 
     function mesesAteDataFutura(dataFuturaStr: string): number {
@@ -551,6 +553,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
 
                         <div className="text-center">
                             <p className="text-lg mb-2">Preço Anual:</p>
+                            {Number(price.antigo) > 0 && <span className="absolute right-2 -translate-y-4 line-through">R$ {formatCurrency(Number(price.antigo))}</span>}
                             <p className="text-3xl font-bold">
                                 {formatCurrency(Number(price.total))}
                             </p>
@@ -615,7 +618,8 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                                                 monthly: calculatePrice(currentPlan).monthly,
                                                 savings: calculatePrice(currentPlan).savings,
                                                 total: (Number(calculatePrice(currentPlan).total) -
-                                                    (Number(calculatePrice(currentPlan).total) * (cupons.find(c => c.name === cupomInput.value.toUpperCase())?.discount || 0))).toFixed(2)
+                                                    (Number(calculatePrice(currentPlan).total) * (cupons.find(c => c.name === cupomInput.value.toUpperCase())?.discount || 0))).toFixed(2),
+                                                antigo: calculatePrice(currentPlan).total
                                             })
                                         } else {
                                             cupomInfo.textContent = 'Cupom inválido ou expirado'
@@ -624,7 +628,8 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                                             setPrice({
                                                 monthly: calculatePrice(currentPlan).monthly,
                                                 savings: calculatePrice(currentPlan).savings,
-                                                total: calculatePrice(currentPlan).total
+                                                total: calculatePrice(currentPlan).total,
+                                                antigo: (0).toFixed(2)
                                             })
                                         }
                                     }
@@ -637,6 +642,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                                         {currentPlan.accommodations === 1 ? "Acomodação" : "Acomodações"} -{" "}
                                         {isAnnual ? "Anual" : "Mensal"}
                                     </div>
+                                    {Number(price.antigo) > 0 && <p className="text-base text-red-500 line-through -mb-2">R$ {formatCurrency(Number(price.antigo))}</p>}
                                     <div className="text-2xl font-bold text-[#0E3447] mt-2">
                                         {
                                             formatCurrency(isAnnual ? (

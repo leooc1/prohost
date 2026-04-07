@@ -90,6 +90,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     const [showH, setShowH] = useState<Hospede[]>([])
     const [notify, setNotify] = useState({ type: 1, text: 'Criado!' })
     const [showNotify, setShowNotify] = useState<boolean>(false)
+    const [button, setButton] = useState<boolean>(true)
 
     function checkNegativeAndApplyStyle() {
         const total = document.getElementById('tot') as HTMLInputElement
@@ -172,6 +173,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                         location.reload()
                     }, 3000)
                 } else if (data.length > 0) {
+                    setButton(true)
                     setNotify({ type: 2, text: data })
                     setShowNotify(true)
                     setTimeout(() => {
@@ -179,13 +181,13 @@ export default function NovaReserva({ close }: { close: () => void }) {
                     }, 3000)
                 }
                 else {
+                    setButton(true)
                     setNotify({ type: 2, text: 'Erro ao cadastrar!' })
                     setShowNotify(true)
                     setTimeout(() => {
                         setShowNotify(false);
                     }, 3000)
                 }
-
             })
             .catch(err => console.log(err))
     }
@@ -346,27 +348,27 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                         // const limpeza = document.getElementById('taxa_limpeza') as HTMLInputElement
                                         if (comissao.value.length == 0 && liquido.value.length == 0) {
                                             // if (!showTaxaLimpeza[0]) {
-                                                liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                             // } else {
-                                                // liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            // liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                             // }
                                         } else if (comissao.value.length == 0 && liquido.value.length > 0) {
                                             // if (!showTaxaLimpeza[0]) {
-                                                comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                             // } else {
-                                                // comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            // comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                             // }
                                         } else if (comissao.value.length > 0 && liquido.value.length == 0) {
                                             // if (!showTaxaLimpeza[0]) {
-                                                liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                             // } else {
-                                                // liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            // liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                             // }
                                         } else {
                                             // if (!showTaxaLimpeza[0]) {
-                                                liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                             // } else {
-                                                // liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            // liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                             // }
                                         }
                                         total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
@@ -392,17 +394,17 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                             return;
                                         } else if (liquido.value.length == 0 && total.value.length > 0) {
                                             // if (!showTaxaLimpeza[0]) {
-                                                liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                             // } else {
-                                                // liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            // liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                             // }
                                         } else if (liquido.value.length > 0 && total.value.length == 0) {
                                             total.value = String(Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                         } else {
                                             // if (!showTaxaLimpeza[0]) {
-                                                liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                             // } else {
-                                                // liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            // liquido.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                             // }
                                         }
                                         total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
@@ -425,17 +427,17 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                             total.value = String(Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                         } else if (comissao.value.length == 0 && total.value.length > 0) {
                                             // if (!showTaxaLimpeza[0]) {
-                                                comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                             // } else {
-                                                // comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            // comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                             // }
                                         } else if (comissao.value.length > 0 && total.value.length == 0) {
                                             total.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(comissao.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                         } else {
                                             // if (!showTaxaLimpeza[0]) {
-                                                comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                             // } else {
-                                                // comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
+                                            // comissao.value = String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) + Number(limpeza.value.replace(/[.]/gm, '').replace(/[,]/gm, '')) - Number(liquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '')));
                                             // }
                                         }
                                         total.value = formatedNumber(String(Number(total.value.replace(/[.]/gm, '').replace(/[,]/gm, ''))));
@@ -468,8 +470,9 @@ export default function NovaReserva({ close }: { close: () => void }) {
                     </label>
                     <section className="flex gap-3 justify-end mt-2">
                         <button className="px-3 py-2 border border-zinc-300 rounded-lg" onClick={close}>Cancelar</button>
-                        <button
+                        {button && <button
                             onClick={async () => {
+                                setButton(false)
                                 const acomodacaoInput = document.getElementById('acomodacao') as HTMLSelectElement
                                 const canais = document.getElementById('canal-reserva') as HTMLSelectElement
                                 const qtdHospede = document.getElementById('qtd-hospedes') as HTMLInputElement
@@ -629,7 +632,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                     }, 3000)
                                 }
                             }}
-                            id="button-cadastrar" className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary">Cadastrar</button>
+                            id="button-cadastrar" className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary">Cadastrar</button>}
                     </section>
                 </form>}
         </div >

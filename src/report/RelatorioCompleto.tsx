@@ -3,7 +3,7 @@ const closed = <svg id='eye-closed' className="w-6 h-fit" xmlns="http://www.w3.o
 
 import html2canvas from "html2canvas"
 import PptxGenJS from "pptxgenjs"
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useReactToPrint } from 'react-to-print'
 import CalendarioR from '../report/CalendarioR'
 import ComparativoResultados from '../report/ComparativoFaturamentoMensal'
@@ -216,6 +216,16 @@ export default function RelatorioCompleto(props: propsRelatorio) {
         faturamento_despesa: any[]
     }>({ faturamento_periodo: 0, rentabilidade_imovel: 0, faturamento_despesa: [] })
     const [listaReservas, setListaReservas] = useState<any[]>([])
+    const sortedListaReservas = useMemo(() => [...listaReservas].sort((a, b) => {
+        return new Date(a.check_in).getTime() - new Date(b.check_in).getTime();
+    }), [listaReservas])
+    const sortedDespesas = useMemo(() => [...despesas].sort((a, b) => {
+        return new Date(a.data).getTime() - new Date(b.data).getTime();
+    }), [despesas])
+    const historicoUltimos12 = useMemo(() => historicoFaturamento.faturamento_despesa.slice(-12), [historicoFaturamento.faturamento_despesa])
+    const dadosFaturamento = useMemo(() => historicoUltimos12.map((e) => Number(e.faturamento_liquido)), [historicoUltimos12])
+    const dadosDespesa = useMemo(() => historicoUltimos12.map((e) => Number(e.despesas)), [historicoUltimos12])
+    const dadosAnteriores = useMemo(() => historicoFaturamento.faturamento_despesa.slice(0, 12).map((e) => Number(e.faturamento_liquido)), [historicoFaturamento.faturamento_despesa])
 
     async function getJson<T>(url: string, fallback: T): Promise<T> {
         try {
@@ -231,6 +241,17 @@ export default function RelatorioCompleto(props: propsRelatorio) {
         }
     }
 
+
+    async function getAcomodacao() {
+        const bySaas = await getJson<any>(`${apiURL}/acomodacao/${props.saas}/${props.acomodacao}`, null)
+        let acomodacaoData = Array.isArray(bySaas) ? bySaas[0] : bySaas
+        if (!acomodacaoData) {
+            const byId = await getJson<any>(`${apiURL}/acomodacao/${props.acomodacao}`, null)
+            acomodacaoData = Array.isArray(byId) ? byId[0] : byId
+        }
+
+        return acomodacaoData
+    }
 
     async function getData() {
         const dataInicio = `${props.ano}-${('0' + props.mes).slice(-2)}-01`
@@ -250,119 +271,115 @@ export default function RelatorioCompleto(props: propsRelatorio) {
             periodo: 'atual'
         }
 
-        {
-            const bySaas = await getJson<any>(`${apiURL}/acomodacao/${props.saas}/${props.acomodacao}`, null)
-            let acomodacaoData = Array.isArray(bySaas) ? bySaas[0] : bySaas
-            if (!acomodacaoData) {
-                const byId = await getJson<any>(`${apiURL}/acomodacao/${props.acomodacao}`, null)
-                acomodacaoData = Array.isArray(byId) ? byId[0] : byId
-            }
+        getAcomodacao().then((acomodacaoData) => {
+            if (!acomodacaoData) return
 
-            if (acomodacaoData) {
-                setValorImovel(acomodacaoData.valor_imovel || '0')
-                setAcIMG(acomodacaoData.foto || '')
-                setNome(acomodacaoData.nome || '')
-            }
+            setValorImovel(acomodacaoData.valor_imovel || '0')
+            setAcIMG(acomodacaoData.foto || '')
+            setNome(acomodacaoData.nome || '')
+        })
+
+        const [
+            ocupacaoSemana,
+            indicadoresReserva,
+            resultadoAc,
+            faturamentoHistorico,
+            despesasData,
+            reservasData,
+            comparativoResultado,
+        ] = await Promise.all([
+            getJson<any[]>(`${apiURL}/movimentacao/${props.saas}/ocupacao-semana/${dataInicio}/${dataFim}/${props.acomodacao}`, []),
+            getJson<any[]>(`${apiURL}/reserva/${props.saas}/ind-ope/${dataInicio}/${dataFim}/${props.acomodacao}`, []),
+            getJson<any>(`${apiURL}/movimentacao/${props.saas}/result-ac/${dataInicio}/${dataFim}/${props.acomodacao}`, []),
+            getJson<any[]>(`${apiURL}/movimentacao/${props.saas}/fat-bar/${dataFim}/${props.acomodacao}`, []),
+            getJson<any[]>(`${apiURL}/movimentacao/${props.saas}/relatorio/${props.acomodacao}/${dataInicio}/${dataFim}`, []),
+            getJson<any[]>(`${apiURL}/reserva/ac/${props.acomodacao}/${props.mes}/${props.ano}`, []),
+            getJson<any>(`${apiURL}/movimentacao/${props.saas}/comparativo-result-ac/${dataInicio}/${dataFim}/${props.acomodacao}`, []),
+        ])
+
+        const ocupacaoDoImovel = Array.isArray(ocupacaoSemana) && ocupacaoSemana.length > 0
+            ? ocupacaoSemana.map((d: any) => {
+                const totalDias = Number(d.total_dias_no_intervalo);
+                const disponiveis = totalDias - Number(d.total_indisponibilidades);
+                return disponiveis > 0 ? (Number(d.total_movimentacoes) / disponiveis) * 100 : 0;
+            }).reduce((a: number, b: number) => a + b, 0) / 7
+            : 0
+
+        const novasReservas = Array.isArray(indicadoresReserva) && indicadoresReserva.length > 0 && indicadoresReserva[0].total_reserva
+            ? Number(indicadoresReserva[0].total_reserva)
+            : 0
+
+        const faturamento = Array.isArray(resultadoAc) && resultadoAc.length > 0
+            ? Number(resultadoAc[0].faturamento_liquido || 0)
+            : 0
+
+        setDadosReserva({
+            ocupacao_do_imovel: ocupacaoDoImovel,
+            novas_reservas: novasReservas,
+            faturamento,
+        })
+
+        if (Array.isArray(faturamentoHistorico)) {
+            setHistoricoFaturamento({
+                faturamento_periodo: faturamentoHistorico.slice(-12).reduce((total, item) => {
+                    return total + parseFloat(item.faturamento_liquido || 0);
+                }, 0),
+                rentabilidade_imovel: Array.isArray(resultadoAc) && resultadoAc.length > 0 ? Number(resultadoAc[0].rentabilidade_imovel || 0) : 0,
+                faturamento_despesa: faturamentoHistorico
+            })
+        } else {
+            setHistoricoFaturamento({
+                faturamento_periodo: 0,
+                rentabilidade_imovel: 0,
+                faturamento_despesa: []
+            })
         }
-        {
-            const data = await getJson<any[]>(`${apiURL}/movimentacao/${props.saas}/ocupacao-semana/${dataInicio}/${dataFim}/${props.acomodacao}`, [])
-            if (Array.isArray(data) && data.length > 0) {
-                setDadosReserva(dados => ({
-                    ...dados,
-                    ocupacao_do_imovel: data.map((d: any) => {
-                        const totalDias = Number(d.total_dias_no_intervalo);
-                        const disponiveis = totalDias - Number(d.total_indisponibilidades);
-                        const taxa = disponiveis > 0 ? (Number(d.total_movimentacoes) / disponiveis) * 100 : 0;
-                        return [d.dia_da_semana, taxa];
-                    }).map((d) => d[1])
-                        .reduce((a: any, b: any) => a + b, 0) / 7
+
+        setDespesas(Array.isArray(despesasData) ? despesasData : [])
+
+        if (Array.isArray(reservasData)) {
+            setListaReservas(reservasData)
+            setReservas(reservasData.map((item: any, index: any) => ({
+                title: item.hospede ? item.hospede.nome : 'Indisponibilidade',
+                start: item.check_in.slice(0, 19).replace('T', ' '),
+                end: item.check_out.slice(0, 19).replace('T', ' '),
+                hospedes: item.qtd_hospede,
+                color: item.tipo_reserva == 'Continuidade' ? '#30C46D'
+                    : item.tipo_reserva == 'Indisponibilidade' ? '#353535'
+                        : item.canal_reserva?.cor || '',
+                canal_reserva: item.canal_reserva?.nome,
+                id: String(index + 1),
+                tipo: item.tipo_reserva,
+                obs: item.obs,
+                bruto: parseFloat(item.valor),
+                liquido: parseFloat(item.valor_liq),
+                comissao: parseFloat(item.comissao_ota)
+            })))
+        } else {
+            setListaReservas([])
+            setReservas([])
+        }
+
+        if (!Array.isArray(comparativoResultado) || comparativoResultado.length == 0) {
+            setResultadoAcomodacoes([resultadoPadrao])
+        } else {
+            const atual = comparativoResultado
+                .filter((d: any) => d.periodo === 'atual')
+                .map((d: any) => ({
+                    comissao_plataforma: d.comissao_plataforma ?? '0',
+                    despesas: d.despesas ?? '0',
+                    diaria_media: d.diaria_media ?? '0',
+                    faturamento_bruto: d.faturamento_bruto ?? '0',
+                    faturamento_liquido: d.faturamento_liquido ?? '0',
+                    lucro: d.lucro ?? '0',
+                    taxa_limpeza: d.taxa_limpeza ?? '0',
+                    rentabilidade_imovel: d.rentabilidade_imovel ?? 0,
+                    comissao_reservas: d.comissao_reservas ?? 0,
+                    comissao_taxa_limpeza: d.comissao_taxa_limpeza ?? 0,
+                    repasse: d.repasse ?? 0,
+                    periodo: d.periodo ?? 'atual',
                 }))
-            }
-        }
-        {
-            const data = await getJson<any[]>(`${apiURL}/reserva/${props.saas}/ind-ope/${dataInicio}/${dataFim}/${props.acomodacao}`, [])
-            if (Array.isArray(data) && data.length > 0 && data[0].total_reserva) {
-                setDadosReserva(dados => ({
-                    ...dados,
-                    novas_reservas: Number(data[0].total_reserva)
-                }))
-            }
-        }
-        {
-            const data = await getJson<any>(`${apiURL}/movimentacao/${props.saas}/result-ac/${dataInicio}/${dataFim}/${props.acomodacao}`, [])
-            if (Array.isArray(data) && data.length > 0) {
-                setDadosReserva(dados => ({
-                    ...dados, faturamento: data[0].faturamento_liquido,
-                }))
-                setHistoricoFaturamento(dados => ({
-                    ...dados, rentabilidade_imovel: data[0].rentabilidade_imovel,
-                }))
-            }
-        }
-        {
-            const data = await getJson<any[]>(`${apiURL}/movimentacao/${props.saas}/fat-bar/${dataFim}/${props.acomodacao}`, [])
-            if (Array.isArray(data)) {
-                setHistoricoFaturamento(dados => ({
-                    ...dados,
-                    faturamento_periodo: data.slice(-12).reduce((total, item) => {
-                        return total + parseFloat((item.faturamento_liquido) || 0);
-                    }, 0),
-                    faturamento_despesa: data
-                }))
-            }
-        }
-        {
-            const data = await getJson<any[]>(`${apiURL}/movimentacao/${props.saas}/relatorio/${props.acomodacao}/${dataInicio}/${dataFim}`, [])
-            setDespesas(Array.isArray(data) ? data : [])
-        }
-        {
-            const data = await getJson<any[]>(`${apiURL}/reserva/ac/${props.acomodacao}/${props.mes}/${props.ano}`, [])
-            if (Array.isArray(data)) {
-                setListaReservas(data)
-                setReservas(data.map((item: any, index: any) => ({
-                        title: item.hospede ? item.hospede.nome : 'Indisponibilidade',
-                        start: item.check_in.slice(0, 19).replace('T', ' '),
-                        end: item.check_out.slice(0, 19).replace('T', ' '),
-                        hospedes: item.qtd_hospede,
-                        color: item.tipo_reserva == 'Continuidade' ? '#30C46D'
-                            : item.tipo_reserva == 'Indisponibilidade' ? '#353535'
-                                : item.canal_reserva?.cor || '',
-                        canal_reserva: item.canal_reserva?.nome,
-                        id: String(index + 1),
-                        tipo: item.tipo_reserva,
-                        obs: item.obs,
-                        bruto: parseFloat(item.valor),
-                        liquido: parseFloat(item.valor_liq),
-                        comissao: parseFloat(item.comissao_ota)
-                    })))
-            } else {
-                setListaReservas([])
-                setReservas([])
-            }
-        }
-        {
-            const data = await getJson<any>(`${apiURL}/movimentacao/${props.saas}/comparativo-result-ac/${dataInicio}/${dataFim}/${props.acomodacao}`, [])
-            if (!Array.isArray(data) || data.length == 0) {
-                setResultadoAcomodacoes([resultadoPadrao])
-            } else {
-                const atual = data
-                    .filter((d: any) => d.periodo === 'atual')
-                    .map((d: any) => ({
-                        comissao_plataforma: d.comissao_plataforma ?? '0',
-                        despesas: d.despesas ?? '0',
-                        diaria_media: d.diaria_media ?? '0',
-                        faturamento_bruto: d.faturamento_bruto ?? '0',
-                        faturamento_liquido: d.faturamento_liquido ?? '0',
-                        lucro: d.lucro ?? '0',
-                        taxa_limpeza: d.taxa_limpeza ?? '0',
-                        rentabilidade_imovel: d.rentabilidade_imovel ?? 0,
-                        comissao_reservas: d.comissao_reservas ?? 0,
-                        comissao_taxa_limpeza: d.comissao_taxa_limpeza ?? 0,
-                        repasse: d.repasse ?? 0,
-                        periodo: d.periodo ?? 'atual',
-                    }))
-                setResultadoAcomodacoes(atual.length > 0 ? atual : [resultadoPadrao])
-            }
+            setResultadoAcomodacoes(atual.length > 0 ? atual : [resultadoPadrao])
         }
         setLoaded(true)
     }
@@ -639,9 +656,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 <img src={props.imagem} alt="" className='bg-primary max-w-56 max-h-28 h-28' />
                             </div>
                             <section className='h-full mt-20 flex items-center'>
-                                <ListaReservaR reservas={listaReservas.sort((a, b) => {
-                                    return new Date(a.check_in).getTime() - new Date(b.check_in).getTime();
-                                })} />
+                                <ListaReservaR reservas={sortedListaReservas} />
                             </section>
 
                         </section>
@@ -692,8 +707,8 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 <HistoricoFaturamento
                                     mes={props.mes}
                                     ano={props.ano}
-                                    dadosFaturamento={historicoFaturamento.faturamento_despesa.slice(-12).map(e => (Number(e.faturamento_liquido)))}
-                                    dadosDespesa={historicoFaturamento.faturamento_despesa.slice(-12).map(e => (Number(e.despesas)))} />}
+                                    dadosFaturamento={dadosFaturamento}
+                                    dadosDespesa={dadosDespesa} />}
                             <p style={{ color: props.cores.letra }} className={`text-[${props.cores.letra}]`}>*Valor do imóvel estimado em R$ {new Intl.NumberFormat('pt-BR', {
                                 minimumFractionDigits: 0,
                                 maximumFractionDigits: 0
@@ -733,8 +748,8 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 <ComparativoResultados
                                     mes={props.mes}
                                     ano={props.ano}
-                                    dadosAtuais={historicoFaturamento.faturamento_despesa.slice(-12).map(e => (Number(e.faturamento_liquido)))}
-                                    dadosAnteriores={historicoFaturamento.faturamento_despesa.slice(0, 12).map(e => (Number(e.faturamento_liquido)))}
+                                    dadosAtuais={dadosFaturamento}
+                                    dadosAnteriores={dadosAnteriores}
                                 />}
                         </section>
                     </div>
@@ -768,9 +783,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                                 <img src={props.imagem} alt="" className='bg-primary max-w-56 max-h-28 h-28' />
                             </div>
                             <div className='h-3/4 grid items-center'>
-                                <DespesasR despesas={despesas.sort((a, b) => {
-                                    return new Date(a.data).getTime() - new Date(b.data).getTime();
-                                })} />
+                                <DespesasR despesas={sortedDespesas} />
                             </div>
                         </section>
                     </div>
