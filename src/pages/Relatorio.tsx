@@ -1,4 +1,4 @@
-import { ChangeEvent, useContext, useEffect, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useMemo, useState } from "react";
 import {
     SideBarContext,
     SideBarProvider,
@@ -12,6 +12,7 @@ export default function Relatorio() {
     const { dataToken } = useContext(SideBarContext);
     const [allAcomodacoes, setAllAcomodacoes] = useState<any>([]);
     const [acomodacoes, setAcomodacoes] = useState<any>([]);
+    const [images, setImages] = useState<{ id: number; foto: string }[]>([]);
     const [searchAcomodacao, setSearchAcomodacao] = useState<string>("");
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const [foto, setFoto] = useState<string | null>(null);
@@ -33,9 +34,9 @@ export default function Relatorio() {
     const [modalToAlert, setModalToAlert] = useState<string | null>(null);
     const [loaded, setLoaded] = useState(false);
 
-    async function getData() {
+    async function getAcomodacoes() {
         setLoaded(false);
-        await fetch(`${apiURL}/acomodacao/${dataToken.id}`, {
+        await fetch(`${apiURL}/acomodacao/names/${dataToken.id}`, {
             method: "GET",
         })
             .then((data) => data.json())
@@ -48,6 +49,19 @@ export default function Relatorio() {
             .catch((err) => {
                 console.log(err);
                 setLoaded(true);
+            });
+    }
+
+    async function getImagesAc() {
+        await fetch(`${apiURL}/acomodacao/images/${dataToken.id}`, {
+            method: "GET",
+        })
+            .then((data) => data.json())
+            .then((data: { id: number; foto: string }[]) => {
+                setImages(data);
+            })
+            .catch((err) => {
+                console.log(err);
             });
     }
 
@@ -68,13 +82,27 @@ export default function Relatorio() {
     }
 
     useEffect(() => {
-        if (dataToken) {
-            getData();
-            if (localStorage.getItem("previewFoto")) {
-                setFoto(localStorage.getItem("previewFoto"));
-            }
+        if (dataToken?.id) {
+            getAcomodacoes();
+            getImagesAc();
         }
-    }, [dataToken, foto]);
+    }, [dataToken]);
+
+    useEffect(() => {
+        const previewFoto = localStorage.getItem("previewFoto");
+        if (previewFoto) {
+            setFoto(previewFoto);
+        }
+    }, []);
+
+    const acomodacoesComImagens = useMemo(() => {
+        const imagesMap = Object.fromEntries(images.map((image) => [image.id, image.foto]));
+
+        return acomodacoes.map((acomodacao: any) => ({
+            ...acomodacao,
+            foto: imagesMap[acomodacao.id] || acomodacao.foto || "",
+        }));
+    }, [acomodacoes, images]);
 
     function abrirModalAlert(modalName: string) {
         setModalToAlert(modalName);
@@ -156,10 +184,10 @@ export default function Relatorio() {
                                 </div>
 
                                 <div className="md:col-span-8 xl:col-span-9 md:row-start-2">
-                                    {acomodacoes.length ? (
+                                    {acomodacoesComImagens.length ? (
                                         <section className="pb-8">
                                             <ul className="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                                                {acomodacoes.map((e: any) => {
+                                                {acomodacoesComImagens.map((e: any) => {
                                                     const isSelected = e.id === chooseAc;
 
                                                     return (
@@ -495,11 +523,6 @@ export default function Relatorio() {
                                 primario: corPrimaria,
                                 secundario: corSecundaria,
                             }}
-                        /* cores={{
-                                      letra: '#9fe6ff',
-                                      primario: '#000037',
-                                      secundario: '#5cb0ff'
-                                  }} */
                         />
                     )}
                 </>

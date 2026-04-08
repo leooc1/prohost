@@ -14,9 +14,9 @@ export default function DespesasR({ despesas }: { despesas: any[] }) {
                 <tbody className="">
                     {despesas.length > 0 && despesas.map(e => <tr className="text-sm h-10">
                         <th className="text-center border border-black w-28 text-black font-light bg-slate-200 px-1">
-                            {e.data.split('-')[2]}/
-                            {e.data.split('-')[1]}/
-                            {e.data.split('-')[0]}
+                            {e.data.split('T')[0].split('-')[2]}/
+                            {e.data.split('T')[0].split('-')[1]}/
+                            {e.data.split('T')[0].split('-')[0]}
                         </th>
                         <th className="text-center border border-black w-28 text-black font-light bg-slate-200 px-1">
                             {e.nome}
