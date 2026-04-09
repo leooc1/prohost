@@ -74,9 +74,9 @@ export default function ResultadoERepasse(props: DetalheDespesaProps) {
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Faturamento Bruto</p>
                                     <div className="flex items-end gap-4">
                                         <span className="text-nowrap text-xl">R$ {new Intl.NumberFormat('pt-BR', {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2
-                                    }).format(Number(dados.faturamento_bruto))}</span>
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        }).format(Number(dados.faturamento_bruto))}</span>
                                     </div>
                                 </div>
                                 <button className='absolute right-3'
@@ -94,9 +94,9 @@ export default function ResultadoERepasse(props: DetalheDespesaProps) {
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Taxa de Limpeza</p>
                                     <div className="flex items-end gap-4">
                                         <span className="text-nowrap text-xl">R$ {new Intl.NumberFormat('pt-BR', {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2
-                                    }).format(Number(dados.taxa_limpeza))}</span>
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        }).format(Number(dados.taxa_limpeza))}</span>
                                     </div>
                                 </div>
                                 <button className='absolute right-3'
@@ -114,9 +114,9 @@ export default function ResultadoERepasse(props: DetalheDespesaProps) {
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Comissão das Reservas</p>
                                     <div className="flex items-end gap-4">
                                         <span className="text-nowrap text-xl">R$ {new Intl.NumberFormat('pt-BR', {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2
-                                    }).format(Number(dados.comissao_reservas))}</span>
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        }).format(Number(dados.comissao_reservas))}</span>
                                     </div>
                                 </div>
                                 <button className='absolute right-3'
@@ -134,9 +134,9 @@ export default function ResultadoERepasse(props: DetalheDespesaProps) {
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Comissão Taxa de Limpeza</p>
                                     <div className="flex items-end gap-4">
                                         <span className="text-nowrap text-xl">R$ {new Intl.NumberFormat('pt-BR', {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2
-                                    }).format(Number(dados.comissao_taxa_limpeza))}</span>
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        }).format(Number(dados.comissao_taxa_limpeza))}</span>
                                     </div>
                                 </div>
                                 <button className='absolute right-3'
@@ -154,9 +154,9 @@ export default function ResultadoERepasse(props: DetalheDespesaProps) {
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Faturamento Líquido</p>
                                     <div className="flex items-end gap-4">
                                         <span className="text-nowrap text-xl">R$ {new Intl.NumberFormat('pt-BR', {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2
-                                    }).format(Number(dados.faturamento_liquido))}</span>
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        }).format(Number(dados.faturamento_liquido))}</span>
                                     </div>
                                 </div>
                                 <button className='absolute right-3'
@@ -173,9 +173,9 @@ export default function ResultadoERepasse(props: DetalheDespesaProps) {
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Despesas (exceto negócio)</p>
                                     <div className="flex items-end gap-4">
                                         <span className="text-nowrap text-xl">R$ {new Intl.NumberFormat('pt-BR', {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2
-                                    }).format(Number(dados.despesas))}</span>
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        }).format(Number(dados.despesas))}</span>
                                     </div>
                                 </div>
                                 <button className='absolute right-3'
@@ -193,9 +193,9 @@ export default function ResultadoERepasse(props: DetalheDespesaProps) {
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Lucro das Acomodações</p>
                                     <div className="flex items-end gap-4">
                                         <span className="text-nowrap text-xl">R$ {new Intl.NumberFormat('pt-BR', {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2
-                                    }).format(Number(dados.lucro))}</span>
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        }).format(Number(dados.lucro))}</span>
                                     </div>
                                 </div>
                                 <button className='absolute right-3'
@@ -212,10 +212,24 @@ export default function ResultadoERepasse(props: DetalheDespesaProps) {
                                 <div className="flex flex-col ml-4">
                                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Repasse Gestor</p>
                                     <div className="flex items-end gap-4">
-                                        <span className="text-nowrap text-xl">R$ {new Intl.NumberFormat('pt-BR', {
+                                        {/* <span className="text-nowrap text-xl">R$ {new Intl.NumberFormat('pt-BR', {
                                         minimumFractionDigits: 2,
                                         maximumFractionDigits: 2
-                                    }).format(Number(dados.repasse_gestor))}</span>
+                                    }).format(Number(dados.repasse_gestor))}</span> */}
+                                        <p className={`text-black text-nowrap text-xl`}>R$ <input className='bg-transparent w-full text-black' defaultValue={new Intl.NumberFormat('pt-BR', {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        }).format(Number(dados.repasse_gestor))} type="text"
+                                            onBlur={(e) => e.target.value = new Intl.NumberFormat('pt-BR', {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            }).format(Number(e.target.value.replace('.', '').replace(',', '.')))}
+                                            onFocus={(e) => {
+                                                e.target.value = e.target.value.replace(/[^0-9,]/g, "").replace(/(,.*),/g, "$1")
+                                            }}
+                                            onChange={(e) => {
+                                                e.target.value = e.target.value.replace(/[^0-9,]/g, "").replace(/(,.*),/g, "$1")
+                                            }} /></p>
                                     </div>
                                 </div>
                                 <button className='absolute right-3'
@@ -230,27 +244,27 @@ export default function ResultadoERepasse(props: DetalheDespesaProps) {
                             <div className='flex flex-col bg-zinc-400 bg-opacity-10 px-2 py-1 rounded-lg gap-2 w-3/4'>
                                 <p style={{ color: props.cores.letra }} className={`text-2xl text-[${props.cores.letra}]`}>Repasse proprietário</p>
                                 <p style={{ color: props.cores.letra }} className={`text-xl text-[${props.cores.letra}] font-semibold flex text-end pr-4`}>R$ <input className='bg-transparent ml-5 w-full' defaultValue={new Intl.NumberFormat('pt-BR', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            }).format(Number(dados.repasse_proprietario))} type="text"
-                                onBlur={(e) => e.target.value = new Intl.NumberFormat('pt-BR', {
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2
-                                }).format(Number(e.target.value.replace('.', '').replace(',', '.')))}
-                                onFocus={(e) => {
-                                    e.target.value = e.target.value.replace(/[^0-9,]/g, "").replace(/(,.*),/g, "$1")
-                                }}
-                                onChange={(e) => {
-                                    e.target.value = e.target.value.replace(/[^0-9,]/g, "").replace(/(,.*),/g, "$1")
-                                }} /></p>
+                                }).format(Number(dados.repasse_proprietario))} type="text"
+                                    onBlur={(e) => e.target.value = new Intl.NumberFormat('pt-BR', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    }).format(Number(e.target.value.replace('.', '').replace(',', '.')))}
+                                    onFocus={(e) => {
+                                        e.target.value = e.target.value.replace(/[^0-9,]/g, "").replace(/(,.*),/g, "$1")
+                                    }}
+                                    onChange={(e) => {
+                                        e.target.value = e.target.value.replace(/[^0-9,]/g, "").replace(/(,.*),/g, "$1")
+                                    }} /></p>
                             </div>
                         </section>
                     </section>
                 </section>
                 : <section style={{ backgroundColor: props.cores.primario }} id='calendario' className={`${!props.editPages[0] && 'pointer-events-none opacity-30'} flex flex-col justify-center items-center text-white p-10 h-screen bg-[${props.cores.primario}] relative`}><div
-  className="w-10 h-10 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin"
-></div>
-</section>}
+                    className="w-10 h-10 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin"
+                ></div>
+                </section>}
         </div>
     )
 }
