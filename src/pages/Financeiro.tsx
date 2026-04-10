@@ -276,7 +276,12 @@ export default function Financeiro() {
     }
 
     async function getMovimentacao() {
-        if (dataToken.id)
+        if(dataBW[0].length == 0 || dataBW[1].length == 0){
+            setDeData(`${date.getFullYear()}-${`0${date.getMonth() + 1}`.slice(-2)}-01`);
+            setAteData(`${date.getFullYear()}-${`0${date.getMonth() + 1}`.slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`);
+            setListagem(true);
+        }
+        else if (dataToken.id)
             await fetch(
                 `${apiURL}/movimentacao/${dataToken.id}/${dataBW[0]}/${dataBW[1]}`,
                 {
