@@ -98,7 +98,7 @@ export default function Financeiro() {
     const [movimentacoes, setMovimentacoes] = useState<Movimentacao[]>([]);
     const [lDespesa, setLDespesa] = useState<string>("");
     const [filterAC, setFilterAC] = useState<string>("all");
-    const [ids, setIds] = useState<{ id: number; index: number }[]>([]);
+    // const [ids, setIds] = useState<{ id: number; index: number }[]>([]);
 
     const { dataToken } = useContext(SideBarContext);
     const [loaded, setLoaded] = useState(false);
@@ -315,7 +315,7 @@ export default function Financeiro() {
         await acomodacoes();
         await getMovimentacao();
         await permissoes();
-        await fetch(
+        /* await fetch(
             `${apiURL}/reserva/index/${dataToken?.id}/${dataBW[0]}/${dataBW[1]}`,
             {
                 method: "GET",
@@ -325,7 +325,7 @@ export default function Financeiro() {
             .then((data) => {
                 setIds(data);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => console.log(err)); */
         setLoaded(true);
     }
 
@@ -1073,7 +1073,7 @@ export default function Financeiro() {
                         )}
                         <ListaMovimentacoes
                             tipo={0}
-                            ids={ids}
+                            // ids={ids}
                             saas={dataToken?.id}
                             movimentacoes={processedMovimentacoes}
                         >
@@ -1167,7 +1167,7 @@ export default function Financeiro() {
                         )}
                         <ListaMovimentacoes
                             tipo={1}
-                            ids={ids}
+                            // ids={ids}
                             saas={dataToken?.id}
                             movimentacoes={processedMovimentacoes}
                         >
@@ -1259,10 +1259,9 @@ export default function Financeiro() {
                                 <Loader />
                             </div>
                         )}
-                        {/* ...existing code for cards if session==2... */}
                         <ListaMovimentacoes
                             tipo={2}
-                            ids={ids}
+                            // ids={ids}
                             saas={dataToken?.id}
                             movimentacoes={processedMovimentacoes}
                         >

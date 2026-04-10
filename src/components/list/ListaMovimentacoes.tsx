@@ -22,7 +22,7 @@ interface Movimentacao {
 }
 
 
-export default function ListaMovimentacoes({ saas, movimentacoes, ids, children, tipo }: { saas: number, movimentacoes: Movimentacao[], ids: { id: number, index: number }[], children?: ReactElement, tipo: number }) {
+export default function ListaMovimentacoes({ saas, movimentacoes, /* ids, */ children, tipo }: { saas: number, movimentacoes: Movimentacao[], /* ids?: { id: number, index: number }[], */ children?: ReactElement, tipo: number }) {
 
     const [arrayMovimentacoes, setArrayMovimentacoes] = useState<Movimentacao[][]>([])
     const [page, setPage] = useState<number>(0)
@@ -83,10 +83,10 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children,
                         : "Diária";
 
             const descricao = m.reserva
-                ? m.nome.replace(
+                ? /* m.nome.replace(
                     m.nome.split('Reserva ')[1]?.split(' ')[0],
                     String(ids.find(i => i?.id == Number(m.reserva))?.index || '')
-                )
+                ) */ m.nome
                 : m.nome;
 
             const linha = [
@@ -276,10 +276,11 @@ export default function ListaMovimentacoes({ saas, movimentacoes, ids, children,
                                                 ? e.nome.replace(
                                                     e.nome.split('Reserva ')[1]?.split(' ')?.[0],
                                                     String(
-                                                        ids.find(i => {
+                                                        Number(e.reserva?.id)
+                                                        /* ids.find(i => {
                                                             return i?.id == Number(e.reserva?.id)
                                                         }
-                                                        )?.index
+                                                        )?.index */
                                                     )
                                                 )
                                                 : e.nome}
