@@ -90,13 +90,7 @@ export default function Dashboard() {
   const [sessao, setSessao] = useState(0)
   const [deData, setDeData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`)
   const [ateData, setAteData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
-  const [indicadores, setIndicadores] = useState<{
-    total_reserva: string
-    total_diaria: string | null
-    duracao_media: string | null
-    total_indisponivel: string | null
-    total_hospede: string | null
-  } | null>()
+  
   const [resultadoAcomodacoes, setResultadoAcomodacoes] = useState<{
     comissao_plataforma: string
     despesas: string
@@ -329,15 +323,12 @@ export default function Dashboard() {
     const baseMov = `${apiURL}/movimentacao/${dataToken.id}`;
 
     try {
-      const [ind, comp, porCanal, qtdHospede, ocupacao] = await Promise.all([
-        fetchJson(`${baseReserva}/ind-ope/${start}/${end}${suffix}`),
+      const [comp, porCanal, qtdHospede, ocupacao] = await Promise.all([
         fetchJson(`${baseReserva}/comparativo-ind-ope/${start}/${end}${suffix}`),
         fetchJson(`${baseReserva}/por-canal/${start}/${end}${suffix}`),
         fetchJson(`${baseReserva}/qtd-hospede/${start}/${end}${suffix}`),
         fetchJson(`${baseMov}/ocupacao-semana/${start}/${end}${suffix}`)
       ]);
-
-      if (ind?.length > 0) setIndicadores(ind[0]);
 
       if (Array.isArray(comp) && comp.length > 0) {
         setComparativoIO({
@@ -609,7 +600,7 @@ export default function Dashboard() {
                   <div className="flex flex-col ml-4">
                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Total de Reservas</p>
                     <div className="flex items-end gap-4">
-                      <span className="text-3xl">{indicadores?.total_reserva}</span>
+                      <span className="text-3xl">{comparativoIO.atual?.total_reserva ? Number(comparativoIO.atual?.total_reserva) : 0}</span>
                       <Comparativo nome="TOTAL DE RESERVAS" data={dataBW} passado={comparativoIO.passado?.total_reserva ? Number(comparativoIO.passado?.total_reserva) : 0}
                         atual={comparativoIO.atual?.total_reserva ? Number(comparativoIO.atual?.total_reserva) : 0} />
                     </div>
@@ -627,7 +618,7 @@ export default function Dashboard() {
                   <div className="flex flex-col ml-4">
                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Diárias reservadas</p>
                     <div className="flex items-end gap-4">
-                      <span className="text-3xl">{indicadores?.total_diaria ? indicadores?.total_diaria : 0}</span>
+                      <span className="text-3xl">{comparativoIO.atual?.total_diaria ? Number(comparativoIO.atual?.total_diaria) : 0}</span>
                       <Comparativo nome="DIÁRIAS RESERVADAS" data={dataBW} passado={comparativoIO.passado?.total_diaria ? Number(comparativoIO.passado?.total_diaria) : 0}
                         atual={comparativoIO.atual?.total_diaria ? Number(comparativoIO.atual?.total_diaria) : 0} />
                     </div>
@@ -660,7 +651,7 @@ export default function Dashboard() {
                   <div className="flex flex-col ml-4">
                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Duração Média das Reservas</p>
                     <div className="flex items-end gap-4">
-                      <span className="text-3xl">{indicadores?.duracao_media ? Number(indicadores?.duracao_media).toFixed(2) : 0}</span>
+                      <span className="text-3xl">{comparativoIO.atual?.duracao_media ? Number(comparativoIO.atual?.duracao_media) : 0}</span>
                       <Comparativo nome="DURAÇÃO MÉDIA DAS RESERVAS" data={dataBW} passado={comparativoIO.passado?.duracao_media ? Number(comparativoIO.passado?.duracao_media) : 0}
                         atual={comparativoIO.atual?.duracao_media ? Number(comparativoIO.atual?.duracao_media) : 0} />
                     </div>
@@ -673,7 +664,7 @@ export default function Dashboard() {
                   <div className="flex flex-col ml-4">
                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Diárias Indisponíveis</p>
                     <div className="flex items-end gap-4">
-                      <span className="text-3xl">{indicadores?.total_indisponivel ? indicadores?.total_indisponivel : 0}</span>
+                      <span className="text-3xl">{comparativoIO.atual?.total_indisponivel ? Number(comparativoIO.atual?.total_indisponivel) : 0}</span>
                       <Comparativo nome="DIÁRIAS INDISPONÍVEIS" data={dataBW} passado={comparativoIO.passado?.total_indisponivel ? Number(comparativoIO.passado?.total_indisponivel) : 0}
                         atual={comparativoIO.atual?.total_indisponivel ? Number(comparativoIO.atual?.total_indisponivel) : 0} />
                     </div>
@@ -692,7 +683,7 @@ export default function Dashboard() {
                   <div className="flex flex-col ml-4">
                     <p className="flex flex-col text-zinc-400 font-medium text-sm">Total de Hóspedes</p>
                     <div className="flex items-end gap-4">
-                      <span className="text-3xl">{indicadores?.total_hospede || 0}</span>
+                      <span className="text-3xl">{comparativoIO.atual?.total_hospede ? Number(comparativoIO.atual?.total_hospede) : 0}</span>
                       <Comparativo nome="TOTAL DE HÓSPEDES" data={dataBW} passado={comparativoIO.passado?.total_hospede ? Number(comparativoIO.passado?.total_hospede) : 0}
                         atual={comparativoIO.atual?.total_hospede ? Number(comparativoIO.atual?.total_hospede) : 0} />
                     </div>
