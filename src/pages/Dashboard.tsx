@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Comparativo from "../components/Comparativo";
 import EvolucaoNegocio from "../components/chart/EvolucaoNegocio";
 import FaturamentoCanal from "../components/chart/FaturamentoCanal";
@@ -73,9 +73,8 @@ export default function Dashboard() {
   useEffect(() => { document.title = 'Dashboard | Prohost' }, [])
 
   const { dataToken } = useContext(SideBarContext);
-
-  const [permissionsReady, setPermissionsReady] = useState(false)
-  const [accommodationsReady, setAccommodationsReady] = useState(false)
+  
+  const [loaded, setLoaded] = useState(false)
   function formatarMoedaBrasileira(valor: string | number | null | undefined) {
     const valorNumerico = parseFloat(String(valor));
     if (isNaN(valorNumerico)) {
@@ -87,14 +86,10 @@ export default function Dashboard() {
   }
   const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
   const date = new Date()
-  const defaultPeriodo = localStorage.getItem('periodo_ph') || 'm-atual'
-  const defaultDeData = `${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`
-  const defaultAteData = `${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`
-  const initialSessao = Number(new URLSearchParams(window.location.search).get("ss"))
-  const [periodo, setPeriodo] = useState(defaultPeriodo)
-  const [sessao, setSessao] = useState(isNaN(initialSessao) ? 0 : initialSessao)
-  const [deData, setDeData] = useState(defaultPeriodo === 'personalizado' ? (localStorage.getItem("datade") || defaultDeData) : defaultDeData)
-  const [ateData, setAteData] = useState(defaultPeriodo === 'personalizado' ? (localStorage.getItem("dataate") || defaultAteData) : defaultAteData)
+  const [periodo, setPeriodo] = useState(localStorage.getItem('periodo_ph') || 'm-atual')
+  const [sessao, setSessao] = useState(0)
+  const [deData, setDeData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-01`)
+  const [ateData, setAteData] = useState(`${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`)
   const [indicadores, setIndicadores] = useState<{
     total_reserva: string
     total_diaria: string | null
@@ -137,7 +132,7 @@ export default function Dashboard() {
     qtd_reserva: string
   }[]>([])
   const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([])
-  const [filterAC, setFilterAC] = useState<string>(localStorage.getItem("acfil") || 'all')
+  const [filterAC, setFilterAC] = useState<string>('all')
   const [movimentacao, setMovimentacao] = useState<{
     nome: string
     cor: string
@@ -178,8 +173,6 @@ export default function Dashboard() {
       }]);
     } catch (err) {
       console.error("Erro ao carregar acomodações:", err);
-    } finally {
-      setAccommodationsReady(true);
     }
   }
   const [comparativoRA, setComparativoRA] = useState<{
@@ -248,6 +241,12 @@ export default function Dashboard() {
     const suffix = filterAC === 'all' ? '' : `/${filterAC}`;
 
     try {
+      // Busca comissão apenas se houver filtro específico
+      /* if (filterAC !== 'all') {
+        const data = await fetchJson(`${apiURL}/acomodacao/${dataToken.id}/${filterAC}`);
+        setComissao(Number(data?.[0]?.comissao ?? 0));
+      } */
+
       const [mov, fat, comp]: [{
         nome: string
         cor: string
@@ -413,29 +412,27 @@ export default function Dashboard() {
       console.error('Erro ao carregar permissões:', err);
       setPermissao(
         { indiOpe: 0, resultAc: 0, resultGestor: 0 });
-    } finally {
-      setPermissionsReady(true);
     }
   }
   const [dataBW, setDataBW] = useState<[string, string]>(["", ""]);
-  const loaded = permissionsReady && accommodationsReady;
-  const loadSessaoAtual = async (databw: [string, string]) => {
-    if (!dataToken?.id) return;
-
-    if (sessao == 0) {
-      setIndiOpe(false);
-      await indicaOpe(databw);
-      return;
+  const runningRef = useRef(false);
+  const loadAll = async (databw: [string, string]) => {
+    const params = new URLSearchParams(window.location.search);
+    const ss = Number(params.get("ss"));
+    if (!dataToken?.id || runningRef.current) return;
+    runningRef.current = true;
+    try {
+      if (ss == 0)
+        await indicaOpe(databw);
+      if (ss == 1)
+        await resultAc(databw);
+      if (ss == 2)
+        await resultGest(databw);
+      await permissoes();
+      setLoaded(true);
+    } finally {
+      runningRef.current = false;
     }
-
-    if (sessao == 1) {
-      setResAc(false);
-      await resultAc(databw);
-      return;
-    }
-
-    setResGestor(false);
-    await resultGest(databw);
   };
 
   useEffect(() => {
@@ -445,24 +442,36 @@ export default function Dashboard() {
   }, [periodo, deData, ateData, filterAC]);
 
   useEffect(() => {
-    if (!dataToken?.idUsu) return;
-    setPermissionsReady(false);
-    permissoes();
-  }, [dataToken?.idUsu]);
-
-  useEffect(() => {
-    if (!dataToken?.id) return;
-    setAccommodationsReady(false);
-    acomodacoes();
-  }, [dataToken?.id]);
-
-  useEffect(() => {
-    if (!dataToken?.id || acomodacao.length === 0 || !dataBW[0] || !dataBW[1]) return;
-    loadSessaoAtual(dataBW);
-  }, [dataToken?.id, acomodacao.length, dataBW, sessao]);
+    if (dataToken) {
+      if (acomodacao.length > 0) {
+        const params = new URLSearchParams(window.location.search);
+        const ss = Number(params.get("ss"));
+        setSessao(isNaN(ss) ? 0 : ss);
+        const { de, ate } = getPeriodoDates(localStorage.getItem("periodo_ph") || "m-atual", deData, ateData, new Date());
+        setDataBW([de, ate]);
+        setIndiOpe(false)
+        setResAc(false)
+        setResGestor(false)
+        loadAll([de, ate]);
+      }
+      else { acomodacoes() }
+    }
+  }, [filterAC, dataToken, periodo, deData, ateData, acomodacao, sessao]);
 
   useEffect(() => setShowTaxaOcu(true), [ocupacaoSemana, acomodacao]);
 
+  useEffect(() => {
+    const storedAc = localStorage.getItem("acfil");
+    const storedPeriodo = localStorage.getItem("periodo_ph");
+    if (storedAc) setFilterAC(storedAc);
+    if (storedPeriodo) {
+      setPeriodo(storedPeriodo);
+      if (storedPeriodo === "personalizado") {
+        setDeData(localStorage.getItem("datade") || "");
+        setAteData(localStorage.getItem("dataate") || "");
+      }
+    }
+  }, []);
 
   return (
     loaded ?
