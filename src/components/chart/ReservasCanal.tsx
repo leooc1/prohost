@@ -78,7 +78,7 @@ export default function ReservasCanal({ labels, dados, colors }: { labels: strin
                 };
             }
         }
-    }, []);
+    }, [labels, dados, colors]);
 
     return (
         <div className='h-40 w-full'>

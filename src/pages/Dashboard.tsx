@@ -326,7 +326,7 @@ export default function Dashboard() {
         .then(data => {
           setComparativoIO({
           atual: data.indicadoresAtual[0],
-          passado: data.indicadoresPassado[0]
+          passado: null
         });
         setShowIO(prev => [true, prev[1], prev[2]]);
         })

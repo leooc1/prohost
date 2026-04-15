@@ -60,7 +60,7 @@ export default function OcupacaoMedia({ dados }: { dados: any[] }) {
                 };
             }
         }
-    }, []);
+    }, [dados]);
 
     return (
         <div className='h-28 w-48'>

@@ -78,7 +78,7 @@ export default function QtdeHospede({ labels, dados, colors }: { labels: string[
                 };
             }
         }
-    }, []);
+    }, [labels, dados, colors]);
 
     return (
         <div className='h-40 w-full'>
