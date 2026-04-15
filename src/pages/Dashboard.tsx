@@ -1,17 +1,15 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import Comparativo from "../components/Comparativo";
 import EvolucaoNegocio from "../components/chart/EvolucaoNegocio";
 import FaturamentoCanal from "../components/chart/FaturamentoCanal";
 import FaturamentoLiquido from "../components/chart/FaturamentoLiquido";
 import FaturamentoxDespesa from "../components/chart/FaturamentoxDespesa";
-import OcupacaoMedia from "../components/chart/OcupacaoMedia";
-import QtdeHospede from "../components/chart/QtdeHospede";
-import ReservasCanal from "../components/chart/ReservasCanal";
+import Comparativo from "../components/Comparativo";
+import IndicadoresOperacionais from "../components/dashboard/IndicadoresOperacionais";
 import Loader from "../components/Loader";
-import { SideBarContext } from "../contexts/SideBarMenuContext";
 import IndicadoresOperacionaisSkeleton from "../components/skeleton/IndicadoresOperacionaisSkeleton";
-import ResultadosGestorSkeleton from "../components/skeleton/ResultadosGestorSkeleton";
 import ResultadosAcomodacoesSkeleton from "../components/skeleton/ResultadosAcomodacoesSkeleton";
+import ResultadosGestorSkeleton from "../components/skeleton/ResultadosGestorSkeleton";
+import { SideBarContext } from "../contexts/SideBarMenuContext";
 interface Acomodacao {
   id: number
   tipo: string
@@ -139,7 +137,6 @@ export default function Dashboard() {
     despesas: string
     faturamento_liquido: string
   }[]>([])
-  const [showTaxaOcu, setShowTaxaOcu] = useState<boolean>(true)
   const [resAc, setResAc] = useState<boolean>(false)
   const [resGestor, setResGestor] = useState<boolean>(false)
   const [indiOpe, setIndiOpe] = useState<boolean>(false)
@@ -317,29 +314,54 @@ export default function Dashboard() {
       setResAc(true);
     }
   }
+
+  const [showIO, setShowIO] = useState<[boolean, boolean, boolean]>([false, false, false]);
   async function indicaOpe([start, end]: [string, string]) {
     const suffix = filterAC === 'all' ? '' : `/${filterAC}`;
-    const baseReserva = `${apiURL}/reserva/${dataToken.id}`;
-    const baseMov = `${apiURL}/movimentacao/${dataToken.id}`;
+    const baseReserva = `${apiURL}/dashboard/${dataToken.id}`;
 
     try {
-      const [comp, porCanal, qtdHospede, ocupacao] = await Promise.all([
-        fetchJson(`${baseReserva}/comparativo-ind-ope/${start}/${end}${suffix}`),
-        fetchJson(`${baseReserva}/por-canal/${start}/${end}${suffix}`),
-        fetchJson(`${baseReserva}/qtd-hospede/${start}/${end}${suffix}`),
-        fetchJson(`${baseMov}/ocupacao-semana/${start}/${end}${suffix}`)
-      ]);
-
-      if (Array.isArray(comp) && comp.length > 0) {
-        setComparativoIO({
-          atual: comp.find((d: any) => d.periodo === 'atual'),
-          passado: comp.find((d: any) => d.periodo === 'ano_anterior')
+        fetch(`${baseReserva}/indicadores/${start}/${end}${suffix}`)
+        .then(res => res.json())
+        .then(data => {
+          setComparativoIO({
+          atual: data.indicadoresAtual[0],
+          passado: data.indicadoresPassado[0]
         });
-      }
+        setShowIO(prev => [true, prev[1], prev[2]]);
+        })
+        .catch(err=> console.error('Erro ao buscar indicadores operacionais 1:', err))
 
+        fetch(`${baseReserva}/ocupacao/${start}/${end}${suffix}`)
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data) && data.length > 0) {
+        const taxaPorDia = data.map((d: any) => {
+          const totalDias = Number(d.total_dias_no_intervalo) * (filterAC === 'all' ? acomodacao.length : 1);
+          const disponiveis = totalDias - Number(d.total_indisponibilidades);
+          const taxa = disponiveis > 0 ? (Number(d.total_movimentacoes) / disponiveis) * 100 : 0;
+          return [d.dia_da_semana, taxa];
+        });
+        setOcupacaoSemana(taxaPorDia);
+      }
+          setShowIO(prev => [prev[0], true, prev[2]]);
+
+        })
+        .catch(err=> console.error('Erro ao buscar indicadores operacionais 2:', err))
+
+        fetch(`${baseReserva}/por-canal-qtd-hospede/${start}/${end}${suffix}`)
+        .then(res => res.json())
+        .then(data => {
+          setReservaCanal(data.reservasPorCanal);
+          setQtdHospede(data.qtdHospede);
+          setShowIO(prev => [prev[0], prev[1], true]);
+        })
+        .catch(err=> console.error('Erro ao buscar indicadores operacionais 3:', err))
+
+      /* 
       setShowTaxaOcu(false);
-      setReservaCanal(porCanal);
-      setQtdHospede(qtdHospede);
+      setReservaCanal(porCanalQtdHospede.reservasPorCanal);
+      setQtdHospede(porCanalQtdHospede.qtdHospede);
 
       if (Array.isArray(ocupacao) && ocupacao.length > 0) {
         const taxaPorDia = ocupacao.map((d: any) => {
@@ -349,7 +371,7 @@ export default function Dashboard() {
           return [d.dia_da_semana, taxa];
         });
         setOcupacaoSemana(taxaPorDia);
-      }
+      } */
 
     } catch (err) {
       console.error('Erro em indicaOpe:', err);
@@ -357,6 +379,7 @@ export default function Dashboard() {
       setIndiOpe(true);
     }
   }
+
   async function resultGest([start, end]: [string, string]) {
     const base = `${apiURL}/movimentacao/${dataToken.id}`;
     const inicioDate = `${start.slice(0, 4)}-01-01`;
@@ -399,6 +422,7 @@ export default function Dashboard() {
         { indiOpe: 0, resultAc: 0, resultGestor: 0 });
     }
   }
+
   const [dataBW, setDataBW] = useState<[string, string]>(["", ""]);
   const runningRef = useRef(false);
   const loadAll = async (databw: [string, string]) => {
@@ -407,12 +431,13 @@ export default function Dashboard() {
     if (!dataToken?.id || runningRef.current) return;
     runningRef.current = true;
     try {
-      if (ss == 0)
+      if (ss == 0){
         await indicaOpe(databw);
-      if (ss == 1)
-        await resultAc(databw);
-      if (ss == 2)
-        await resultGest(databw);
+      setShowIO([false, false, false])}
+      if (ss == 1){
+        await resultAc(databw);}
+      if (ss == 2){
+        await resultGest(databw);}
       await permissoes();
       setLoaded(true);
     } finally {
@@ -442,8 +467,6 @@ export default function Dashboard() {
       else { acomodacoes() }
     }
   }, [filterAC, dataToken, periodo, deData, ateData, acomodacao, sessao]);
-
-  useEffect(() => setShowTaxaOcu(true), [ocupacaoSemana, acomodacao]);
 
   useEffect(() => {
     const storedAc = localStorage.getItem("acfil");
@@ -583,113 +606,13 @@ export default function Dashboard() {
             <p className="text-black text-2xl">SEM PERMISSÃO DE VISUALIZAR ESTA PÁGINA</p>
           </span></div> : <>
             {indiOpe ?
-              <section className="grid gap-5 mb-24 grid-cols-3 grid-rows-5 h-[600px]">
-                <div className="relative bg-white border-zinc-300 border rounded-lg flex flex-col justify-between items-center row-span-2 py-1 h-full">
-                  <p className="flex flex-col text-zinc-400 font-medium text-sm">Taxa de Ocupação Média</p>
-                  <div className="">
-                    {showTaxaOcu && <OcupacaoMedia dados={[(ocupacaoSemana.map((d) => d[1])
-                      .reduce((a: any, b: any) => a + b, 0)) / 7]} />}
-                    <p className="text-3xl text-center font-bold bottom-3 text-zinc-500 mb-4">{((ocupacaoSemana.map((d) => d[1])
-                      .reduce((a: any, b: any) => a + b, 0)) / 7).toFixed(2)}%</p>
-                  </div>
-                </div>
-                <div className="bg-white border-zinc-300 border rounded-lg flex items-center">
-                  <div className="bg-[#E6E9FD] rounded-md w-fit py-2 px-2 ml-4">
-                    <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#6279F2"><path d="M9 1V3H15V1H17V3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3H7V1H9ZM20 10H4V19H20V10ZM15.0355 11.136L16.4497 12.5503L11.5 17.5L7.96447 13.9645L9.37868 12.5503L11.5 14.6716L15.0355 11.136ZM7 5H4V8H20V5H17V6H15V5H9V6H7V5Z"></path></svg>
-                  </div>
-                  <div className="flex flex-col ml-4">
-                    <p className="flex flex-col text-zinc-400 font-medium text-sm">Total de Reservas</p>
-                    <div className="flex items-end gap-4">
-                      <span className="text-3xl">{comparativoIO.atual?.total_reserva ? Number(comparativoIO.atual?.total_reserva) : 0}</span>
-                      <Comparativo nome="TOTAL DE RESERVAS" data={dataBW} passado={comparativoIO.passado?.total_reserva ? Number(comparativoIO.passado?.total_reserva) : 0}
-                        atual={comparativoIO.atual?.total_reserva ? Number(comparativoIO.atual?.total_reserva) : 0} />
-                    </div>
-                  </div>
-                </div>
-                {/* Reserva por canal */}
-                <div className="bg-white border-zinc-300 border rounded-lg h-64 -translate-y-0 flex flex-col justify-between items-center py-1 row-span-3" >
-                  <p className="flex flex-col text-zinc-400 font-medium text-sm">Reservas por Canal</p>
-                  <ReservasCanal labels={reservaCanal.length > 0 ? reservaCanal.map(r => r.nome) : ['']} dados={reservaCanal.length > 0 ? reservaCanal.map(r => Number(r.num_reserva)) : [1]} colors={reservaCanal.length > 0 ? reservaCanal.map(r => r.cor) : ['#cccccc']} />
-                </div>
-                <div className="bg-white border-zinc-300 border rounded-lg flex items-center" >
-                  <div className="bg-[#E9F7FD] rounded-md w-fit py-2 px-2 ml-4">
-                    <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#63C3F2"><path d="M22 11V20H20V17H4V20H2V4H4V14H12V7H18C20.2091 7 22 8.79086 22 11ZM8 13C6.34315 13 5 11.6569 5 10C5 8.34315 6.34315 7 8 7C9.65685 7 11 8.34315 11 10C11 11.6569 9.65685 13 8 13Z"></path></svg>
-                  </div>
-                  <div className="flex flex-col ml-4">
-                    <p className="flex flex-col text-zinc-400 font-medium text-sm">Diárias reservadas</p>
-                    <div className="flex items-end gap-4">
-                      <span className="text-3xl">{comparativoIO.atual?.total_diaria ? Number(comparativoIO.atual?.total_diaria) : 0}</span>
-                      <Comparativo nome="DIÁRIAS RESERVADAS" data={dataBW} passado={comparativoIO.passado?.total_diaria ? Number(comparativoIO.passado?.total_diaria) : 0}
-                        atual={comparativoIO.atual?.total_diaria ? Number(comparativoIO.atual?.total_diaria) : 0} />
-                    </div>
-                  </div>
-                </div>
-                <div className="relative bg-white border-zinc-300 border rounded-lg h-80 flex flex-col justify-between items-center py-1 row-span-3">
-                  <p className="flex flex-col text-zinc-400 font-medium text-sm">Ocupação nos Dias da Semana</p>
-                  {ocupacaoSemana.length > 0 && (
-                    <section className="grid grid-rows-7 grid-cols-2 gap-4 mb-2 w-full px-9">
-                      <p>{ocupacaoSemana[1][0]}</p>
-                      <p className="text-end">{Number(ocupacaoSemana[1][1]).toFixed(2)}%</p>
-                      <p>{ocupacaoSemana[2][0]}</p>
-                      <p className="text-end">{Number(ocupacaoSemana[2][1]).toFixed(2)}%</p>
-                      <p>{ocupacaoSemana[3][0]}</p>
-                      <p className="text-end">{Number(ocupacaoSemana[3][1]).toFixed(2)}%</p>
-                      <p>{ocupacaoSemana[4][0]}</p>
-                      <p className="text-end">{Number(ocupacaoSemana[4][1]).toFixed(2)}%</p>
-                      <p>{ocupacaoSemana[5][0]}</p>
-                      <p className="text-end">{Number(ocupacaoSemana[5][1]).toFixed(2)}%</p>
-                      <p>{ocupacaoSemana[6][0]}</p>
-                      <p className="text-end">{Number(ocupacaoSemana[6][1]).toFixed(2)}%</p>
-                      <p>{ocupacaoSemana[0][0]}</p>
-                      <p className="text-end">{Number(ocupacaoSemana[0][1]).toFixed(2)}%</p>
-                    </section>
-                  )}
-                </div>
-                <div className="bg-white border-zinc-300 border rounded-lg flex items-center" >
-                  <div className="bg-[#F7D3AB] rounded-md w-fit py-2 px-2 ml-4">
-                    <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FEB158"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM13 12H17V14H11V7H13V12Z"></path></svg>            </div>
-                  <div className="flex flex-col ml-4">
-                    <p className="flex flex-col text-zinc-400 font-medium text-sm">Duração Média das Reservas</p>
-                    <div className="flex items-end gap-4">
-                      <span className="text-3xl">{comparativoIO.atual?.duracao_media ? Number(comparativoIO.atual?.duracao_media) : 0}</span>
-                      <Comparativo nome="DURAÇÃO MÉDIA DAS RESERVAS" data={dataBW} passado={comparativoIO.passado?.duracao_media ? Number(comparativoIO.passado?.duracao_media) : 0}
-                        atual={comparativoIO.atual?.duracao_media ? Number(comparativoIO.atual?.duracao_media) : 0} />
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-white border-zinc-300 border rounded-lg flex items-center" >
-                  <div className="bg-[#FDE3E4] rounded-md w-fit py-2 px-2 ml-4">
-                    <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ED3E44"><path d="M9 3V1H7V3H3C2.44772 3 2 3.44772 2 4V20C2 20.5523 2.44772 21 3 21H21C21.5523 21 22 20.5523 22 20V4C22 3.44772 21.5523 3 21 3H17V1H15V3H9ZM4 10H20V19H4V10ZM4 5H7V6H9V5H15V6H17V5H20V8H4V5ZM9.87862 10.9644L12 13.0858L14.1212 10.9644L15.5355 12.3785L13.4142 14.5001L15.5354 16.6212L14.1213 18.0354L12 15.9143L9.87855 18.0354L8.46442 16.6211L10.5857 14.5001L8.46436 12.3785L9.87862 10.9644Z"></path></svg>
-                  </div>
-                  <div className="flex flex-col ml-4">
-                    <p className="flex flex-col text-zinc-400 font-medium text-sm">Diárias Indisponíveis</p>
-                    <div className="flex items-end gap-4">
-                      <span className="text-3xl">{comparativoIO.atual?.total_indisponivel ? Number(comparativoIO.atual?.total_indisponivel) : 0}</span>
-                      <Comparativo nome="DIÁRIAS INDISPONÍVEIS" data={dataBW} passado={comparativoIO.passado?.total_indisponivel ? Number(comparativoIO.passado?.total_indisponivel) : 0}
-                        atual={comparativoIO.atual?.total_indisponivel ? Number(comparativoIO.atual?.total_indisponivel) : 0} />
-                    </div>
-                  </div>
-                </div>
-                {/* Quantidade de hospede */}
-                <div className="bg-white border-zinc-300 border rounded-lg h-64 -translate-y-14 flex flex-col justify-between items-center py-1 row-span-3" >
-                  <p className="flex flex-col text-zinc-400 font-medium text-sm">Quantidade de hospedes</p>
-                  <QtdeHospede labels={qtdHospede.length > 0 ? qtdHospede.map(h => String(h.qtd_hospede)) : ['']} dados={qtdHospede.length > 0 ? qtdHospede.map(h => Number(h.qtd_reserva)) : [1]} colors={qtdHospede.length > 0 ? ['#5ec8de', '#5c89b4', '#e36a5f', '#e59b96', '#f5cf69', '#f1d334', '#da2e97', '#f46bd6', '#c169fe', '#43b9ff', '#efc25d', '#f06788', '#69b2f0', '#5ef1db', '#51e853']
-                    : ['#cccccc']} />
-                </div>
-                <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center" >
-                  <div className="bg-[#F2F2F2] rounded-md w-fit py-2 px-2 ml-4">
-                    <svg className="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#111827"><path d="M20 22H4V20C4 17.2386 6.23858 15 9 15H15C17.7614 15 20 17.2386 20 20V22ZM12 13C8.68629 13 6 10.3137 6 7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7C18 10.3137 15.3137 13 12 13Z"></path></svg>
-                  </div>
-                  <div className="flex flex-col ml-4">
-                    <p className="flex flex-col text-zinc-400 font-medium text-sm">Total de Hóspedes</p>
-                    <div className="flex items-end gap-4">
-                      <span className="text-3xl">{comparativoIO.atual?.total_hospede ? Number(comparativoIO.atual?.total_hospede) : 0}</span>
-                      <Comparativo nome="TOTAL DE HÓSPEDES" data={dataBW} passado={comparativoIO.passado?.total_hospede ? Number(comparativoIO.passado?.total_hospede) : 0}
-                        atual={comparativoIO.atual?.total_hospede ? Number(comparativoIO.atual?.total_hospede) : 0} />
-                    </div>
-                  </div>
-                </div>
-              </section> :
+            <IndicadoresOperacionais 
+            ocupacaoSemana={ocupacaoSemana}
+            comparativoIO={comparativoIO} 
+            qtdHospede={qtdHospede}
+            reservaCanal={reservaCanal}
+            dataBW={dataBW}
+            show={showIO}/> :
               <IndicadoresOperacionaisSkeleton />}
           </>)
         }
