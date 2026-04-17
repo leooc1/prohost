@@ -113,7 +113,7 @@ export default function FaturamentoLiquido({ mes, dadosAtuais, dadosPassado }: {
                 };
             }
         }
-    }, []);
+    }, [mes, dadosAtuais, dadosPassado]);
 
     return (
         <div className='h-72 w-full'>

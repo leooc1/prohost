@@ -118,7 +118,7 @@ export default function FaturamentoxDespesa({ mes, dadosAtuais, dadosPassado }: 
                 };
             }
         }
-    }, [mes]);
+    }, [mes, dadosAtuais, dadosPassado]);
 
     return (
         <div className='h-72 w-full'>

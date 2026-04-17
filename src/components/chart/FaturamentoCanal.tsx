@@ -75,7 +75,7 @@ export default function FaturamentoCanal({ labels, dados, colors }: { labels: st
                 };
             }
         }
-    }, []);
+    }, [labels, dados, colors]);
 
     return (
         <div className='max-h-52 w-full'>
