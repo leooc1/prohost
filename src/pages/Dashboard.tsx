@@ -423,7 +423,7 @@ export default function Dashboard() {
   }
 
   async function resultGest([start, end]: [string, string]) {
-    const base = `${apiURL}/fatProCanal/${dataToken.id}`;
+    const base = `${apiURL}/movimentacao/${dataToken.id}`;
     const inicioDate = `${start.slice(0, 4)}-01-01`;
     const finalDate =
       periodo === "personalizado" ? end : `${end.slice(0, 4)}-12-31`;
