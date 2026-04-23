@@ -26,7 +26,7 @@ export default function CalendarioEResumo(props: CalendarioEResumoProps) {
     const [dados, setDados] = useState<any>(null)
 
     async function getDados() {
-        await fetch(`${apiURL}/movimentacao/relatorio/calendario/${props.saas}/${props.dataIni}/${props.dataFim}/${props.acomodacao}`)
+        await fetch(`${apiURL}/relatorio/calendario/${props.saas}/${props.dataIni}/${props.dataFim}/${props.acomodacao}`)
             .then(res => res.json())
             .then(data => {
                 setDados(data)

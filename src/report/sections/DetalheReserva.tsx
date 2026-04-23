@@ -21,7 +21,7 @@ export default function DetalheReserva(props: DetalheReservaProps) {
     const [dados, setDados] = useState<any>(null)
 
     async function getDados() {
-        await fetch(`${apiURL}/movimentacao/relatorio/detalhe/${props.saas}/${props.dataIni}/${props.dataFim}/${props.acomodacao}`)
+        await fetch(`${apiURL}/relatorio/detalhe/${props.saas}/${props.dataIni}/${props.dataFim}/${props.acomodacao}`)
             .then(res => res.json())
             .then(data => {
                 setDados(data)

@@ -168,7 +168,10 @@ export default function ComparativoResultados({
                 };
             }
         }
-    }, [mes, dadosAtuais, dadosAnteriores]);
+    }, [mes, 
+    ano,
+    dadosAtuais,
+    dadosAnteriores]);
 
     return (
         <div className="h-96 w-full mt-20 bg-slate-200 rounded-lg relative">

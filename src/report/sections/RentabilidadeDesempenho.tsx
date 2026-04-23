@@ -22,7 +22,7 @@ export default function RentabilidadeDesempenho(props: RentabilidadeDesempenhoPr
     const [dados, setDados] = useState<any>(null)
 
     async function getDados() {
-        await fetch(`${apiURL}/movimentacao/relatorio/rentabilidade/${props.saas}/${props.dataIni}/${props.dataFim}/${props.acomodacao}`)
+        await fetch(`${apiURL}/relatorio/rentabilidade/${props.saas}/${props.dataIni}/${props.dataFim}/${props.acomodacao}`)
             .then(res => res.json())
             .then(data => {
                 setDados(data)

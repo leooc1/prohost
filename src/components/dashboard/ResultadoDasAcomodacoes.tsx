@@ -168,7 +168,7 @@ export default function ResultadoDasAcomodacoes(
         <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center">
           <div className="bg-[#FEF0D0] rounded-md w-fit py-2 px-2 ml-4">
             <svg
-              className="w-6"
+              className="w-6 h-6"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="#FAB515"
@@ -198,7 +198,7 @@ export default function ResultadoDasAcomodacoes(
         <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center">
           <div className="bg-[#D8D8D8] rounded-md w-fit py-2 px-2 ml-4">
             <svg
-              className="w-6"
+              className="w-6 h-6"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="#898989"
@@ -233,7 +233,7 @@ export default function ResultadoDasAcomodacoes(
         <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center">
           <div className="bg-[#D1F0FF] rounded-md w-fit py-2 px-2 ml-4">
             <svg
-              className="w-6"
+              className="w-6 h-6"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="#01AAFE"
@@ -350,7 +350,7 @@ export default function ResultadoDasAcomodacoes(
         >
           <div className="bg-[#FCE0E1] rounded-md w-fit py-2 px-2 ml-4">
             <svg
-              className="w-6"
+              className="w-6 h-6"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="#ED3E44"
@@ -416,7 +416,7 @@ export default function ResultadoDasAcomodacoes(
         <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center">
           <div className="bg-[#D1F0FF] rounded-md w-fit py-2 px-2 ml-4">
             <svg
-              className="w-6 h-fit"
+              className="w-6 h-6"
               xmlns="http://www.w3.org/2000/svg"
               version="1.1"
               width="512"
@@ -475,7 +475,7 @@ export default function ResultadoDasAcomodacoes(
         <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center">
           <div className="bg-[#F8DCDC] rounded-md w-fit py-2 px-2 ml-4">
             <svg
-              className="w-6"
+              className="w-6 h-6"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="#D94D52"
@@ -503,7 +503,7 @@ export default function ResultadoDasAcomodacoes(
         <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center">
           <div className="bg-[#E0FEEA] rounded-md w-fit py-2 px-2 ml-4">
             <svg
-              className="w-6 h-fit"
+              className="w-6 h-6"
               xmlns="http://www.w3.org/2000/svg"
               version="1.1"
               width="512"
@@ -542,7 +542,7 @@ export default function ResultadoDasAcomodacoes(
         <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center py-3">
           <div className="bg-[#f6d0fe] rounded-md w-fit py-2 px-2 ml-4">
             <svg
-              className="w-6"
+              className="w-6 h-6"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="#b115fa"
@@ -570,7 +570,7 @@ export default function ResultadoDasAcomodacoes(
         <div className="bg-white border-zinc-300 border rounded-lg h-full flex items-center py-3">
           <div className="bg-[#D1F0FF] rounded-md w-fit py-2 px-2 ml-4">
             <svg
-              className="w-6 h-fit"
+              className="w-6 h-6"
               xmlns="http://www.w3.org/2000/svg"
               version="1.1"
               width="512"

@@ -21,7 +21,7 @@ export default function ComparativoDoFaturamento(props: RentabilidadeDesempenhoP
     const [dados, setDados] = useState<any>(null)
 
     async function getDados() {
-        await fetch(`${apiURL}/movimentacao/relatorio/comparativo/${props.saas}/${props.dataIni}/${props.dataFim}/${props.acomodacao}`)
+        await fetch(`${apiURL}/relatorio/comparativo/${props.saas}/${props.dataIni}/${props.dataFim}/${props.acomodacao}`)
             .then(res => res.json())
             .then(data => {
                 setDados(data)
