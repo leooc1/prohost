@@ -47,7 +47,7 @@ export default function ResultadoDoGestor(props: ResultadoGestorProps) {
                 >
                     <div className="bg-[#D1F0FF] rounded-md w-fit py-2 px-2 ml-4">
                         <svg
-                            className="w-6"
+                            className="w-6 h-6"
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="#01AAFE"
@@ -96,7 +96,7 @@ export default function ResultadoDoGestor(props: ResultadoGestorProps) {
                 >
                     <div className="bg-[#D1F0FF] rounded-md w-fit py-2 px-2 ml-4">
                         <svg
-                            className="w-6"
+                            className="w-6 h-6"
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="#6279F2"
@@ -145,7 +145,7 @@ export default function ResultadoDoGestor(props: ResultadoGestorProps) {
                 >
                     <div className="bg-[#F8DCDC] rounded-md w-fit py-2 px-2 ml-4">
                         <svg
-                            className="w-6 fill-[#D94D52]"
+                            className="w-6 h-6 fill-[#D94D52]"
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 576 512"
                         >
@@ -178,7 +178,7 @@ export default function ResultadoDoGestor(props: ResultadoGestorProps) {
                 >
                     <div className="bg-[#D1F0FF] rounded-md w-fit py-2 px-2 ml-4">
                         <svg
-                            className="w-6 h-fit"
+                            className="w-6 h-6"
                             xmlns="http://www.w3.org/2000/svg"
                             version="1.1"
                             width="512"
@@ -229,7 +229,7 @@ export default function ResultadoDoGestor(props: ResultadoGestorProps) {
                 >
                     <div className="bg-[#E0FEEA] rounded-md w-fit py-2 px-2 ml-4">
                         <svg
-                            className="w-6 h-fit"
+                            className="w-6 h-6"
                             xmlns="http://www.w3.org/2000/svg"
                             version="1.1"
                             width="512"
