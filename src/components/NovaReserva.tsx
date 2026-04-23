@@ -569,6 +569,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                     })
                                 }
                                 else {
+                                    setButton(true)
                                     let error = err
                                     if (acomodacaoInput.value.length == 0) {
                                         error = (error.map((e, i) => i === 0 ? true : e) as [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean])
