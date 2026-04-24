@@ -19,7 +19,9 @@ export default function Assinar() {
   const [cycle, setCycle] = useState<"MONTHLY" | "YEARLY">("YEARLY");
   const [cupom, setCupom] = useState("");
   const [cupomInfo, setCupomInfo] = useState("");
-  const [cupomStatus, setCupomStatus] = useState<"default" | "success" | "error">("default");
+  const [cupomStatus, setCupomStatus] = useState<
+    "default" | "success" | "error"
+  >("default");
   const [discount, setDiscount] = useState(0);
 
   const precoAnual = () => {
@@ -36,19 +38,24 @@ export default function Assinar() {
   const precoMensal = () => precoAnual() / 10;
   const precoAnualComDesconto = () =>
     Number((precoAnual() - precoAnual() * discount).toFixed(2));
+  const precoMensalComDesconto = () =>
+    Number((precoMensal() - precoMensal() * discount).toFixed(2));
   const precoExibido = () =>
-    cycle === "MONTHLY" ? precoMensal() : precoAnualComDesconto();
-  const mostrarCupom = origin === "YouTube" && cycle === "YEARLY";
+    cycle === "MONTHLY" ? precoMensalComDesconto() : precoAnualComDesconto();
+  const mostrarCupom = origin === "YouTube";
 
   const aplicarCupom = () => {
     const cupomEncontrado = cupons.find(
-      (item) => item.name === cupom.trim().toUpperCase() && item.until >= new Date(),
+      (item) =>
+        item.name === cupom.trim().toUpperCase() && item.until >= new Date(),
     );
 
     if (cupomEncontrado) {
       setDiscount(cupomEncontrado.discount);
       setCupomStatus("success");
-      setCupomInfo(`${Number(cupomEncontrado.discount) * 100}% de desconto aplicados`);
+      setCupomInfo(
+        `${Number(cupomEncontrado.discount) * 100}% de desconto aplicados`,
+      );
       setCupom(cupomEncontrado.name);
       return;
     }
@@ -76,7 +83,9 @@ export default function Assinar() {
     // Calculate prices and set PlanoDTO
     const anual = precoAnualComDesconto();
     const mensal =
-      cycle === "YEARLY" ? Number((anual / 10).toFixed(2)) : Number(precoMensal().toFixed(2));
+      cycle === "YEARLY"
+        ? Number((anual / 10).toFixed(2))
+        : Number(precoMensal().toFixed(2));
     setPlanoDTO({
       qtd_acomodacao: Number(numAcomodacao) || 1,
       valor_mes: mensal,
@@ -89,13 +98,6 @@ export default function Assinar() {
     const vURL = new URL(location.href).searchParams.get("origin") || "";
     setOrigin(vURL);
   }, []);
-
-  useEffect(() => {
-    if (cycle === "YEARLY") return;
-    setDiscount(0);
-    setCupomInfo("");
-    setCupomStatus("default");
-  }, [cycle]);
 
   const cupomBorderClass =
     cupomStatus === "success"
@@ -178,32 +180,34 @@ export default function Assinar() {
                 </span>
               </div>
               {mostrarCupom && (
-                    <section className="relative flex items-start gap-2 mb-4">
-                      <div className="w-full">
-                        {cupomInfo && (
-                          <p className="text-sm text-zinc-200 mb-1 absolute right-0 -top-6">{cupomInfo}</p>
-                        )}
-                        <input
-                          placeholder="CUPOM"
-                          type="text"
-                          name="cupom"
-                          id="cupom"
-                          value={cupom}
-                          onChange={(e) => setCupom(e.target.value.toUpperCase())}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") aplicarCupom();
-                          }}
-                          className={`uppercase border rounded-xl pl-3 py-2 text-zinc-900 w-full ${cupomBorderClass}`}
-                        />
-                      </div>
-                      <button
-                        className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary whitespace-nowrap"
-                        onClick={aplicarCupom}
-                      >
-                        APLICAR
-                      </button>
-                    </section>
-                  )}
+                <section className="relative flex items-start gap-2 mb-4">
+                  <div className="w-full">
+                    {cupomInfo && (
+                      <p className="text-sm text-zinc-200 mb-1 absolute right-0 -top-6">
+                        {cupomInfo}
+                      </p>
+                    )}
+                    <input
+                      placeholder="CUPOM"
+                      type="text"
+                      name="cupom"
+                      id="cupom"
+                      value={cupom}
+                      onChange={(e) => setCupom(e.target.value.toUpperCase())}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") aplicarCupom();
+                      }}
+                      className={`uppercase border rounded-xl pl-3 py-2 text-zinc-900 w-full ${cupomBorderClass}`}
+                    />
+                  </div>
+                  <button
+                    className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary whitespace-nowrap"
+                    onClick={aplicarCupom}
+                  >
+                    APLICAR
+                  </button>
+                </section>
+              )}
               <div className="border border-zinc-400 rounded-xl p-4 gap-4 flex flex-col">
                 <p className="text-white">
                   Quantas acomodações você administra?
@@ -282,10 +286,14 @@ export default function Assinar() {
               )}
               {origin === "YouTube" && (
                 <div className="mt-5 text-zinc-100">
-                  
                   {discount > 0 && cycle === "YEARLY" && (
                     <p className="text-lg text-zinc-300 line-through">
                       R$ {precoAnual().toFixed(2).replace(".", ",")}
+                    </p>
+                  )}
+                  {discount > 0 && cycle === "MONTHLY" && (
+                    <p className="text-lg text-zinc-300 line-through">
+                      R$ {precoMensal().toFixed(2).replace(".", ",")}
                     </p>
                   )}
                   <div className="flex items-center gap-4">
