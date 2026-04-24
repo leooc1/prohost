@@ -22,7 +22,7 @@ const cupons = [
     {
         name: 'CUPOMPH10',
         discount: 0.1,
-        until: new Date('2026-04-21')
+        until: new Date('2026-04-25')
     }
 ]
 
@@ -553,7 +553,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
 
                         <div className="text-center">
                             <p className="text-lg mb-2">Preço Anual:</p>
-                            {Number(price.antigo) > 0 && <span className="absolute right-2 -translate-y-4 line-through">R$ {formatCurrency(Number(price.antigo))}</span>}
+                            {Number(price.antigo) > 0 && <span className="absolute right-2 -translate-y-4 line-through">{formatCurrency(Number(price.antigo))}</span>}
                             <p className="text-3xl font-bold">
                                 {formatCurrency(Number(price.total))}
                             </p>
@@ -642,7 +642,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                                         {currentPlan.accommodations === 1 ? "Acomodação" : "Acomodações"} -{" "}
                                         {isAnnual ? "Anual" : "Mensal"}
                                     </div>
-                                    {Number(price.antigo) > 0 && <p className="text-base text-red-500 line-through -mb-2">R$ {formatCurrency(Number(price.antigo))}</p>}
+                                    {Number(price.antigo) > 0 && <p className="text-base text-red-500 line-through -mb-2">{formatCurrency(Number(price.antigo))}</p>}
                                     <div className="text-2xl font-bold text-[#0E3447] mt-2">
                                         {
                                             formatCurrency(isAnnual ? (
