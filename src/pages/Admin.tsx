@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import AddTrialModal from "../components/admin/AddTrialModal";
 import Notify from "../components/notify/Notify";
 import { ModalAlert } from "../components/ModalAlert";
+import * as XLSX from 'xlsx';
 // import { SideBarContext } from "../contexts/SideBarMenuContext";
 
 interface AdminUser {
@@ -327,6 +328,55 @@ export default function Admin() {
         return isNaN(d.getTime()) ? 'N/A' : d.toLocaleDateString('pt-BR');
     }
 
+    const exportToExcel = () => {
+        const dataToExport = filteredAndSortedUsers.map(user => ({
+            'Nome': user.nome,
+            'Email': user.email,
+            'Celular': user.celular,
+            'Origem': user.origin || '-',
+            'Data de Criação': formatDate(user.create_date),
+            'Último Acesso': formatDate(user.last_login),
+            // 'Status da Assinatura': user.assinatura_status,
+            // 'Pagamentos Realizados': user.pagamentos_realizados,
+            'Trial Até': formatDate(user.trial_end),
+            'Acomodações Cadastradas': user.acomodacoes_cadastradas,
+            // 'Limite Acomodações': user.plano_qtd_acomodacao,
+            // 'Ciclo de Pagamento': user.ciclo,
+            // 'Valor Pago': user.valor_pago,
+            // 'Ativo': user.is_active_saas ? 'Sim' : 'Não'
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Usuários');
+
+        // Ajustar largura das colunas
+        const columnWidths = [
+            { wch: 20 },
+            { wch: 25 },
+            { wch: 15 },
+            { wch: 15 },
+            { wch: 15 },
+            { wch: 15 },
+            { wch: 15 },
+            { wch: 12 },
+            { wch: 15 },
+            { wch: 12 },
+            { wch: 12 },
+            { wch: 15 },
+            { wch: 12 },
+            { wch: 8 }
+        ];
+        worksheet['!cols'] = columnWidths;
+
+        const timestamp = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
+        XLSX.writeFile(workbook, `usuarios_prohost_${timestamp}.xlsx`);
+
+        setNotify({ type: 1, text: 'Download iniciado!' })
+        setShowNotify(true)
+        setTimeout(() => setShowNotify(false), 3000)
+    }
+
     const statusLegendItems: { key: UserStatusFilter; label: string; dotClassName: string }[] = [
         { key: 'paying-active', label: 'Ativo Pagante', dotClassName: 'bg-green-500' },
         { key: 'trial-active', label: 'Trial Ativo', dotClassName: 'bg-blue-500' },
@@ -403,10 +453,20 @@ export default function Admin() {
                             <span className="text-xs text-gray-500">Pagantes</span>
                             <span className="font-bold text-lg text-green-600">{stats.paying_active_users}</span>
                         </div>
+                        <button
+                            onClick={exportToExcel}
+                            className="ml-4 flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                            title="Baixar dados dos usuários em Excel"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0 0l-3 3m3-3l3 3m2-13H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2z"></path>
+                            </svg>
+                            Excel
+                        </button>
                         <input
                             type="text"
                             placeholder="Pesquisar usuário..."
-                            className="border border-gray-300 rounded-lg px-4 py-2 w-64 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ml-4"
+                            className="border border-gray-300 rounded-lg px-4 py-2 w-64 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                             value={search}
                             onChange={e => { setSearch(e.target.value); setCurrentPage(1); }}
                         />
