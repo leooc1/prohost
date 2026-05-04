@@ -392,7 +392,7 @@ export default function EditarMovimentacao(props: propsEditar) {
                                             "id": null
                                         },
                                         "pago": pago.checked,
-                                        "receita": false,
+                                        "receita": !props.despesa,
                                         "tipo_despesa": props.tipo_despesa,
                                         "recebedor": recebedor.value,
                                         "obs": observacaoInput.value

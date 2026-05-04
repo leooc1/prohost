@@ -76,7 +76,7 @@ export default function ResultadoERepasse(props: DetalheDespesaProps) {
                                         <span className="text-nowrap text-xl">R$ {new Intl.NumberFormat('pt-BR', {
                                             minimumFractionDigits: 2,
                                             maximumFractionDigits: 2
-                                        }).format(Number(Number(dados.faturamento_bruto).toFixed(1)))}</span>
+                                        }).format(Number(Number(dados.faturamento_bruto).toFixed(2)))}</span>
                                     </div>
                                 </div>
                                 <button className='absolute right-3'
@@ -96,7 +96,7 @@ export default function ResultadoERepasse(props: DetalheDespesaProps) {
                                         <span className="text-nowrap text-xl">R$ {new Intl.NumberFormat('pt-BR', {
                                             minimumFractionDigits: 2,
                                             maximumFractionDigits: 2
-                                        }).format(Number(Number(dados.taxa_limpeza).toFixed(1)))}</span>
+                                        }).format(Number(Number(dados.taxa_limpeza).toFixed(2)))}</span>
                                     </div>
                                 </div>
                                 <button className='absolute right-3'
@@ -116,7 +116,7 @@ export default function ResultadoERepasse(props: DetalheDespesaProps) {
                                         <span className="text-nowrap text-xl">R$ {new Intl.NumberFormat('pt-BR', {
                                             minimumFractionDigits: 2,
                                             maximumFractionDigits: 2
-                                        }).format(Number(Number(dados.comissao_reservas).toFixed(1)))}</span>
+                                        }).format(Number(Number(dados.comissao_reservas).toFixed(2)))}</span>
                                     </div>
                                 </div>
                                 <button className='absolute right-3'
@@ -136,7 +136,7 @@ export default function ResultadoERepasse(props: DetalheDespesaProps) {
                                         <span className="text-nowrap text-xl">R$ {new Intl.NumberFormat('pt-BR', {
                                             minimumFractionDigits: 2,
                                             maximumFractionDigits: 2
-                                        }).format(Number(Number(dados.comissao_taxa_limpeza).toFixed(1)))}</span>
+                                        }).format(Number(Number(dados.comissao_taxa_limpeza).toFixed(2)))}</span>
                                     </div>
                                 </div>
                                 <button className='absolute right-3'
@@ -156,7 +156,7 @@ export default function ResultadoERepasse(props: DetalheDespesaProps) {
                                         <span className="text-nowrap text-xl">R$ {new Intl.NumberFormat('pt-BR', {
                                             minimumFractionDigits: 2,
                                             maximumFractionDigits: 2
-                                        }).format(Number(Number(dados.faturamento_liquido).toFixed(1)))}</span>
+                                        }).format(Number(Number(dados.faturamento_liquido).toFixed(2)))}</span>
                                     </div>
                                 </div>
                                 <button className='absolute right-3'
@@ -175,7 +175,7 @@ export default function ResultadoERepasse(props: DetalheDespesaProps) {
                                         <span className="text-nowrap text-xl">R$ {new Intl.NumberFormat('pt-BR', {
                                             minimumFractionDigits: 2,
                                             maximumFractionDigits: 2
-                                        }).format(Number(Number(dados.despesas).toFixed(1)))}</span>
+                                        }).format(Number(Number(dados.despesas).toFixed(2)))}</span>
                                     </div>
                                 </div>
                                 <button className='absolute right-3'
@@ -195,7 +195,7 @@ export default function ResultadoERepasse(props: DetalheDespesaProps) {
                                         <span className="text-nowrap text-xl">R$ {new Intl.NumberFormat('pt-BR', {
                                             minimumFractionDigits: 2,
                                             maximumFractionDigits: 2
-                                        }).format(Number(Number(dados.lucro).toFixed(1)))}</span>
+                                        }).format(Number(Number(dados.lucro).toFixed(2)))}</span>
                                     </div>
                                 </div>
                                 <button className='absolute right-3'
@@ -219,7 +219,7 @@ export default function ResultadoERepasse(props: DetalheDespesaProps) {
                                         <p className={`text-black text-nowrap text-xl`}>R$ <input className='bg-transparent w-full text-black' defaultValue={new Intl.NumberFormat('pt-BR', {
                                             minimumFractionDigits: 2,
                                             maximumFractionDigits: 2
-                                        }).format(Number(Number(dados.repasse_gestor).toFixed(1)))} type="text"
+                                        }).format(Number(Number(dados.repasse_gestor).toFixed(2)))} type="text"
                                             onBlur={(e) => e.target.value = new Intl.NumberFormat('pt-BR', {
                                                 minimumFractionDigits: 2,
                                                 maximumFractionDigits: 2
@@ -246,7 +246,7 @@ export default function ResultadoERepasse(props: DetalheDespesaProps) {
                                 <p style={{ color: props.cores.letra }} className={`text-xl text-[${props.cores.letra}] font-semibold flex text-end pr-4`}>R$ <input className='bg-transparent ml-5 w-full' defaultValue={new Intl.NumberFormat('pt-BR', {
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2
-                                }).format(Number(Number(dados.repasse_proprietario).toFixed(1)))} type="text"
+                                }).format(Number(Number(dados.repasse_proprietario).toFixed(2)))} type="text"
                                     onBlur={(e) => e.target.value = new Intl.NumberFormat('pt-BR', {
                                         minimumFractionDigits: 2,
                                         maximumFractionDigits: 2
