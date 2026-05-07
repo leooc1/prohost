@@ -58,6 +58,15 @@ export default function Admin() {
     const [confirmToSendEmail, setConfirmToSendEmail] = useState<string>("");
     const [showConfirmModal, setShowConfirmModal] = useState(false);
 
+    // Create User Modal State
+    const [showCreateUserModal, setShowCreateUserModal] = useState(false);
+    const [newUser, setNewUser] = useState({
+        nome: '',
+        email: '',
+        celular: '',
+        cpf_cnpj: ''
+    });
+
     useEffect(() => {
         document.title = 'Admin | Prohost'
         const token = localStorage.getItem('ph_token_acc');
@@ -284,6 +293,45 @@ export default function Admin() {
         }
     }
 
+    async function createUser() {
+        // Validation
+        if (!newUser.nome || !newUser.email || !newUser.celular || !newUser.cpf_cnpj) {
+            setNotify({ type: 0, text: 'Todos os campos são obrigatórios!' })
+            setShowNotify(true)
+            setTimeout(() => setShowNotify(false), 3000)
+            return;
+        }
+
+        try {
+            const res = await fetch(`${apiURL}/assinatura/adm-create-client`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify([{...newUser, senha:'12345678'}])
+            });
+
+            if (res.ok) {
+                setNotify({ type: 1, text: 'Usuário criado com sucesso!' })
+                setShowNotify(true)
+                setTimeout(() => setShowNotify(false), 3000)
+                setShowCreateUserModal(false)
+                setNewUser({ nome: '', email: '', celular: '', cpf_cnpj: '' })
+                // Optionally refresh users list
+            } else {
+                const errorData = await res.json();
+                setNotify({ type: 0, text: errorData.message || 'Erro ao criar usuário!' })
+                setShowNotify(true)
+                setTimeout(() => setShowNotify(false), 3000)
+            }
+        } catch (error) {
+            console.error(error)
+            setNotify({ type: 0, text: 'Erro ao criar usuário!' })
+            setShowNotify(true)
+            setTimeout(() => setShowNotify(false), 3000)
+        }
+    }
+
     async function getLink(userId: number) {
         try {
             const token = localStorage.getItem('ph_token_acc');
@@ -398,6 +446,72 @@ export default function Admin() {
                     colorButton="green"
                 />
             )}
+            {showCreateUserModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+                        <h2 className="text-xl font-bold mb-4">Criar Novo Usuário</h2>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+                                <input
+                                    type="text"
+                                    value={newUser.nome}
+                                    onChange={(e) => setNewUser({ ...newUser, nome: e.target.value })}
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Digite o nome"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <input
+                                    type="email"
+                                    value={newUser.email}
+                                    onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Digite o email"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Número de Celular</label>
+                                <input
+                                    type="text"
+                                    value={newUser.celular}
+                                    onChange={(e) => setNewUser({ ...newUser, celular: e.target.value })}
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Digite o celular, ex: 21999099277"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">CPF/CNPJ</label>
+                                <input
+                                    type="text"
+                                    value={newUser.cpf_cnpj}
+                                    onChange={(e) => setNewUser({ ...newUser, cpf_cnpj: e.target.value })}
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Digite o CPF ou CNPJ, ex: 8677624708"
+                                />
+                            </div>
+                        </div>
+                        <div className="flex justify-end gap-3 mt-6">
+                            <button
+                                onClick={() => {
+                                    setShowCreateUserModal(false);
+                                    setNewUser({ nome: '', email: '', celular: '', cpf_cnpj: '' });
+                                }}
+                                className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={createUser}
+                                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                            >
+                                Criar Usuário
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             <div className="flex flex-col gap-4 max-w-[100vw]">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-lg shadow-sm">
@@ -462,6 +576,16 @@ export default function Admin() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0 0l-3 3m3-3l3 3m2-13H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2z"></path>
                             </svg>
                             Excel
+                        </button>
+                        <button
+                            onClick={() => setShowCreateUserModal(true)}
+                            className="ml-4 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                            title="Criar novo usuário"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Criar Usuário
                         </button>
                         <input
                             type="text"
