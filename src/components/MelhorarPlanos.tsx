@@ -23,7 +23,13 @@ const cupons = [
         name: 'CUPOMPH10',
         discount: 0.1,
         until: new Date('2026-04-25')
-    }
+    },
+    {
+        name: '3R10',
+        discount: 0.1,
+        until: new Date('2026-05-23')
+    },
+
 ]
 
 const formatCurrency = (value: number) => {
@@ -475,7 +481,6 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
     return (
         <div className="min-h-screen bg-[#F4F4F5] p-8">
             {showNotify && <Notify type={notify.type} text={notify.text} />}
-            {upgrade && <p className="text-primary text-center text-3xl mb-5">Upgrade de plano</p>}
             <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
                 {/* Plano Mensal */}
                 <div className="bg-white rounded-2xl shadow p-8 relative">
