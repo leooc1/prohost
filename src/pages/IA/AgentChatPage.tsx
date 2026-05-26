@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 
-const API_BASE = "http://localhost:3000";
+const apiURL = import.meta.env.VITE_API_URL;
 
 const getToken = () => window.localStorage.getItem("ph_token_acc") ?? "";
 const authHeaders = () => ({ Authorization: `Bearer ${getToken()}` });
@@ -50,7 +50,7 @@ export default function AgentChatPage() {
 
   const loadConversations = useCallback(async () => {
     try {
-      const res = await fetch(`${API_BASE}/agent/conversations`, {
+      const res = await fetch(`${apiURL}/agent/conversations`, {
         headers: authHeaders(),
       });
       const data = await res.json();
@@ -60,7 +60,7 @@ export default function AgentChatPage() {
 
   const loadConversation = useCallback(async (id: string) => {
     try {
-      const res = await fetch(`${API_BASE}/agent/conversations/${id}`, {
+      const res = await fetch(`${apiURL}/agent/conversations/${id}`, {
         headers: authHeaders(),
       });
       const data = await res.json();
@@ -87,7 +87,7 @@ export default function AgentChatPage() {
   };
 
   const deleteConversation = async (id: string) => {
-    await fetch(`${API_BASE}/agent/conversations/${id}`, {
+    await fetch(`${apiURL}/agent/conversations/${id}`, {
       method: "DELETE",
       headers: authHeaders(),
     });
@@ -124,7 +124,7 @@ export default function AgentChatPage() {
       if (activeConvId) formData.append("conversationId", activeConvId);
       if (sentFile) formData.append("file", sentFile);
 
-      const res = await fetch(`${API_BASE}/agent/chat`, {
+      const res = await fetch(`${apiURL}/agent/chat`, {
         method: "POST",
         headers: authHeaders(),
         body: formData,
