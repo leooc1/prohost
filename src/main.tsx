@@ -29,6 +29,8 @@ import ImportadorReservas from './pages/ImportAirBnB.tsx'
 
 import Admin from './pages/Admin.tsx'
 import AreaProprietario from './pages/AreaProprietario.tsx'
+import AgentChatPage from './pages/IA/AgentChatPage.tsx'
+import AgentAdminPage from './pages/IA/AgentAdminPage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -134,6 +136,17 @@ const router = createBrowserRouter([
     path: "/reset-senha",
     element: <EsqueciSenha />,
   },
+  {
+    path: "/agent-chat",
+    element: <AgentChatPage />,
+    // errorElement: <NotFound />,
+  },
+  {
+    path: "/agent-admin",
+    element: <AgentAdminPage />,
+    // errorElement: <NotFound />,
+  },
+
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

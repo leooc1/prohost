@@ -345,7 +345,6 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
       })
         .then((data) => data.json())
         .then((data) => {
-          console.log(data);
           return data;
         })
         .catch((err) => console.log(err));
@@ -535,15 +534,6 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
     setPrice(calculatePrice(getCurrentPlan()));
   }, [selectedAccommodations]);
 
-  useEffect(() => {
-    if (info) {
-      console.log(
-        "um: ",
-        upgrade && info.qtd_acomodacao >= currentPlan.accommodations,
-      );
-      console.log("dois: ", acomodacoesAtivas > currentPlan.accommodations);
-    }
-  }, [isPaymentOpen]);
   return (
     <div className="min-h-screen bg-[#F4F4F5] p-8">
       {showNotify && <Notify type={notify.type} text={notify.text} />}
