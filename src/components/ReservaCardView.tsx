@@ -104,20 +104,8 @@ export default function ReservaCardView(props: propsReserva) {
             .catch(err => console.log(err))
     }
 
-    /* async function idReserva(idReserva: number, idAcomodacao: number) {
-        if (!dataToken || !dataToken.id) return
-        await fetch(`${apiURL}/reserva/${dataToken.id}/${idReserva}/${idAcomodacao}`, {
-            method: 'GET'
-        })
-            .then(data => data.json())
-            .then((data: number) => {
-                setIdR(data)
-            })
-            .catch(err => console.log(err))
-    } */
-
     async function getReserva(id: string) {
-        if (!dataToken || !dataToken.id) return
+        if (!dataToken || !dataToken?.id) return
         await fetch(`${apiURL}/reserva/${dataToken.id}/${id}`, {
             method: 'GET'
         })
