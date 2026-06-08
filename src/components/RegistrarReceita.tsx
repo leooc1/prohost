@@ -117,7 +117,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                 <section>
                     <span className={`text-zinc-500 font-medium`}>Categoria<span className='text-red-500 font-bold'> *</span></span>
                     <div className="mt-2 flex gap-2 flex-wrap">
-                        <select name="categoria" id="categoria"
+                        <select name="categoria_f_create" id="categoria_f_create"
                             className={`${err[0] ? 'border-red-500' : 'border-zinc-300'} font-medium border rounded-md px-2 py-1 outline-none w-full`} style={{ color: categoria[1] }} defaultValue={categoria[0]}
                             onChange={(e) => {
                                 const cat = categoriaf.find((c) => String(c.id) === e.target.value);
@@ -173,7 +173,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
                     <button className="px-3 py-2 border border-zinc-300 rounded-lg" onClick={close}>Cancelar</button>
                     <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
                         onClick={async () => {
-                            const categoriaInput = document.getElementById('categoria') as HTMLSelectElement
+                            const categoriaInput = document.getElementById('categoria_f_create') as HTMLSelectElement
                             const descricaoInput = document.getElementById('descricao') as HTMLInputElement
                             const acomodacaoInput = document.getElementById('acomodacaoReceita') as HTMLInputElement
                             const dataInput = document.getElementById('data') as HTMLInputElement

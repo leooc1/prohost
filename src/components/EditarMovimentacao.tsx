@@ -219,7 +219,7 @@ export default function EditarMovimentacao(props: propsEditar) {
                     <section>
                         <span className="text-zinc-500 font-medium">Categoria</span>
                         <div className="mt-2 flex gap-2 flex-wrap">
-                            <select name="categoria" id="categoria"
+                            <select name="categoria_f_edit" id="categoria_f_edit"
                                 className={`border-zinc-300 font-medium border rounded-md px-2 py-1 outline-none`} defaultValue={String(props.categoria)}>
                                 <option value="" className="hidden" disabled selected></option>
                                 {categoriaf.length > 0 &&
@@ -388,7 +388,7 @@ export default function EditarMovimentacao(props: propsEditar) {
                         }}>Excluir</button>
                         <button className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
                             onClick={async () => {
-                                const categoriaInput = document.getElementById('categoria') as HTMLInputElement
+                                const categoriaInput = document.getElementById('categoria_f_edit') as HTMLInputElement
                                 const descricaoInput = document.getElementById('descricao') as HTMLInputElement
                                 const acomodacaoInput = document.getElementById('acomodacaoEdit') as HTMLInputElement
                                 const acomodacaoDespesaInput = document.getElementById('acomodacaoDespesa') as HTMLInputElement
@@ -440,7 +440,7 @@ export default function EditarMovimentacao(props: propsEditar) {
                                         "tipo_despesa": props.despesa ? tipoDespesa : null,
                                         "recebedor": recebedor.value,
                                         "obs": observacaoInput.value
-                                    })
+                                    }) 
                                 }
                                 else {
                                     let error = err
