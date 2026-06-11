@@ -6,7 +6,14 @@ import { AssinaturaContext } from "../contexts/AssinaturaContext";
 const cupons = [
   {
     name: "YOUTUBE5",
+    type: "all",
     discount: 0.05,
+    until: new Date("2030-01-01"),
+  },
+  {
+    name: "INSTA10",
+    type: "anual",
+    discount: 0.1,
     until: new Date("2030-01-01"),
   },
 ];
@@ -35,14 +42,21 @@ export default function Assinar() {
     else return precos[5];
   };
 
+  const cupomAtivo = cupons.find(
+    (item) => item.name === cupom.trim().toUpperCase() && item.until >= new Date(),
+  );
+
+  const descontoAplicado =
+    cupomAtivo?.type === "anual" && cycle === "MONTHLY" ? 0 : discount;
+
   const precoMensal = () => precoAnual() / 10;
   const precoAnualComDesconto = () =>
-    Number((precoAnual() - precoAnual() * discount).toFixed(2));
+    Number((precoAnual() - precoAnual() * descontoAplicado).toFixed(2));
   const precoMensalComDesconto = () =>
-    Number((precoMensal() - precoMensal() * discount).toFixed(2));
+    Number((precoMensal() - precoMensal() * descontoAplicado).toFixed(2));
   const precoExibido = () =>
     cycle === "MONTHLY" ? precoMensalComDesconto() : precoAnualComDesconto();
-  const mostrarCupom = origin === "YouTube";
+  const mostrarCupom = (origin === "YouTube" || origin === "Instagram");
 
   const aplicarCupom = () => {
     const cupomEncontrado = cupons.find(
@@ -50,19 +64,26 @@ export default function Assinar() {
         item.name === cupom.trim().toUpperCase() && item.until >= new Date(),
     );
 
-    if (cupomEncontrado) {
-      setDiscount(cupomEncontrado.discount);
-      setCupomStatus("success");
-      setCupomInfo(
-        `${Number(cupomEncontrado.discount) * 100}% de desconto aplicados`,
-      );
-      setCupom(cupomEncontrado.name);
+    if (!cupomEncontrado) {
+      setDiscount(0);
+      setCupomStatus("error");
+      setCupomInfo("Cupom inválido ou expirado");
       return;
     }
 
-    setDiscount(0);
-    setCupomStatus("error");
-    setCupomInfo("Cupom inválido ou expirado");
+    if (cupomEncontrado.type === "anual" && cycle === "MONTHLY") {
+      setDiscount(0);
+      setCupomStatus("error");
+      setCupomInfo("Este cupom é válido apenas para o plano anual.");
+      return;
+    }
+
+    setDiscount(cupomEncontrado.discount);
+    setCupomStatus("success");
+    setCupomInfo(
+      `${Number(cupomEncontrado.discount) * 100}% de desconto aplicados`,
+    );
+    setCupom(cupomEncontrado.name);
   };
 
   useEffect(() => {
@@ -284,7 +305,7 @@ export default function Assinar() {
                   </p>
                 </div>
               )}
-              {origin === "YouTube" && (
+              {origin === "YouTube" || origin === "Instagram" && (
                 <div className="mt-5 text-zinc-100">
                   {discount > 0 && cycle === "YEARLY" && (
                     <p className="text-lg text-zinc-300 line-through">
