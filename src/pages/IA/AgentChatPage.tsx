@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const apiURL = import.meta.env.VITE_API_URL;
 
@@ -360,18 +362,105 @@ export default function AgentChatPage() {
                       </div>
                     )}
                     <div
-                      className={`rounded-2xl px-4 py-3 text-[13.5px] leading-relaxed ${
+                      className={`rounded-2xl px-4 py-3 text-[13.5px] leading-relaxed max-w-full ${
                         msg.role === "user"
                           ? "bg-stone-800 text-stone-100 rounded-tr-sm"
                           : "bg-stone-900/80 border border-stone-800/80 text-stone-200 rounded-tl-sm"
                       }`}
                     >
-                      <p className="whitespace-pre-wrap">
-                        {msg.content}
+                      <div className="markdown-body prose prose-invert max-w-full text-inherit">
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          components={{
+                            p: ({ children }: any) => (
+                              <p className="mb-2 last:mb-0 whitespace-pre-wrap leading-relaxed text-inherit">
+                                {children}
+                              </p>
+                            ),
+                            ul: ({ children }: any) => (
+                              <ul className="list-disc pl-5 my-2 space-y-1 text-inherit">
+                                {children}
+                              </ul>
+                            ),
+                            ol: ({ children }: any) => (
+                              <ol className="list-decimal pl-5 my-2 space-y-1 text-inherit">
+                                {children}
+                              </ol>
+                            ),
+                            li: ({ children }: any) => (
+                              <li className="leading-relaxed text-inherit">
+                                {children}
+                              </li>
+                            ),
+                            a: ({ href, children }: any) => (
+                              <a
+                                href={href}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-amber-300 underline decoration-amber-400/40 hover:text-amber-200"
+                              >
+                                {children}
+                              </a>
+                            ),
+                            strong: ({ children }: any) => (
+                              <strong className="font-semibold text-stone-100">
+                                {children}
+                              </strong>
+                            ),
+                            em: ({ children }: any) => (
+                              <em className="italic text-stone-100/90">
+                                {children}
+                              </em>
+                            ),
+                            blockquote: ({ children }: any) => (
+                              <blockquote className="border-l-2 border-amber-400/40 pl-3 italic text-stone-300 my-2">
+                                {children}
+                              </blockquote>
+                            ),
+                            hr: () => <hr className="my-3 border-stone-800" />,
+                            h1: ({ children }: any) => (
+                              <h1 className="text-base font-semibold text-stone-50 mt-2 mb-2">
+                                {children}
+                              </h1>
+                            ),
+                            h2: ({ children }: any) => (
+                              <h2 className="text-sm font-semibold text-stone-100 mt-2 mb-1.5">
+                                {children}
+                              </h2>
+                            ),
+                            h3: ({ children }: any) => (
+                              <h3 className="text-[13px] font-semibold text-stone-100 mt-2 mb-1">
+                                {children}
+                              </h3>
+                            ),
+                            code: ({
+                              inline,
+                              className,
+                              children,
+                              ...props
+                            }: any) =>
+                              inline ? (
+                                <code
+                                  className="rounded bg-stone-800/90 px-1 py-0.5 font-mono text-[12px] text-amber-100"
+                                  {...props}
+                                >
+                                  {children}
+                                </code>
+                              ) : (
+                                <pre className="my-3 overflow-x-auto rounded-xl border border-stone-800 bg-stone-950/90 p-3 text-[12px] leading-5">
+                                  <code className={className} {...props}>
+                                    {children}
+                                  </code>
+                                </pre>
+                              ),
+                          }}
+                        >
+                          {msg.content}
+                        </ReactMarkdown>
                         {msg.streaming && (
                           <span className="inline-block w-[2px] h-[14px] bg-amber-400 ml-0.5 animate-pulse align-middle rounded-full" />
                         )}
-                      </p>
+                      </div>
                     </div>
                     {msg.role === "assistant" &&
                       !msg.streaming &&

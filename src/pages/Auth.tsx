@@ -95,7 +95,7 @@ export default function Auth() {
                         </label>
                         <a className='flex gap-2 items-center font-medium text-zinc-500 cursor-pointer hover:text-blue-600' href='/reset-senha'>Esqueceu sua senha?</a>
                         <button className={`py-2 text-white text-xl font-medium px-10 rounded-lg bg-primary w-fit`}>Avançar</button>
-                        <a href='assinar/sem-trial?acom=1' className='flex gap-2 items-center font-medium text-zinc-500 hover:text-blue-600'>Não tem uma conta? Registre-se</a>
+                        <a href='assinar?acom=1' className='flex gap-2 items-center font-medium text-zinc-500 hover:text-blue-600'>Não tem uma conta? Registre-se</a>
                     </form>
 
                 </section>
