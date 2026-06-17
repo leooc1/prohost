@@ -31,6 +31,7 @@ import Admin from './pages/Admin.tsx'
 import AreaProprietario from './pages/AreaProprietario.tsx'
 import AgentChatPage from './pages/IA/AgentChatPage.tsx'
 import AgentAdminPage from './pages/IA/AgentAdminPage.tsx'
+import Tutorial from './pages/Tutorial.tsx'
 
 const router = createBrowserRouter([
   {
@@ -146,12 +147,17 @@ const router = createBrowserRouter([
     element: <AgentAdminPage />,
     // errorElement: <NotFound />,
   },
+  {
+    path: "/tutorial",
+    element: <Tutorial />,
+    // errorElement: <NotFound />,
+  },
 
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode> 
     <RouterProvider router={router} />
-    <JivoChat />
+    {/* <JivoChat /> */}
   </React.StrictMode>,
 )
