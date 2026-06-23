@@ -38,7 +38,7 @@ export default function AgentChatPage() {
   const [activeConvId, setActiveConvId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [sending, setSending] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
@@ -98,14 +98,15 @@ export default function AgentChatPage() {
   };
 
   const sendMessage = async () => {
-    if (!input.trim() && !file) return;
+    if (!input.trim() && files.length === 0) return;
     setSending(true);
 
+    const fileNames = files.map((f) => f.name);
     const userMsg: Message = {
       id: uid(),
       role: "user",
       content: input,
-      fileName: file?.name,
+      fileName: fileNames.length > 0 ? fileNames.join(', ') : undefined,
     };
     const assistantMsgId = uid();
     const assistantMsg: Message = {
@@ -117,14 +118,16 @@ export default function AgentChatPage() {
 
     setMessages((prev) => [...prev, userMsg, assistantMsg]);
     setInput("");
-    const sentFile = file;
-    setFile(null);
+    const sentFiles = files;
+    setFiles([]);
 
     try {
       const formData = new FormData();
       formData.append("message", userMsg.content);
       if (activeConvId) formData.append("conversationId", activeConvId);
-      if (sentFile) formData.append("file", sentFile);
+      for (const sentFile of sentFiles) {
+        formData.append("files", sentFile);
+      }
 
       const res = await fetch(`${apiURL}/agent/chat`, {
         method: "POST",
@@ -488,20 +491,27 @@ export default function AgentChatPage() {
 
         <div className="px-4 py-4 border-t border-stone-800/60 bg-stone-900/30">
           <div className="max-w-3xl mx-auto">
-            {file && (
-              <div className="flex items-center gap-2 mb-2 px-3 py-1.5 bg-stone-800/60 border border-stone-700 rounded-xl w-fit">
-                <span
-                  className="text-[11px] text-amber-400"
-                  style={{ fontFamily: "'DM Mono', monospace" }}
-                >
-                  📎 {file.name}
-                </span>
-                <button
-                  onClick={() => setFile(null)}
-                  className="text-stone-600 hover:text-red-400 text-xs transition-colors"
-                >
-                  ✕
-                </button>
+            {files.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2 mb-2 px-3 py-1.5 bg-stone-800/60 border border-stone-700 rounded-xl">
+                {files.map((file) => (
+                  <div
+                    key={file.name}
+                    className="flex items-center gap-2 px-2 py-1 bg-stone-900/70 border border-stone-700 rounded-lg"
+                  >
+                    <span
+                      className="text-[11px] text-amber-400"
+                      style={{ fontFamily: "'DM Mono', monospace" }}
+                    >
+                      📎 {file.name}
+                    </span>
+                    <button
+                      onClick={() => setFiles((prev) => prev.filter((f) => f !== file))}
+                      className="text-stone-600 hover:text-red-400 text-xs transition-colors"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
               </div>
             )}
             <div className="flex items-end gap-2 bg-stone-900 border border-stone-800 rounded-2xl px-3 py-2.5 focus-within:border-amber-400/30 transition-colors">
@@ -530,7 +540,13 @@ export default function AgentChatPage() {
                 type="file"
                 className="hidden"
                 accept=".pdf,.docx,image/*"
-                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                multiple
+                onChange={(e) => {
+                  const selectedFiles = Array.from(e.target.files ?? []);
+                  if (selectedFiles.length === 0) return;
+                  setFiles((prev) => [...prev, ...selectedFiles]);
+                  e.currentTarget.value = '';
+                }}
               />
 
               <textarea
@@ -556,7 +572,7 @@ export default function AgentChatPage() {
 
               <button
                 onClick={sendMessage}
-                disabled={sending || (!input.trim() && !file)}
+                disabled={sending || (!input.trim() && files.length === 0)}
                 className="mb-0.5 w-8 h-8 rounded-lg bg-amber-400 hover:bg-amber-300 disabled:bg-stone-800 disabled:text-stone-600 flex items-center justify-center text-stone-950 transition-all shrink-0"
               >
                 {sending ? (

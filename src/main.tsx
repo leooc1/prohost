@@ -32,6 +32,7 @@ import AreaProprietario from './pages/AreaProprietario.tsx'
 import AgentChatPage from './pages/IA/AgentChatPage.tsx'
 import AgentAdminPage from './pages/IA/AgentAdminPage.tsx'
 import Tutorial from './pages/Tutorial.tsx'
+import Importacao from './pages/import/Importacao.tsx'
 
 const router = createBrowserRouter([
   {
@@ -150,6 +151,11 @@ const router = createBrowserRouter([
   {
     path: "/tutorial",
     element: <Tutorial />,
+    // errorElement: <NotFound />,
+  },
+  {
+    path: "/importacao",
+    element: <Importacao />,
     // errorElement: <NotFound />,
   },
 
