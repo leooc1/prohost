@@ -48,16 +48,23 @@ export default function AgentChatPage() {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, activeConvId]);
 
   const loadConversations = useCallback(async () => {
+    let lastActiveConvId: string;
     try {
       const res = await fetch(`${apiURL}/agent/conversations`, {
         headers: authHeaders(),
       });
       const data = await res.json();
       setConversations(data);
-    } catch {}
+      lastActiveConvId = data[0]?.id ?? "";
+    } catch {
+    } finally {
+      setTimeout(() => {
+        loadConversation(lastActiveConvId);
+      }, 500);
+    }
   }, []);
 
   const loadConversation = useCallback(async (id: string) => {
@@ -106,7 +113,7 @@ export default function AgentChatPage() {
       id: uid(),
       role: "user",
       content: input,
-      fileName: fileNames.length > 0 ? fileNames.join(', ') : undefined,
+      fileName: fileNames.length > 0 ? fileNames.join(", ") : undefined,
     };
     const assistantMsgId = uid();
     const assistantMsg: Message = {
@@ -505,7 +512,9 @@ export default function AgentChatPage() {
                       📎 {file.name}
                     </span>
                     <button
-                      onClick={() => setFiles((prev) => prev.filter((f) => f !== file))}
+                      onClick={() =>
+                        setFiles((prev) => prev.filter((f) => f !== file))
+                      }
                       className="text-stone-600 hover:text-red-400 text-xs transition-colors"
                     >
                       ✕
@@ -545,7 +554,7 @@ export default function AgentChatPage() {
                   const selectedFiles = Array.from(e.target.files ?? []);
                   if (selectedFiles.length === 0) return;
                   setFiles((prev) => [...prev, ...selectedFiles]);
-                  e.currentTarget.value = '';
+                  e.currentTarget.value = "";
                 }}
               />
 
