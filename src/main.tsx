@@ -4,12 +4,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "../styles/index.css";
 import App from "./App.tsx";
 import Boleto from "./components/assinatura/Boleto.tsx";
-import CadastroSemTrial from "./pages/CadastroSemTrial.tsx";
 import Cadastro from "./components/assinatura/Cadastro.tsx";
 import CartaoCredito from "./components/assinatura/CartaoCredito.tsx";
 import FormaPagamento from "./components/assinatura/FormaPagamento.tsx";
 import Pix from "./components/assinatura/Pix.tsx";
 import { AssinaturaProvider } from "./contexts/AssinaturaContext.tsx";
+import CadastroSemTrial from "./pages/CadastroSemTrial.tsx";
 // import JivoChat from './JivoChat.tsx'
 import NotFound from "./NotFound.tsx";
 import Acomodacoes from "./pages/Acomodacoes.tsx";
@@ -25,12 +25,11 @@ import Hospede from "./pages/Hospede.tsx";
 import MinhaConta from "./pages/MinhaConta.tsx";
 import Relatorio from "./pages/Relatorio.tsx";
 import Reserva from "./pages/Reserva.tsx";
-import ImportadorReservas from "./pages/ImportAirBnB.tsx";
 
 import Admin from "./pages/Admin.tsx";
 import AreaProprietario from "./pages/AreaProprietario.tsx";
-import AgentChatPage from "./pages/IA/AgentChatPage.tsx";
 import AgentAdminPage from "./pages/IA/AgentAdminPage.tsx";
+import AgentChatPage from "./pages/IA/AgentChatPage.tsx";
 import Tutorial from "./pages/Tutorial.tsx";
 import ImportacaoAirbnb from "./pages/import/ImportacaoAirbnb.tsx";
 import ImportacaoBooking from "./pages/import/ImportacaoBooking.tsx";

@@ -2,8 +2,7 @@ import Papa from "papaparse";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import {
-  SideBarContext,
-  SideBarProvider,
+  SideBarContext
 } from "../../contexts/SideBarMenuContext";
 
 interface ImportacaoRow {
@@ -100,7 +99,7 @@ export default function ImportacaoBooking() {
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const rows = XLSX.utils.sheet_to_json(sheet);
-        // console.log("Excel Parsed:", rows);
+        console.log("Excel Parsed:", rows);
       };
       reader.readAsBinaryString(file);
     } else {
