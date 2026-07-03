@@ -1,9 +1,7 @@
 import Papa from "papaparse";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
-import {
-  SideBarContext
-} from "../../contexts/SideBarMenuContext";
+import { SideBarContext } from "../../contexts/SideBarMenuContext";
 
 interface ImportacaoRow {
   data: string;
@@ -39,6 +37,7 @@ export default function ImportacaoAirbnb() {
 
   // Estados para acomodações
   const [acomodacoes, setAcomodacoes] = useState<Acomodacao[]>([]);
+  const [hospede, setHospede] = useState<any[]>([]);
   const [acomodacaoSelecionada, setAcomodacaoSelecionada] =
     useState<string>("");
   const [canalSelecionado, setCanalSelecionado] = useState<
@@ -168,7 +167,34 @@ export default function ImportacaoAirbnb() {
     setAcomodacaoSelecionada("");
     setEtapa("anuncio");
   };
+  async function getHospede() {
+    if (!dataToken || !dataToken.id) return;
+    await fetch(`${apiURL}/hospede/${dataToken.id}`, {
+      method: "GET",
+    })
+      .then((data) => data.json())
+      .then((data: any[]) => {
+        setHospede(data);
+      })
+      .catch((err) => console.log(err));
+  }
+  async function createHospede(pbody: any) {
+    try {
+      const response = await fetch(`${apiURL}/hospede/`, {
+        method: "POST",
+        body: JSON.stringify(pbody),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
 
+      return data.id ? data.id : null;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  }
   async function createReserva(pbody: any) {
     let retorno = 0;
     await fetch(`${apiURL}/reserva/`, {
@@ -287,7 +313,7 @@ export default function ImportacaoAirbnb() {
             )}
           </div>
 
-{/*           <div className="bg-gray-100 p-4 rounded-lg mb-6">
+          {/*           <div className="bg-gray-100 p-4 rounded-lg mb-6">
             <p className="text-sm font-medium text-primary/80">
               Total de registros:{" "}
               <span className="font-bold">{importacao.length}</span>
@@ -407,13 +433,14 @@ export default function ImportacaoAirbnb() {
                 <button
                   disabled={!acomodacaoSelecionada && !botaoImportar}
                   className={`flex-1 px-4 py-2 rounded transition ${
-                    (acomodacaoSelecionada && botaoImportar)
+                    acomodacaoSelecionada && botaoImportar
                       ? "bg-green-500 text-white hover:bg-green-600"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
                   onClick={async () => {
                     setBotaoImportar(false);
                     const retornos: string[] = [];
+                    await getHospede();
                     await Promise.all(
                       importacao
                         .filter((i) => i.acomodacao === anuncioSelecionado)
@@ -424,6 +451,29 @@ export default function ImportacaoAirbnb() {
                           checkOut.setDate(
                             checkOut.getDate() + Number(imp.qtd_noites),
                           );
+                          let hospedeId;
+                          if (
+                            hospede.filter(
+                              (h) =>
+                                h.nome.toLowerCase() ==
+                                imp.hospede.toLowerCase(),
+                            ).length > 0
+                          ) {
+                            hospedeId =
+                              hospede.filter(
+                                (h) =>
+                                  h.nome.toLowerCase() ==
+                                  imp.hospede.toLowerCase(),
+                              )[0].id || 0;
+                          } else {
+                            hospedeId = await createHospede({
+                              nome: imp.hospede,
+                              email: null,
+                              saas: { id: dataToken.id },
+                              telefone: null,
+                            });
+                          }
+
                           await createReserva({
                             acomodacao: {
                               id: acomodacaoSelecionada,
@@ -449,7 +499,7 @@ export default function ImportacaoAirbnb() {
                             },
                             comissao_ota: Number(imp.taxa_servico),
                             hospede: {
-                              id: 29970, //hospede padrao
+                              id: hospedeId, //hospede padrao
                             },
                             qtd_hospede: 1,
                             saas: {
