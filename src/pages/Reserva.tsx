@@ -333,8 +333,9 @@ export default function Reserva() {
                     </button>
                   </div>
                   <div className="flex flex-col items-end justify-center">
-                    <p className="text-xl text-primary">
+                    <p className="text-xl text-primary relative">
                       Importador de Reservas
+                      <span className="absolute w-max text-xs left-1/2 -translate-x-1/2 -top-5 bg-primary/80 text-secondary px-2 py-1 rounded-full">Acesso Antecipado</span>
                     </p>
                     <div className="flex w-[227px] justify-around">
                       <a
@@ -355,7 +356,7 @@ export default function Reserva() {
                         }}
                         title="Airbnb"
                         href="/importacao-airbnb"
-                        className="hover:scale-125 transition-all"
+                        className="hover:scale-125 transition-all relative"
                       >
                         <svg
                           className="w-10 h-10"

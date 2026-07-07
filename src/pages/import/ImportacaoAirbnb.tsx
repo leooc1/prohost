@@ -229,8 +229,13 @@ export default function ImportacaoAirbnb() {
     [importacao[0]]
       .filter((i) => i.acomodacao === anuncioSelecionado)
       .forEach((imp) => {
+        imp = {
+          ...imp,
+          taxa_limpeza: imp.taxa_limpeza.replace(",", "."),
+          taxa_servico: imp.taxa_servico.replace(",", "."),
+          valor: imp.valor.replace(",", "."),
+        };
         console.log(imp);
-        
         const checkOut = new Date(
           `${imp.data.split("/")[2]}-${imp.data.split("/")[1]}-${imp.data.split("/")[0]}`,
         );
@@ -550,7 +555,6 @@ export default function ImportacaoAirbnb() {
                   }`}
                   onClick={async () => {
                     // consoleLog();
-
                     setBotaoImportar(false);
                     const retornos: string[] = [];
                     await getHospede();
