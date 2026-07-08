@@ -225,7 +225,7 @@ export default function ImportacaoAirbnb() {
     // console.log(dataToken)
   }, [dataToken]);
 
-  /* const consoleLog = () => {
+  const consoleLog = () => {
     [importacao[0]]
       .filter((i) => i.acomodacao === anuncioSelecionado)
       .forEach((imp) => {
@@ -252,14 +252,16 @@ export default function ImportacaoAirbnb() {
           check_out: `${checkOut.toISOString().split("T")[0]} ${
             acomodacoes.find((a) => a.id == acomodacaoSelecionada)?.check_out_p
           }`,
-          taxa_limpeza:
-            acomodacoes.find((a) => a.id == acomodacaoSelecionada)?.modelo == 1
+          taxa_limpeza: Number(
+            (acomodacoes.find((a) => a.id == acomodacaoSelecionada)?.modelo == 1
               ? 0
-              : Number(imp.taxa_limpeza),
+              : Number(imp.taxa_limpeza)
+            ).toFixed(2),
+          ),
           canal_reserva: {
             id: canalSelecionado[0].id,
           },
-          comissao_ota: Number(imp.taxa_servico),
+          comissao_ota: Number(Number(imp.taxa_servico).toFixed(2)),
           hospede: {
             id: hospedeId, //hospede padrao
           },
@@ -267,19 +269,27 @@ export default function ImportacaoAirbnb() {
           saas: {
             id: dataToken?.id,
           },
-          valor:
-            Number(imp.valor) -
-            (acomodacoes.find((a) => a.id == acomodacaoSelecionada)?.modelo == 1
-              ? 0
-              : Number(imp.taxa_limpeza)) +
-            Number(imp.taxa_servico),
-          valor_liq:
-            Number(imp.valor) -
-            (acomodacoes.find((a) => a.id == acomodacaoSelecionada)?.modelo == 1
-              ? 0
-              : Number(imp.taxa_limpeza)),
-          valor_prop:
-            Number(
+          valor: Number(
+            (
+              Number(imp.valor) -
+              (acomodacoes.find((a) => a.id == acomodacaoSelecionada)?.modelo ==
+              1
+                ? 0
+                : Number(imp.taxa_limpeza)) +
+              Number(imp.taxa_servico)
+            ).toFixed(2),
+          ),
+          valor_liq: Number(
+            (
+              Number(imp.valor) -
+              (acomodacoes.find((a) => a.id == acomodacaoSelecionada)?.modelo ==
+              1
+                ? 0
+                : Number(imp.taxa_limpeza))
+            ).toFixed(2),
+          ),
+          valor_prop: Number(
+            (Number(
               acomodacoes.find((a) => a.id == acomodacaoSelecionada)?.comissao,
             ) > 1
               ? (Number(imp.valor) -
@@ -305,9 +315,11 @@ export default function ImportacaoAirbnb() {
                 (acomodacoes.find((a) => a.id == acomodacaoSelecionada)
                   ?.modelo == 1
                   ? 0
-                  : Number(imp.taxa_limpeza)),
-          valor_gestor:
-            Number(
+                  : Number(imp.taxa_limpeza))
+            ).toFixed(2),
+          ),
+          valor_gestor: Number(
+            (Number(
               acomodacoes.find((a) => a.id == acomodacaoSelecionada)?.comissao,
             ) > 1
               ? (Number(imp.valor) -
@@ -328,18 +340,24 @@ export default function ImportacaoAirbnb() {
                 Number(
                   acomodacoes.find((a) => a.id == acomodacaoSelecionada)
                     ?.comissao,
-                ),
-          valor_liq_calculado:
-            Number(imp.valor) -
-            (acomodacoes.find((a) => a.id == acomodacaoSelecionada)?.modelo == 1
-              ? 0
-              : Number(imp.taxa_limpeza)),
+                )
+            ).toFixed(2),
+          ),
+          valor_liq_calculado: Number(
+            (
+              Number(imp.valor) -
+              (acomodacoes.find((a) => a.id == acomodacaoSelecionada)?.modelo ==
+              1
+                ? 0
+                : Number(imp.taxa_limpeza))
+            ).toFixed(2),
+          ),
           obs: "",
           tipo_reserva: "Reserva",
           continuidade: null,
         });
       });
-  }; */
+  };
 
   return (
     <div className="p-8 flex flex-col items-center max-h-screen bg-gray-50">
@@ -554,7 +572,7 @@ export default function ImportacaoAirbnb() {
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
                   onClick={async () => {
-                    // consoleLog();
+                    consoleLog();
                     setBotaoImportar(false);
                     const retornos: string[] = [];
                     await getHospede();
@@ -568,8 +586,12 @@ export default function ImportacaoAirbnb() {
                             taxa_servico: imp.taxa_servico.replace(",", "."),
                             valor: imp.valor.replace(",", "."),
                           };
+                          const [dia, mes, ano] = imp.data.split("/");
+
                           const checkOut = new Date(
-                            `${imp.data.split("/")[2]}-${imp.data.split("/")[1]}-${imp.data.split("/")[0]}`,
+                            Number(ano),
+                            Number(mes) - 1,
+                            Number(dia),
                           );
                           checkOut.setDate(
                             checkOut.getDate() + Number(imp.qtd_noites),
@@ -611,16 +633,20 @@ export default function ImportacaoAirbnb() {
                                 (a) => a.id == acomodacaoSelecionada,
                               )?.check_out_p
                             }`,
-                            taxa_limpeza:
-                              acomodacoes.find(
+                            taxa_limpeza: Number(
+                              (acomodacoes.find(
                                 (a) => a.id == acomodacaoSelecionada,
                               )?.modelo == 1
                                 ? 0
-                                : Number(imp.taxa_limpeza),
+                                : Number(imp.taxa_limpeza)
+                              ).toFixed(2),
+                            ),
                             canal_reserva: {
                               id: canalSelecionado[0].id,
                             },
-                            comissao_ota: Number(imp.taxa_servico),
+                            comissao_ota: Number(
+                              Number(imp.taxa_servico).toFixed(2),
+                            ),
                             hospede: {
                               id: hospedeId, //hospede padrao
                             },
@@ -628,23 +654,29 @@ export default function ImportacaoAirbnb() {
                             saas: {
                               id: dataToken?.id,
                             },
-                            valor:
-                              Number(imp.valor) -
-                              (acomodacoes.find(
-                                (a) => a.id == acomodacaoSelecionada,
-                              )?.modelo == 1
-                                ? 0
-                                : Number(imp.taxa_limpeza)) +
-                              Number(imp.taxa_servico),
-                            valor_liq:
-                              Number(imp.valor) -
-                              (acomodacoes.find(
-                                (a) => a.id == acomodacaoSelecionada,
-                              )?.modelo == 1
-                                ? 0
-                                : Number(imp.taxa_limpeza)),
-                            valor_prop:
-                              Number(
+                            valor: Number(
+                              (
+                                Number(imp.valor) -
+                                (acomodacoes.find(
+                                  (a) => a.id == acomodacaoSelecionada,
+                                )?.modelo == 1
+                                  ? 0
+                                  : Number(imp.taxa_limpeza)) +
+                                Number(imp.taxa_servico)
+                              ).toFixed(2),
+                            ),
+                            valor_liq: Number(
+                              (
+                                Number(imp.valor) -
+                                (acomodacoes.find(
+                                  (a) => a.id == acomodacaoSelecionada,
+                                )?.modelo == 1
+                                  ? 0
+                                  : Number(imp.taxa_limpeza))
+                              ).toFixed(2),
+                            ),
+                            valor_prop: Number(
+                              (Number(
                                 acomodacoes.find(
                                   (a) => a.id == acomodacaoSelecionada,
                                 )?.comissao,
@@ -677,9 +709,11 @@ export default function ImportacaoAirbnb() {
                                     (a) => a.id == acomodacaoSelecionada,
                                   )?.modelo == 1
                                     ? 0
-                                    : Number(imp.taxa_limpeza)),
-                            valor_gestor:
-                              Number(
+                                    : Number(imp.taxa_limpeza))
+                              ).toFixed(2),
+                            ),
+                            valor_gestor: Number(
+                              (Number(
                                 acomodacoes.find(
                                   (a) => a.id == acomodacaoSelecionada,
                                 )?.comissao,
@@ -706,14 +740,19 @@ export default function ImportacaoAirbnb() {
                                     acomodacoes.find(
                                       (a) => a.id == acomodacaoSelecionada,
                                     )?.comissao,
-                                  ),
-                            valor_liq_calculado:
-                              Number(imp.valor) -
-                              (acomodacoes.find(
-                                (a) => a.id == acomodacaoSelecionada,
-                              )?.modelo == 1
-                                ? 0
-                                : Number(imp.taxa_limpeza)),
+                                  )
+                              ).toFixed(2),
+                            ),
+                            valor_liq_calculado: Number(
+                              (
+                                Number(imp.valor) -
+                                (acomodacoes.find(
+                                  (a) => a.id == acomodacaoSelecionada,
+                                )?.modelo == 1
+                                  ? 0
+                                  : Number(imp.taxa_limpeza))
+                              ).toFixed(2),
+                            ),
                             obs: "",
                             tipo_reserva: "Reserva",
                             continuidade: null,
