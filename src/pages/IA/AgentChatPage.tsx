@@ -219,14 +219,14 @@ export default function AgentChatPage() {
         }`}
       >
         <div className="flex items-center justify-between px-5 py-5 border-b border-stone-800/60">
-          <div className="flex items-center gap-2.5">
+          <a href="/" className="flex items-center gap-2.5">
             <div className="w-6 h-6 rounded-md bg-amber-400 flex items-center justify-center">
               <span className="text-stone-950 text-[10px] font-bold">P</span>
             </div>
             <span className="text-sm font-semibold text-stone-100 tracking-tight">
               ProHost <span className="text-amber-400">Agent</span>
             </span>
-          </div>
+          </a>
           <button
             onClick={newConversation}
             className="w-7 h-7 rounded-lg bg-stone-800 hover:bg-amber-400/10 border border-stone-700 hover:border-amber-400/30 flex items-center justify-center text-stone-400 hover:text-amber-400 transition-all text-sm"

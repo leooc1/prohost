@@ -111,11 +111,11 @@ export default function SidebarMenu({ route }: { route: string }) {
             </li>
           </ul>
         ) : (
-          <ul className="flex flex-col gap-2 mt-6 items-center">
+          <ul className="flex flex-col gap-2 mt-6 items-center ">
             <li>
               <a
-                href={"/dashboard"}
-                className={`${route == "/dashboard" ? "nav-active" : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover bg-secondary/80 ${active ? "w-44" : "w-fit justify-center"}`}
+                href={"/agent-chat"}
+                className={`${route == "/agent-chat" ? "nav-active" : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover bg-secondary/80 ${active ? "w-44" : "w-fit justify-center"}`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
