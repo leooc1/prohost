@@ -19,6 +19,7 @@ interface Acomodacao {
   check_in_p: string;
   check_out_p: string;
   comissao: string;
+  tipo: string;
   modelo: number;
 }
 
@@ -224,140 +225,6 @@ export default function ImportacaoAirbnb() {
   useEffect(() => {
     // console.log(dataToken)
   }, [dataToken]);
-
-  const consoleLog = () => {
-    [importacao[0]]
-      .filter((i) => i.acomodacao === anuncioSelecionado)
-      .forEach((imp) => {
-        imp = {
-          ...imp,
-          taxa_limpeza: imp.taxa_limpeza.replace(",", "."),
-          taxa_servico: imp.taxa_servico.replace(",", "."),
-          valor: imp.valor.replace(",", "."),
-        };
-        console.log(imp);
-        const checkOut = new Date(
-          `${imp.data.split("/")[2]}-${imp.data.split("/")[1]}-${imp.data.split("/")[0]}`,
-        );
-        checkOut.setDate(checkOut.getDate() + Number(imp.qtd_noites));
-        let hospedeId = 666;
-
-        console.log({
-          acomodacao: {
-            id: acomodacaoSelecionada,
-          },
-          check_in: `${imp.data.split("/")[2]}-${imp.data.split("/")[1]}-${imp.data.split("/")[0]} ${
-            acomodacoes.find((a) => a.id == acomodacaoSelecionada)?.check_in_p
-          }`,
-          check_out: `${checkOut.toISOString().split("T")[0]} ${
-            acomodacoes.find((a) => a.id == acomodacaoSelecionada)?.check_out_p
-          }`,
-          taxa_limpeza: Number(
-            (acomodacoes.find((a) => a.id == acomodacaoSelecionada)?.modelo == 1
-              ? 0
-              : Number(imp.taxa_limpeza)
-            ).toFixed(2),
-          ),
-          canal_reserva: {
-            id: canalSelecionado[0].id,
-          },
-          comissao_ota: Number(Number(imp.taxa_servico).toFixed(2)),
-          hospede: {
-            id: hospedeId, //hospede padrao
-          },
-          qtd_hospede: 1,
-          saas: {
-            id: dataToken?.id,
-          },
-          valor: Number(
-            (
-              Number(imp.valor) -
-              (acomodacoes.find((a) => a.id == acomodacaoSelecionada)?.modelo ==
-              1
-                ? 0
-                : Number(imp.taxa_limpeza)) +
-              Number(imp.taxa_servico)
-            ).toFixed(2),
-          ),
-          valor_liq: Number(
-            (
-              Number(imp.valor) -
-              (acomodacoes.find((a) => a.id == acomodacaoSelecionada)?.modelo ==
-              1
-                ? 0
-                : Number(imp.taxa_limpeza))
-            ).toFixed(2),
-          ),
-          valor_prop: Number(
-            (Number(
-              acomodacoes.find((a) => a.id == acomodacaoSelecionada)?.comissao,
-            ) > 1
-              ? (Number(imp.valor) -
-                  (acomodacoes.find((a) => a.id == acomodacaoSelecionada)
-                    ?.modelo == 1
-                    ? 0
-                    : Number(imp.taxa_limpeza))) /
-                (Number(
-                  acomodacoes.find((a) => a.id == acomodacaoSelecionada)
-                    ?.comissao,
-                ) /
-                  100)
-              : (Number(imp.valor) -
-                  (acomodacoes.find((a) => a.id == acomodacaoSelecionada)
-                    ?.modelo == 1
-                    ? 0
-                    : Number(imp.taxa_limpeza))) /
-                  Number(
-                    acomodacoes.find((a) => a.id == acomodacaoSelecionada)
-                      ?.comissao,
-                  ) -
-                Number(imp.valor) -
-                (acomodacoes.find((a) => a.id == acomodacaoSelecionada)
-                  ?.modelo == 1
-                  ? 0
-                  : Number(imp.taxa_limpeza))
-            ).toFixed(2),
-          ),
-          valor_gestor: Number(
-            (Number(
-              acomodacoes.find((a) => a.id == acomodacaoSelecionada)?.comissao,
-            ) > 1
-              ? (Number(imp.valor) -
-                  (acomodacoes.find((a) => a.id == acomodacaoSelecionada)
-                    ?.modelo == 1
-                    ? 0
-                    : Number(imp.taxa_limpeza))) /
-                (Number(
-                  acomodacoes.find((a) => a.id == acomodacaoSelecionada)
-                    ?.comissao,
-                ) /
-                  100)
-              : (Number(imp.valor) -
-                  (acomodacoes.find((a) => a.id == acomodacaoSelecionada)
-                    ?.modelo == 1
-                    ? 0
-                    : Number(imp.taxa_limpeza))) /
-                Number(
-                  acomodacoes.find((a) => a.id == acomodacaoSelecionada)
-                    ?.comissao,
-                )
-            ).toFixed(2),
-          ),
-          valor_liq_calculado: Number(
-            (
-              Number(imp.valor) -
-              (acomodacoes.find((a) => a.id == acomodacaoSelecionada)?.modelo ==
-              1
-                ? 0
-                : Number(imp.taxa_limpeza))
-            ).toFixed(2),
-          ),
-          obs: "",
-          tipo_reserva: "Reserva",
-          continuidade: null,
-        });
-      });
-  };
 
   return (
     <div className="p-8 flex flex-col items-center max-h-screen bg-gray-50">
@@ -572,7 +439,9 @@ export default function ImportacaoAirbnb() {
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
                   onClick={async () => {
-                    consoleLog();
+                    console.log(
+                      acomodacoes.find((a) => a.id == acomodacaoSelecionada),
+                    );
                     setBotaoImportar(false);
                     const retornos: string[] = [];
                     await getHospede();
@@ -717,74 +586,85 @@ export default function ImportacaoAirbnb() {
                                 : Number(imp.taxa_limpeza))
                             ).toFixed(2),
                           ),
-                          valor_prop: Number(
-                            (Number(
-                              acomodacoes.find(
-                                (a) => a.id == acomodacaoSelecionada,
-                              )?.comissao,
-                            ) > 1
-                              ? (Number(imp.valor) -
-                                  (acomodacoes.find(
-                                    (a) => a.id == acomodacaoSelecionada,
-                                  )?.modelo == 1
-                                    ? 0
-                                    : Number(imp.taxa_limpeza))) /
-                                (Number(
-                                  acomodacoes.find(
-                                    (a) => a.id == acomodacaoSelecionada,
-                                  )?.comissao,
-                                ) /
-                                  100)
-                              : (Number(imp.valor) -
-                                  (acomodacoes.find(
-                                    (a) => a.id == acomodacaoSelecionada,
-                                  )?.modelo == 1
-                                    ? 0
-                                    : Number(imp.taxa_limpeza))) /
-                                  Number(
+                          valor_prop:
+                            acomodacoes.find(
+                              (a) => a.id == acomodacaoSelecionada,
+                            )?.tipo == "proprio"
+                              ? Number(Number(imp.valor).toFixed(2))
+                              : Number(
+                                  (Number(
                                     acomodacoes.find(
                                       (a) => a.id == acomodacaoSelecionada,
                                     )?.comissao,
-                                  ) -
-                                Number(imp.valor) -
-                                (acomodacoes.find(
-                                  (a) => a.id == acomodacaoSelecionada,
-                                )?.modelo == 1
-                                  ? 0
-                                  : Number(imp.taxa_limpeza))
-                            ).toFixed(2),
-                          ),
-                          valor_gestor: Number(
-                            (Number(
-                              acomodacoes.find(
-                                (a) => a.id == acomodacaoSelecionada,
-                              )?.comissao,
-                            ) > 1
-                              ? (Number(imp.valor) -
-                                  (acomodacoes.find(
-                                    (a) => a.id == acomodacaoSelecionada,
-                                  )?.modelo == 1
-                                    ? 0
-                                    : Number(imp.taxa_limpeza))) /
-                                (Number(
-                                  acomodacoes.find(
-                                    (a) => a.id == acomodacaoSelecionada,
-                                  )?.comissao,
-                                ) /
-                                  100)
-                              : (Number(imp.valor) -
-                                  (acomodacoes.find(
-                                    (a) => a.id == acomodacaoSelecionada,
-                                  )?.modelo == 1
-                                    ? 0
-                                    : Number(imp.taxa_limpeza))) /
-                                Number(
-                                  acomodacoes.find(
-                                    (a) => a.id == acomodacaoSelecionada,
-                                  )?.comissao,
-                                )
-                            ).toFixed(2),
-                          ),
+                                  ) > 1
+                                    ? (Number(imp.valor) -
+                                        (acomodacoes.find(
+                                          (a) => a.id == acomodacaoSelecionada,
+                                        )?.modelo == 1
+                                          ? 0
+                                          : Number(imp.taxa_limpeza))) /
+                                      (Number(
+                                        acomodacoes.find(
+                                          (a) => a.id == acomodacaoSelecionada,
+                                        )?.comissao,
+                                      ) /
+                                        100)
+                                    : (Number(imp.valor) -
+                                        (acomodacoes.find(
+                                          (a) => a.id == acomodacaoSelecionada,
+                                        )?.modelo == 1
+                                          ? 0
+                                          : Number(imp.taxa_limpeza))) /
+                                        Number(
+                                          acomodacoes.find(
+                                            (a) =>
+                                              a.id == acomodacaoSelecionada,
+                                          )?.comissao,
+                                        ) -
+                                      Number(imp.valor) -
+                                      (acomodacoes.find(
+                                        (a) => a.id == acomodacaoSelecionada,
+                                      )?.modelo == 1
+                                        ? 0
+                                        : Number(imp.taxa_limpeza))
+                                  ).toFixed(2),
+                                ),
+                          valor_gestor:
+                            acomodacoes.find(
+                              (a) => a.id == acomodacaoSelecionada,
+                            )?.tipo == "proprio"
+                              ? 0
+                              : Number(
+                                  (Number(
+                                    acomodacoes.find(
+                                      (a) => a.id == acomodacaoSelecionada,
+                                    )?.comissao,
+                                  ) > 1
+                                    ? (Number(imp.valor) -
+                                        (acomodacoes.find(
+                                          (a) => a.id == acomodacaoSelecionada,
+                                        )?.modelo == 1
+                                          ? 0
+                                          : Number(imp.taxa_limpeza))) /
+                                      (Number(
+                                        acomodacoes.find(
+                                          (a) => a.id == acomodacaoSelecionada,
+                                        )?.comissao,
+                                      ) /
+                                        100)
+                                    : (Number(imp.valor) -
+                                        (acomodacoes.find(
+                                          (a) => a.id == acomodacaoSelecionada,
+                                        )?.modelo == 1
+                                          ? 0
+                                          : Number(imp.taxa_limpeza))) /
+                                      Number(
+                                        acomodacoes.find(
+                                          (a) => a.id == acomodacaoSelecionada,
+                                        )?.comissao,
+                                      )
+                                  ).toFixed(2),
+                                ),
                           valor_liq_calculado: Number(
                             (
                               Number(imp.valor) -
