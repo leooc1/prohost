@@ -332,103 +332,102 @@ export default function Reserva() {
                       Aplicar
                     </button>
                   </div>
-                  <div className="flex flex-col items-end justify-center">
-                    <p className="text-xl text-primary relative">
-                      Importador de Reservas
-                      <span className="absolute w-max text-xs left-1/2 -translate-x-1/2 -top-5 bg-primary/80 text-secondary px-2 py-1 rounded-full">Acesso Antecipado</span>
-                    </p>
-                    <div className="flex w-[227px] justify-around">
-                      <a
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (
-                            acomodacoesFormatadas.length > 0 &&
-                            canais.filter((c) =>
-                              c.nome.toLowerCase().includes("airbnb"),
-                            ).length > 0
-                          ) {
-                            location.assign("/importacao-airbnb");
-                          } else {
-                            alert(
-                              "Para importar reservas do Airbnb, é necessário ter pelo menos uma acomodação cadastrada e o canal de reserva do Airbnb configurado.",
-                            );
-                          }
-                        }}
-                        title="Airbnb"
-                        href="/importacao-airbnb"
-                        className="hover:scale-125 transition-all relative"
+                  <div className="flex flex-col gap-2 items-end justify-center">
+                    <a
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (
+                          acomodacoesFormatadas.length > 0 &&
+                          canais.filter((c) =>
+                            c.nome.toLowerCase().includes("airbnb"),
+                          ).length > 0
+                        ) {
+                          location.assign("/importacao-airbnb");
+                        } else {
+                          alert(
+                            "Para importar reservas do Airbnb, é necessário ter pelo menos uma acomodação cadastrada e o canal de reserva do Airbnb configurado.",
+                          );
+                        }
+                      }}
+                      title="Airbnb"
+                      href="/importacao-airbnb"
+                      className="hover:scale-110 transition-all relative flex items-center bg-white border border-primary py-1 px-1 rounded-xl w-60 justify-between"
+                    >
+                      <svg
+                        className="w-7 h-7"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#DE5057"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        id="Brand-Airbnb--Streamline-Tabler"
+                        height="24"
+                        width="24"
                       >
-                        <svg
-                          className="w-10 h-10"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="#DE5057"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          id="Brand-Airbnb--Streamline-Tabler"
-                          height="24"
-                          width="24"
-                        >
-                          <desc>
-                            Brand Airbnb Streamline Icon:
-                            https://streamlinehq.com
-                          </desc>
-                          <path
-                            d="M12 10c-2 0 -3 1 -3 3 0 1.5 1.494 3.535 3 5.5 1 1 1.5 1.5 2.5 2s2.5 1 4.5 -0.5 1.5 -3.5 0.5 -6 -2.333 -5.5 -5 -9.5C13.666 3.5 13 3 11.997 3c-1 0 -1.623 0.45 -2.497 1.5 -2.667 4 -4 7 -5 9.5S3 18.5 5 20s3.5 1 4.5 0.5 1.5 -1 2.5 -2c1.506 -1.965 3 -4 3 -5.5 0 -2 -1 -3 -3 -3z"
-                            stroke-width="2"
-                          ></path>
-                        </svg>
-                      </a>
+                        <desc>
+                          Brand Airbnb Streamline Icon: https://streamlinehq.com
+                        </desc>
+                        <path
+                          d="M12 10c-2 0 -3 1 -3 3 0 1.5 1.494 3.535 3 5.5 1 1 1.5 1.5 2.5 2s2.5 1 4.5 -0.5 1.5 -3.5 0.5 -6 -2.333 -5.5 -5 -9.5C13.666 3.5 13 3 11.997 3c-1 0 -1.623 0.45 -2.497 1.5 -2.667 4 -4 7 -5 9.5S3 18.5 5 20s3.5 1 4.5 0.5 1.5 -1 2.5 -2c1.506 -1.965 3 -4 3 -5.5 0 -2 -1 -3 -3 -3z"
+                          stroke-width="2"
+                        ></path>
+                      </svg>
+                      <span className="text-xl font-light">
+                        Importar do Airbnb
+                      </span>
+                    </a>
                       {/* BOOKING */}
-                      {/* <a
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (
-                            acomodacoesFormatadas.length > 0 &&
-                            canais.filter((c) =>
-                              c.nome.toLowerCase().includes("booking"),
-                            ).length > 0
-                          ) {
-                            location.assign("/importacao-booking");
-                          } else {
-                            alert(
-                              "Para importar reservas do Booking, é necessário ter pelo menos uma acomodação cadastrada e o canal de reserva do Booking  configurado.",
-                            );
-                          }
-                        }}
-                        href="/importacao-booking"
-                        className="hover:scale-125 transition-all"
-                        title="Booking"
+                    <a
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (
+                          acomodacoesFormatadas.length > 0 &&
+                          canais.filter((c) =>
+                            c.nome.toLowerCase().includes("booking"),
+                          ).length > 0
+                        ) {
+                          location.assign("/importacao-booking");
+                        } else {
+                          alert(
+                            "Para importar reservas do Booking, é necessário ter pelo menos uma acomodação cadastrada e o canal de reserva do Booking  configurado.",
+                          );
+                        }
+                      }}
+                      href="/importacao-booking"
+                      className="hover:scale-110 transition-all relative flex items-center bg-white border border-primary py-1 px-1 rounded-xl w-60 justify-between"
+                      title="Booking"
+                    >
+                      <svg
+                        className="w-7 h-7"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#00347C"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        id="Brand-Booking--Streamline-Tabler"
+                        height="24"
+                        width="24"
                       >
-                        <svg
-                          className="w-10 h-10"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="#00347C"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          id="Brand-Booking--Streamline-Tabler"
-                          height="24"
-                          width="24"
-                        >
-                          <desc>
-                            Brand Booking Streamline Icon:
-                            https://streamlinehq.com
-                          </desc>
-                          <path
-                            d="M4 18V8.5A4.5 4.5 0 0 1 8.5 4h7A4.5 4.5 0 0 1 20 8.5v7a4.5 4.5 0 0 1 -4.5 4.5H6a2 2 0 0 1 -2 -2z"
-                            stroke-width="2"
-                          ></path>
-                          <path
-                            d="M8 12h3.5a2 2 0 1 1 0 4H8V9a1 1 0 0 1 1 -1h1.5a2 2 0 1 1 0 4H9"
-                            stroke-width="2"
-                          ></path>
-                          <path d="m16 16 0.01 0" stroke-width="2"></path>
-                        </svg>
-                      </a> */}
-                    </div>
+                        <desc>
+                          Brand Booking Streamline Icon:
+                          https://streamlinehq.com
+                        </desc>
+                        <path
+                          d="M4 18V8.5A4.5 4.5 0 0 1 8.5 4h7A4.5 4.5 0 0 1 20 8.5v7a4.5 4.5 0 0 1 -4.5 4.5H6a2 2 0 0 1 -2 -2z"
+                          stroke-width="2"
+                        ></path>
+                        <path
+                          d="M8 12h3.5a2 2 0 1 1 0 4H8V9a1 1 0 0 1 1 -1h1.5a2 2 0 1 1 0 4H9"
+                          stroke-width="2"
+                        ></path>
+                        <path d="m16 16 0.01 0" stroke-width="2"></path>
+                      </svg>
+                      <span className="text-xl font-light">
+                        Importar do Booking
+                      </span>
+                    </a>
                   </div>
                 </div>
                 {

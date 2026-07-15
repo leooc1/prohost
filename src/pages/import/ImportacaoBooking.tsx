@@ -1,17 +1,14 @@
 import Papa from "papaparse";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
-import {
-  SideBarContext
-} from "../../contexts/SideBarMenuContext";
+import { SideBarContext } from "../../contexts/SideBarMenuContext";
 
 interface ImportacaoRow {
   data: string;
-  dataFim: string;
+  qtd_noites: string;
   hospede: string;
   acomodacao: string;
   valor: string;
-  valorLiq: string;
   taxa_servico: string;
   taxa_limpeza: string;
 }
@@ -22,6 +19,7 @@ interface Acomodacao {
   check_in_p: string;
   check_out_p: string;
   comissao: string;
+  tipo: string;
   modelo: number;
 }
 
@@ -40,6 +38,7 @@ export default function ImportacaoBooking() {
 
   // Estados para acomodações
   const [acomodacoes, setAcomodacoes] = useState<Acomodacao[]>([]);
+  const [hospede, setHospede] = useState<any[]>([]);
   const [acomodacaoSelecionada, setAcomodacaoSelecionada] =
     useState<string>("");
   const [canalSelecionado, setCanalSelecionado] = useState<
@@ -47,6 +46,7 @@ export default function ImportacaoBooking() {
   >([]);
   const [carregandoAcomodacoes, setCarregandoAcomodacoes] = useState(false);
   const [botaoImportar, setBotaoImportar] = useState(true);
+  const [taxaLimpeza, setTaxaLimpeza] = useState<string>("");
 
   // Estados para fluxo
   const [etapa, setEtapa] = useState<"upload" | "anuncio" | "acomodacao">(
@@ -65,27 +65,7 @@ export default function ImportacaoBooking() {
       Papa.parse(file, {
         header: true,
         complete: (results) => {
-          const result = results.data
-            .filter((r: any) => r.Tipo == "Reserva")
-            .map((r: any) => ({
-              data: `${r["Check-in"]}`,
-              dataFim: `${r["Checkout"]}`,
-              hospede: r["Nome do hÃ³spede"],
-              acomodacao: r["Nome do hÃ³spede"],
-              valor: r["Valor"],
-              valorLiq: r["LÃ­quido"],
-              taxa_servico: r["ComissÃ£o"],
-              taxa_limpeza: r["Taxa de ServiÃ§o de Pagamentos"],
-            }));
-          setImportacao(result);
-
-          // Extrair anúncios únicos
-          const anunciosUnicos = [...new Set(result.map((r) => r.acomodacao))];
-          setAnuncios(anunciosUnicos);
-          setEtapa("anuncio");
-
-          console.log("CSV Parsed:", result);
-          //   console.log("CSV Parsed:", results);
+          console.log("CSV Parsed:", results);
         },
         error: (error) => {
           console.error("CSV Parse Error:", error);
@@ -99,7 +79,25 @@ export default function ImportacaoBooking() {
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const rows = XLSX.utils.sheet_to_json(sheet);
-        console.log("Excel Parsed:", rows);
+        const result = rows
+          .filter((r: any) => r['Status'] == "ok")
+          .map((r: any) => ({
+            data: `${r["Entrada"].split("-")[2]}/${r["Entrada"].split("-")[1]}/${r["Entrada"].split("-")[0]}`,
+            qtd_noites: r["Duração (diárias)"],
+            hospede: r["Reservado por"],
+            acomodacao: r["Tipo de unidade"],
+            valor: r["Preço"].split(" ")[0],
+            taxa_servico: r["Valor da comissão"].split(" ")[0],
+            taxa_limpeza: r["Taxa de limpeza"] ?? '0',
+          }));
+        setImportacao(result);
+
+        // Extrair anúncios únicos
+        const anunciosUnicos = [...new Set(result.map((r) => r.acomodacao))];
+        setAnuncios(anunciosUnicos);
+        setEtapa("anuncio");
+        console.log("Excel Parsed:", result);
+        // console.log("Excel Parsed:", rows);
       };
       reader.readAsBinaryString(file);
     } else {
@@ -165,13 +163,42 @@ export default function ImportacaoBooking() {
     setEtapa("upload");
     setImportacao([]);
     setAnuncios([]);
+    setTaxaLimpeza("");
   };
 
   const handleVoltarAcomodacao = () => {
     setAcomodacaoSelecionada("");
     setEtapa("anuncio");
+    setTaxaLimpeza("");
   };
+  async function getHospede() {
+    if (!dataToken || !dataToken.id) return;
+    await fetch(`${apiURL}/hospede/${dataToken.id}`, {
+      method: "GET",
+    })
+      .then((data) => data.json())
+      .then((data: any[]) => {
+        setHospede(data);
+      })
+      .catch((err) => console.log(err));
+  }
+  async function createHospede(pbody: any) {
+    try {
+      const response = await fetch(`${apiURL}/hospede/`, {
+        method: "POST",
+        body: JSON.stringify(pbody),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
 
+      return data.id ? data.id : null;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  }
   async function createReserva(pbody: any) {
     let retorno = 0;
     await fetch(`${apiURL}/reserva/`, {
@@ -387,17 +414,35 @@ export default function ImportacaoBooking() {
               </div>
 
               {acomodacaoSelecionada && (
-                <div className="bg-green-50 p-4 rounded-lg mb-6 border border-green-200">
-                  <p className="text-sm text-green-800">
-                    <span className="font-semibold">
-                      Acomodação selecionada:
-                    </span>{" "}
-                    {
-                      acomodacoes.find((a) => a.id === acomodacaoSelecionada)
-                        ?.nome
-                    }
-                  </p>
-                </div>
+                <>
+                  <div className="bg-green-50 p-4 rounded-lg mb-6 border border-green-200">
+                    <p className="text-sm text-green-800">
+                      <span className="font-semibold">
+                        Acomodação selecionada:
+                      </span>{" "}
+                      {
+                        acomodacoes.find((a) => a.id === acomodacaoSelecionada)
+                          ?.nome
+                      }
+                    </p>
+                  </div>
+
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-primary/80 mb-2">
+                      Taxa de limpeza
+                    </label>
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      step="0.01"
+                      min="0"
+                      value={taxaLimpeza}
+                      onChange={(e) => setTaxaLimpeza(e.target.value)}
+                      placeholder="Digite a taxa de limpeza"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </>
               )}
 
               <div className="flex gap-3">
@@ -415,150 +460,220 @@ export default function ImportacaoBooking() {
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
                   onClick={async () => {
+                    console.log(
+                      acomodacoes.find((a) => a.id == acomodacaoSelecionada),
+                    );
                     setBotaoImportar(false);
+                    const acomodacaoSelecionadaInfo = acomodacoes.find(
+                      (a) => a.id === acomodacaoSelecionada,
+                    );
+                    const taxaLimpezaAplicada =
+                      acomodacaoSelecionadaInfo?.modelo == 1
+                        ? 0
+                        : Number(taxaLimpeza.replace(",", ".")) || 0;
                     const retornos: string[] = [];
-                    await Promise.all(
-                      importacao
-                        .filter((i) => i.acomodacao === anuncioSelecionado)
-                        .map(async (imp) => {
-                          const checkOut = new Date(
-                            `${imp.data.split("/")[2]}-${imp.data.split("/")[1]}-${imp.data.split("/")[0]}`,
-                          );
-                          checkOut.setDate(
-                            checkOut.getDate() + Number(imp.dataFim),
-                          );
-                          await createReserva({
-                            acomodacao: {
-                              id: acomodacaoSelecionada,
-                            },
-                            check_in: `${imp.data.split("/")[2]}-${imp.data.split("/")[1]}-${imp.data.split("/")[0]} ${
-                              acomodacoes.find(
-                                (a) => a.id == acomodacaoSelecionada,
-                              )?.check_in_p
-                            }`,
-                            check_out: `${checkOut.toISOString().split("T")[0]} ${
-                              acomodacoes.find(
-                                (a) => a.id == acomodacaoSelecionada,
-                              )?.check_out_p
-                            }`,
-                            taxa_limpeza:
-                              acomodacoes.find(
-                                (a) => a.id == acomodacaoSelecionada,
-                              )?.modelo == 1
-                                ? 0
-                                : Number(imp.taxa_limpeza),
-                            canal_reserva: {
-                              id: canalSelecionado[0].id,
-                            },
-                            comissao_ota: Number(imp.taxa_servico),
-                            hospede: {
-                              id: 29970, //hospede padrao
-                            },
-                            qtd_hospede: 1,
-                            saas: {
-                              id: dataToken?.id,
-                            },
-                            valor:
-                              Number(imp.valor) -
-                              (acomodacoes.find(
-                                (a) => a.id == acomodacaoSelecionada,
-                              )?.modelo == 1
-                                ? 0
-                                : Number(imp.taxa_limpeza)) +
-                              Number(imp.taxa_servico),
-                            valor_liq:
-                              Number(imp.valor) -
-                              (acomodacoes.find(
-                                (a) => a.id == acomodacaoSelecionada,
-                              )?.modelo == 1
-                                ? 0
-                                : Number(imp.taxa_limpeza)),
-                            valor_prop:
-                              Number(
-                                acomodacoes.find(
-                                  (a) => a.id == acomodacaoSelecionada,
-                                )?.comissao,
-                              ) > 1
-                                ? (Number(imp.valor) -
-                                    (acomodacoes.find(
-                                      (a) => a.id == acomodacaoSelecionada,
-                                    )?.modelo == 1
-                                      ? 0
-                                      : Number(imp.taxa_limpeza))) /
-                                  (Number(
-                                    acomodacoes.find(
-                                      (a) => a.id == acomodacaoSelecionada,
-                                    )?.comissao,
-                                  ) /
-                                    100)
-                                : (Number(imp.valor) -
-                                    (acomodacoes.find(
-                                      (a) => a.id == acomodacaoSelecionada,
-                                    )?.modelo == 1
-                                      ? 0
-                                      : Number(imp.taxa_limpeza))) /
-                                    Number(
-                                      acomodacoes.find(
-                                        (a) => a.id == acomodacaoSelecionada,
-                                      )?.comissao,
-                                    ) -
-                                  Number(imp.valor) -
-                                  (acomodacoes.find(
-                                    (a) => a.id == acomodacaoSelecionada,
-                                  )?.modelo == 1
-                                    ? 0
-                                    : Number(imp.taxa_limpeza)),
-                            valor_gestor:
-                              Number(
-                                acomodacoes.find(
-                                  (a) => a.id == acomodacaoSelecionada,
-                                )?.comissao,
-                              ) > 1
-                                ? (Number(imp.valor) -
-                                    (acomodacoes.find(
-                                      (a) => a.id == acomodacaoSelecionada,
-                                    )?.modelo == 1
-                                      ? 0
-                                      : Number(imp.taxa_limpeza))) /
-                                  (Number(
-                                    acomodacoes.find(
-                                      (a) => a.id == acomodacaoSelecionada,
-                                    )?.comissao,
-                                  ) /
-                                    100)
-                                : (Number(imp.valor) -
-                                    (acomodacoes.find(
-                                      (a) => a.id == acomodacaoSelecionada,
-                                    )?.modelo == 1
-                                      ? 0
-                                      : Number(imp.taxa_limpeza))) /
-                                  Number(
-                                    acomodacoes.find(
-                                      (a) => a.id == acomodacaoSelecionada,
-                                    )?.comissao,
-                                  ),
-                            valor_liq_calculado:
-                              Number(imp.valor) -
-                              (acomodacoes.find(
-                                (a) => a.id == acomodacaoSelecionada,
-                              )?.modelo == 1
-                                ? 0
-                                : Number(imp.taxa_limpeza)),
-                            obs: "",
-                            tipo_reserva: "Reserva",
-                            continuidade: null,
-                          }).then((res) => {
-                            const dataFinal = checkOut
-                              .toISOString()
-                              .split("T")[0];
-                            retornos.push(
-                              `${res == 0 ? "Erro: " : "Adicionado: "}` +
-                                `${imp.data} => ` +
-                                `${dataFinal.split("-")[2]}/${dataFinal.split("-")[1]}/${dataFinal.split("-")[0]}`,
-                            );
-                            res;
+                    await getHospede();
+
+                    const reservasAgrupadas = new Map<string, ImportacaoRow>();
+
+                    importacao
+                      .filter((i) => i.acomodacao === anuncioSelecionado)
+                      .forEach((imp) => {
+                        const chave = [
+                          imp.data,
+                          imp.qtd_noites,
+                          imp.hospede,
+                          imp.acomodacao,
+                        ].join("|");
+
+                        const existente = reservasAgrupadas.get(chave);
+
+                        if (!existente) {
+                          reservasAgrupadas.set(chave, {
+                            ...imp,
                           });
-                        }),
+                          return;
+                        }
+
+                        const somar = (a: string, b: string) =>
+                          (
+                            Number(a.replace(",", ".")) +
+                            Number(b.replace(",", "."))
+                          ).toFixed(2);
+
+                        reservasAgrupadas.set(chave, {
+                          ...existente,
+                          valor: somar(existente.valor, imp.valor),
+                          taxa_servico: somar(
+                            existente.taxa_servico,
+                            imp.taxa_servico,
+                          ),
+                          taxa_limpeza: somar(
+                            existente.taxa_limpeza,
+                            imp.taxa_limpeza,
+                          ),
+                        });
+                      });
+
+                    const reservasParaImportar = [
+                      ...reservasAgrupadas.values(),
+                    ];
+                    await Promise.all(
+                      reservasParaImportar.map(async (imp) => {
+                        imp = {
+                          ...imp,
+                          taxa_limpeza: imp.taxa_limpeza.replace(",", "."),
+                          taxa_servico: imp.taxa_servico.replace(",", "."),
+                          valor: imp.valor.replace(",", "."),
+                        };
+                        const [dia, mes, ano] = imp.data.split("/");
+
+                        const checkOut = new Date(
+                          Number(ano),
+                          Number(mes) - 1,
+                          Number(dia),
+                        );
+                        checkOut.setDate(
+                          checkOut.getDate() + Number(imp.qtd_noites),
+                        );
+                        let hospedeId;
+                        if (
+                          hospede.filter(
+                            (h) =>
+                              h.nome.toLowerCase() == imp.hospede.toLowerCase(),
+                          ).length > 0
+                        ) {
+                          hospedeId =
+                            hospede.filter(
+                              (h) =>
+                                h.nome.toLowerCase() ==
+                                imp.hospede.toLowerCase(),
+                            )[0].id || 0;
+                        } else {
+                          hospedeId = await createHospede({
+                            nome: imp.hospede,
+                            email: null,
+                            saas: { id: dataToken.id },
+                            telefone: null,
+                          });
+                        }
+
+                        await createReserva({
+                          acomodacao: {
+                            id: acomodacaoSelecionada,
+                          },
+                          check_in: `${imp.data.split("/")[2]}-${imp.data.split("/")[1]}-${imp.data.split("/")[0]} ${
+                            acomodacoes.find(
+                              (a) => a.id == acomodacaoSelecionada,
+                            )?.check_in_p
+                          }`,
+                          check_out: `${checkOut.toISOString().split("T")[0]} ${
+                            acomodacoes.find(
+                              (a) => a.id == acomodacaoSelecionada,
+                            )?.check_out_p
+                          }`,
+                          taxa_limpeza: Number(
+                            (
+                              acomodacaoSelecionadaInfo?.modelo == 1
+                                ? 0
+                                : taxaLimpezaAplicada
+                            ).toFixed(2),
+                          ),
+                          canal_reserva: {
+                            id: canalSelecionado[0].id,
+                          },
+                          comissao_ota: Number(
+                            Number(imp.taxa_servico).toFixed(2),
+                          ),
+                          hospede: {
+                            id: hospedeId, //hospede padrao
+                          },
+                          qtd_hospede: 1,
+                          saas: {
+                            id: dataToken?.id,
+                          },
+                          valor: Number(
+                            (
+                              Number(imp.valor) -
+                              taxaLimpezaAplicada +
+                              Number(imp.taxa_servico)
+                            ).toFixed(2),
+                          ),
+                          valor_liq: Number(
+                            (Number(imp.valor) - taxaLimpezaAplicada).toFixed(2),
+                          ),
+                          valor_prop:
+                            acomodacoes.find(
+                              (a) => a.id == acomodacaoSelecionada,
+                            )?.tipo == "proprio"
+                              ? Number(Number(imp.valor).toFixed(2))
+                              : Number(
+                                  (Number(
+                                    acomodacoes.find(
+                                      (a) => a.id == acomodacaoSelecionada,
+                                    )?.comissao,
+                                  ) > 1
+                                    ? (Number(imp.valor) - taxaLimpezaAplicada) /
+                                      (Number(
+                                        acomodacoes.find(
+                                          (a) => a.id == acomodacaoSelecionada,
+                                        )?.comissao,
+                                      ) /
+                                        100)
+                                    : (Number(imp.valor) - taxaLimpezaAplicada) /
+                                        Number(
+                                          acomodacoes.find(
+                                            (a) =>
+                                              a.id == acomodacaoSelecionada,
+                                          )?.comissao,
+                                        ) -
+                                      Number(imp.valor) - taxaLimpezaAplicada
+                                  ).toFixed(2),
+                                ),
+                          valor_gestor:
+                            acomodacoes.find(
+                              (a) => a.id == acomodacaoSelecionada,
+                            )?.tipo == "proprio"
+                              ? 0
+                              : Number(
+                                  (Number(
+                                    acomodacoes.find(
+                                      (a) => a.id == acomodacaoSelecionada,
+                                    )?.comissao,
+                                  ) > 1
+                                    ? (Number(imp.valor) - taxaLimpezaAplicada) /
+                                      (Number(
+                                        acomodacoes.find(
+                                          (a) => a.id == acomodacaoSelecionada,
+                                        )?.comissao,
+                                      ) /
+                                        100)
+                                    : (Number(imp.valor) - taxaLimpezaAplicada) /
+                                      Number(
+                                        acomodacoes.find(
+                                          (a) => a.id == acomodacaoSelecionada,
+                                        )?.comissao,
+                                      )
+                                  ).toFixed(2),
+                                ),
+                          valor_liq_calculado: Number(
+                            (Number(imp.valor) - taxaLimpezaAplicada).toFixed(2),
+                          ),
+                          obs: "",
+                          tipo_reserva: "Reserva",
+                          continuidade: null,
+                        }).then((res) => {
+                          const dataFinal = checkOut
+                            .toISOString()
+                            .split("T")[0];
+                          retornos.push(
+                            `${res == 0 ? "Erro: " : "Adicionado: "}` +
+                              `${imp.data} => ` +
+                              `${dataFinal.split("-")[2]}/${dataFinal.split("-")[1]}/${dataFinal.split("-")[0]}`,
+                          );
+                          res;
+                        });
+                      }),
                     );
                     setBotaoImportar(true);
                     alert(retornos.join("\n"));

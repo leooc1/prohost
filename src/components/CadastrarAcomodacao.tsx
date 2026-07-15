@@ -25,7 +25,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
   const { dataToken } = useContext(SideBarContext);
   const [qtdMaxHospede, setQtdMaxHospede] = useState(1);
   const [tipo, setTipo] = useState("");
-  const [modelo, setModelo] = useState("");
+  const [modelo, setModelo] = useState("separado");
   const [repasse, setRepasse] = useState("");
   const [autoComplete, setAutoComplete] = useState([]);
   const [notify, setNotify] = useState({ type: 1, text: "Criado!" });
@@ -203,8 +203,8 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
                 setModelo(e.target.value);
               }}
             >
-              <option value="incluso">Taxa de limpeza inclusa</option>
               <option value="separado">Taxa de limpeza à parte</option>
+              <option value="incluso">Taxa de limpeza inclusa</option>
             </select>
           </label>
           {modelo == "separado" && (
