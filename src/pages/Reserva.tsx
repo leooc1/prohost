@@ -351,7 +351,7 @@ export default function Reserva() {
                       }}
                       title="Airbnb"
                       href="/importacao-airbnb"
-                      className="hover:scale-110 transition-all relative flex items-center bg-white border border-primary py-1 px-1 rounded-xl w-60 justify-between"
+                      className="hover:scale-110 transition-all relative flex items-center bg-white border border-primary py-1 px-1 rounded-xl w-48 justify-between"
                     >
                       <svg
                         className="w-7 h-7"
@@ -373,7 +373,7 @@ export default function Reserva() {
                           stroke-width="2"
                         ></path>
                       </svg>
-                      <span className="text-xl font-light">
+                      <span className="text-sm font-light">
                         Importar do Airbnb
                       </span>
                     </a>
@@ -395,7 +395,7 @@ export default function Reserva() {
                         }
                       }}
                       href="/importacao-booking"
-                      className="hover:scale-110 transition-all relative flex items-center bg-white border border-primary py-1 px-1 rounded-xl w-60 justify-between"
+                      className="hover:scale-110 transition-all relative flex items-center bg-white border border-primary py-1 px-1 rounded-xl w-48 justify-between"
                       title="Booking"
                     >
                       <svg
@@ -424,7 +424,7 @@ export default function Reserva() {
                         ></path>
                         <path d="m16 16 0.01 0" stroke-width="2"></path>
                       </svg>
-                      <span className="text-xl font-light">
+                      <span className="text-sm font-light">
                         Importar do Booking
                       </span>
                     </a>
