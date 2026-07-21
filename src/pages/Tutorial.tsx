@@ -6,6 +6,7 @@ import relatorio from "../../videos/Onboarding-relatorio.mp4";
 import reserva from "../../videos/Onboarding-reserva.mp4";
 import dashboard from "../../videos/onboarding-dashboard.mp4";
 import financeiro from "../../videos/onboarding-financeiro.mp4";
+import importAirbnb from '../../videos/importador-de-reservas.mp4'
 
 const tutorialVideos = [
   {
@@ -49,6 +50,13 @@ const tutorialVideos = [
     step: "Passo 6",
     duration: "1:07",
     video: financeiro,
+  },
+  {
+    id: "importAirbnb",
+    title: "Importador de Reservas (Airbnb)",
+    step: "Passo 7",
+    duration: "3:51",
+    video: importAirbnb,
   },
 ];
 
