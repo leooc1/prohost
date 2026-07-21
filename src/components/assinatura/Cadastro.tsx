@@ -226,7 +226,7 @@ export default function Cadastro() {
                     .then(data => data.json())
                     .then((data) => {
                         window.localStorage.setItem('ph_pay_acc', data)
-                        if (origem === 'newStudents' || origem === 'newClassmates' || origem === 'newAnfitriao' || origem === 'trial15' || origem === 'reservaadoiss' || origem === 'oldClass') {
+                        if (origem === 'newStudents' || origem === 'WAB_T1' || origem === 'newClassmates' || origem === 'newAnfitriao' || origem === 'trial15' || origem === 'reservaadoiss' || origem === 'oldClass') {
                             logar({ email: user.email, senha: user.senha })
                             // location.assign('/auth')
                         } else {
@@ -482,6 +482,32 @@ export default function Cadastro() {
                                 } else if (origem === 'newClassmates') {
                                     setButton(false)
                                     trial.setFullYear(trial.getFullYear() + 1);
+                                    criarConta({
+                                        assinatura: null,
+                                        master: email.value,
+                                        nome: nome.value,
+                                        trial_end: trial.toISOString().split('T')[0],
+                                        origin: origem
+                                    },
+                                        {
+                                            asaas_id: '',
+                                            celular: celular.value,
+                                            cpf_cnpj: cpf_cnpj.value,
+                                            end_rua: end_rua.value,
+                                            end_num: end_num.value,
+                                            end_bairro: bairro,
+                                            end_comp: complemento,
+                                            end_cep: end_cep.value,
+                                            nome: nome.value,
+                                            saas: undefined,
+                                            email: email.value,
+                                            senha: senha.value
+                                        },
+                                        origem
+                                    )
+                                }else if (origem === 'WAB_T1') {
+                                    setButton(false)
+                                    trial.setMonth(trial.getMonth() + 2);
                                     criarConta({
                                         assinatura: null,
                                         master: email.value,
