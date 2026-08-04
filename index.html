@@ -5,18 +5,35 @@
   <meta charset="UTF-8" />
   <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
   <link rel="shortcut icon" href="./icon-ph.png" type="image/x-icon">
+  <!-- Only load analytics (GTM -> PostHog / GA) on the production site. Local dev
+       hosts (Vite dev server, previews) must not report pageviews or exceptions
+       into the production analytics + error-tracking project. -->
+  <script>
+    window.__prohostAnalyticsEnabled = (function () {
+      var h = location.hostname;
+      return !(
+        h === 'localhost' ||
+        h === '127.0.0.1' ||
+        h === '0.0.0.0' ||
+        h === '::1' ||
+        h === '[::1]' ||
+        h.endsWith('.local') ||
+        h.endsWith('.localhost')
+      );
+    })();
+  </script>
   <!-- Google Tag Manager -->
-  <script>(function (w, d, s, l, i) {
+  <script>if (window.__prohostAnalyticsEnabled) { (function (w, d, s, l, i) {
       w[l] = w[l] || []; w[l].push({
         'gtm.start':
           new Date().getTime(), event: 'gtm.js'
       }); var f = d.getElementsByTagName(s)[0],
         j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
           'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-    })(window, document, 'script', 'dataLayer', 'GTM-T8CCPC3G');</script>
+    })(window, document, 'script', 'dataLayer', 'GTM-T8CCPC3G'); }</script>
   <!-- End Google Tag Manager -->
   <!-- Google Tag Manager -->
-  <script>(function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s); j.async = true; j.src = "https://load.pro.prohost.net.br/1ngrupszsy.js?" + i; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', 'cuv0t7=EBdHNCQ4XzA%2FIkIpIyY4QQ9OSF1BUxYJRAMIHBgaARNXHR8HXhcA');</script>
+  <script>if (window.__prohostAnalyticsEnabled) { (function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s); j.async = true; j.src = "https://load.pro.prohost.net.br/1ngrupszsy.js?" + i; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', 'cuv0t7=EBdHNCQ4XzA%2FIkIpIyY4QQ9OSF1BUxYJRAMIHBgaARNXHR8HXhcA'); }</script>
   <!-- End Google Tag Manager -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Prohost</title>
