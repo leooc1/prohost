@@ -1,3 +1,4 @@
+import posthog from '../posthog'
 import { useContext, useEffect, useState } from 'react'
 import { SideBarContext } from '../contexts/SideBarMenuContext'
 import Notify from './notify/Notify'
@@ -59,6 +60,7 @@ export default function CanaisDeReserva({ close, permissao }: { close: () => voi
             .then(data => data.json())
             .then((data: Canais) => {
                 if (data.id) {
+                    posthog.capture('booking_channel_created');
                     const nome = document.getElementById('nome') as HTMLInputElement
                     setNotify({ type: 1, text: 'Criado!' })
                     setShowNotify(true)

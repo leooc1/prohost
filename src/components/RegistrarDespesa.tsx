@@ -1,3 +1,4 @@
+import posthog from "../posthog";
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 import Notify from "./notify/Notify";
@@ -121,6 +122,7 @@ export default function RegistrarDespesa({
       .then((data) => data.json())
       .then((data) => {
         if (data.id) {
+          posthog.capture('expense_recorded');
           setNotify({ type: 1, text: "Criado!" });
           setShowNotify(true);
           setTimeout(() => {

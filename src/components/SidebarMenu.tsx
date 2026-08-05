@@ -1,3 +1,4 @@
+import posthog from '../posthog';
 import { useContext, useEffect, useState } from "react";
 import prohostLogo from "/prohost-logo.png";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
@@ -20,6 +21,9 @@ export default function SidebarMenu({ route }: { route: string }) {
         })
         .then((data) => {
           setDataToken(data);
+          if (data && data.idUsu) {
+            posthog.identify(String(data.idUsu), { name: data.nome });
+          }
         })
         .catch((err) => console.log(err));
     } else {
@@ -27,9 +31,12 @@ export default function SidebarMenu({ route }: { route: string }) {
     }
     setRefresh(false);
   }
-  if (refresh) {
-    infoToken();
-  }
+  useEffect(() => {
+    if (refresh) {
+      infoToken();
+    }
+  }, [refresh]);
+
   async function getSituation(id: string) {
     await fetch(`${apiURL}/saas/vp/${id}`, {
       method: "GET",
@@ -310,6 +317,7 @@ export default function SidebarMenu({ route }: { route: string }) {
           className={`flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover mx-auto ${active ? "w-44" : "w-fit justify-center"}`}
           onClick={(e) => {
             e.preventDefault();
+            posthog.reset();
             window.localStorage.removeItem("ph_token_acc");
             window.location.assign("/auth");
           }}

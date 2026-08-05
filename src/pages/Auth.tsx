@@ -1,3 +1,4 @@
+import posthog from '../posthog';
 import { useState } from 'react'
 import prohostLogo from '/prohost-logo.png'
 import Notify from '../components/notify/Notify'
@@ -31,12 +32,24 @@ export default function Auth() {
                         window.localStorage.setItem('ph_reset_msg', "Por motivos de segurança, estamos solicitando que você redefina sua senha.");
                         window.location.assign('/reset-senha?email=' + encodeURIComponent(login.email));
                     } else if (data.token && data.token != true) {
-                        window.localStorage.setItem('ph_token_acc', data.token)
-                        window.localStorage.removeItem('ph_user_data_lg')
-                        window.location.assign('/')
+                        fetch(`${apiURL}/users/token/${data.token}`, { method: 'GET' })
+                            .then((response) => response.json())
+                            .then((user) => {
+                                if (user?.idUsu) {
+                                    posthog.identify(String(user.idUsu), { name: user.nome });
+                                }
+                            })
+                            .catch((err) => console.log(err))
+                            .finally(() => {
+                                posthog.capture('login_completed');
+                                window.localStorage.setItem('ph_token_acc', data.token)
+                                window.localStorage.removeItem('ph_user_data_lg')
+                                window.location.assign('/')
+                            });
                     }
                 }
                 else {
+                    posthog.capture('login_failed');
                     setNotify({ type: 2, text: 'Dados incorretos!' })
                     setShowNotify(true)
                     setTimeout(() => {

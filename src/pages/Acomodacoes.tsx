@@ -177,7 +177,7 @@ export default function Acomodacoes() {
 
   async function getImagesAc() {
     if (!dataToken || !dataToken.id) return;
-    await fetch(`${apiURL}/acomodacao/images/${dataToken.id}`, {
+    await fetch(`${apiURL}/acomodacao/images/list/${dataToken.id}`, {
       method: "GET",
     })
       .then((data) => data.json())
@@ -188,7 +188,7 @@ export default function Acomodacoes() {
   }
 
   async function acomodacoes() {
-    await fetch(`${apiURL}/acomodacao/names/` + dataToken.id, {
+    await fetch(`${apiURL}/acomodacao/names/list/` + dataToken.id, {
       method: "GET",
     })
       .then((data) => data.json())
@@ -212,6 +212,7 @@ export default function Acomodacoes() {
           (e) => e.tipo == "terceiro" && !e.desativado,
         );
         let desativadoList: any = data.filter((e) => e.desativado);
+        console.log(desativadoList)
 
         // 🔹 Reordena com base no localStorage
         if (orderMap) {
@@ -282,9 +283,11 @@ export default function Acomodacoes() {
     setDesativados(
       desativados.map((e) => ({
         ...e,
+        desativado: true,
         foto: images.find((img) => img.id === e.id)?.foto,
       })),
     );
+    console.log(desativados)
   }, [images]);
 
   async function desativar(id: number, desativado: boolean) {

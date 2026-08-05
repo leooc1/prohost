@@ -1,3 +1,4 @@
+import posthog from '../../posthog';
 import { InputMask } from "@react-input/mask"
 import { useEffect, useState } from "react"
 import Notify from "../notify/Notify"
@@ -71,6 +72,7 @@ export default function CartaoCredito() {
             .then(data => data.json())
             .then((data) => {
                 if (data.status == 'CONFIRMED') {
+                    posthog.capture('credit_card_payment_confirmed');
                     setNotify({ type: 1, text: 'Feito!' })
                     setShowNotify(true)
                     setTimeout(() => {

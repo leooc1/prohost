@@ -1,3 +1,4 @@
+import posthog from '../../posthog';
 import { InputMask } from "@react-input/mask"
 import { useContext, useState } from "react"
 import { AssinaturaContext } from "../../contexts/AssinaturaContext"
@@ -209,6 +210,13 @@ export default function Cadastro() {
                     .then(data => data.json())
                     .then((data) => {
                         if (data.id) {
+                            posthog.identify(String(data.id), {
+                                email: user.email,
+                                name: user.nome,
+                            });
+                            posthog.capture('account_created', {
+                                origin: origem,
+                            });
                             setNotify({ type: 1, text: 'Criado!' })
                             setShowNotify(true)
                             setTimeout(() => {
@@ -269,6 +277,7 @@ export default function Cadastro() {
                         const trial = new Date();
                         
                         trial.setDate(trial.getDate() + 15)
+                        posthog.capture('trial_started');
                         setButton(false)
                         criarConta({
                             assinatura: null,

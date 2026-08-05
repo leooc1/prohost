@@ -1,3 +1,4 @@
+import posthog from "../posthog";
 import { useContext, useEffect, useState } from "react";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 import Notify from "./notify/Notify";
@@ -213,6 +214,7 @@ export default function EditarReserva(props: propsEdicao) {
       .then((data) => data.json())
       .then((data) => {
         if (data[0]?.affected == 1) {
+          posthog.capture('reservation_updated');
           setNotify({ type: 1, text: "Atualizado!" });
           setShowNotify(true);
           setTimeout(() => {

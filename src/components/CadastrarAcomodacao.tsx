@@ -1,3 +1,4 @@
+import posthog from "../posthog";
 import { ChangeEvent, useContext, useState } from "react";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 import Notify from "./notify/Notify";
@@ -45,6 +46,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
       .then((data) => data.json())
       .then((data) => {
         if (data.id) {
+          posthog.capture('accommodation_created');
           setNotify({ type: 1, text: "Criado!" });
           setShowNotify(true);
           setTimeout(() => {

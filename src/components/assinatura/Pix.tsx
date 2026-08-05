@@ -1,3 +1,4 @@
+import posthog from '../../posthog';
 import { useEffect, useState } from "react"
 import { intervalToDuration } from 'date-fns';
 import Notify from "../notify/Notify";
@@ -108,6 +109,7 @@ export default function Pix() {
                 const data = await response.json();
 
                 if (data.status === 'CONFIRMED') {
+                    posthog.capture('pix_payment_confirmed');
                     clearInterval(statusIntervalId);
                     setNotify({ type: 1, text: 'Pagamento confirmado! Redirecionando...' });
                     setShowNotify(true);
