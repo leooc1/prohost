@@ -118,7 +118,7 @@ export default function ResultadoDasAcomodacoes(
                 new Date(props.dataBW[1]).getMonth() == 0 &&
                 props.fatGrafic.length > 0
                   ? 12
-                  : new Date(props.dataBW[1]).getMonth()
+                  : new Date(props.dataBW[1]).getMonth() + 1
               }
             />
           ) : null}
@@ -185,7 +185,9 @@ export default function ResultadoDasAcomodacoes(
               <div className="flex items-end gap-4">
                 <span className="text-nowrap text-xl">
                   {formatarMoedaBrasileira(
-                    Number(props.comparativoRA.atual?.diaria_media_bruta).toFixed(2),
+                    Number(
+                      props.comparativoRA.atual?.diaria_media_bruta,
+                    ).toFixed(2),
                   )}
                 </span>
                 {/* <Comparativo nome="DIÁRIA MÉDIA" data={dataBW} passado={Number(comparativoRA.passado?.diaria_media) || 0}
@@ -306,7 +308,7 @@ export default function ResultadoDasAcomodacoes(
                 new Date(props.dataBW[1]).getMonth() == 0 &&
                 props.fatGrafic.length > 0
                   ? 12
-                  : new Date(props.dataBW[1]).getMonth()
+                  : new Date(props.dataBW[1]).getMonth() + 1
               }
             />
           ) : null}
