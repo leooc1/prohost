@@ -22,6 +22,7 @@ type ResultadoDasAcomodacoesProps = {
       comissao_plataforma: string;
       despesas: string;
       diaria_media: string;
+      diaria_media_bruta: string;
       faturamento_bruto: string;
       faturamento_liquido: string;
       lucro: string;
@@ -176,18 +177,34 @@ export default function ResultadoDasAcomodacoes(
               <path d="M22 11V20H20V17H4V20H2V4H4V14H12V7H18C20.2091 7 22 8.79086 22 11ZM8 13C6.34315 13 5 11.6569 5 10C5 8.34315 6.34315 7 8 7C9.65685 7 11 8.34315 11 10C11 11.6569 9.65685 13 8 13Z"></path>
             </svg>
           </div>
-          <div className="flex flex-col ml-4">
-            <p className="flex flex-col text-zinc-400 font-medium text-sm">
-              Diária Média
-            </p>
-            <div className="flex items-end gap-4">
-              <span className="text-nowrap text-xl">
-                {(formatarMoedaBrasileira(
-                  Number(props.comparativoRA.atual?.diaria_media).toFixed(2)
-                ))}
-              </span>
-              {/* <Comparativo nome="DIÁRIA MÉDIA" data={dataBW} passado={Number(comparativoRA.passado?.diaria_media) || 0}
-                          atual={Number(comparativoRA.atual?.diaria_media) || 0} /> */}
+          <div className="flex justify-between ml-4 w-4/5">
+            <div className="flex flex-col">
+              <p className="flex flex-col text-zinc-400 font-medium text-sm">
+                Diária Média Bruta
+              </p>
+              <div className="flex items-end gap-4">
+                <span className="text-nowrap text-xl">
+                  {formatarMoedaBrasileira(
+                    Number(props.comparativoRA.atual?.diaria_media_bruta).toFixed(2),
+                  )}
+                </span>
+                {/* <Comparativo nome="DIÁRIA MÉDIA" data={dataBW} passado={Number(comparativoRA.passado?.diaria_media) || 0}
+                            atual={Number(comparativoRA.atual?.diaria_media) || 0} /> */}
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <p className="flex flex-col text-zinc-400 font-medium text-sm">
+                Diária Média Líquida
+              </p>
+              <div className="flex items-end gap-4">
+                <span className="text-nowrap text-xl">
+                  {formatarMoedaBrasileira(
+                    Number(props.comparativoRA.atual?.diaria_media).toFixed(2),
+                  )}
+                </span>
+                {/* <Comparativo nome="DIÁRIA MÉDIA" data={dataBW} passado={Number(comparativoRA.passado?.diaria_media) || 0}
+                            atual={Number(comparativoRA.atual?.diaria_media) || 0} /> */}
+              </div>
             </div>
           </div>
         </div>
@@ -247,9 +264,11 @@ export default function ResultadoDasAcomodacoes(
             </p>
             <div className="flex items-end gap-4">
               <span className="text-nowrap text-xl">
-                {(formatarMoedaBrasileira(
-                  Number(props.comparativoRA.atual?.faturamento_bruto).toFixed(2),
-                ))}
+                {formatarMoedaBrasileira(
+                  Number(props.comparativoRA.atual?.faturamento_bruto).toFixed(
+                    2,
+                  ),
+                )}
               </span>
               {/* <Comparativo nome="FATURAMENTO BRUTO" data={dataBW} passado={Number(comparativoRA.passado?.faturamento_bruto) || 0}
                           atual={Number(comparativoRA.atual?.faturamento_bruto) || 0} /> */}
@@ -459,9 +478,11 @@ export default function ResultadoDasAcomodacoes(
             </p>
             <div className="flex items-end gap-4">
               <span className="text-nowrap text-xl">
-                {(formatarMoedaBrasileira(
-                  Number(props.comparativoRA.atual?.faturamento_liquido).toFixed(2)
-                ))}
+                {formatarMoedaBrasileira(
+                  Number(
+                    props.comparativoRA.atual?.faturamento_liquido,
+                  ).toFixed(2),
+                )}
               </span>
               {/* <Comparativo nome="FATURAMENTO LÍQUIDO" data={dataBW} passado={Number(comparativoRA.passado?.faturamento_liquido) || 0}
                           atual={Number(comparativoRA.atual?.faturamento_liquido) || 0} /> */}
@@ -489,7 +510,9 @@ export default function ResultadoDasAcomodacoes(
             </p>
             <div className="flex items-end gap-4">
               <span className="text-nowrap text-xl">
-                {(formatarMoedaBrasileira(Number(props.comparativoRA.atual?.despesas).toFixed(2)))}
+                {formatarMoedaBrasileira(
+                  Number(props.comparativoRA.atual?.despesas).toFixed(2),
+                )}
               </span>
               {/* <Comparativo nome="DESPESAS" data={dataBW} formatarMoeda={formatarMoedaBrasileira} passado={Number(comparativoRA.passado?.despesas) || 0}
                           atual={Number(comparativoRA.atual?.despesas) || 0} /> */}
@@ -528,7 +551,9 @@ export default function ResultadoDasAcomodacoes(
             </p>
             <div className="flex items-end gap-4">
               <span className="text-nowrap text-xl">
-                {(formatarMoedaBrasileira(Number(props.comparativoRA.atual?.lucro).toFixed(2)))}
+                {formatarMoedaBrasileira(
+                  Number(props.comparativoRA.atual?.lucro).toFixed(2),
+                )}
               </span>
               {/* <Comparativo nome="LUCRO DAS ACOMODAÇÕES" data={dataBW} formatarMoeda={formatarMoedaBrasileira} passado={(Number(comparativoRA.passado?.lucro)) || 0}
                           atual={Number(comparativoRA.atual?.lucro) || 0} /> */}
@@ -557,7 +582,9 @@ export default function ResultadoDasAcomodacoes(
             <div className="flex items-end gap-4">
               <span className="text-nowrap text-xl">
                 {props.filterAC != "all"
-                  ? (formatarMoedaBrasileira(Number(props.comparativoRA.atual?.repasse).toFixed(2)))
+                  ? formatarMoedaBrasileira(
+                      Number(props.comparativoRA.atual?.repasse).toFixed(2),
+                    )
                   : "-----"}
               </span>
             </div>
@@ -602,9 +629,7 @@ export default function ResultadoDasAcomodacoes(
             <div className="flex items-end gap-4">
               <span className="text-nowrap text-xl">
                 {formatarMoedaBrasileira(
-                  Number(
-                    props.comparativoRA.atual?.taxa_limpeza,
-                  ).toFixed(2),
+                  Number(props.comparativoRA.atual?.taxa_limpeza).toFixed(2),
                 )}
               </span>
             </div>
