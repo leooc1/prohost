@@ -261,7 +261,7 @@ export default function Tour() {
               <div>
                 <p className="font-bold">IA para remoção de avaliações</p>
                 <span>
-                  Contrste avaliações injustas com <br /> ajuda da nossa IA.
+                  Conteste avaliações injustas com <br /> ajuda da nossa IA.
                 </span>
               </div>
             </li>
