@@ -3,6 +3,7 @@ import { SideBarProvider } from "./contexts/SideBarMenuContext"
 import { Outlet, useNavigate } from "react-router-dom"
 import SidebarMenu from "./components/SidebarMenu"
 import TopBar from "./components/TopBar"
+import Tour from "./components/Tour"
 
 SidebarMenu
 

@@ -7,6 +7,7 @@ import IndicadoresOperacionaisSkeleton from "../components/skeleton/IndicadoresO
 import ResultadosAcomodacoesSkeleton from "../components/skeleton/ResultadosAcomodacoesSkeleton";
 import ResultadosGestorSkeleton from "../components/skeleton/ResultadosGestorSkeleton";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
+import Tour from "../components/Tour";
 interface Acomodacao {
   id: number;
   tipo: string;
@@ -217,8 +218,6 @@ export default function Dashboard() {
       repasse: any;
     } | null;
   }>({ atual: null, passado: null });
-
-console.log(comparativoRA)
 
   const [comparativoIO, setComparativoIO] = useState<{
     atual: {
@@ -451,6 +450,7 @@ console.log(comparativoRA)
     }
   }
 
+  console.log(acomodacao);
   const [dataBW, setDataBW] = useState<[string, string]>(["", ""]);
   const runningRef = useRef(false);
   const loadAll = async (databw: [string, string]) => {
@@ -521,6 +521,7 @@ console.log(comparativoRA)
 
   return loaded ? (
     <div className="w-full px-8">
+      {acomodacao.length === 0 || (acomodacao[0].id == 0 && <Tour />)}
       <h3 className="text-3xl font-semibold mb-7 pt-2">Painel do Negócio</h3>
       <div className="flex flex-wrap gap-4 mb-8">
         <label
