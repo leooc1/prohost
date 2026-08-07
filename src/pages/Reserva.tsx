@@ -7,6 +7,7 @@ import ListaReserva from "../components/list/ListaReserva";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 import Loader from "../components/Loader";
 import SemPermissao from "../components/SemPermissao";
+import Tour from "../components/Tour";
 
 interface Acomodacao {
   id: number;
@@ -84,7 +85,6 @@ export default function Reserva() {
         .then((data) => data.json())
         .then((data: Reserva[]) => {
           setReserva(data);
-          // getAll(dataToken.id)
         })
         .catch((err) => console.log(err));
     }
@@ -190,6 +190,7 @@ export default function Reserva() {
 
   return loaded ? (
     <div className="w-full px-8 min-h-screen">
+      {localStorage.getItem('tour') == 'true' && <Tour />}
       {permissao == 0 && <SemPermissao />}
       <div className="mb-7 pt-2 flex gap-5 flex-wrap">
         <h3 className="text-3xl font-semibold">Reservas</h3>

@@ -23,6 +23,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import Tour from "../components/Tour";
 
 interface Acomodacao {
   id: number;
@@ -212,7 +213,6 @@ export default function Acomodacoes() {
           (e) => e.tipo == "terceiro" && !e.desativado,
         );
         let desativadoList: any = data.filter((e) => e.desativado);
-        console.log(desativadoList)
 
         // 🔹 Reordena com base no localStorage
         if (orderMap) {
@@ -287,7 +287,7 @@ export default function Acomodacoes() {
         foto: images.find((img) => img.id === e.id)?.foto,
       })),
     );
-    console.log(desativados)
+    console.log(desativados);
   }, [images]);
 
   async function desativar(id: number, desativado: boolean) {
@@ -407,12 +407,15 @@ export default function Acomodacoes() {
 
   return loaded ? (
     <div className="w-main px-8">
+      {proprio.length === 0 &&
+        terceiro.length === 0 &&
+        desativados.length === 0 && <Tour />}
       {permissao == 0 && <SemPermissao />}
       <div className="mb-7 pt-2 flex justify-between gap-5 flex-wrap">
         <h3 className="text-3xl font-semibold">Acomodações</h3>
         {showNotify && <Notify type={notify.type} text={notify.text} />}
         <button
-          className="px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#003447] hover:bg-[#325B6A] hover:shadow-md shadow-black"
+          className="relative px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-white bg-[#003447] hover:bg-[#325B6A] hover:shadow-md shadow-black"
           onClick={() => {
             if (verifyAcomodacao) setCadastrarAcomodacao(true);
             else {
@@ -429,9 +432,24 @@ export default function Acomodacoes() {
           disabled={!(permissao >= 2)}
         >
           Cadastrar Acomodação
+          {/* SETA TOUR */}
+          {proprio.length === 0 &&
+            terceiro.length === 0 &&
+            desativados.length === 0 && (
+              <div className="absolute text-9xl -top-14 -left-28 z-50 text-primary focus-point">
+                ➪
+              </div>
+            )}
         </button>
         {cadastrarAcomodacao && (
-          <CadastrarAcomodacao close={() => setCadastrarAcomodacao(false)} />
+          <CadastrarAcomodacao
+            redirect={
+              proprio.length === 0 &&
+              terceiro.length === 0 &&
+              desativados.length === 0
+            }
+            close={() => setCadastrarAcomodacao(false)}
+          />
         )}
       </div>
 

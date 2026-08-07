@@ -450,7 +450,6 @@ export default function Dashboard() {
     }
   }
 
-  console.log(acomodacao);
   const [dataBW, setDataBW] = useState<[string, string]>(["", ""]);
   const runningRef = useRef(false);
   const loadAll = async (databw: [string, string]) => {
@@ -521,7 +520,7 @@ export default function Dashboard() {
 
   return loaded ? (
     <div className="w-full px-8">
-      {acomodacao.length === 0 || (acomodacao[0].id == 0 && <Tour />)}
+      {acomodacao[0].id == 0 && <Tour />}
       <h3 className="text-3xl font-semibold mb-7 pt-2">Painel do Negócio</h3>
       <div className="flex flex-wrap gap-4 mb-8">
         <label

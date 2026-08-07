@@ -96,3 +96,16 @@ input[type="number"] {
     transform: translateY(0px);
   }
 }
+
+.focus-point{
+  animation: 0.9s focus-point ease infinite;
+}
+
+@keyframes focus-point {
+  0%,100% {
+    transform: translateX(-20px);
+  }
+  50% {
+    transform: translateX(0);
+  }
+}
