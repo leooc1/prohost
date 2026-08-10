@@ -7,6 +7,7 @@ import ListaMovimentacoes from "../components/list/ListaMovimentacoes";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 import Loader from "../components/Loader";
 import SemPermissao from "../components/SemPermissao";
+import Tour from "../components/Tour";
 
 interface Movimentacao {
   id?: number;
@@ -506,6 +507,7 @@ export default function Financeiro() {
   ]);
   return loaded ? (
     <div className="w-full">
+      {localStorage.getItem('tour') == 'true' && <Tour />}
       {permissao == 0 && <SemPermissao />}
       <TopBar>
         <section className="ml-5 flex gap-5">

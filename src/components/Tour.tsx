@@ -24,6 +24,8 @@ export default function Tour() {
     if (path === "/dashboard") setStep(0);
     else if (path === "/acomodacoes") setStep(0);
     else if (path === "/reservas") setStep(2);
+    else if (path === "/movimentacoes") setStep(3);
+    else if (path === "/relatorio") setStep(4);
   }, []);
   return (
     <div
@@ -176,7 +178,10 @@ export default function Tour() {
               Voltar
             </button>
             <button
-              onClick={() => setStep(3)}
+              onClick={() => {
+                setStep(3);
+                location.assign("/movimentacoes");
+              }}
               className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-md"
             >
               Próximo &rarr;
@@ -184,7 +189,7 @@ export default function Tour() {
           </div>
         </div>
       )}
-      {step === 3 && (
+      {step === 3 && location.pathname === "/movimentacoes" && (
         <div className="pointer-events-auto absolute bg-white bottom-6 flex flex-col gap-5 w-3/5 left-1/2 -translate-x-1/2 px-6 py-4 rounded-xl">
           <p className="text-xl font-bold text-emerald-500">Passo 3 de 5</p>
           <p className="text-3xl font-bold">
@@ -210,14 +215,18 @@ export default function Tour() {
           <div className="w-full flex justify-end gap-4">
             <button
               onClick={() => {
-                setStep(step - 1);
+                setStep(2);
+                location.assign("/reservas");
               }}
               className="border border-zinc-800 text-zinc-800 font-bold py-2 px-4 rounded-md"
             >
               Voltar
             </button>
             <button
-              onClick={() => setStep(4)}
+              onClick={() => {
+                setStep(4);
+                location.assign("/relatorio");
+              }}
               className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-md"
             >
               Próximo &rarr;
@@ -225,7 +234,7 @@ export default function Tour() {
           </div>
         </div>
       )}
-      {step === 4 && (
+      {step === 4 && location.pathname === "/relatorio" && (
         <div className="pointer-events-auto absolute bg-white top-6 flex flex-col gap-5 w-3/5 left-1/2 -translate-x-1/2 px-6 py-4 rounded-xl">
           <p className="text-xl font-bold text-emerald-500">Passo 4 de 5</p>
           <p className="text-3xl font-bold">
@@ -250,7 +259,8 @@ export default function Tour() {
           <div className="w-full flex justify-end gap-4">
             <button
               onClick={() => {
-                setStep(step - 1);
+                setStep(3);
+                location.assign("/movimentacoes");
               }}
               className="border border-zinc-800 text-zinc-800 font-bold py-2 px-4 rounded-md"
             >
@@ -265,7 +275,7 @@ export default function Tour() {
           </div>
         </div>
       )}
-      {step === 5 && (
+      {step === 5 && location.pathname === "/relatorio" && (
         <div className="pointer-events-auto absolute bg-white left-1/2 -translate-x-1/2 top-6 flex flex-col gap-5 w-fit px-6 py-4 rounded-xl">
           <p className="text-3xl font-bold w-[300px]">
             O ProHost vai muito <br />
