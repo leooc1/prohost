@@ -106,8 +106,8 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
     }
 
     async function getHospede() {
-        if (!dataToken || !dataToken.id) return
-        await fetch(`${apiURL}/hospede/${dataToken.id}/${id}`, {
+        if (!dataToken || !dataToken?.id) return
+        await fetch(`${apiURL}/hospede/${dataToken?.id}/${id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -191,7 +191,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
                     if (nome.length > 0 && dataToken && dataToken.id) {
                         updateHospede({
                             "saas": {
-                                "id": dataToken.id
+                                "id": dataToken?.id
                             },
                             "nome": nome,
                             "telefone": tel?.length ? tel : null,
@@ -242,7 +242,7 @@ export default function AtualizarHospede({ close, id }: { close: () => void, id:
                                                     hospedeNOME: nome,
                                                     obs: r.obs,
                                                     qtdHospede: r.qtd_hospede,
-                                                    saas: dataToken.id,
+                                                    saas: dataToken?.id,
                                                     taxaLimpeza: Number(r.taxa_limpeza),
                                                     valorLiq: Number(r.valor_liq),
                                                     valorTotal: Number(r.valor)

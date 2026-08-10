@@ -172,8 +172,8 @@ export default function ImportacaoBooking() {
     setTaxaLimpeza("");
   };
   async function getHospede() {
-    if (!dataToken || !dataToken.id) return;
-    await fetch(`${apiURL}/hospede/${dataToken.id}`, {
+    if (!dataToken || !dataToken?.id) return;
+    await fetch(`${apiURL}/hospede/${dataToken?.id}`, {
       method: "GET",
     })
       .then((data) => data.json())
@@ -553,7 +553,7 @@ export default function ImportacaoBooking() {
                           hospedeId = await createHospede({
                             nome: imp.hospede,
                             email: null,
-                            saas: { id: dataToken.id },
+                            saas: { id: dataToken?.id },
                             telefone: null,
                           });
                         }

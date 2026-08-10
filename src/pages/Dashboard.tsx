@@ -159,7 +159,7 @@ export default function Dashboard() {
     if (!dataToken?.id) return;
     try {
       const data: Acomodacao[] = await fetchJson(
-        `${apiURL}/acomodacao/names/${dataToken.id}`,
+        `${apiURL}/acomodacao/names/${dataToken?.id}`,
       );
       setAcomodacao(
         data.filter((e) => !e.desativado).length > 0
@@ -250,7 +250,7 @@ export default function Dashboard() {
   ]);
   async function indicaOpe([start, end]: [string, string]) {
     const suffix = filterAC === "all" ? "" : `/${filterAC}`;
-    const base = `${apiURL}/dashboard/${dataToken.id}`;
+    const base = `${apiURL}/dashboard/${dataToken?.id}`;
 
     setIndiOpe(true);
     try {
@@ -324,7 +324,7 @@ export default function Dashboard() {
     false,
   ]);
   async function resultAc([start, end]: [string, string]) {
-    const base = `${apiURL}/dashboard/${dataToken.id}`;
+    const base = `${apiURL}/dashboard/${dataToken?.id}`;
     const suffix = filterAC === "all" ? "" : `/${filterAC}`;
 
     setResAc(true);
@@ -398,7 +398,7 @@ export default function Dashboard() {
 
   const [showRG, setShowRG] = useState<[boolean, boolean]>([false, false]);
   async function resultGest([start, end]: [string, string]) {
-    const base = `${apiURL}/dashboard/${dataToken.id}`;
+    const base = `${apiURL}/dashboard/${dataToken?.id}`;
     const inicioDate = `${start.slice(0, 4)}-01-01`;
     const finalDate =
       periodo === "personalizado" ? end : `${end.slice(0, 4)}-12-31`;

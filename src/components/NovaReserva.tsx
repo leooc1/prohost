@@ -195,8 +195,8 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getAcomodacoes() {
-        if (!dataToken || !dataToken.id) return
-        await fetch(`${apiURL}/acomodacao/names/${dataToken.id}`, {
+        if (!dataToken || !dataToken?.id) return
+        await fetch(`${apiURL}/acomodacao/names/${dataToken?.id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -208,8 +208,8 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getCanais() {
-        if (!dataToken || !dataToken.id) return
-        await fetch(`${apiURL}/canal_reserva/${dataToken.id}`, {
+        if (!dataToken || !dataToken?.id) return
+        await fetch(`${apiURL}/canal_reserva/${dataToken?.id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -220,8 +220,8 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getHospede() {
-        if (!dataToken || !dataToken.id) return
-        await fetch(`${apiURL}/hospede/${dataToken.id}`, {
+        if (!dataToken || !dataToken?.id) return
+        await fetch(`${apiURL}/hospede/${dataToken?.id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -232,7 +232,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
     }
 
     async function getAll() {
-        if (!dataToken || !dataToken.id) return
+        if (!dataToken || !dataToken?.id) return
         await getAcomodacoes()
         await getCanais()
         await getHospede()
@@ -529,7 +529,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                         hospedeId = await createHospede({
                                             nome: hospedeInput.value,
                                             email: null,
-                                            saas: { id: dataToken.id },
+                                            saas: { id: dataToken?.id },
                                             telefone: null
                                         })
 
@@ -558,7 +558,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                         },
                                         "qtd_hospede": Number(qtdHospede.value),
                                         "saas": {
-                                            "id": dataToken.id
+                                            "id": dataToken?.id
                                         },
                                         "valor": Number(valorBruto.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),
                                         "valor_liq": Number(valorLiquido.value.replace(/[.]/gm, '').replace(/[,]/gm, '.')),

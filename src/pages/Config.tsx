@@ -140,7 +140,7 @@ export default function Config() {
       })
       .catch((err) => console.log(err));
 
-    await fetch(`${apiURL}/users/${dataToken.id}/users`, {
+    await fetch(`${apiURL}/users/${dataToken?.id}/users`, {
       method: "GET",
     })
       .then((data) => data.json())
@@ -153,7 +153,7 @@ export default function Config() {
   }
 
   async function acomodacoes() {
-    await fetch(`${apiURL}/acomodacao/` + dataToken.id, {
+    await fetch(`${apiURL}/acomodacao/` + dataToken?.id, {
       method: "GET",
     })
       .then((data) => data.json())
@@ -578,13 +578,13 @@ export default function Config() {
                       nome.value.length > 0 &&
                       email.value.length > 0 &&
                       senha.value.length > 0 &&
-                      dataToken.id
+                      dataToken?.id
                     ) {
                       criarUsuario({
                         nome: nome.value,
                         email: email.value,
                         senha: senha.value,
-                        saas: Number(dataToken.id),
+                        saas: Number(dataToken?.id),
                         permissao: {
                           dashboard: {
                             indiOpe: Number(dashIndOpe.value),
@@ -648,13 +648,13 @@ export default function Config() {
                       nome.value.length > 0 &&
                       email.value.length > 0 &&
                       senha.value.length > 0 &&
-                      dataToken.id
+                      dataToken?.id
                     ) {
                       criarUsuario({
                         nome: nome.value,
                         email: email.value,
                         senha: senha.value,
-                        saas: Number(dataToken.id),
+                        saas: Number(dataToken?.id),
                         permissao: {
                           dashboard: {
                             indiOpe: 1,
@@ -984,7 +984,7 @@ export default function Config() {
                 <button
                   className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
                   onClick={() => {
-                    if (dataToken.id) {
+                    if (dataToken?.id) {
                       editarUsuario(idEdit || 0, {
                         nome: nomeInput,
                         permissao: {
@@ -1050,7 +1050,7 @@ export default function Config() {
                 <button
                   className="px-3 py-2 border border-zinc-300 rounded-lg text-white bg-primary"
                   onClick={() => {
-                    if (dataToken.id) {
+                    if (dataToken?.id) {
                       editarUsuario(idEdit || 0, {
                         nome: nomeInput,
                         permissao: {

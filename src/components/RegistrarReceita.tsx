@@ -56,8 +56,8 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
     const [showNotify, setShowNotify] = useState<boolean>(false)
     const [categoria, setCategoria] = useState(['', '#000000'])
     async function getAcomodacoes() {
-        if (!dataToken || !dataToken.id) return
-        await fetch(`${apiURL}/acomodacao/names/` + dataToken.id, {
+        if (!dataToken || !dataToken?.id) return
+        await fetch(`${apiURL}/acomodacao/names/` + dataToken?.id, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -67,8 +67,8 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
             .catch(err => console.log(err))
     }
     async function getCategorias() {
-        if (!dataToken || !dataToken.id) return
-        await fetch(`${apiURL}/categoria_financeiro/` + dataToken.id, {
+        if (!dataToken || !dataToken?.id) return
+        await fetch(`${apiURL}/categoria_financeiro/` + dataToken?.id, {
             method: 'GET'
         })
             .then(data => data.json())

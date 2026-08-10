@@ -20,8 +20,8 @@ export default function CanaisDeReserva({ close, permissao }: { close: () => voi
     const [showNotify, setShowNotify] = useState<boolean>(false)
 
     async function getCanais() {
-        if (!dataToken || !dataToken.id) return
-        await fetch(`${apiURL}/canal_reserva/` + dataToken.id, {
+        if (!dataToken || !dataToken?.id) return
+        await fetch(`${apiURL}/canal_reserva/` + dataToken?.id, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -49,7 +49,7 @@ export default function CanaisDeReserva({ close, permissao }: { close: () => voi
     }
 
     async function createCanais(pbody: Canais) {
-        if (!dataToken || !dataToken.id) return
+        if (!dataToken || !dataToken?.id) return
         await fetch(`${apiURL}/canal_reserva/`, {
             method: 'POST',
             body: JSON.stringify(pbody),
@@ -215,7 +215,7 @@ export default function CanaisDeReserva({ close, permissao }: { close: () => voi
                                             createCanais({
                                                 cor: color,
                                                 nome: nome.value,
-                                                saas: { id: dataToken.id }
+                                                saas: { id: dataToken?.id }
                                             })
                                         }
                             }}

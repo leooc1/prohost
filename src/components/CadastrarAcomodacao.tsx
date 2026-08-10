@@ -682,14 +682,14 @@ export default function CadastrarAcomodacao({ close, redirect }: { close: () => 
                     ),
                     desativado: false,
                     saas: {
-                      id: dataToken.id,
+                      id: dataToken?.id,
                     },
                   });
                 else if (
                   status.value == "terceiro" &&
                   String(comissao.value).length &&
                   dataToken &&
-                  dataToken.id
+                  dataToken?.id
                 )
                   createAcomodacao({
                     tipo: status.value,
@@ -715,7 +715,7 @@ export default function CadastrarAcomodacao({ close, redirect }: { close: () => 
                     ),
                     desativado: false,
                     saas: {
-                      id: dataToken.id,
+                      id: dataToken?.id,
                     },
                   });
               } else {

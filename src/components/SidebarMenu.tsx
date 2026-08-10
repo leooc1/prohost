@@ -68,7 +68,7 @@ export default function SidebarMenu({ route }: { route: string }) {
     useContext(SideBarContext);
   useEffect(() => {
     if (dataToken?.id) {
-      getSituation(dataToken.id);
+      getSituation(dataToken?.id);
     }
   }, [dataToken]);
   return (

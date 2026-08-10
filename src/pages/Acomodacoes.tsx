@@ -177,8 +177,8 @@ export default function Acomodacoes() {
   }
 
   async function getImagesAc() {
-    if (!dataToken || !dataToken.id) return;
-    await fetch(`${apiURL}/acomodacao/images/list/${dataToken.id}`, {
+    if (!dataToken || !dataToken?.id) return;
+    await fetch(`${apiURL}/acomodacao/images/list/${dataToken?.id}`, {
       method: "GET",
     })
       .then((data) => data.json())
@@ -189,7 +189,7 @@ export default function Acomodacoes() {
   }
 
   async function acomodacoes() {
-    await fetch(`${apiURL}/acomodacao/names/list/` + dataToken.id, {
+    await fetch(`${apiURL}/acomodacao/names/list/` + dataToken?.id, {
       method: "GET",
     })
       .then((data) => data.json())
@@ -199,7 +199,7 @@ export default function Acomodacoes() {
 
         if (storage) {
           const store: [string, any][] = JSON.parse(storage || "[]");
-          const found = store.find((item) => item[0] === dataToken.id);
+          const found = store.find((item) => item[0] === dataToken?.id);
           if (found) {
             orderMap = found[1];
           }
@@ -381,21 +381,21 @@ export default function Acomodacoes() {
         if (!storage) {
           localStorage.setItem(
             "order_ac",
-            JSON.stringify([[dataToken.id, result]]),
+            JSON.stringify([[dataToken?.id, result]]),
           );
         } else {
           const store: [string, any][] = JSON.parse(storage || "[]");
           let found = false;
 
           store.forEach((item, index) => {
-            if (item[0] === dataToken.id) {
+            if (item[0] === dataToken?.id) {
               store[index][1] = result;
               found = true;
             }
           });
 
           if (!found) {
-            store.push([dataToken.id, result]);
+            store.push([dataToken?.id, result]);
           }
           localStorage.setItem("order_ac", JSON.stringify(store));
         }

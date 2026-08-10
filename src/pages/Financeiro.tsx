@@ -277,8 +277,8 @@ export default function Financeiro() {
   }
 
   async function acomodacoes() {
-    if (dataToken.id)
-      await fetch(`${apiURL}/acomodacao/names/${dataToken.id}`, {
+    if (dataToken?.id)
+      await fetch(`${apiURL}/acomodacao/names/${dataToken?.id}`, {
         method: "GET",
       })
         .then((data) => data.json())
@@ -289,8 +289,8 @@ export default function Financeiro() {
   }
 
   async function categorias() {
-    if (dataToken.id)
-      await fetch(`${apiURL}/categoria_financeiro/${dataToken.id}`, {
+    if (dataToken?.id)
+      await fetch(`${apiURL}/categoria_financeiro/${dataToken?.id}`, {
         method: "GET",
       })
         .then((data) => data.json())
@@ -309,9 +309,9 @@ export default function Financeiro() {
         `${date.getFullYear()}-${`0${date.getMonth() + 1}`.slice(-2)}-${getDaysInMonth(date.getMonth() + 1, date.getFullYear())}`,
       );
       setListagem(true);
-    } else if (dataToken.id)
+    } else if (dataToken?.id)
       await fetch(
-        `${apiURL}/movimentacao/${dataToken.id}/${dataBW[0]}/${dataBW[1]}`,
+        `${apiURL}/movimentacao/${dataToken?.id}/${dataBW[0]}/${dataBW[1]}`,
         {
           method: "GET",
         },
@@ -329,7 +329,7 @@ export default function Financeiro() {
 
   const [permissao, setPermissao] = useState(0);
   async function permissoes() {
-    if (dataToken.id)
+    if (dataToken?.id)
       await fetch(`${apiURL}/users/${dataToken.idUsu}`, {
         method: "GET",
       })

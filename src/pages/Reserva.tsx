@@ -74,10 +74,10 @@ export default function Reserva() {
   // const [ids, setIds] = useState<{ id: number, index: number }[]>([])
 
   async function getReserva() {
-    if (!dataToken || !dataToken.id) return;
+    if (!dataToken || !dataToken?.id) return;
     if (calendarioPage) {
       await fetch(
-        `${apiURL}/reserva/${dataToken.id}/calendario/${("0" + mes).toString().slice(-2)}/${ano}`,
+        `${apiURL}/reserva/${dataToken?.id}/calendario/${("0" + mes).toString().slice(-2)}/${ano}`,
         {
           method: "GET",
         },
@@ -91,8 +91,8 @@ export default function Reserva() {
   }
 
   async function getImagesAc() {
-    if (!dataToken || !dataToken.id) return;
-    await fetch(`${apiURL}/acomodacao/images/${dataToken.id}`, {
+    if (!dataToken || !dataToken?.id) return;
+    await fetch(`${apiURL}/acomodacao/images/${dataToken?.id}`, {
       method: "GET",
     })
       .then((data) => data.json())
@@ -103,8 +103,8 @@ export default function Reserva() {
   }
 
   async function getAcomodacoes() {
-    if (!dataToken || !dataToken.id) return;
-    await fetch(`${apiURL}/acomodacao/names/${dataToken.id}`, {
+    if (!dataToken || !dataToken?.id) return;
+    await fetch(`${apiURL}/acomodacao/names/${dataToken?.id}`, {
       method: "GET",
     })
       .then((data) => data.json())
@@ -115,8 +115,8 @@ export default function Reserva() {
   }
 
   async function getCanais() {
-    if (!dataToken || !dataToken.id) return;
-    await fetch(`${apiURL}/canal_reserva/${dataToken.id}`, {
+    if (!dataToken || !dataToken?.id) return;
+    await fetch(`${apiURL}/canal_reserva/${dataToken?.id}`, {
       method: "GET",
     })
       .then((data) => data.json())
@@ -144,7 +144,7 @@ export default function Reserva() {
   }
 
   async function calendar() {
-    if (!dataToken || !dataToken.id) return;
+    if (!dataToken || !dataToken?.id) return;
     await getCanais();
     await getAcomodacoes();
     await getReserva();

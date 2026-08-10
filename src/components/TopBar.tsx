@@ -69,8 +69,8 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
   }
 
   async function getNotify() {
-    if (!dataToken || !dataToken.id) return;
-    await fetch(`${apiURL}/recorrencia/` + dataToken.id, {
+    if (!dataToken || !dataToken?.id) return;
+    await fetch(`${apiURL}/recorrencia/` + dataToken?.id, {
       method: "GET",
     })
       .then((data) => data.json())

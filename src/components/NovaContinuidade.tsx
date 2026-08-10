@@ -260,7 +260,7 @@ export default function NovaContinuidade(props: propsContinuidade) {
                     },
                     qtd_hospede: props.qtdHospede,
                     saas: {
-                      id: dataToken.id,
+                      id: dataToken?.id,
                     },
                     valor: Number(
                       valorTotal.value
