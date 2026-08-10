@@ -81,8 +81,8 @@ export default function RegistrarDespesa({
   }, [tipoDespesa]);
 
   async function getAcomodacoes() {
-    if (!dataToken || !dataToken.id) return;
-    await fetch(`${apiURL}/acomodacao/names/` + dataToken.id, {
+    if (!dataToken || !dataToken?.id) return;
+    await fetch(`${apiURL}/acomodacao/names/` + dataToken?.id, {
       method: "GET",
     })
       .then((data) => data.json())
@@ -92,8 +92,8 @@ export default function RegistrarDespesa({
       .catch((err) => console.log(err));
   }
   async function getCategorias() {
-    if (!dataToken || !dataToken.id) return;
-    await fetch(`${apiURL}/categoria_financeiro/` + dataToken.id, {
+    if (!dataToken || !dataToken?.id) return;
+    await fetch(`${apiURL}/categoria_financeiro/` + dataToken?.id, {
       method: "GET",
     })
       .then((data) => data.json())

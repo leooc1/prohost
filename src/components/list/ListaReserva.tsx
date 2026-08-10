@@ -78,7 +78,7 @@ export default function ListaReserva({
         const ate = periodo[1].split('-')[2] + '-' + periodo[1].split('-')[1] + '-' + periodo[1].split('-')[0] */
 
     setLoading(true);
-    await fetch(`${apiURL}/reserva/${dataToken.id}/${deData}/${ateData}`, {
+    await fetch(`${apiURL}/reserva/${dataToken?.id}/${deData}/${ateData}`, {
       method: "GET",
     })
       .then((data) => data.json())

@@ -51,8 +51,8 @@ export default function NovaIndisponibilidade({
   const [button, setButton] = useState<boolean>(true);
 
   async function getAcomodacoes() {
-    if (!dataToken || !dataToken.id) return;
-    await fetch(`${apiURL}/acomodacao/names/` + dataToken.id, {
+    if (!dataToken || !dataToken?.id) return;
+    await fetch(`${apiURL}/acomodacao/names/` + dataToken?.id, {
       method: "GET",
     })
       .then((data) => data.json())

@@ -160,7 +160,7 @@ export default function AreaProprietario() {
   async function acomodacoes() {
     if (!dataToken?.id) return;
     try {
-      const data: Acomodacao[] = await fetchJson(`${apiURL}/acomodacao/names/${dataToken.id}`);
+      const data: Acomodacao[] = await fetchJson(`${apiURL}/acomodacao/names/${dataToken?.id}`);
       setAcomodacao(data.filter(e => !e.desativado).length > 0 ? data.filter(e => !e.desativado) : [{
         id: 0,
         tipo: '',
@@ -228,7 +228,7 @@ export default function AreaProprietario() {
     return response.json();
   };
   async function resultAc([start, end]: [string, string]) {
-    const base = `${apiURL}/movimentacao/${dataToken.id}`;
+    const base = `${apiURL}/movimentacao/${dataToken?.id}`;
     const suffix = filterAC === 'all' ? '' : `/${filterAC}`;
 
     try {
@@ -317,8 +317,8 @@ export default function AreaProprietario() {
   }
   async function indicaOpe([start, end]: [string, string]) {
     const suffix = filterAC === 'all' ? '' : `/${filterAC}`;
-    const baseReserva = `${apiURL}/reserva/${dataToken.id}`;
-    const baseMov = `${apiURL}/movimentacao/${dataToken.id}`;
+    const baseReserva = `${apiURL}/reserva/${dataToken?.id}`;
+    const baseMov = `${apiURL}/movimentacao/${dataToken?.id}`;
 
     try {
       const [ind, comp, porCanal, qtdHospede, ocupacao] = await Promise.all([
@@ -440,8 +440,8 @@ export default function AreaProprietario() {
   const anos = Array.from({ length: new Date().getFullYear() - 2010 + 1 }, (_, i) => new Date().getFullYear() + 1 - i);
 
   async function getReserva() {
-    if (!dataToken || !dataToken.id) return
-    await fetch(`${apiURL}/reserva/${dataToken.id}/calendario/${('0' + mes).toString().slice(-2)}/${ano}`, {
+    if (!dataToken || !dataToken?.id) return
+    await fetch(`${apiURL}/reserva/${dataToken?.id}/calendario/${('0' + mes).toString().slice(-2)}/${ano}`, {
       method: 'GET'
     })
       .then(data => data.json())
@@ -453,8 +453,8 @@ export default function AreaProprietario() {
   }
 
   async function getAcomodacoes() {
-    if (!dataToken || !dataToken.id) return
-    await fetch(`${apiURL}/acomodacao/${dataToken.id}`, {
+    if (!dataToken || !dataToken?.id) return
+    await fetch(`${apiURL}/acomodacao/${dataToken?.id}`, {
       method: 'GET'
     })
       .then(data => data.json())
@@ -465,7 +465,7 @@ export default function AreaProprietario() {
   }
 
   async function calendar() {
-    if (!dataToken || !dataToken.id) return
+    if (!dataToken || !dataToken?.id) return
     await getAcomodacoes()
     await getReserva()
     setRender(true)

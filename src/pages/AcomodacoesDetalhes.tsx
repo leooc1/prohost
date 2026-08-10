@@ -117,9 +117,9 @@ export default function AcomodacoesDetalhes() {
   }, [acomodacao]);
 
   async function getAcomodacao() {
-    if (!dataToken || !dataToken.id) return;
+    if (!dataToken || !dataToken?.id) return;
 
-    await fetch(`${apiURL}/acomodacao/${dataToken.id}/${id}`, {
+    await fetch(`${apiURL}/acomodacao/${dataToken?.id}/${id}`, {
       method: "GET",
     })
       .then((data) => data.json())
@@ -159,11 +159,11 @@ export default function AcomodacoesDetalhes() {
   }
 
   async function dataDashs() {
-    if (!dataToken || !dataToken.id) return;
+    if (!dataToken || !dataToken?.id) return;
 
     {
       await fetch(
-        `${apiURL}/movimentacao/${dataToken.id}/ocupacao-semana/${dataBW[0]}/${dataBW[1]}/${id}`,
+        `${apiURL}/movimentacao/${dataToken?.id}/ocupacao-semana/${dataBW[0]}/${dataBW[1]}/${id}`,
         {
           method: "GET",
         },
@@ -181,7 +181,7 @@ export default function AcomodacoesDetalhes() {
     }
     {
       await fetch(
-        `${apiURL}/reserva/${dataToken.id}/desempenho/${dataBW[0]}/${dataBW[1]}/${id}`,
+        `${apiURL}/reserva/${dataToken?.id}/desempenho/${dataBW[0]}/${dataBW[1]}/${id}`,
         {
           method: "GET",
         },
@@ -195,7 +195,7 @@ export default function AcomodacoesDetalhes() {
     }
     {
       await fetch(
-        `${apiURL}/reserva/${dataToken.id}/ind-ope/${dataBW[0]}/${dataBW[1]}/${id}`,
+        `${apiURL}/reserva/${dataToken?.id}/ind-ope/${dataBW[0]}/${dataBW[1]}/${id}`,
         {
           method: "GET",
         },
@@ -209,7 +209,7 @@ export default function AcomodacoesDetalhes() {
     }
     {
       await fetch(
-        `${apiURL}/movimentacao/${dataToken.id}/result-ac/${dataBW[0]}/${dataBW[1]}/${id}`,
+        `${apiURL}/movimentacao/${dataToken?.id}/result-ac/${dataBW[0]}/${dataBW[1]}/${id}`,
         {
           method: "GET",
         },
@@ -234,7 +234,7 @@ export default function AcomodacoesDetalhes() {
     }
     {
       await fetch(
-        `${apiURL}/movimentacao/${dataToken.id}/fat-canal/${dataBW[0]}/${dataBW[1]}/${id}`,
+        `${apiURL}/movimentacao/${dataToken?.id}/fat-canal/${dataBW[0]}/${dataBW[1]}/${id}`,
         {
           method: "GET",
         },
@@ -247,7 +247,7 @@ export default function AcomodacoesDetalhes() {
     }
     {
       await fetch(
-        `${apiURL}/movimentacao/${dataToken.id}/fat-bar/${dataBar}/${id}`,
+        `${apiURL}/movimentacao/${dataToken?.id}/fat-bar/${dataBar}/${id}`,
         {
           method: "GET",
         },
@@ -1399,7 +1399,7 @@ export default function AcomodacoesDetalhes() {
                         valor_imovel: valor,
                         desativado: false,
                         saas: {
-                          id: dataToken.id,
+                          id: dataToken?.id,
                         },
                       });
                     else if (status == "terceiro" && String(comissao).length)
@@ -1419,7 +1419,7 @@ export default function AcomodacoesDetalhes() {
                         valor_imovel: valor,
                         desativado: false,
                         saas: {
-                          id: dataToken.id,
+                          id: dataToken?.id,
                         },
                       });
                   }

@@ -169,8 +169,8 @@ export default function ImportacaoAirbnb() {
     setEtapa("anuncio");
   };
   async function getHospede() {
-    if (!dataToken || !dataToken.id) return;
-    await fetch(`${apiURL}/hospede/${dataToken.id}`, {
+    if (!dataToken || !dataToken?.id) return;
+    await fetch(`${apiURL}/hospede/${dataToken?.id}`, {
       method: "GET",
     })
       .then((data) => data.json())
@@ -525,7 +525,7 @@ export default function ImportacaoAirbnb() {
                           hospedeId = await createHospede({
                             nome: imp.hospede,
                             email: null,
-                            saas: { id: dataToken.id },
+                            saas: { id: dataToken?.id },
                             telefone: null,
                           });
                         }

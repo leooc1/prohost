@@ -26,7 +26,7 @@ export default function Hospede() {
     async function getHospede() {
         if(!dataToken) return
         await permissoes()
-        await fetch(`${apiURL}/hospede/${dataToken.id}`, {
+        await fetch(`${apiURL}/hospede/${dataToken?.id}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -71,7 +71,7 @@ export default function Hospede() {
                     {cadastrarHospede && <CadastrarHospede close={() => setCadastrarHospede(false)} />}
 
                     <ListaHospede
-                        saas={dataToken.id}
+                        saas={dataToken?.id}
                         permissao={permissao}
                         atualizar={atualizarHospede}
                         setAtualizar={setAtualizarHospede}

@@ -93,8 +93,8 @@ export default function ReservaCardView(props: propsReserva) {
     }
 
     async function idContinuidade(idAcomodacao: number, idContinuidade: number) {
-        if (!dataToken || !dataToken.id) return
-        await fetch(`${apiURL}/reserva/${dataToken.id}/${idAcomodacao}/ci/${idContinuidade}`, {
+        if (!dataToken || !dataToken?.id) return
+        await fetch(`${apiURL}/reserva/${dataToken?.id}/${idAcomodacao}/ci/${idContinuidade}`, {
             method: 'GET'
         })
             .then(data => data.json())
@@ -106,14 +106,14 @@ export default function ReservaCardView(props: propsReserva) {
 
     async function getReserva(id: string) {
         if (!dataToken || !dataToken?.id) return
-        await fetch(`${apiURL}/reserva/${dataToken.id}/${id}`, {
+        await fetch(`${apiURL}/reserva/${dataToken?.id}/${id}`, {
             method: 'GET'
         })
             .then(data => data.json())
             .then((data: Reserva[]) => {
                 setReserva(data[0])
                 setDataReserva({
-                    saas: dataToken.id,
+                    saas: dataToken?.id,
                     id: Number(data[0].id),
                     close: () => setEditar(false),
                     acomodacaoID: Number(data[0].acomodacao.id),
@@ -191,7 +191,7 @@ export default function ReservaCardView(props: propsReserva) {
                 tipoReserva={dataReserva.tipoReserva}
             />}
             {editarContinuidade && <EditarContinuidade
-                saas={dataToken.id}
+                saas={dataToken?.id}
                 id={reserva?.id || 0}
                 close={() => setEditarContinuidade(false)}
             />}

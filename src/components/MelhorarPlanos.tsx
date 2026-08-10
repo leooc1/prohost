@@ -154,7 +154,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
       cvc: "";
     },
   ) {
-    if (!dataToken || !dataToken.id) return;
+    if (!dataToken || !dataToken?.id) return;
     await fetch(`${apiURL}/assinatura/credit-card/${pay}`, {
       method: "POST",
       body: JSON.stringify({
@@ -165,7 +165,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
           expiryYear: cartao.date.split(" / ")[1],
           ccv: cartao.cvc,
         },
-        saas: dataToken.id,
+        saas: dataToken?.id,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -176,7 +176,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
         if (data.id) {
           if (upgrade) {
             await updateAssinatura({
-              saas: dataToken.id,
+              saas: dataToken?.id,
               plano: {
                 qtd_acomodacao: selectedAccommodations[0],
                 permicao: 1,
@@ -215,11 +215,11 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
   }
 
   async function gerarPagamento(cartao?: any) {
-    if (!dataToken || !dataToken.id) return;
+    if (!dataToken || !dataToken?.id) return;
     await fetch(`${apiURL}/assinatura/upgrade/`, {
       method: "POST",
       body: JSON.stringify({
-        saas: Number(dataToken.id),
+        saas: Number(dataToken?.id),
         price: isAnnual
           ? upgrade
             ? ((Number(price.total) - Number(info?.valor_ano)) / 12) *
@@ -300,11 +300,11 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
           }
         });
     }
-    if (!dataToken || !dataToken.id) return;
+    if (!dataToken || !dataToken?.id) return;
     await fetch(`${apiURL}/assinatura/renovacao/`, {
       method: "POST",
       body: JSON.stringify({
-        saas: Number(dataToken.id),
+        saas: Number(dataToken?.id),
         plano: getPlano,
         cycle: isAnnual ? "YEARLY" : "MONTHLY",
       }),
@@ -330,7 +330,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
       const paymentResponse = await fetch(`${apiURL}/assinatura/upgrade/`, {
         method: "POST",
         body: JSON.stringify({
-          saas: Number(dataToken.id),
+          saas: Number(dataToken?.id),
           price: isAnnual
             ? upgrade
               ? ((Number(price.total) - Number(info?.valor_ano)) / 12) *
@@ -420,7 +420,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
           // Atualizar assinatura após confirmação
           if (upgrade) {
             await updateAssinatura({
-              saas: dataToken.id,
+              saas: dataToken?.id,
               plano: {
                 qtd_acomodacao: selectedAccommodations[0],
                 permicao: 1,
@@ -466,7 +466,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
   }, [showPixPayment]);
 
   async function getInfo() {
-    await fetch(`${apiURL}/assinatura/upgrade/${dataToken.id}`, {
+    await fetch(`${apiURL}/assinatura/upgrade/${dataToken?.id}`, {
       method: "GET",
     })
       .then((data) => data.json())
@@ -474,7 +474,7 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
         setInfo(data);
       })
       .catch((err) => console.log(err));
-    await fetch(`${apiURL}/acomodacao/names/${dataToken.id}`, {
+    await fetch(`${apiURL}/acomodacao/names/${dataToken?.id}`, {
       method: "GET",
     })
       .then((data) => data.json())

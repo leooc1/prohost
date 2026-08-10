@@ -49,7 +49,7 @@ export default function GerenciadorDeCategoria({ close, permissao }: { close: ()
   async function getCategorias() {
     if (!dataToken?.id) return;
     try {
-      const response = await fetch(`${apiURL}/categoria_financeiro/${dataToken.id}`);
+      const response = await fetch(`${apiURL}/categoria_financeiro/${dataToken?.id}`);
       const data: CategoriaFinanceiro[] = await response.json();
       setDespesas(data.filter((e) => !e.receita));
       setReceitas(data.filter((e) => e.receita));
@@ -69,7 +69,7 @@ export default function GerenciadorDeCategoria({ close, permissao }: { close: ()
       receita: !mov,
       nome: nomeInput.value,
       tipo_despesa: mov && tipoInput?.value !== "null" ? tipoInput.value : null,
-      saas: { id: dataToken.id }
+      saas: { id: dataToken?.id }
     };
 
     const response = await fetch(`${apiURL}/categoria_financeiro/`, {

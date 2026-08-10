@@ -241,8 +241,8 @@ export default function EditarReserva(props: propsEdicao) {
   }
 
   async function getAcomodacoes() {
-    if (!dataToken || !dataToken.id) return;
-    await fetch(`${apiURL}/acomodacao/names/${dataToken.id}`, {
+    if (!dataToken || !dataToken?.id) return;
+    await fetch(`${apiURL}/acomodacao/names/${dataToken?.id}`, {
       method: "GET",
     })
       .then((data) => data.json())
@@ -258,8 +258,8 @@ export default function EditarReserva(props: propsEdicao) {
   }
 
   async function getCanais() {
-    if (!dataToken || !dataToken.id) return;
-    await fetch(`${apiURL}/canal_reserva/${dataToken.id}`, {
+    if (!dataToken || !dataToken?.id) return;
+    await fetch(`${apiURL}/canal_reserva/${dataToken?.id}`, {
       method: "GET",
     })
       .then((data) => data.json())
@@ -270,8 +270,8 @@ export default function EditarReserva(props: propsEdicao) {
   }
 
   async function getHospede() {
-    if (!dataToken || !dataToken.id) return;
-    await fetch(`${apiURL}/hospede/${dataToken.id}`, {
+    if (!dataToken || !dataToken?.id) return;
+    await fetch(`${apiURL}/hospede/${dataToken?.id}`, {
       method: "GET",
     })
       .then((data) => data.json())
@@ -282,7 +282,7 @@ export default function EditarReserva(props: propsEdicao) {
   }
 
   async function getAll() {
-    if (!dataToken || !dataToken.id) return;
+    if (!dataToken || !dataToken?.id) return;
     await getAcomodacoes();
     await getCanais();
     await getHospede();
@@ -1068,7 +1068,7 @@ export default function EditarReserva(props: propsEdicao) {
                       hospedeId = await createHospede({
                         nome: hospedeInput.value,
                         email: null,
-                        saas: { id: dataToken.id },
+                        saas: { id: dataToken?.id },
                         telefone: null,
                       });
 
@@ -1125,7 +1125,7 @@ export default function EditarReserva(props: propsEdicao) {
                       },
                       qtd_hospede: Number(qtdHospede.value),
                       saas: {
-                        id: Number(dataToken.id),
+                        id: Number(dataToken?.id),
                       },
                       taxa_limpeza: taxaLimpeza
                         ? Number(

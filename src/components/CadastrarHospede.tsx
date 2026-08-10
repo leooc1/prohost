@@ -54,7 +54,7 @@ export default function CadastrarHospede({ close }: { close: () => void }) {
                 if (nome.value?.length)
                     if (dataToken && dataToken.id) createHospede({
                         "saas": {
-                            "id": dataToken.id
+                            "id": dataToken?.id
                         },
                         "nome": nome.value,
                         "telefone": tel.value?.length ? tel.value : null,

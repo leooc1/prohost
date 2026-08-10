@@ -36,7 +36,7 @@ export default function Relatorio() {
 
     async function getAcomodacoes() {
         setLoaded(false);
-        await fetch(`${apiURL}/acomodacao/names/${dataToken.id}`, {
+        await fetch(`${apiURL}/acomodacao/names/${dataToken?.id}`, {
             method: "GET",
         })
             .then((data) => data.json())
@@ -53,7 +53,7 @@ export default function Relatorio() {
     }
 
     async function getImagesAc() {
-        await fetch(`${apiURL}/acomodacao/images/${dataToken.id}`, {
+        await fetch(`${apiURL}/acomodacao/images/${dataToken?.id}`, {
             method: "GET",
         })
             .then((data) => data.json())
@@ -512,7 +512,7 @@ export default function Relatorio() {
                     )}
                     {chooseAc && relatorio && (
                         <RelatorioCompleto
-                            saas={Number(dataToken.id)}
+                            saas={Number(dataToken?.id)}
                             acomodacao={chooseAc}
                             mes={chooseMes}
                             ano={chooseAno}

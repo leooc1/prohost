@@ -69,8 +69,8 @@ export default function ImportadorReservas() {
       if (dataToken?.id) {
         try {
           const [acomodacoesRes, canaisRes] = await Promise.all([
-            api.get(`/acomodacao/${dataToken.id}`),
-            api.get(`/canal_reserva/${dataToken.id}`)
+            api.get(`/acomodacao/${dataToken?.id}`),
+            api.get(`/canal_reserva/${dataToken?.id}`)
           ]);
           setAcomodacoes(acomodacoesRes.data.filter((a: Acomodacao) => !a.desativado));
           setCanais(canaisRes.data);
@@ -214,7 +214,7 @@ export default function ImportadorReservas() {
             taxa_limpeza: Number(String(r.taxa_limpeza || '0').replace(/[^0-9,-]/g, '').replace(',', '.')),
             canal_reserva: { id: r.canal_reserva },
             obs: `Importado do AirBnB. Código: ${r["Código de Confirmação"]}`,
-            saas: { id: dataToken.id },
+            saas: { id: dataToken?.id },
             tipo_reserva: "Reserva",
           };
         });

@@ -59,8 +59,8 @@ export default function CardCancelamento(props: propsCancelamento) {
   }, [props.id]);
 
   async function getReserva(id: string) {
-    if (!dataToken || !dataToken.id) return;
-    await fetch(`${apiURL}/reserva/${dataToken.id}/${id}`, {
+    if (!dataToken || !dataToken?.id) return;
+    await fetch(`${apiURL}/reserva/${dataToken?.id}/${id}`, {
       method: "GET",
     })
       .then((data) => data.json())
@@ -96,7 +96,7 @@ export default function CardCancelamento(props: propsCancelamento) {
       "comissao-cancelamento",
     ) as HTMLInputElement;
 
-    if (!dataToken || !dataToken.id) return;
+    if (!dataToken || !dataToken?.id) return;
     await fetch(`${apiURL}/reserva/${id}/valor`, {
       method: "DELETE",
       headers: {
@@ -125,7 +125,7 @@ export default function CardCancelamento(props: propsCancelamento) {
         hospede: { id: reserva?.hospede?.id },
         canal_reserva: { id: reserva?.canal_reserva?.id },
         acomodacao: { id: reserva?.acomodacao.id },
-        saas: { id: dataToken.id },
+        saas: { id: dataToken?.id },
       }),
     })
       .then((data) => data.json())
