@@ -123,6 +123,10 @@ export default function Acomodacoes() {
   const apiURL = import.meta.env.VITE_API_URL;
   useEffect(() => {
     document.title = "Acomodações | Prohost";
+
+    if (localStorage.getItem("tour") == "2") {
+      location.assign("/reservas");
+    }
   }, []);
 
   const { statusData, dataToken } = useContext(SideBarContext);
@@ -442,14 +446,7 @@ export default function Acomodacoes() {
             )}
         </button>
         {cadastrarAcomodacao && (
-          <CadastrarAcomodacao
-            redirect={
-              proprio.length === 0 &&
-              terceiro.length === 0 &&
-              desativados.length === 0
-            }
-            close={() => setCadastrarAcomodacao(false)}
-          />
+          <CadastrarAcomodacao close={() => setCadastrarAcomodacao(false)} />
         )}
       </div>
 

@@ -21,7 +21,7 @@ interface Acomodacao {
   saas: { id: number };
 }
 
-export default function CadastrarAcomodacao({ close, redirect }: { close: () => void; redirect?: boolean }) {
+export default function CadastrarAcomodacao({ close }: { close: () => void }) {
   const apiURL = import.meta.env.VITE_API_URL;
   const { dataToken } = useContext(SideBarContext);
   const [qtdMaxHospede, setQtdMaxHospede] = useState(1);
@@ -46,16 +46,15 @@ export default function CadastrarAcomodacao({ close, redirect }: { close: () => 
       .then((data) => data.json())
       .then((data) => {
         if (data.id) {
-          posthog.capture('accommodation_created');
+          posthog.capture("accommodation_created");
           setNotify({ type: 1, text: "Criado!" });
           setShowNotify(true);
           setTimeout(() => {
-            setShowNotify(false);
-            if (redirect) {
-              location.assign("/reservas");
-            } else {
-              location.reload();
+            if (localStorage.getItem("tour") == "1") {
+              localStorage.setItem("tour", "2");
             }
+            setShowNotify(false);
+            location.reload();
           }, 3000);
         }
       })

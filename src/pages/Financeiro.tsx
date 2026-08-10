@@ -7,6 +7,7 @@ import ListaMovimentacoes from "../components/list/ListaMovimentacoes";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 import Loader from "../components/Loader";
 import SemPermissao from "../components/SemPermissao";
+import Tour from "../components/Tour";
 
 interface Movimentacao {
   id?: number;
@@ -60,6 +61,10 @@ export default function Financeiro() {
   const apiURL = import.meta.env.VITE_API_URL;
   useEffect(() => {
     document.title = `Financeiro | Prohost`;
+
+    if (localStorage.getItem("tour") == "4") {
+      location.assign("/relatorio");
+    }
   }, []);
   const [novaReceita, setNovaReceita] = useState(false);
   const [novaDespesa, setNovaDespesa] = useState(false);
@@ -506,6 +511,8 @@ export default function Financeiro() {
   ]);
   return loaded ? (
     <div className="w-full">
+      {localStorage.getItem("tour") == "3" && <Tour />}
+
       {permissao == 0 && <SemPermissao />}
       <TopBar>
         <section className="ml-5 flex gap-5">
@@ -604,12 +611,18 @@ export default function Financeiro() {
             <h3 className="text-3xl font-semibold">Movimentações</h3>
             <div className="flex gap-3">
               <button
-                className="px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-black bg-white hover:shadow-md shadow-black"
+                className="relative px-2 py-1 border border-zinc-300 rounded-lg text-sm transition-all duration-500 font-medium text-black bg-white hover:shadow-md shadow-black"
                 onClick={() => {
                   setCadastrarCategoria(true);
                 }}
                 disabled={!(permissao >= 2)}
               >
+                {/* SETA TOUR */}
+                {localStorage.getItem("tour") == "3" && (
+                  <div className="absolute text-9xl -top-14 -left-28 z-50 text-primary focus-point">
+                    ➪
+                  </div>
+                )}
                 Gerenciar Categorias
               </button>
               <button

@@ -50,6 +50,10 @@ export default function Reserva() {
   const apiURL = import.meta.env.VITE_API_URL;
   useEffect(() => {
     document.title = "Reservas | Prohost";
+
+    if (localStorage.getItem("tour") == "3") {
+      location.assign("/movimentacoes");
+    }
   }, []);
 
   const { dataToken } = useContext(SideBarContext);
@@ -190,7 +194,7 @@ export default function Reserva() {
 
   return loaded ? (
     <div className="w-full px-8 min-h-screen">
-      {localStorage.getItem('tour') == 'true' && <Tour />}
+      {localStorage.getItem("tour") == "2" && <Tour />}
       {permissao == 0 && <SemPermissao />}
       <div className="mb-7 pt-2 flex gap-5 flex-wrap">
         <h3 className="text-3xl font-semibold">Reservas</h3>
@@ -354,6 +358,12 @@ export default function Reserva() {
                       href="/importacao-airbnb"
                       className="hover:scale-110 transition-all relative flex items-center bg-white border border-primary py-1 px-1 rounded-xl w-48 justify-between"
                     >
+                      {/* SETA TOUR */}
+                      {localStorage.getItem("tour") == "2" && (
+                        <div className="absolute text-9xl -top-8 -left-28 z-50 text-primary focus-point">
+                          ➪
+                        </div>
+                      )}
                       <svg
                         className="w-7 h-7"
                         xmlns="http://www.w3.org/2000/svg"
@@ -378,7 +388,7 @@ export default function Reserva() {
                         Importar do Airbnb
                       </span>
                     </a>
-                      {/* BOOKING */}
+                    {/* BOOKING */}
                     <a
                       onClick={(e) => {
                         e.preventDefault();
