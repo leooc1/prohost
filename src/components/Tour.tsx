@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Tour() {
+  const navigate = useNavigate();
+
   const bg = [
     "",
     // criarAcomodacao,
@@ -87,7 +90,7 @@ export default function Tour() {
               onClick={() => {
                 setStep(1);
                 window.localStorage.setItem("tour", "1");
-                location.assign("/acomodacoes");
+                navigate("/acomodacoes");
               }}
               className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-md"
             >
@@ -123,7 +126,7 @@ export default function Tour() {
             <button
               onClick={() => {
                 setStep(step - 1);
-                location.assign("/dashboard");
+                navigate("/dashboard");
               }}
               className="border border-zinc-800 text-zinc-800 font-bold py-2 px-4 rounded-md"
             >
@@ -133,7 +136,7 @@ export default function Tour() {
               onClick={() => {
                 setStep(2);
                 window.localStorage.setItem("tour", "2");
-                location.assign("/reservas");
+                navigate("/reservas");
               }}
               className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-md"
             >
@@ -173,7 +176,7 @@ export default function Tour() {
               onClick={() => {
                 setStep(step - 1);
                 window.localStorage.setItem("tour", "1");
-                location.assign("/acomodacoes");
+                navigate("/acomodacoes");
               }}
               className="border border-zinc-800 text-zinc-800 font-bold py-2 px-4 rounded-md"
             >
@@ -182,7 +185,7 @@ export default function Tour() {
             <button
               onClick={() => {
                 window.localStorage.setItem("tour", "3");
-                location.assign("/movimentacoes");
+                navigate("/movimentacoes");
                 setStep(3);
               }}
               className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-md"
@@ -220,7 +223,7 @@ export default function Tour() {
               onClick={() => {
                 setStep(step - 1);
                 window.localStorage.setItem("tour", "2");
-                location.assign("/reservas");
+                navigate("/reservas");
               }}
               className="border border-zinc-800 text-zinc-800 font-bold py-2 px-4 rounded-md"
             >
@@ -229,7 +232,7 @@ export default function Tour() {
             <button
               onClick={() => {
                 window.localStorage.setItem("tour", "4");
-                location.assign("/relatorio");
+                navigate("/relatorio");
                 setStep(4);
               }}
               className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-md"
@@ -266,7 +269,7 @@ export default function Tour() {
               onClick={() => {
                 setStep(step - 1);
                 window.localStorage.setItem("tour", "3");
-                location.assign("/movimentacoes");
+                navigate("/movimentacoes");
               }}
               className="border border-zinc-800 text-zinc-800 font-bold py-2 px-4 rounded-md"
             >
@@ -375,14 +378,19 @@ export default function Tour() {
                 </div>
               </li>
             </ul>
-            <div className="w-full flex justify-around">
+            <div className="w-full flex flex-col justify-around gap-2">
               <button
                 onClick={() => {
-                  alert(
-                    "Restou duvidas?\nVocê pode acessar o tutorial  clicando no botão 'Tutorial' no canto superior direito da tela.",
-                  );
+                  setStep(4);
+                }}
+                className="border border-zinc-800 text-zinc-800 font-bold py-2 px-4 rounded-md"
+              >
+                Voltar
+              </button>
+              <button
+                onClick={() => {
                   localStorage.setItem("tour", "false");
-                  location.reload();
+                  navigate("/acomodacoes");
                 }}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-md"
               >

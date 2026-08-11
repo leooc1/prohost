@@ -118,24 +118,8 @@ export default function SidebarMenu({ route }: { route: string }) {
             </li>
           </ul>
         ) : (
-          <ul className="flex flex-col gap-2 mt-6 items-center ">
-            <li>
-              <a
-                href={"/agent-chat"} target="_blank"
-                className={`${route == "/agent-chat" ? "nav-active" : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover bg-secondary/80 ${active ? "w-44" : "w-fit justify-center"}`}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  height="24"
-                  fill="#003447"
-                  width="24"
-                >
-                  <path d="M13.5 2C13.5 2.44425 13.3069 2.84339 13 3.11805V5H18C19.6569 5 21 6.34315 21 8V18C21 19.6569 19.6569 21 18 21H6C4.34315 21 3 19.6569 3 18V8C3 6.34315 4.34315 5 6 5H11V3.11805C10.6931 2.84339 10.5 2.44425 10.5 2C10.5 1.17157 11.1716 0.5 12 0.5C12.8284 0.5 13.5 1.17157 13.5 2ZM6 7C5.44772 7 5 7.44772 5 8V18C5 18.5523 5.44772 19 6 19H18C18.5523 19 19 18.5523 19 18V8C19 7.44772 18.5523 7 18 7H13H11H6ZM2 10H0V16H2V10ZM22 10H24V16H22V10ZM9 14.5C9.82843 14.5 10.5 13.8284 10.5 13C10.5 12.1716 9.82843 11.5 9 11.5C8.17157 11.5 7.5 12.1716 7.5 13C7.5 13.8284 8.17157 14.5 9 14.5ZM15 14.5C15.8284 14.5 16.5 13.8284 16.5 13C16.5 12.1716 15.8284 11.5 15 11.5C14.1716 11.5 13.5 12.1716 13.5 13C13.5 13.8284 14.1716 14.5 15 14.5Z"></path>
-                </svg>
-                {active && <p className="text-primary text-sm">IA de avaliação</p>}
-              </a>
-            </li>
+          <ul className="flex flex-col gap-2 mt-6 items-center">
+            {/* dashboard */}
             <li>
               <a
                 href={"/dashboard"}
@@ -153,40 +137,25 @@ export default function SidebarMenu({ route }: { route: string }) {
                 {active && <p className="text-zinc-300">Dashboard</p>}
               </a>
             </li>
+            {/* agent chat */}
             <li>
               <a
-                href={"/relatorio"}
-                className={`${route == "/relatorio" ? "nav-active" : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover ${active ? "w-44" : "w-fit justify-center"}`}
+                href={"/agent-chat"} target="_blank"
+                className={`${route == "/agent-chat" ? "nav-active" : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover bg-secondary/80 ${active ? "w-44" : "w-fit justify-center"}`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
-                  fill="#ACDBFF"
                   height="24"
+                  fill="#003447"
                   width="24"
                 >
-                  <path d="M20 22H4C3.44772 22 3 21.5523 3 21V3C3 2.44772 3.44772 2 4 2H20C20.5523 2 21 2.44772 21 3V21C21 21.5523 20.5523 22 20 22ZM19 20V4H5V20H19ZM7 6H11V10H7V6ZM7 12H17V14H7V12ZM7 16H17V18H7V16ZM13 7H17V9H13V7Z"></path>
+                  <path d="M13.5 2C13.5 2.44425 13.3069 2.84339 13 3.11805V5H18C19.6569 5 21 6.34315 21 8V18C21 19.6569 19.6569 21 18 21H6C4.34315 21 3 19.6569 3 18V8C3 6.34315 4.34315 5 6 5H11V3.11805C10.6931 2.84339 10.5 2.44425 10.5 2C10.5 1.17157 11.1716 0.5 12 0.5C12.8284 0.5 13.5 1.17157 13.5 2ZM6 7C5.44772 7 5 7.44772 5 8V18C5 18.5523 5.44772 19 6 19H18C18.5523 19 19 18.5523 19 18V8C19 7.44772 18.5523 7 18 7H13H11H6ZM2 10H0V16H2V10ZM22 10H24V16H22V10ZM9 14.5C9.82843 14.5 10.5 13.8284 10.5 13C10.5 12.1716 9.82843 11.5 9 11.5C8.17157 11.5 7.5 12.1716 7.5 13C7.5 13.8284 8.17157 14.5 9 14.5ZM15 14.5C15.8284 14.5 16.5 13.8284 16.5 13C16.5 12.1716 15.8284 11.5 15 11.5C14.1716 11.5 13.5 12.1716 13.5 13C13.5 13.8284 14.1716 14.5 15 14.5Z"></path>
                 </svg>
-                {active && <p className="text-zinc-300">Relatório</p>}
+                {active && <p className="text-primary text-sm">IA de avaliação</p>}
               </a>
             </li>
-            <li>
-              <a
-                href={"/reservas"}
-                className={`${route == "/reservas" ? "nav-active" : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover ${active ? "w-44" : "w-fit justify-center"}`}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="24"
-                  fill="#ACDBFF"
-                  viewBox="0 -960 960 960"
-                  width="24"
-                >
-                  <path d="M438-226 296-368l58-58 84 84 168-168 58 58-226 226ZM200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Z" />
-                </svg>
-                {active && <p className="text-zinc-300">Reserva</p>}
-              </a>
-            </li>
+            {/* acomodacoes */}
             <li>
               <a
                 href={"/acomodacoes"}
@@ -204,10 +173,11 @@ export default function SidebarMenu({ route }: { route: string }) {
                 {active && <p className="text-zinc-300">Acomodações</p>}
               </a>
             </li>
+            {/* reservas */}
             <li>
               <a
-                href={"/hospedes"}
-                className={`${route == "/hospedes" ? "nav-active" : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover ${active ? "w-44" : "w-fit justify-center"}`}
+                href={"/reservas"}
+                className={`${route == "/reservas" ? "nav-active" : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover ${active ? "w-44" : "w-fit justify-center"}`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -216,11 +186,12 @@ export default function SidebarMenu({ route }: { route: string }) {
                   viewBox="0 -960 960 960"
                   width="24"
                 >
-                  <path d="M480-40 360-160H200q-33 0-56.5-23.5T120-240v-560q0-33 23.5-56.5T200-880h560q33 0 56.5 23.5T840-800v560q0 33-23.5 56.5T760-160H600L480-40ZM200-286q54-53 125.5-83.5T480-400q83 0 154.5 30.5T760-286v-514H200v514Zm280-194q58 0 99-41t41-99q0-58-41-99t-99-41q-58 0-99 41t-41 99q0 58 41 99t99 41ZM280-240h400v-10q-42-35-93-52.5T480-320q-56 0-107 17.5T280-250v10Zm200-320q-25 0-42.5-17.5T420-620q0-25 17.5-42.5T480-680q25 0 42.5 17.5T540-620q0 25-17.5 42.5T480-560Zm0 17Z" />
+                  <path d="M438-226 296-368l58-58 84 84 168-168 58 58-226 226ZM200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Z" />
                 </svg>
-                {active && <p className="text-zinc-300">Hóspedes</p>}
+                {active && <p className="text-zinc-300">Reserva</p>}
               </a>
             </li>
+            {/* financeiro */}
             <li>
               <a
                 href={"/movimentacoes"}
@@ -238,6 +209,43 @@ export default function SidebarMenu({ route }: { route: string }) {
                 {active && <p className="text-zinc-300">Financeiro</p>}
               </a>
             </li>
+            {/* relatorio */}
+            <li>
+              <a
+                href={"/relatorio"}
+                className={`${route == "/relatorio" ? "nav-active" : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover ${active ? "w-44" : "w-fit justify-center"}`}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="#ACDBFF"
+                  height="24"
+                  width="24"
+                >
+                  <path d="M20 22H4C3.44772 22 3 21.5523 3 21V3C3 2.44772 3.44772 2 4 2H20C20.5523 2 21 2.44772 21 3V21C21 21.5523 20.5523 22 20 22ZM19 20V4H5V20H19ZM7 6H11V10H7V6ZM7 12H17V14H7V12ZM7 16H17V18H7V16ZM13 7H17V9H13V7Z"></path>
+                </svg>
+                {active && <p className="text-zinc-300">Relatório</p>}
+              </a>
+            </li>
+            {/* hospedes */}
+            <li>
+              <a
+                href={"/hospedes"}
+                className={`${route == "/hospedes" ? "nav-active" : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover ${active ? "w-44" : "w-fit justify-center"}`}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24"
+                  fill="#ACDBFF"
+                  viewBox="0 -960 960 960"
+                  width="24"
+                >
+                  <path d="M480-40 360-160H200q-33 0-56.5-23.5T120-240v-560q0-33 23.5-56.5T200-880h560q33 0 56.5 23.5T840-800v560q0 33-23.5 56.5T760-160H600L480-40ZM200-286q54-53 125.5-83.5T480-400q83 0 154.5 30.5T760-286v-514H200v514Zm280-194q58 0 99-41t41-99q0-58-41-99t-99-41q-58 0-99 41t-41 99q0 58 41 99t99 41ZM280-240h400v-10q-42-35-93-52.5T480-320q-56 0-107 17.5T280-250v10Zm200-320q-25 0-42.5-17.5T420-620q0-25 17.5-42.5T480-680q25 0 42.5 17.5T540-620q0 25-17.5 42.5T480-560Zm0 17Z" />
+                </svg>
+                {active && <p className="text-zinc-300">Hóspedes</p>}
+              </a>
+            </li>
+            {/* conficuração */}
             <li>
               <a
                 href={"/assinatura"}
@@ -274,6 +282,7 @@ export default function SidebarMenu({ route }: { route: string }) {
                 </a>
               </li>
             )}
+            {/* minha conta */}
             <li>
               <a
                 href={"/minha-conta"}

@@ -411,9 +411,11 @@ export default function Acomodacoes() {
 
   return loaded ? (
     <div className="w-main px-8">
-      {proprio.length === 0 &&
+      {/* {proprio.length === 0 &&
         terceiro.length === 0 &&
-        desativados.length === 0 && <Tour />}
+        desativados.length === 0 && <Tour />} */}
+      {localStorage.getItem("tour") == "1" && <Tour />}
+
       {permissao == 0 && <SemPermissao />}
       <div className="mb-7 pt-2 flex justify-between gap-5 flex-wrap">
         <h3 className="text-3xl font-semibold">Acomodações</h3>
