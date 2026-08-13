@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import dashboard from "../../public/tour/dash.jpeg";
 
 export default function Tour() {
   const navigate = useNavigate();
 
   const bg = [
-    "",
+    dashboard,
+    // "",
     // criarAcomodacao,
     // criarReserva,
     // financeiro,
     // relatorio,
-    // dashboard,
   ];
   const [step, setStep] = useState<number>(5);
 
@@ -22,7 +23,7 @@ export default function Tour() {
 
     const path = location.pathname;
     if (path === "/dashboard") setStep(0);
-    else if (path === "/acomodacoes") setStep(0);
+    else if (path === "/acomodacoes") setStep(1);
     else if (path === "/reservas") setStep(2);
     else if (path === "/movimentacoes") setStep(3);
     else if (path === "/relatorio") setStep(4);
