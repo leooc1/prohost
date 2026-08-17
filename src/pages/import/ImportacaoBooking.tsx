@@ -9,6 +9,7 @@ interface ImportacaoRow {
   hospede: string;
   acomodacao: string;
   valor: string;
+  qtd_hospede: string;
   taxa_servico: string;
   taxa_limpeza: string;
 }
@@ -80,7 +81,7 @@ export default function ImportacaoBooking() {
         const sheet = workbook.Sheets[sheetName];
         const rows = XLSX.utils.sheet_to_json(sheet);
         const result = rows
-          .filter((r: any) => r['Status'] == "ok")
+          .filter((r: any) => r["Status"] == "ok")
           .map((r: any) => ({
             data: `${r["Entrada"].split("-")[2]}/${r["Entrada"].split("-")[1]}/${r["Entrada"].split("-")[0]}`,
             qtd_noites: r["Duração (diárias)"],
@@ -88,7 +89,8 @@ export default function ImportacaoBooking() {
             acomodacao: r["Tipo de unidade"],
             valor: r["Preço"].split(" ")[0],
             taxa_servico: r["Valor da comissão"].split(" ")[0],
-            taxa_limpeza: r["Taxa de limpeza"] ?? '0',
+            taxa_limpeza: r["Taxa de limpeza"] ?? "0",
+            qtd_hospede: r["Pessoas"] ?? "0",
           }));
         setImportacao(result);
 
@@ -484,6 +486,7 @@ export default function ImportacaoBooking() {
                           imp.qtd_noites,
                           imp.hospede,
                           imp.acomodacao,
+                          imp.qtd_hospede,
                         ].join("|");
 
                         const existente = reservasAgrupadas.get(chave);
@@ -573,10 +576,9 @@ export default function ImportacaoBooking() {
                             )?.check_out_p
                           }`,
                           taxa_limpeza: Number(
-                            (
-                              acomodacaoSelecionadaInfo?.modelo == 1
-                                ? 0
-                                : taxaLimpezaAplicada
+                            (acomodacaoSelecionadaInfo?.modelo == 1
+                              ? 0
+                              : taxaLimpezaAplicada
                             ).toFixed(2),
                           ),
                           canal_reserva: {
@@ -588,7 +590,7 @@ export default function ImportacaoBooking() {
                           hospede: {
                             id: hospedeId, //hospede padrao
                           },
-                          qtd_hospede: 1,
+                          qtd_hospede: Number(imp.qtd_hospede) || 1,
                           saas: {
                             id: dataToken?.id,
                           },
@@ -600,7 +602,9 @@ export default function ImportacaoBooking() {
                             ).toFixed(2),
                           ),
                           valor_liq: Number(
-                            (Number(imp.valor) - taxaLimpezaAplicada).toFixed(2),
+                            (Number(imp.valor) - taxaLimpezaAplicada).toFixed(
+                              2,
+                            ),
                           ),
                           valor_prop:
                             acomodacoes.find(
@@ -613,21 +617,24 @@ export default function ImportacaoBooking() {
                                       (a) => a.id == acomodacaoSelecionada,
                                     )?.comissao,
                                   ) > 1
-                                    ? (Number(imp.valor) - taxaLimpezaAplicada) /
+                                    ? (Number(imp.valor) -
+                                        taxaLimpezaAplicada) /
                                       (Number(
                                         acomodacoes.find(
                                           (a) => a.id == acomodacaoSelecionada,
                                         )?.comissao,
                                       ) /
                                         100)
-                                    : (Number(imp.valor) - taxaLimpezaAplicada) /
+                                    : (Number(imp.valor) -
+                                        taxaLimpezaAplicada) /
                                         Number(
                                           acomodacoes.find(
                                             (a) =>
                                               a.id == acomodacaoSelecionada,
                                           )?.comissao,
                                         ) -
-                                      Number(imp.valor) - taxaLimpezaAplicada
+                                      Number(imp.valor) -
+                                      taxaLimpezaAplicada
                                   ).toFixed(2),
                                 ),
                           valor_gestor:
@@ -641,14 +648,16 @@ export default function ImportacaoBooking() {
                                       (a) => a.id == acomodacaoSelecionada,
                                     )?.comissao,
                                   ) > 1
-                                    ? (Number(imp.valor) - taxaLimpezaAplicada) /
+                                    ? (Number(imp.valor) -
+                                        taxaLimpezaAplicada) /
                                       (Number(
                                         acomodacoes.find(
                                           (a) => a.id == acomodacaoSelecionada,
                                         )?.comissao,
                                       ) /
                                         100)
-                                    : (Number(imp.valor) - taxaLimpezaAplicada) /
+                                    : (Number(imp.valor) -
+                                        taxaLimpezaAplicada) /
                                       Number(
                                         acomodacoes.find(
                                           (a) => a.id == acomodacaoSelecionada,
@@ -657,7 +666,9 @@ export default function ImportacaoBooking() {
                                   ).toFixed(2),
                                 ),
                           valor_liq_calculado: Number(
-                            (Number(imp.valor) - taxaLimpezaAplicada).toFixed(2),
+                            (Number(imp.valor) - taxaLimpezaAplicada).toFixed(
+                              2,
+                            ),
                           ),
                           obs: "",
                           tipo_reserva: "Reserva",
