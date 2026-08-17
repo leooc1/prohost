@@ -469,8 +469,8 @@ export default function ImportacaoAirbnb() {
 
                         const somar = (a: string, b: string) =>
                           (
-                            Number(a.replace(",", ".")) +
-                            Number(b.replace(",", "."))
+                            Number(a.replace(".", "").replace(",", ".")) +
+                            Number(b.replace(".", "").replace(",", "."))
                           ).toFixed(2);
 
                         reservasAgrupadas.set(chave, {
@@ -486,7 +486,7 @@ export default function ImportacaoAirbnb() {
                           ),
                         });
                       });
-
+                    console.log(reservasAgrupadas);
                     const reservasParaImportar = [
                       ...reservasAgrupadas.values(),
                     ];
@@ -494,9 +494,13 @@ export default function ImportacaoAirbnb() {
                       reservasParaImportar.map(async (imp) => {
                         imp = {
                           ...imp,
-                          taxa_limpeza: imp.taxa_limpeza.replace(",", "."),
-                          taxa_servico: imp.taxa_servico.replace(",", "."),
-                          valor: imp.valor.replace(",", "."),
+                          taxa_limpeza: imp.taxa_limpeza
+                            .replace(".", "")
+                            .replace(",", "."),
+                          taxa_servico: imp.taxa_servico
+                            .replace(".", "")
+                            .replace(",", "."),
+                          valor: imp.valor.replace(".", "").replace(",", "."),
                         };
                         const [dia, mes, ano] = imp.data.split("/");
 
@@ -529,6 +533,8 @@ export default function ImportacaoAirbnb() {
                             telefone: null,
                           });
                         }
+
+                        console.log(imp);
 
                         await createReserva({
                           acomodacao: {
@@ -693,7 +699,7 @@ export default function ImportacaoAirbnb() {
                     );
                     setBotaoImportar(true);
                     alert(retornos.join("\n"));
-                    location.assign("/reservas");
+                    // location.assign("/reservas");
                   }}
                 >
                   Importar
