@@ -699,7 +699,7 @@ export default function ImportacaoAirbnb() {
                     );
                     setBotaoImportar(true);
                     alert(retornos.join("\n"));
-                    // location.assign("/reservas");
+                    location.assign("/reservas");
                   }}
                 >
                   Importar
