@@ -272,7 +272,7 @@ export default function ImportacaoAirbnb() {
               Buscar Anúncio
             </label>
             <input
-              type="text"
+              type="text" 
               placeholder="Digite o nome do anúncio..."
               value={anuncioBuscado}
               onChange={(e) => setAnuncioBuscado(e.target.value)}
