@@ -96,7 +96,8 @@ export default function ImportacaoAirbnb() {
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const rows = XLSX.utils.sheet_to_json(sheet);
-        console.log("Excel Parsed:", rows);
+        // console.log("Excel Parsed:", rows);
+        rows
       };
       reader.readAsBinaryString(file);
     } else {
@@ -439,9 +440,9 @@ export default function ImportacaoAirbnb() {
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
                   onClick={async () => {
-                    console.log(
+                    /* console.log(
                       acomodacoes.find((a) => a.id == acomodacaoSelecionada),
-                    );
+                    ); */
                     setBotaoImportar(false);
                     const retornos: string[] = [];
                     await getHospede();
@@ -469,16 +470,8 @@ export default function ImportacaoAirbnb() {
 
                         const somar = (a: string, b: string) =>
                           (
-                            Number(
-                              a /* .replace(".", "") */
-                                .replace(",", ".")
-                                .replace(".", ""),
-                            ) +
-                            Number(
-                              b /* .replace(".", "") */
-                                .replace(",", ".")
-                                .replace(".", ""),
-                            )
+                            Number(a.replace(/[.,]/g, "")) / 100 +
+                            Number(b.replace(/[.,]/g, "")) / 100
                           ).toFixed(2);
 
                         reservasAgrupadas.set(chave, {
@@ -544,7 +537,7 @@ export default function ImportacaoAirbnb() {
                           });
                         }
 
-                        console.log(imp);
+                        console.log(imp)
 
                         await createReserva({
                           acomodacao: {
