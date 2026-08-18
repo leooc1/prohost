@@ -272,7 +272,7 @@ export default function ImportacaoAirbnb() {
               Buscar Anúncio
             </label>
             <input
-              type="text" 
+              type="text"
               placeholder="Digite o nome do anúncio..."
               value={anuncioBuscado}
               onChange={(e) => setAnuncioBuscado(e.target.value)}
@@ -469,8 +469,16 @@ export default function ImportacaoAirbnb() {
 
                         const somar = (a: string, b: string) =>
                           (
-                            Number(a.replace(".", "").replace(",", ".")) +
-                            Number(b.replace(".", "").replace(",", "."))
+                            Number(
+                              a /* .replace(".", "") */
+                                .replace(",", ".")
+                                .replace(".", ""),
+                            ) +
+                            Number(
+                              b /* .replace(".", "") */
+                                .replace(",", ".")
+                                .replace(".", ""),
+                            )
                           ).toFixed(2);
 
                         reservasAgrupadas.set(chave, {
@@ -494,13 +502,15 @@ export default function ImportacaoAirbnb() {
                       reservasParaImportar.map(async (imp) => {
                         imp = {
                           ...imp,
-                          taxa_limpeza: imp.taxa_limpeza
-                            .replace(".", "")
-                            .replace(",", "."),
-                          taxa_servico: imp.taxa_servico
-                            .replace(".", "")
-                            .replace(",", "."),
-                          valor: imp.valor.replace(".", "").replace(",", "."),
+                          taxa_limpeza: (
+                            Number(imp.taxa_limpeza.replace(/[.,]/g, "")) / 100
+                          ).toFixed(2),
+                          taxa_servico: (
+                            Number(imp.taxa_servico.replace(/[.,]/g, "")) / 100
+                          ).toFixed(2),
+                          valor: (
+                            Number(imp.valor.replace(/[.,]/g, "")) / 100
+                          ).toFixed(2),
                         };
                         const [dia, mes, ano] = imp.data.split("/");
 
