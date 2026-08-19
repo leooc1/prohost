@@ -34,6 +34,7 @@ import AgentChatPage from "./pages/IA/AgentChatPage.tsx";
 import Tutorial from "./pages/Tutorial.tsx";
 import ImportacaoAirbnb from "./pages/import/ImportacaoAirbnb.tsx";
 import ImportacaoBooking from "./pages/import/ImportacaoBooking.tsx";
+import JivoChat from './JivoChat.tsx';
 
 const router = createBrowserRouter([
   {
@@ -175,6 +176,6 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <RouterProvider router={router} />
-    {/* <JivoChat /> */}
+    <JivoChat />
   </React.StrictMode>,
 );

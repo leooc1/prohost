@@ -7,6 +7,7 @@ import reserva from "../../videos/Onboarding-reserva.mp4";
 import dashboard from "../../videos/onboarding-dashboard.mp4";
 import financeiro from "../../videos/onboarding-financeiro.mp4";
 import importAirbnb from '../../videos/importador-de-reservas.mp4'
+import importBooking from '../../videos/Importador-booking.mp4'
 
 const tutorialVideos = [
   {
@@ -58,6 +59,13 @@ const tutorialVideos = [
     duration: "3:51",
     video: importAirbnb,
   },
+  {
+    id: "importBooking",
+    title: "Importador de Reservas (Booking)",
+    step: "Passo 8",
+    duration: "1:28",
+    video: importBooking,
+  }
 ];
 
 export default function Tutorial({ onClose }: { onClose?: () => void }) {
