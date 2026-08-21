@@ -15,7 +15,7 @@ export default function App() {
   }, [navigate, route]);
 
   return (
-    <div className="flex">
+    <div className="flex flex-col-reverse md:flex-row">
       <SideBarProvider>
         <>
           <SidebarMenu route={route} />

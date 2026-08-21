@@ -97,6 +97,21 @@ input[type="number"] {
   }
 }
 
+.incoming-menu {
+  animation: 0.5s incoming-menu ease;
+}
+
+@keyframes incoming-menu {
+  0% {
+    opacity: 0%;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 100%;
+    transform: translateY(-100%);
+  }
+}
+
 .focus-point{
   animation: 0.9s focus-point ease infinite;
 }
