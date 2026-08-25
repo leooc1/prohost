@@ -39,7 +39,7 @@ export default function JivoChat() {
     <a
       target="_blank"
       href="https://wa.me/5521997541318?text=Ol%C3%A1%2C%20tenho%20uma%20d%C3%BAvida%20sobre%20o%20ProHost.%0APode%20me%20ajudar%3F"
-      className="bg-green-500 rounded-full p-2 fixed right-5 bottom-10 hover:scale-110 cursor-pointer transition-all"
+      className="bg-green-500 rounded-full p-2 fixed right-5 md:bottom-10 bottom-24 hover:scale-110 cursor-pointer transition-all"
     >
       <svg
         className="w-10 h-10"
