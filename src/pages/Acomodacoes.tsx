@@ -410,7 +410,7 @@ export default function Acomodacoes() {
   };
 
   return loaded ? (
-    <div className="w-main px-8">
+    <div className="md:w-main w-full px-8 md:mb-0 mb-12">
       {/* {proprio.length === 0 &&
         terceiro.length === 0 &&
         desativados.length === 0 && <Tour />} */}
