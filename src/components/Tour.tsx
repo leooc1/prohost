@@ -31,7 +31,7 @@ export default function Tour() {
   }, []);
   return (
     <div
-      className={`fixed z-50 top-0 left-0 w-screen h-screen bg-black/5 ${step === -1 && "hidden"} transition-all duration-300 
+      className={`fixed hidden z-50 top-0 left-0 w-screen h-screen bg-black/5 ${step === -1 && "hidden"} transition-all duration-300 
       ${step !== 5 && "pointer-events-none"}
       `}
       style={{
