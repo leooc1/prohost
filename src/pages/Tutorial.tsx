@@ -76,7 +76,7 @@ export default function Tutorial({ onClose }: { onClose?: () => void }) {
     tutorialVideos[0];
 
   return (
-    <section className="fixed left-0 top-0 min-h-screen w-screen overflow-x-hidden z-10">
+    <section className="fixed left-0 top-0 h-screen w-screen overflow-x-hidden z-10">
       <div className="absolute inset-0 bg-black/90"></div>
       <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8 max-h-full">
         <div className="grid gap-8 lg:grid-cols-2">
@@ -105,7 +105,7 @@ export default function Tutorial({ onClose }: { onClose?: () => void }) {
           </article>
 
           <aside className="w-full">
-            <div className="space-y-3 max-h-[calc(100vh-80px)] overflow-y-auto pr-1 scroll-default">
+            <div className="space-y-3 md:max-h-[calc(100vh-80px)] max-h-40 overflow-y-auto pr-1 scroll-default">
               {tutorialVideos.map((item) => {
                 const isSelected = item.id === selectedVideo.id;
 
