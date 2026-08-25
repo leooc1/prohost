@@ -716,7 +716,7 @@ export default function Dashboard() {
       </h4>
       {sessao != 2 ? (
         <div>
-          <label htmlFor="acomodacao" className={`flex flex-col w-fit mb-8`}>
+          <label htmlFor="acomodacao" className={`flex flex-col md:w-fit mb-8`}>
             <select
               name="acomodacao"
               id="acomodacao"
@@ -730,7 +730,7 @@ export default function Dashboard() {
               <option value="all">Todas acomodações</option>
               {acomodacao.length
                 ? acomodacao.map((e) => (
-                    <option key={e.id} value={`${e.id}`}>
+                    <option key={e.id} className="" value={`${e.id}`}>
                       {e.nome}
                     </option>
                   ))
