@@ -105,7 +105,7 @@ export default function AcomodacoesDetalhes() {
   // const [novaIndisponibilidade, setNovaIndisponibilidade] = useState(false)
   // const [novaReserva, setNovaReserva] = useState(false)
   // const [evento, serEvento]: any = useState()
-  const [sessao, setSessao] = useState(0);
+  const [sessao, setSessao] = useState(2);
   const [graf, setGraf] = useState(false);
   const { id } = useParams();
   const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([]);
@@ -526,7 +526,7 @@ export default function AcomodacoesDetalhes() {
       </div>
       {showNotify && <Notify type={notify.type} text={notify.text} />}
       {sessao == 0 && (
-        <section className="my-10">
+        <section className="my-10 hidden">
           <h5 className="font-semibold text-2xl mb-2 px-4 pb-7">
             Painel de Resultados
           </h5>
