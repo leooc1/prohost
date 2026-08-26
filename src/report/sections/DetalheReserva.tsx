@@ -60,7 +60,7 @@ export default function DetalheReserva(props: DetalheReservaProps) {
                     <div style={{ backgroundColor: props.cores.primario }} className={`w-full h-px bg-[${props.cores.primario}]`}></div>
                     <img src={props.imagem} alt="" className='bg-primary max-w-56 max-h-28 h-28' />
                 </div>
-                <section className='h-full mt-20 flex items-center'>
+                <section className='h-full flex items-center'>
                     <ListaReservaR reservas={dados.reservas} />
                 </section>
 
