@@ -81,10 +81,12 @@ export default function ImportacaoBooking() {
         const sheet = workbook.Sheets[sheetName];
         const rows = XLSX.utils.sheet_to_json(sheet);
         const result = rows
-          .filter((r: any) => r["Status"] == "ok")
+        .filter((r: any) => r["Status"] == "ok" || r["Estado"] == "ok" )
           .map((r: any) => ({
-            data: `${r["Entrada"].split("-")[2]}/${r["Entrada"].split("-")[1]}/${r["Entrada"].split("-")[0]}`,
-            qtd_noites: r["Duração (diárias)"],
+            data: r["Entrada"]
+              ? `${r["Entrada"].split("-")[2]}/${r["Entrada"].split("-")[1]}/${r["Entrada"].split("-")[0]}`
+              : `${r["Check-in"].split("-")[2]}/${r["Check-in"].split("-")[1]}/${r["Check-in"].split("-")[0]}`,
+            qtd_noites: r["Duração (diárias)"] ?? r["Duração (noites)"],
             hospede: r["Reservado por"],
             acomodacao: r["Tipo de unidade"],
             valor: r["Preço"].split(" ")[0],
@@ -92,7 +94,7 @@ export default function ImportacaoBooking() {
             taxa_limpeza: r["Taxa de limpeza"] ?? "0",
             qtd_hospede: r["Pessoas"] ?? "0",
           }));
-        setImportacao(result);
+          setImportacao(result);
 
         // Extrair anúncios únicos
         const anunciosUnicos = [...new Set(result.map((r) => r.acomodacao))];
