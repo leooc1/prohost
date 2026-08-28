@@ -57,7 +57,7 @@ export default function Calendario({ acomodacoes, reservas, initialDate, permiss
         key={iframeKey}
         ref={iframeRef}
         src='/calendar.html'
-        className={`w-full min-h-[450px] max-h-full border border-zinc-300 rounded-lg mb-24 transition-all duration-500`}
+        className={`w-full md:min-h-[450px] max-h-full border border-zinc-300 rounded-lg mb-24 transition-all duration-500`}
         style={{ height: `${!expanded ? 450 : altura}px` }}
       />
       <button className='hidden' id='bttn-log' onClick={(e: React.MouseEvent<HTMLButtonElement>) => {

@@ -510,12 +510,12 @@ export default function Financeiro() {
     buscaMovimentacao,
   ]);
   return loaded ? (
-    <div className="w-full">
+    <div className="w-full md:mb-0 mb-24">
       {localStorage.getItem("tour") == "3" && <Tour />}
 
       {permissao == 0 && <SemPermissao />}
       <TopBar>
-        <section className="ml-5 flex gap-5">
+        <section className="md:ml-5 flex items-center gap-5 md:static absolute max-w-[100vw] left-1/2 md:translate-x-0 md:translate-y-0 -translate-x-1/2 translate-y-full bottom-0 bg-white">
           <button
             onClick={() => setSession(0)}
             className={`h-full text-sm flex items-center gap-2 border-b-2 ${session == 0 ? "border-primary" : "border-transparent"} hover:border-primary px-2`}
@@ -605,7 +605,7 @@ export default function Financeiro() {
           </button>
         </section>
       </TopBar>
-      <div className="w-full px-8 pt-4 pb-10">
+      <div className="w-full px-8 md:pt-4 pt-8 pb-10">
         {session == 0 && (
           <div className="mb-7 pt-2 flex justify-between gap-5 flex-wrap">
             <h3 className="text-3xl font-semibold">Movimentações</h3>
@@ -680,7 +680,6 @@ export default function Financeiro() {
             </div>
           </div>
         )}
-
         {session == 2 && (
           <div className="mb-7 pt-2 flex justify-between gap-5 flex-wrap">
             <h3 className="text-3xl font-semibold">Despesas</h3>
@@ -717,7 +716,7 @@ export default function Financeiro() {
         )}
 
         <div className="flex flex-col gap-6 mb-8">
-          <div className="flex gap-4 mt-5">
+          <div className="flex gap-4 mt-5 max-w-full flex-wrap">
             <label
               htmlFor="periodo"
               className="flex flex-col text-zinc-600 font-medium text-sm"
@@ -777,7 +776,7 @@ export default function Financeiro() {
             )}
             <label
               htmlFor="acomodacao"
-              className={`flex flex-col text-zinc-600 font-medium text-sm`}
+              className={`flex flex-col text-zinc-600 font-medium text-sm max-w-full`}
             >
               Acomodação
               <select
@@ -956,7 +955,7 @@ export default function Financeiro() {
           />
         )}
         {session == 1 && (
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid md:grid-cols-3 grid-cols-1 gap-3 ">
             <div className="bg-white border-zinc-300 border rounded-lg h-20 flex flex-col justify-center items-center px-3 gap-2">
               <p className="text-zinc-400 font-medium text-sm">Visualização</p>
               <section className="flex gap-5">
@@ -1092,7 +1091,7 @@ export default function Financeiro() {
           </div>
         )}
         {session == 2 && (
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
             <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center">
               <div className="bg-[#F8DCDC] rounded-md w-fit h-fit py-2 px-2 ml-4">
                 <svg
@@ -1164,7 +1163,7 @@ export default function Financeiro() {
           </div>
         )}
         {session == 0 && (
-          <div style={{ position: "relative" }}>
+          <div style={{ position: "relative" }} className="">
             {!listagem && (
               <div className="absolute inset-0 z-50 flex items-center justify-center bg-white bg-opacity-60">
                 <Loader />
@@ -1178,11 +1177,11 @@ export default function Financeiro() {
             >
               <div className="flex flex-1 flex-wrap gap-4 items-end">
                 {/* Ordenação */}
-                <div className="flex flex-col min-w-[220px] flex-1">
+                <div className="flex flex-col md:min-w-[220px] flex-1">
                   <span className="text-zinc-600 font-medium text-sm">
                     Ordenação
                   </span>
-                  <div className="flex gap-2 w-full">
+                  <div className="flex gap-2 w-full flex-wrap">
                     <label
                       htmlFor="sort-key"
                       className="flex items-center gap-2 text-sm font-medium text-zinc-600"
@@ -1226,7 +1225,7 @@ export default function Financeiro() {
                     </label>
                     <label
                       htmlFor="busca-movimentacao"
-                      className="relative flex flex-1 items-center text-sm font-medium text-zinc-600"
+                      className="relative flex flex-1 items-center text-sm min-w-24 font-medium text-zinc-600"
                     >
                       <svg
                         className="pointer-events-none absolute left-3 h-4 w-4 text-zinc-400"
@@ -1272,11 +1271,11 @@ export default function Financeiro() {
             >
               <div className="flex flex-1 flex-wrap gap-4 items-end">
                 {/* Ordenação */}
-                <div className="flex flex-col min-w-[220px] flex-1">
+                <div className="flex flex-col md:min-w-[220px] flex-1">
                   <span className="text-zinc-600 font-medium text-sm">
                     Ordenação
                   </span>
-                  <div className="flex gap-2 w-full">
+                  <div className="flex gap-2 w-full flex-wrap">
                     <label
                       htmlFor="sort-key"
                       className="flex items-center gap-2 text-sm font-medium text-zinc-600"
@@ -1320,7 +1319,7 @@ export default function Financeiro() {
                     </label>
                     <label
                       htmlFor="busca-movimentacao-receitas"
-                      className="relative flex flex-1 items-center text-sm font-medium text-zinc-600"
+                      className="relative flex flex-1 items-center text-sm font-medium min-w-24 text-zinc-600"
                     >
                       <svg
                         className="pointer-events-none absolute left-3 h-4 w-4 text-zinc-400"
@@ -1366,11 +1365,11 @@ export default function Financeiro() {
             >
               <div className="flex flex-1 flex-wrap gap-4 items-end">
                 {/* Ordenação */}
-                <div className="flex flex-col min-w-[220px] flex-1">
+                <div className="flex flex-col md:min-w-[220px] flex-1">
                   <span className="text-zinc-600 font-medium text-sm">
                     Ordenação
                   </span>
-                  <div className="flex gap-2 w-full">
+                  <div className="flex gap-2 w-full flex-wrap">
                     <label
                       htmlFor="sort-key"
                       className="flex items-center gap-2 text-sm font-medium text-zinc-600"
@@ -1414,7 +1413,7 @@ export default function Financeiro() {
                     </label>
                     <label
                       htmlFor="busca-movimentacao-despesas"
-                      className="relative flex flex-1 items-center text-sm font-medium text-zinc-600"
+                      className="relative flex flex-1 items-center text-sm font-medium min-w-24 text-zinc-600"
                     >
                       <svg
                         className="pointer-events-none absolute left-3 h-4 w-4 text-zinc-400"

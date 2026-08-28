@@ -106,7 +106,7 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
   }, [dataToken]);
 
   return (
-    <div className="bg-white w-full shadow-xs h-12 pl-4 pr-6 flex justify-between items-center mb-4">
+    <div className="relative bg-white w-full shadow-xs h-12 pl-4 pr-6 flex justify-between items-center mb-4">
       {showNotify && <Notify type={notify.type} text={notify.text} />}
       <div className="flex h-full">
         <button onClick={() => setActive(!active)}>

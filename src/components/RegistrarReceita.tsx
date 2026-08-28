@@ -110,7 +110,7 @@ export default function RegistrarReceita({ close, saas }: { close: () => void, s
         }
     }, [dataToken])
     return (
-        <div className='w-screen h-screen fixed z-10 top-0 right-0'>
+        <div className='w-screen h-screen fixed z-50 top-0 right-0'>
             <div className="w-screen h-screen bg-black fixed top-0 right-0 bg-opacity-20" onClick={close}></div>
             {showNotify && <Notify type={notify.type} text={notify.text} />}
             <form onSubmit={(e) => { e.preventDefault() }} className="flex rounded-md flex-col absolute max-w-96 min-w-80 px-4 pb-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white pt-2">

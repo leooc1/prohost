@@ -122,7 +122,7 @@ export default function RegistrarDespesa({
       .then((data) => data.json())
       .then((data) => {
         if (data.id) {
-          posthog.capture('expense_recorded');
+          posthog.capture("expense_recorded");
           setNotify({ type: 1, text: "Criado!" });
           setShowNotify(true);
           setTimeout(() => {
@@ -194,7 +194,7 @@ export default function RegistrarDespesa({
     if (dataToken && dataToken.id) getAll();
   }, [dataToken]);
   return (
-    <div className="w-screen h-screen fixed z-10 top-0 right-0">
+    <div className="w-screen h-screen fixed z-50 top-0 right-0">
       <div
         className="w-screen h-screen bg-black fixed top-0 right-0 bg-opacity-20"
         onClick={close}
@@ -235,7 +235,7 @@ export default function RegistrarDespesa({
               </option>
             </select>
           </label>
-          <section>
+          <section className="max-w-[calc(100vw-20px)]">
             <span className={`text-zinc-500 font-medium`}>
               Categoria<span className="text-red-500 font-bold"> *</span>
             </span>
@@ -362,7 +362,7 @@ export default function RegistrarDespesa({
               </div>
             )}
           </section>
-          <div className="grid gap-4 grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2 grid-cols-1">
             <label htmlFor="descricao" className="flex flex-col">
               <span className="text-zinc-500 font-medium mb-1 text-sm">
                 Descrição<span className="text-red-500 font-bold"> *</span>
@@ -392,7 +392,7 @@ export default function RegistrarDespesa({
           </div>
           <label
             htmlFor="acomodacaoReceita"
-            className={`flex flex-col ${tipoDespesa == "Despesas do Negócio" || despesa?.tipo_despesa == "Despesas do Negócio" ? "hidden" : null}`}
+            className={`flex flex-col max-w-[calc(100vw-20px)] ${tipoDespesa == "Despesas do Negócio" || despesa?.tipo_despesa == "Despesas do Negócio" ? "hidden" : null}`}
           >
             <span className="text-zinc-500 font-medium mb-1 text-sm">
               Acomodação
@@ -402,7 +402,7 @@ export default function RegistrarDespesa({
               despesa?.tipo_despesa === "Despesas Variáveis" ? (
                 <span className="text-red-500 font-bold"> *</span>
               ) : (
-                <span className="text-zinc-400"> ()</span>
+                <span className="text-zinc-400"> (opcional)</span>
               )}
             </span>
             <select
@@ -432,10 +432,7 @@ export default function RegistrarDespesa({
                 </span>
               )}
           </label>
-          <div
-            className="grid gap-3 items-center"
-            style={{ gridTemplateColumns: "1fr 1fr 0.3fr" }}
-          >
+          <div className="grid gap-3 items-center md:grid-cols-[1fr_1fr_0.3fr]">
             <label htmlFor="data" className="flex flex-col">
               <span className="text-zinc-500 font-medium mb-1 text-sm">
                 Data<span className="text-red-500 font-bold"> *</span>
