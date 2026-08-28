@@ -253,13 +253,13 @@ export default function NovaReserva({ close }: { close: () => void }) {
         if (dataToken && dataToken.id) getAll()
     }, [dataToken])
     return (
-        <div className='w-screen h-screen fixed z-10 top-0 right-0'>
+        <div className='w-screen h-screen fixed z-50 top-0 right-0'>
             <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={close}></div>
             {showNotify && <Notify type={notify.type} text={notify.text} />}
             {render &&
-                <form onSubmit={(e) => { e.preventDefault() }} className="flex rounded-md flex-col max-h-screen overflow-scroll scroll-default absolute min-w-80 px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white">
+                <form onSubmit={(e) => { e.preventDefault() }} className="flex rounded-md flex-col max-h-screen overflow-scroll scroll-default absolute md:min-w-80 px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white ">
                     <h5 className="font-semibold text-2xl mb-2">Nova Reserva</h5>
-                    <label htmlFor="acomodacao" className="flex flex-col">
+                    <label htmlFor="acomodacao" className="flex flex-col max-w-[calc(100vw-32px)]">
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Acomodação<span className='text-red-500 font-bold'> *</span></span>
                         <select name="acomodacao" id="acomodacao" className={`border ${err[0] ? 'border-red-500' : 'border-zinc-300'}  rounded-md text-zinc-5 00 px-2 py-1 outline-none`}
                             onChange={(ac) => {
@@ -284,8 +284,8 @@ export default function NovaReserva({ close }: { close: () => void }) {
                                 </option>)}
                         </select>
                     </label>
-                    <div className="grid gap-4" style={{ gridTemplateColumns: '3fr 1fr' }}>
-                        <label htmlFor="hospede" className="flex flex-col relative">
+                    <div className="grid gap-4 md:grid-cols-4 grid-cols-2">
+                        <label htmlFor="hospede" className="flex flex-col relative md:col-span-3">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Hóspede<span className='text-red-500 font-bold'> *</span></span>
                             <input onChange={(e) => {
                                 if (e.target.value.length == 0) {
@@ -310,7 +310,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                             <input type="number" defaultValue={1} min={1} onChange={(e) => { if (e.target.value.length > 0 && Number(e.target.value) < 1) e.target.value = '1' }} name="qtd-hospedes" id="qtd-hospedes" className={`border ${err[2] ? 'border-red-500' : 'border-zinc-300'}  rounded-md px-2 py-1 text-center outline-none max-w-32`} />
                         </label>
                     </div>
-                    <div className="grid gap-4 grid-cols-4">
+                    <div className="grid gap-4 md:grid-cols-4 grid-cols-2">
                         <label htmlFor="checkin-date" className="flex flex-col justify-end">
                             <span className="text-zinc-500 font-medium mb-1 text-xs">Check-in<span className='text-red-500 font-bold'> *</span></span>
                             <input type="date" name="checkin-date" id="checkin-date" className={`border ${err[3] ? 'border-red-500' : 'border-zinc-300'}  rounded-md px-2 py-1 outline-none`} />
@@ -326,7 +326,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                             <input type="time" name="checkout-hour" defaultValue={`0${new Date().getHours()}`.slice(-2) + ':00'} id="checkout-hour" className={`border ${err[4] ? 'border-red-500' : 'border-zinc-300'}  max-w-24 rounded-md px-2 py-1 outline-none`} />
                         </label>
                     </div>
-                    <label htmlFor="canal-reserva" className="flex flex-col">
+                    <label htmlFor="canal-reserva" className="flex flex-col max-w-[calc(100vw-32px)]">
                         <span className="text-zinc-500 font-medium mb-1 text-xs">Canal<span className='text-red-500 font-bold'> *</span></span>
                         <select name="canal-reserva" id="canal-reserva" className={`border ${err[5] ? 'border-red-500' : 'border-zinc-300'}  rounded-md text-zinc-5 00 px-2 py-1 outline-none`}>
                             <option value="" selected disabled className="hidden">Selecione um canal</option>
@@ -335,7 +335,7 @@ export default function NovaReserva({ close }: { close: () => void }) {
                         </select>
                     </label>
                     {/*  */}
-                    <div className="grid gap-4 grid-cols-3">
+                    <div className="grid gap-4 md:grid-cols-3 grid-cols-1">
                         <label htmlFor="tot" className="flex flex-col">
                             <div className="flex items-center">
                                 <span className="text-zinc-500 font-medium mb-1 text-xs">{!showTaxaLimpeza[0] ? 'Valor Total' : 'Valor Diárias'}<span className='text-red-500 font-bold'> *</span></span>

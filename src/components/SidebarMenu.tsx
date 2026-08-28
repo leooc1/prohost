@@ -367,10 +367,23 @@ export default function SidebarMenu({ route }: { route: string }) {
             </>
           </a>
         </div>
-        <div className={`p-2 transition-all cursor-pointer`} onClick={() => setOpen(!open)}>
-          <svg className={`w-8 h-8 fill-secondary ${open ? "rotate-90" : ""} transition-all`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 4H21V6H3V4ZM3 11H21V13H3V11ZM3 18H21V20H3V18Z"></path></svg>
+        <div
+          className={`p-2 transition-all cursor-pointer`}
+          onClick={() => setOpen(!open)}
+        >
+          <svg
+            className={`w-8 h-8 fill-secondary ${open ? "rotate-90" : ""} transition-all`}
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M3 4H21V6H3V4ZM3 11H21V13H3V11ZM3 18H21V20H3V18Z"></path>
+          </svg>
         </div>
-        {open&&<ul className={`absolute -top-1 -translate-y-full flex flex-col gap-2 mt-6 items-center incoming-menu bg-primary w-full`}>
+        {open && (
+          <ul
+            className={`absolute -translate-y-full flex flex-col gap-2 items-center incoming-menu bg-primary w-full top-0 max-h-[calc(100vh-80px)] overflow-y-scroll scroll-default py-3`}
+          >
             {/* acomodacoes */}
             <li>
               <a
@@ -477,9 +490,7 @@ export default function SidebarMenu({ route }: { route: string }) {
                 >
                   <path d="M13.5 2C13.5 2.44425 13.3069 2.84339 13 3.11805V5H18C19.6569 5 21 6.34315 21 8V18C21 19.6569 19.6569 21 18 21H6C4.34315 21 3 19.6569 3 18V8C3 6.34315 4.34315 5 6 5H11V3.11805C10.6931 2.84339 10.5 2.44425 10.5 2C10.5 1.17157 11.1716 0.5 12 0.5C12.8284 0.5 13.5 1.17157 13.5 2ZM6 7C5.44772 7 5 7.44772 5 8V18C5 18.5523 5.44772 19 6 19H18C18.5523 19 19 18.5523 19 18V8C19 7.44772 18.5523 7 18 7H13H11H6ZM2 10H0V16H2V10ZM22 10H24V16H22V10ZM9 14.5C9.82843 14.5 10.5 13.8284 10.5 13C10.5 12.1716 9.82843 11.5 9 11.5C8.17157 11.5 7.5 12.1716 7.5 13C7.5 13.8284 8.17157 14.5 9 14.5ZM15 14.5C15.8284 14.5 16.5 13.8284 16.5 13C16.5 12.1716 15.8284 11.5 15 11.5C14.1716 11.5 13.5 12.1716 13.5 13C13.5 13.8284 14.1716 14.5 15 14.5Z"></path>
                 </svg>
-                {(
-                  <p className="text-zinc-300 text-sm">IA de avaliação</p>
-                )}
+                {<p className="text-zinc-300 text-sm">IA de avaliação</p>}
               </a>
             </li>
             {/* hospedes */}
@@ -573,29 +584,30 @@ export default function SidebarMenu({ route }: { route: string }) {
               </a>
             </li>
             <li>
-               <a
-            href={"/auth"}
-            className={`flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover mx-auto w-44`}
-            onClick={(e) => {
-              e.preventDefault();
-              posthog.reset();
-              window.localStorage.removeItem("ph_token_acc");
-              window.location.assign("/auth");
-            }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24"
-              fill="#ACDBFF"
-              viewBox="0 -960 960 960"
-              width="24"
-            >
-              <path d="M200-120q-33 0-56.5-23.5T120-200v-160h80v160h560v-560H200v160h-80v-160q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm220-160-56-58 102-102H120v-80h346L364-622l56-58 200 200-200 200Z" />
-            </svg>
-            {<p className="text-zinc-300">Sair</p>}
-          </a>
+              <a
+                href={"/auth"}
+                className={`flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover mx-auto w-44`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  posthog.reset();
+                  window.localStorage.removeItem("ph_token_acc");
+                  window.location.assign("/auth");
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24"
+                  fill="#ACDBFF"
+                  viewBox="0 -960 960 960"
+                  width="24"
+                >
+                  <path d="M200-120q-33 0-56.5-23.5T120-200v-160h80v160h560v-560H200v160h-80v-160q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm220-160-56-58 102-102H120v-80h346L364-622l56-58 200 200-200 200Z" />
+                </svg>
+                {<p className="text-zinc-300">Sair</p>}
+              </a>
             </li>
-          </ul>}
+          </ul>
+        )}
       </nav>
     </>
   );

@@ -193,7 +193,7 @@ export default function Reserva() {
   }, [acomodacao, images]);
 
   return loaded ? (
-    <div className="w-full px-8 min-h-screen">
+    <div className="w-full px-8 min-h-screen md:mb-0 mb-28">
       {localStorage.getItem("tour") == "2" && <Tour />}
       {permissao == 0 && <SemPermissao />}
       <div className="mb-7 pt-2 flex gap-5 flex-wrap">
@@ -274,7 +274,7 @@ export default function Reserva() {
         ? calendarioPage
           ? calendario && (
               <>
-                <div className="grid grid-cols-2 mb-5">
+                <div className="grid md:grid-cols-2 md:gap-0 gap-4 mb-5">
                   <div className="flex items-center gap-5">
                     <label
                       htmlFor="mes-calendario"
