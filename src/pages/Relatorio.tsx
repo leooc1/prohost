@@ -123,7 +123,7 @@ export default function Relatorio() {
   }
 
   return loaded ? (
-    <section>
+    <section className="md:mb-0 mb-20">
       {localStorage.getItem("tour") == "4" && <Tour />}
 
       <SideBarProvider>
