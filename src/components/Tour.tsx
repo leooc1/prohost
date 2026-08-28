@@ -26,12 +26,12 @@ export default function Tour() {
     else if (path === "/acomodacoes") setStep(1);
     else if (path === "/reservas") setStep(2);
     else if (path === "/movimentacoes") setStep(3);
-    else if (path === "/relatorio") setStep(4);
+    else if (path === "/relatorio") setStep(5);
     // else if (path === "/reservas") setStep(5);
   }, []);
   return (
     <div
-      className={`fixed hidden z-50 top-0 left-0 w-screen h-screen bg-black/5 ${step === -1 && "hidden"} transition-all duration-300 
+      className={`fixed z-50 top-0 left-0 w-screen h-screen bg-black/5 ${step === -1 && "hidden"} transition-all duration-300 
       ${step !== 5 && "pointer-events-none"}
       `}
       style={{
@@ -41,7 +41,7 @@ export default function Tour() {
       }}
     >
       {step === 0 && location.pathname === "/dashboard" && (
-        <div className="pointer-events-auto absolute bg-white left-6 bottom-6 flex flex-col gap-5 w-fit px-6 py-4 rounded-xl">
+        <div className="pointer-events-auto md:scale-100 scale-75 absolute bg-white md:left-6 left-1/2 md:translate-x-0 -translate-x-1/2 bottom-6 flex flex-col gap-5 w-fit px-6 py-4 rounded-xl">
           <p className="text-3xl font-bold w-96">
             Sua operação organizada em um único lugar
           </p>
@@ -101,7 +101,7 @@ export default function Tour() {
         </div>
       )}
       {(step === 1 || location.pathname === "/acomodacoes") && (
-        <div className="pointer-events-auto absolute bg-white bottom-6 flex flex-col gap-5 w-3/5 left-1/2 -translate-x-1/2 px-6 py-4 rounded-xl -z-[100]">
+        <div className="pointer-events-auto md:scale-100 scale-75 absolute bg-white bottom-6 flex flex-col gap-5 md:w-3/5 w-full left-1/2 -translate-x-1/2 px-6 py-4 rounded-xl -z-[100]">
           <p className="text-xl font-bold text-emerald-500">Passo 1 de 5</p>
           <p className="text-3xl font-bold">
             Cadastre sua primeira acomodação.
@@ -147,7 +147,7 @@ export default function Tour() {
         </div>
       )}
       {step === 2 && location.pathname === "/reservas" && (
-        <div className="pointer-events-auto absolute bg-white bottom-6 flex flex-col gap-5 w-3/5 left-1/2 -translate-x-1/2 px-6 py-4 rounded-xl">
+        <div className="pointer-events-auto md:scale-100 scale-75 absolute bg-white md:bottom-6 flex flex-col gap-5 md:w-3/5 w-full left-1/2 -translate-x-1/2 px-6 py-4 rounded-xl">
           <p className="text-xl font-bold text-emerald-500">Passo 2 de 5</p>
           <p className="text-3xl font-bold">
             Traga suas reservas para o ProHost.
@@ -197,7 +197,7 @@ export default function Tour() {
         </div>
       )}
       {step === 3 && (
-        <div className="pointer-events-auto absolute bg-white bottom-6 flex flex-col gap-5 w-3/5 left-1/2 -translate-x-1/2 px-6 py-4 rounded-xl">
+        <div className="pointer-events-auto md:scale-100 scale-75 absolute bg-white bottom-6 flex flex-col gap-5 md:w-3/5 w-full left-1/2 -translate-x-1/2 px-6 py-4 rounded-xl">
           <p className="text-xl font-bold text-emerald-500">Passo 3 de 5</p>
           <p className="text-3xl font-bold">
             Descubra quanto realmente sobra no seu bolso.
@@ -244,7 +244,7 @@ export default function Tour() {
         </div>
       )}
       {step === 4 && (
-        <div className="pointer-events-auto absolute bg-white top-6 flex flex-col gap-5 w-3/5 left-1/2 -translate-x-1/2 px-6 py-4 rounded-xl">
+        <div className="pointer-events-auto md:scale-100 scale-75 absolute bg-white top-6 flex flex-col gap-5 md:w-3/5 w-full left-1/2 -translate-x-1/2 px-6 py-4 rounded-xl">
           <p className="text-xl font-bold text-emerald-500">Passo 4 de 5</p>
           <p className="text-3xl font-bold">
             Gere relatórios profissionais em segundos.
@@ -294,7 +294,7 @@ export default function Tour() {
       )}
       {step === 5 && (
         <>
-          <div className="pointer-events-auto absolute bg-white left-1/2 -translate-x-1/2 top-6 flex flex-col gap-5 w-fit px-6 py-4 rounded-xl">
+          <div className="pointer-events-auto md:scale-100 scale-75 absolute bg-white left-1/2 -translate-x-1/2 top-6 flex flex-col gap-5 md:w-fit w-full px-6 py-4 rounded-xl">
             <p className="text-3xl font-bold w-[300px]">
               O ProHost vai muito <br />
               além do básico.
@@ -399,13 +399,13 @@ export default function Tour() {
               </button>
             </div>
           </div>
-          <div className="absolute bg-white min-w-32 right-40 -top-8">
+          <div className="absolute bg-white min-w-32 right-40 -top-8 md:scale-100 scale-75">
             <div className="text-9xl z-50 text-primary focus-point relative left-5">
               ➪
             </div>
-            <div className="absolute left-1/2 -translate-x-1/2 bg-white px-3 p-1 rounded-lg">
-              <p className="text-xl font-semibold whitespace-nowrap ">
-                Restaram dúvidas? <br />
+            <div className="absolute md:left-1/2 md:-translate-x-1/2 md:mt-0 -mt-5 -left-28 bg-white px-3 p-1 rounded-lg">
+              <p className="text-xl font-semibold whitespace-nowrap">
+                Restaram dúvidas? <br className="hidden md:block" />
                 Conclua o tour e acesse <br />o tutorial clicando no botão
               </p>
             </div>
