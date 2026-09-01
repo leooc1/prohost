@@ -97,7 +97,7 @@ export default function MinhaConta() {
     }, [dataToken])
     return (
         loaded ?
-            <div className="w-full px-8">
+            <div className="w-full px-8 md:min-h-full min-h-[calc(100vh-48px-16px)]">
                 <div className='mb-7 pt-2 flex justify-between gap-5 flex-wrap'>
                     <h3 className="text-3xl font-semibold">Minha conta</h3>
                 </div>
@@ -105,7 +105,7 @@ export default function MinhaConta() {
                 <section className="w-full flex justify-center p-12">
                     <form onSubmit={(e) => { e.preventDefault() }}
                         style={{ width: '-webkit-fill-available' }}
-                        className="flex rounded-md flex-col absolute px-12 pb-12 gap-4 top-1/2 right-1/2 min-w-72 translate-x-1/2 -translate-y-1/2 bg-white pt-12 max-h-[400px] overflow-scroll scroll-default">
+                        className="flex rounded-md flex-col absolute px-12 pb-12 gap-4 top-1/2 right-1/2 min-w-72 translate-x-1/2 -translate-y-1/2 bg-white pt-12 md:max-h-[400px] overflow-scroll scroll-default">
                         <label htmlFor="foto" className="cursor-pointer w-fit m-auto relative">
                             {!foto ? <>
                                 <button className="absolute bg-blue-100 w-7 h-7 rounded-full -bottom-1 -right-2"
@@ -284,10 +284,10 @@ export default function MinhaConta() {
                             </>
                         )}
 
-                        <section className="flex gap-3 justify-end mt-2">
+                        <section className="flex md:flex-row flex-col gap-3 justify-end mt-2">
                             <button
                                 type="button"
-                                className="px-3 py-2 border border-zinc-300 rounded-lg text-primary bg-white border-primary"
+                                className="px-3 py-2 border rounded-lg text-primary bg-white border-primary"
                                 onClick={() => setUpdateSenha(!updateSenha)}
                             >
                                 {updateSenha ? "Cancelar alteração de senha" : "Alterar senha"}
