@@ -109,7 +109,7 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
     <div className="relative bg-white w-full shadow-xs h-12 pl-4 pr-6 flex justify-between items-center mb-4">
       {showNotify && <Notify type={notify.type} text={notify.text} />}
       <div className="flex h-full">
-        <button onClick={() => setActive(!active)}>
+        <button className="md:inline-block hidden" onClick={() => setActive(!active)}>
           <svg
             className="w-7 h-fit transition-all duration-75 hover:brightness-50"
             xmlns="http://www.w3.org/2000/svg"

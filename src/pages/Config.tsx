@@ -193,7 +193,7 @@ export default function Config() {
     <div className="flex flex-col w-full min-h-screen h-full">
       {permissao == 0 && <SemPermissao />}
       <TopBar>
-        <section className="ml-5 flex gap-5">
+        <section className="md:ml-5 flex justify-center items-center gap-5 md:static absolute max-w-[100vw] w-full left-1/2 md:translate-x-0 md:translate-y-0 -translate-x-1/2 translate-y-full bottom-0 bg-white">
           <button
             onClick={() => setSession(0)}
             className={`h-full text-sm flex items-center gap-2 border-b-2 ${session == 0 ? "border-primary" : "border-transparent"} hover:border-primary px-2`}
@@ -211,7 +211,7 @@ export default function Config() {
       {showNotify && <Notify type={notify.type} text={notify.text} />}
 
       {session == 0 && (
-        <div className="flex rounded-md flex-col px-4 pb-3 pt-2">
+        <div className="flex rounded-md flex-col px-4 pb-20 md:pt-4 pt-8">
           <h5 className="font-semibold text-2xl mb-2">Assinatura</h5>
 
           {assinatura ? (
@@ -291,13 +291,13 @@ export default function Config() {
         </div>
       )}
       {session == 1 && assinatura && (
-        <section className="flex rounded-md flex-col px-4 pb-3 pt-2">
+        <section className="flex rounded-md flex-col px-4 pb-3 md:pt-4 pt-8">
           <form
             onSubmit={(e) => {
               e.preventDefault();
             }}
             style={{ width: "-webkit-fill-available" }}
-            className="flex rounded-md flex-col px-4 pb-3 gap-4 min-w-72 mb-20 bg-white pt-2"
+            className="flex rounded-md flex-col px-4 pb-3 gap-4 md:min-w-72 mb-20 bg-white pt-2"
           >
             <h5 className="font-semibold text-2xl mb-2">
               Criar usuário filiado
@@ -364,7 +364,7 @@ export default function Config() {
                 : "Permissões"}
             </span>
             {!proprietario ? (
-              <section className="grid grid-cols-2 gap-4">
+              <section className="grid md:grid-cols-2 grid-cols-1 gap-4">
                 <label
                   htmlFor="dash-permissao-ind-ope"
                   className="flex flex-col text-zinc-600 font-medium text-sm"
@@ -375,7 +375,7 @@ export default function Config() {
                   <select
                     name="dash-permissao-ind-ope"
                     id="dash-permissao-ind-ope"
-                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit"
+                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base "
                   >
                     <option value="0" className="text-black">
                       Sem Visualização
@@ -402,7 +402,7 @@ export default function Config() {
                   <select
                     name="dash-permissao-result-ac"
                     id="dash-permissao-result-ac"
-                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit"
+                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base "
                   >
                     <option value="0" className="text-black">
                       Sem Visualização
@@ -428,7 +428,7 @@ export default function Config() {
                   <select
                     name="dash-permissao-result-gestor"
                     id="dash-permissao-result-gestor"
-                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit"
+                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base "
                   >
                     <option value="0" className="text-black">
                       Sem Visualização
@@ -453,7 +453,7 @@ export default function Config() {
                   <select
                     name="hospede-permissao"
                     id="hospede-permissao"
-                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit"
+                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base "
                   >
                     <option value="0" className="text-black">
                       Sem Visualização
@@ -477,7 +477,7 @@ export default function Config() {
                   <select
                     name="reserva-permissao"
                     id="reserva-permissao"
-                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit"
+                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base "
                   >
                     <option value="0" className="text-black">
                       Sem Visualização
@@ -501,7 +501,7 @@ export default function Config() {
                   <select
                     name="financeiro-permissao"
                     id="financeiro-permissao"
-                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit"
+                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base "
                   >
                     <option value="0" className="text-black">
                       Sem Visualização
@@ -525,7 +525,7 @@ export default function Config() {
                   <select
                     name="acomodacao-permissao"
                     id="acomodacao-permissao"
-                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit"
+                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base "
                   >
                     <option value="0" className="text-black">
                       Sem Visualização
@@ -678,7 +678,7 @@ export default function Config() {
             )}
           </form>
           <hr />
-          <section className="top-full bg-white p-2 gap-4 rounded-xl">
+          <section className="top-full bg-white p-2 gap-4 rounded-xl md:mb-5 mb-32">
             <h5 className="font-semibold text-2xl mb-2">Usuários criados</h5>
             <ul className="flex flex-col gap-1 mb-20">
               {users.map((u) => (
@@ -809,7 +809,7 @@ export default function Config() {
                     Página Dashboard <strong>(Indicadores Operacionais)</strong>
                   </p>
                   <select
-                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit"
+                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base "
                     onChange={(e) => {
                       setDashboardPInput({
                         ...dashboardPInput,
@@ -838,7 +838,7 @@ export default function Config() {
                     <strong>(Resultados das Acomodações)</strong>
                   </p>
                   <select
-                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit"
+                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base "
                     onChange={(e) => {
                       setDashboardPInput({
                         ...dashboardPInput,
@@ -866,7 +866,7 @@ export default function Config() {
                     Página Dashboard <strong>(Resultados do Gestor)</strong>
                   </p>
                   <select
-                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit"
+                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base "
                     onChange={(e) => {
                       setDashboardPInput({
                         ...dashboardPInput,
@@ -892,7 +892,7 @@ export default function Config() {
                 <label className="flex flex-col text-zinc-600 font-medium text-sm">
                   Página Hóspedes
                   <select
-                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit"
+                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base "
                     onChange={(e) => {
                       setHospedePInput(e.target.value);
                     }}
@@ -915,7 +915,7 @@ export default function Config() {
                 <label className="flex flex-col text-zinc-600 font-medium text-sm">
                   Página Reserva
                   <select
-                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit"
+                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base "
                     onChange={(e) => {
                       setReservaPInput(e.target.value);
                     }}
@@ -938,7 +938,7 @@ export default function Config() {
                 <label className="flex flex-col text-zinc-600 font-medium text-sm">
                   Página Financeiro
                   <select
-                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit"
+                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base "
                     onChange={(e) => {
                       setFinanceiroPInput(e.target.value);
                     }}
@@ -961,7 +961,7 @@ export default function Config() {
                 <label className="flex flex-col text-zinc-600 font-medium text-sm">
                   Página Acomodações
                   <select
-                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base w-fit"
+                    className="border border-zinc-300 rounded-md px-2 py-1 outline-none text-base "
                     onChange={(e) => {
                       setAcomodacaoPInput(e.target.value);
                     }}
