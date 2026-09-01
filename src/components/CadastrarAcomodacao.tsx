@@ -854,7 +854,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
         onSubmit={(e) => {
           e.preventDefault();
         }}
-        className="flex md:hidden flex-col max-h-screen overflow-y-scroll scroll-default absolute w-screen px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white rounded-md"
+        className="flex md:hidden flex-col max-h-screen overflow-y-scroll scroll-default absolute w-screen px-4 py-16 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white rounded-md"
       >
         <h5 className="font-semibold text-2xl mb-2">Cadastrar Acomodação</h5>
         <label htmlFor="identificador" className="flex flex-col">
