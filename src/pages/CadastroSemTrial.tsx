@@ -212,8 +212,9 @@ export default function CadastroSemTrial() {
                     .then(data => data.json())
                     .then((data) => {
                         if (data.id) {
-                            posthog.identify(String(data.id), {
-                                email: user.email,
+                            const email = user.email.trim().toLowerCase();
+                            posthog.identify(email, {
+                                email,
                                 name: user.nome,
                             });
                             setNotify({ type: 1, text: 'Criado!' })

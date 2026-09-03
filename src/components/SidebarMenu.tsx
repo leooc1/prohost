@@ -22,8 +22,13 @@ export default function SidebarMenu({ route }: { route: string }) {
         })
         .then((data) => {
           setDataToken(data);
-          if (data && data.idUsu) {
-            posthog.identify(String(data.idUsu), { name: data.nome });
+          const email = data?.email?.trim().toLowerCase();
+          if (email) {
+            posthog.identify(email, {
+              email,
+              name: data.nome,
+              conta_criada_em: data.create_date,
+            });
           }
         })
         .catch((err) => console.log(err));

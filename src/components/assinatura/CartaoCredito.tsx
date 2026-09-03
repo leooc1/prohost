@@ -73,6 +73,7 @@ export default function CartaoCredito() {
             .then((data) => {
                 if (data.status == 'CONFIRMED') {
                     posthog.capture('credit_card_payment_confirmed');
+                    posthog.capture('assinatura_concluida', { metodo: 'cartao' });
                     setNotify({ type: 1, text: 'Feito!' })
                     setShowNotify(true)
                     setTimeout(() => {

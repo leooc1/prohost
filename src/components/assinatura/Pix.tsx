@@ -110,6 +110,7 @@ export default function Pix() {
 
                 if (data.status === 'CONFIRMED') {
                     posthog.capture('pix_payment_confirmed');
+                    posthog.capture('assinatura_concluida', { metodo: 'pix' });
                     clearInterval(statusIntervalId);
                     setNotify({ type: 1, text: 'Pagamento confirmado! Redirecionando...' });
                     setShowNotify(true);

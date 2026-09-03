@@ -46,7 +46,7 @@ export default function CadastrarAcomodacao({ close }: { close: () => void }) {
       .then((data) => data.json())
       .then((data) => {
         if (data.id) {
-          posthog.capture("accommodation_created");
+          posthog.capture("imovel_criado", { total_imoveis: 1 });
           setNotify({ type: 1, text: "Criado!" });
           setShowNotify(true);
           setTimeout(() => {

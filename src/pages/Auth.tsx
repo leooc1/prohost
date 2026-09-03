@@ -35,8 +35,13 @@ export default function Auth() {
                         fetch(`${apiURL}/users/token/${data.token}`, { method: 'GET' })
                             .then((response) => response.json())
                             .then((user) => {
-                                if (user?.idUsu) {
-                                    posthog.identify(String(user.idUsu), { name: user.nome });
+                                const email = user?.email?.trim().toLowerCase();
+                                if (email) {
+                                    posthog.identify(email, {
+                                        email,
+                                        name: user.nome,
+                                        conta_criada_em: user.create_date,
+                                    });
                                 }
                             })
                             .catch((err) => console.log(err))

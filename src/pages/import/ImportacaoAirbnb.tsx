@@ -2,6 +2,7 @@ import Papa from "papaparse";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import { SideBarContext } from "../../contexts/SideBarMenuContext";
+import posthog from "../../posthog";
 
 interface ImportacaoRow {
   data: string;
@@ -701,6 +702,15 @@ export default function ImportacaoAirbnb() {
                       }),
                     );
                     setBotaoImportar(true);
+                    const quantidadeImportada = retornos.filter((retorno) =>
+                      retorno.startsWith("Adicionado:")
+                    ).length;
+                    if (quantidadeImportada > 0) {
+                      posthog.capture("reservas_importadas", {
+                        quantidade: quantidadeImportada,
+                        origem: "airbnb",
+                      });
+                    }
                     alert(retornos.join("\n"));
                     location.assign("/reservas");
                   }}
