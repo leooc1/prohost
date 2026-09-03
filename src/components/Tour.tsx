@@ -34,6 +34,12 @@ export default function Tour() {
       className={`fixed z-50 top-0 left-0 w-screen h-screen bg-black/5 ${step === -1 && "hidden"} transition-all duration-300 
       ${step !== 5 && "pointer-events-none"}
       `}
+      onClick={() => {
+        if (step === 5) {
+          localStorage.setItem("tour", "false");
+          navigate("/acomodacoes");
+        }
+      }}
       style={{
         backgroundImage: `url(${bg[step]})`,
         backgroundSize: "cover",
