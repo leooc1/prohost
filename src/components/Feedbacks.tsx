@@ -95,7 +95,7 @@ export default function Feedbacks() {
   return (
     <>
       {!respondido && (
-        <div className="fixed w-screen h-screen left-0 top-0 z-50 flex items-center justify-center bg-black/50">
+        <div className="hidden fixed w-screen h-screen left-0 top-0 z-50 flex items-center justify-center bg-black/50">
           <div className="border border-primary p-2 bg-slate-300 rounded-2xl md:w-3/5 w-4/5 h-min flex flex-col gap-5">
             {perguntas.map((pergunta, index) => (
               <section
