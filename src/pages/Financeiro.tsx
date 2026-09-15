@@ -521,7 +521,7 @@ export default function Financeiro() {
             className={`h-full text-sm flex items-center gap-2 border-b-2 ${session == 0 ? "border-primary" : "border-transparent"} hover:border-primary px-2`}
           >
             <svg
-              className="w-3 h-fit"
+              className="w-3 h-3"
               xmlns="http://www.w3.org/2000/svg"
               version="1.1"
               width="512"
@@ -546,7 +546,7 @@ export default function Financeiro() {
             className={`h-full text-sm flex items-center gap-2 border-b-2 ${session == 1 ? "border-primary" : "border-transparent"} hover:border-primary px-2`}
           >
             <svg
-              className="w-3 h-fit"
+              className="w-3 h-3"
               xmlns="http://www.w3.org/2000/svg"
               version="1.1"
               width="512"
@@ -571,7 +571,7 @@ export default function Financeiro() {
             className={`h-full text-sm flex items-center gap-2 border-b-2 ${session == 2 ? "border-primary" : "border-transparent"} hover:border-primary px-2`}
           >
             <svg
-              className="w-3 h-fit"
+              className="w-3 h-3"
               xmlns="http://www.w3.org/2000/svg"
               version="1.1"
               width="512"
@@ -988,7 +988,7 @@ export default function Financeiro() {
             <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center">
               <div className="bg-[#E6E9FD] rounded-md w-fit h-fit py-2 px-2 ml-4">
                 <svg
-                  className="w-6"
+                  className="w-6 h-6"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="#6279F2"
@@ -1025,7 +1025,7 @@ export default function Financeiro() {
             <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center">
               <div className="bg-[#D1F0FF] rounded-md w-fit h-fit py-2 px-2 ml-4">
                 <svg
-                  className="w-6 h-fit"
+                  className="w-6 h-6"
                   xmlns="http://www.w3.org/2000/svg"
                   version="1.1"
                   width="512"
@@ -1095,7 +1095,7 @@ export default function Financeiro() {
             <div className="bg-white border-zinc-300 border rounded-lg h-20 flex items-center">
               <div className="bg-[#F8DCDC] rounded-md w-fit h-fit py-2 px-2 ml-4">
                 <svg
-                  className="w-6 h-fit"
+                  className="w-6 h-6"
                   xmlns="http://www.w3.org/2000/svg"
                   version="1.1"
                   width="512"
