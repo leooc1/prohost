@@ -111,7 +111,7 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
       <div className="flex h-full">
         <button className="md:inline-block hidden" onClick={() => setActive(!active)}>
           <svg
-            className="w-7 h-fit transition-all duration-75 hover:brightness-50"
+            className="w-7 h-7 transition-all duration-75 hover:brightness-50"
             xmlns="http://www.w3.org/2000/svg"
             version="1.1"
             width="512"
@@ -186,7 +186,7 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
             }}
           >
             <svg
-              className="w-7 h-fit transition-all duration-75 hover:brightness-50"
+              className="w-7 h-7 transition-all duration-75 hover:brightness-50"
               xmlns="http://www.w3.org/2000/svg"
               version="1.1"
               width="512"
@@ -279,7 +279,7 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
                               >
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
-                                  className="w-7 h-fit text-red-300"
+                                  className="w-7 h-7 text-red-300"
                                   viewBox="0 0 24 24"
                                   fill="currentColor"
                                 >
@@ -297,7 +297,7 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
                               >
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
-                                  className="w-7 h-fit text-green-300"
+                                  className="w-7 h-7 text-green-300"
                                   viewBox="0 0 24 24"
                                   fill="currentColor"
                                 >
@@ -347,7 +347,7 @@ export default function TopBar({ children }: { children?: React.JSX.Element }) {
           className="flex items-center gap-2 border p-1 border-primary bg-secondary/10 rounded-lg"
         >
           <svg
-            className="w-7 h-fit transition-all duration-75 hover:brightness-50"
+            className="w-7 h-7 transition-all duration-75 hover:brightness-50"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="#37425A"

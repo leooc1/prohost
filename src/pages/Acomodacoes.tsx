@@ -696,7 +696,7 @@ export default function Acomodacoes() {
                           disabled={!(permissao >= 3)}
                         >
                           <svg
-                            className="feather feather-trash w-7 h-fit fill-[#00dd00]"
+                            className="feather feather-trash w-7 h-7 fill-[#00dd00]"
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
@@ -722,7 +722,7 @@ export default function Acomodacoes() {
                             strokeWidth="1"
                             stroke-linecap="undefined"
                             stroke-linejoin="round"
-                            className="feather feather-trash w-7 h-fit"
+                            className="feather feather-trash w-7 h-7"
                             color="rgba(255,0,0,1)"
                             pointer-events="none"
                           >

@@ -801,7 +801,7 @@ export default function ListaReserva({
         >
           {valorTotal ? (
             <svg
-              className="w-5 h-fit"
+              className="w-5 h-5"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
@@ -810,7 +810,7 @@ export default function ListaReserva({
             </svg>
           ) : (
             <svg
-              className="w-5 h-fit"
+              className="w-5 h-5"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"

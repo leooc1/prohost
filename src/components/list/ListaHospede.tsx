@@ -185,7 +185,7 @@ export default function ListaHospede({
       <div className="flex justify-between md:gap-0 gap-2 flex-wrap">
         <label htmlFor="search-hospede" className="flex flex-col relative">
           <svg
-            className="w-4 h-fit absolute left-2 top-1/2 -translate-y-1/2"
+            className="w-4 h-4 absolute left-2 top-1/2 -translate-y-1/2"
             xmlns="http://www.w3.org/2000/svg"
             version="1.1"
             width="512"
@@ -341,7 +341,7 @@ export default function ListaHospede({
                       }}
                     >
                       <svg
-                        className="h-fit w-5 m-auto"
+                        className="h-5 w-5 m-auto"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
                         fill="#ED3E44"

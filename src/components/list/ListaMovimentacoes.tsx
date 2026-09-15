@@ -420,11 +420,11 @@ export default function ListaMovimentacoes({
                           setPage(page - 1);
                         }
                       }}
-                      className={`px-2 py-1 disabled:cursor-no-drop bg-slate-200 border border-slate-300 rounded-md h-fit w-fit ${(!(arrayMovimentacoes?.length > 1) || !arrayMovimentacoes[page - 1]) && "cursor-no-drop"}`}
+                      className={`px-2 py-1 disabled:cursor-no-drop bg-slate-200 border border-slate-300 rounded-md h-10 w-10 ${(!(arrayMovimentacoes?.length > 1) || !arrayMovimentacoes[page - 1]) && "cursor-no-drop"}`}
                     >
                       &lt;
                     </button>
-                    <div className="px-2 py-1 bg-slate-200 border border-slate-300 rounded-md h-fit w-fit">
+                    <div className="px-2 py-1 bg-slate-200 border border-slate-300 rounded-md h-10 w-10">
                       {page + 1}
                     </div>
                     <button
@@ -437,7 +437,7 @@ export default function ListaMovimentacoes({
                           setPage(page + 1);
                         }
                       }}
-                      className={`px-2 py-1 disabled:cursor-no-drop bg-slate-200 border border-slate-300 rounded-md h-fit w-fit ${(!(arrayMovimentacoes?.length > 1) || !arrayMovimentacoes[page + 1]) && "cursor-no-drop"}`}
+                      className={`px-2 py-1 disabled:cursor-no-drop bg-slate-200 border border-slate-300 rounded-md h-10 w-10 ${(!(arrayMovimentacoes?.length > 1) || !arrayMovimentacoes[page + 1]) && "cursor-no-drop"}`}
                     >
                       &gt;
                     </button>
@@ -449,7 +449,7 @@ export default function ListaMovimentacoes({
           </div>
         ) : (
           <section className="w-full mt-3 flex flex-col gap-3 items-center border bg-white border-zinc-200 rounded-lg py-5">
-            <img className="w-44 h-fit" src={image} alt="not found" />
+            <img className="w-44 h-44" src={image} alt="not found" />
             <p className="text-center font-semibold text-xl">
               Nenhuma movimentação encontrada
               <br />
