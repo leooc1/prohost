@@ -574,10 +574,10 @@ export default function ListaReserva({
                           );
                         } else {
                           return (
-                            (new Date(e.check_in) >= new Date(deData) &&
-                              new Date(e.check_in) <= new Date(ateData)) ||
-                            (new Date(e.check_out) >= new Date(deData) &&
-                              new Date(e.check_out) <= new Date(ateData))
+                            (new Date(e.check_in.split('T')[0]) >= new Date(deData) &&
+                              new Date(e.check_in.split('T')[0]) <= new Date(ateData)) ||
+                            (new Date(e.check_out.split('T')[0]) >= new Date(deData) &&
+                              new Date(e.check_out.split('T')[0]) <= new Date(ateData))
                           );
                         }
                       })
@@ -693,10 +693,10 @@ export default function ListaReserva({
                           );
                         } else {
                           return (
-                            (new Date(e.check_in) >= new Date(deData) &&
-                              new Date(e.check_in) <= new Date(ateData)) ||
-                            (new Date(e.check_out) >= new Date(deData) &&
-                              new Date(e.check_out) <= new Date(ateData))
+                            (new Date(e.check_in.split('T')[0]) >= new Date(deData) &&
+                              new Date(e.check_in.split('T')[0]) <= new Date(ateData)) ||
+                            (new Date(e.check_out.split('T')[0]) >= new Date(deData) &&
+                              new Date(e.check_out.split('T')[0]) <= new Date(ateData))
                           );
                         }
                       })
@@ -903,10 +903,10 @@ export default function ListaReserva({
                         );
                       } else {
                         return (
-                          (new Date(e.check_in) >= new Date(deData) &&
-                            new Date(e.check_in) <= new Date(ateData)) ||
-                          (new Date(e.check_out) >= new Date(deData) &&
-                            new Date(e.check_out) <= new Date(ateData))
+                          (new Date(e.check_in.split('T')[0]) >= new Date(deData) &&
+                            new Date(e.check_in.split('T')[0]) <= new Date(ateData)) ||
+                          (new Date(e.check_out.split('T')[0]) >= new Date(deData) &&
+                            new Date(e.check_out.split('T')[0]) <= new Date(ateData))
                         );
                       }
                     })
@@ -1112,10 +1112,10 @@ export default function ListaReserva({
                           );
                         } else {
                           return (
-                            (new Date(e.check_in) >= new Date(deData) &&
-                              new Date(e.check_in) <= new Date(ateData)) ||
-                            (new Date(e.check_out) >= new Date(deData) &&
-                              new Date(e.check_out) <= new Date(ateData))
+                            (new Date(e.check_in.split('T')[0]) >= new Date(deData) &&
+                              new Date(e.check_in.split('T')[0]) <= new Date(ateData)) ||
+                            (new Date(e.check_out.split('T')[0]) >= new Date(deData) &&
+                              new Date(e.check_out.split('T')[0]) <= new Date(ateData))
                           );
                         }
                       })
@@ -1193,10 +1193,10 @@ export default function ListaReserva({
                         );
                       } else {
                         return (
-                          (new Date(e.check_in) >= new Date(deData) &&
-                            new Date(e.check_in) <= new Date(ateData)) ||
-                          (new Date(e.check_out) >= new Date(deData) &&
-                            new Date(e.check_out) <= new Date(ateData))
+                          (new Date(e.check_in.split('T')[0]) >= new Date(deData) &&
+                            new Date(e.check_in.split('T')[0]) <= new Date(ateData)) ||
+                          (new Date(e.check_out.split('T')[0]) >= new Date(deData) &&
+                            new Date(e.check_out.split('T')[0]) <= new Date(ateData))
                         );
                       }
                     })
@@ -1271,10 +1271,10 @@ export default function ListaReserva({
                           );
                         } else {
                           return (
-                            (new Date(e.check_in) >= new Date(deData) &&
-                              new Date(e.check_in) <= new Date(ateData)) ||
-                            (new Date(e.check_out) >= new Date(deData) &&
-                              new Date(e.check_out) <= new Date(ateData))
+                            (new Date(e.check_in.split('T')[0]) >= new Date(deData) &&
+                              new Date(e.check_in.split('T')[0]) <= new Date(ateData)) ||
+                            (new Date(e.check_out.split('T')[0]) >= new Date(deData) &&
+                              new Date(e.check_out.split('T')[0]) <= new Date(ateData))
                           );
                         }
                       })
@@ -1351,10 +1351,10 @@ export default function ListaReserva({
                           );
                         } else {
                           return (
-                            (new Date(e.check_in) >= new Date(deData) &&
-                              new Date(e.check_in) <= new Date(ateData)) ||
-                            (new Date(e.check_out) >= new Date(deData) &&
-                              new Date(e.check_out) <= new Date(ateData))
+                            (new Date(e.check_in.split('T')[0]) >= new Date(deData) &&
+                              new Date(e.check_in.split('T')[0]) <= new Date(ateData)) ||
+                            (new Date(e.check_out.split('T')[0]) >= new Date(deData) &&
+                              new Date(e.check_out.split('T')[0]) <= new Date(ateData))
                           );
                         }
                       })
@@ -1434,10 +1434,10 @@ export default function ListaReserva({
                           );
                         } else {
                           return (
-                            (new Date(e.check_in) >= new Date(deData) &&
-                              new Date(e.check_in) <= new Date(ateData)) ||
-                            (new Date(e.check_out) >= new Date(deData) &&
-                              new Date(e.check_out) <= new Date(ateData))
+                            (new Date(e.check_in.split('T')[0]) >= new Date(deData) &&
+                              new Date(e.check_in.split('T')[0]) <= new Date(ateData)) ||
+                            (new Date(e.check_out.split('T')[0]) >= new Date(deData) &&
+                              new Date(e.check_out.split('T')[0]) <= new Date(ateData))
                           );
                         }
                       })
@@ -1505,10 +1505,10 @@ export default function ListaReserva({
                           );
                         } else {
                           return (
-                            (new Date(e.check_in) >= new Date(deData) &&
-                              new Date(e.check_in) <= new Date(ateData)) ||
-                            (new Date(e.check_out) >= new Date(deData) &&
-                              new Date(e.check_out) <= new Date(ateData))
+                            (new Date(e.check_in.split('T')[0]) >= new Date(deData) &&
+                              new Date(e.check_in.split('T')[0]) <= new Date(ateData)) ||
+                            (new Date(e.check_out.split('T')[0]) >= new Date(deData) &&
+                              new Date(e.check_out.split('T')[0]) <= new Date(ateData))
                           );
                         }
                       })
