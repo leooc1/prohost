@@ -226,7 +226,7 @@ export default function ImportacaoBooking() {
 
   // Filtrar anúncios baseado na busca
   const anunciosFiltrados = anuncios.filter((a) =>
-    a.toLowerCase().includes(anuncioBuscado.toLowerCase()),
+    String(a).toLowerCase().includes(String(anuncioBuscado).toLowerCase()),
   );
 
   useEffect(() => {
