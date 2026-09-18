@@ -563,7 +563,7 @@ export default function ImportacaoBooking() {
                           });
                         }
 
-                        await createReserva({
+                        const res = await createReserva({
                           acomodacao: {
                             id: acomodacaoSelecionada,
                           },
@@ -675,17 +675,13 @@ export default function ImportacaoBooking() {
                           obs: "",
                           tipo_reserva: "Reserva",
                           continuidade: null,
-                        }).then((res) => {
-                          const dataFinal = checkOut
-                            .toISOString()
-                            .split("T")[0];
-                          retornos.push(
-                            `${res == 0 ? "Erro: " : "Adicionado: "}` +
-                              `${imp.data} => ` +
-                              `${dataFinal.split("-")[2]}/${dataFinal.split("-")[1]}/${dataFinal.split("-")[0]}`,
-                          );
-                          res;
                         });
+                        const dataFinal = checkOut.toISOString().split("T")[0];
+                        retornos.push(
+                          `${res == 0 ? "Erro: " : "Adicionado: "}` +
+                            `${imp.data} => ` +
+                            `${dataFinal.split("-")[2]}/${dataFinal.split("-")[1]}/${dataFinal.split("-")[0]}`,
+                        );
                       }),
                     );
                     setBotaoImportar(true);
