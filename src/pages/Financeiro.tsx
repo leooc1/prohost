@@ -7,7 +7,7 @@ import ListaMovimentacoes from "../components/list/ListaMovimentacoes";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 import Loader from "../components/Loader";
 import SemPermissao from "../components/SemPermissao";
-import Tour from "../components/Tour";
+// import Tour from "../components/Tour";
 
 interface Movimentacao {
   id?: number;
@@ -62,9 +62,9 @@ export default function Financeiro() {
   useEffect(() => {
     document.title = `Financeiro | Prohost`;
 
-    if (localStorage.getItem("tour") == "4") {
+    /* if (localStorage.getItem("tour") == "4") {
       location.assign("/relatorio");
-    }
+    } */
   }, []);
   const [novaReceita, setNovaReceita] = useState(false);
   const [novaDespesa, setNovaDespesa] = useState(false);
@@ -511,7 +511,7 @@ export default function Financeiro() {
   ]);
   return loaded ? (
     <div className="w-full md:mb-0 mb-24">
-      {localStorage.getItem("tour") == "3" && <Tour />}
+      {/* {localStorage.getItem("tour") == "3" && <Tour />} */}
 
       {permissao == 0 && <SemPermissao />}
       <TopBar>

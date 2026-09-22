@@ -538,8 +538,6 @@ export default function ImportacaoAirbnb() {
                           });
                         }
 
-                        console.log(imp)
-
                         await createReserva({
                           acomodacao: {
                             id: acomodacaoSelecionada,

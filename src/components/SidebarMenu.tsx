@@ -2,7 +2,7 @@ import posthog from "../posthog";
 import { useContext, useEffect, useState } from "react";
 import prohostLogo from "/prohost-logo.png";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
-import Feedbacks from "./Feedbacks";
+// import Feedbacks from "./Feedbacks";
 
 export default function SidebarMenu({ route }: { route: string }) {
   const apiURL = import.meta.env.VITE_API_URL;
@@ -121,7 +121,7 @@ export default function SidebarMenu({ route }: { route: string }) {
   }, [dataToken]);
   return (
     <>
-      <Feedbacks />
+      {/* <Feedbacks /> */}
       <nav
         className={`md:flex flex-col hidden bg-primary sticky top-0 left-0 h-screen ${active ? "w-56" : "w-20"} justify-between border-r border-secondary`}
       >
