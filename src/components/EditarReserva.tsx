@@ -110,7 +110,11 @@ export default function EditarReserva(props: propsEdicao) {
   const checkin = new Date(props.checkIn);
   const checkinDate = `${checkin.getUTCFullYear()}-${("0" + (checkin.getUTCMonth() + 1)).slice(-2)}-${("0" + checkin.getUTCDate()).slice(-2)}`;
   const checkinTime = `${("0" + checkin.getUTCHours()).slice(-2)}:${("0" + checkin.getUTCMinutes()).slice(-2)}`;
-
+  const [completeHospede, setCompleteHospede] = useState<{
+    complete: boolean;
+    celular: string;
+    email: string;
+  }>({ complete: false, celular: "", email: "" });
   function formatedNumber(input: string) {
     if (input.replace(/[.,]/gm, "").length <= 3)
       return input.replace(/[.,]/gm, "").replace(/(\d{1})(\d{2})/gm, "$1,$2");
@@ -214,7 +218,7 @@ export default function EditarReserva(props: propsEdicao) {
       .then((data) => data.json())
       .then((data) => {
         if (data[0]?.affected == 1) {
-          posthog.capture('reservation_updated');
+          posthog.capture("reservation_updated");
           setNotify({ type: 1, text: "Atualizado!" });
           setShowNotify(true);
           setTimeout(() => {
@@ -222,7 +226,7 @@ export default function EditarReserva(props: propsEdicao) {
             location.reload();
           }, 3000);
         } else if (data.length > 0) {
-          setButton(true)
+          setButton(true);
           setNotify({ type: 1, text: data });
           setShowNotify(true);
           setTimeout(() => {
@@ -265,6 +269,27 @@ export default function EditarReserva(props: propsEdicao) {
       .then((data) => data.json())
       .then((data: Canais[]) => {
         setCanais(data);
+      })
+      .catch((err) => console.log(err));
+  }
+
+  async function updateHospede(pbody: {
+    id: number;
+    nome: string;
+    email: string;
+    telefone: string;
+  }) {
+    await fetch(`${apiURL}/hospede/${pbody.id}`, {
+      method: "PUT",
+      body: JSON.stringify(pbody),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        if (data.affected == 1) {
+        }
       })
       .catch((err) => console.log(err));
   }
@@ -396,6 +421,17 @@ export default function EditarReserva(props: propsEdicao) {
                 id="hospede"
                 className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
               />
+              <button
+                className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full w-6 h-6 text-xl flex justify-center items-center font-bold"
+                onClick={() =>
+                  setCompleteHospede((prev) => ({
+                    ...prev,
+                    complete: !prev?.complete,
+                  }))
+                }
+              >
+                {completeHospede?.complete ? "-" : "+"}
+              </button>
               {showH.length > 0 && (
                 <section className="absolute bg-white top-full w-full">
                   <ul className="flex flex-col w-full gap-1">
@@ -436,6 +472,48 @@ export default function EditarReserva(props: propsEdicao) {
               />
             </label>
           </div>
+          {completeHospede.complete && (
+            <div className="grid grid-cols-2 gap-4">
+              <label htmlFor="email" className="flex flex-col">
+                <span className="text-zinc-500 font-medium mb-1 text-xs">
+                  E-mail
+                </span>
+                <input
+                  type="email"
+                  name="email"
+                  id="email"
+                  value={completeHospede.email}
+                  className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
+                  placeholder="hospede@email.com"
+                  onChange={(e) =>
+                    setCompleteHospede((prev) => ({
+                      ...prev,
+                      email: e.target.value,
+                    }))
+                  }
+                  />
+              </label>
+              <label htmlFor="tel" className="flex flex-col">
+                <span className="text-zinc-500 font-medium mb-1 text-xs">
+                  Telefone
+                </span>
+                <input
+                  type="tel"
+                  name="tel"
+                  id="tel"
+                  value={completeHospede.celular}
+                  className="border border-zinc-300 rounded-md px-2 py-1 outline-none"
+                  placeholder="(00) 9 9999-9999"
+                  onChange={(e) =>
+                    setCompleteHospede((prev) => ({
+                      ...prev,
+                      celular: e.target.value,
+                    }))
+                  }
+                />
+              </label>
+            </div>
+          )}
           <div className="grid gap-4 grid-cols-4">
             <label htmlFor="checkin-date" className="flex flex-col justify-end">
               <span className="text-zinc-500 font-medium mb-1 text-xs">
@@ -1057,19 +1135,33 @@ export default function EditarReserva(props: propsEdicao) {
                           h.nome.toLowerCase() ==
                           hospedeInput.value.toLowerCase(),
                       ).length > 0
-                    )
+                    ) {
                       hospedeId =
                         hospede.filter(
                           (h) =>
                             h.nome.toLowerCase() ==
                             hospedeInput.value.toLowerCase(),
                         )[0].id || 0;
-                    else
+                      if (completeHospede.complete) {
+                        await updateHospede({
+                          id: hospedeId,
+                          email: completeHospede.email,
+                          telefone: completeHospede.celular,
+                          nome: hospedeInput.value,
+                        });
+                      }
+                    } else
                       hospedeId = await createHospede({
                         nome: hospedeInput.value,
-                        email: null,
+                        email:
+                          completeHospede.email.length > 0
+                            ? completeHospede.email
+                            : null,
                         saas: { id: dataToken.id },
-                        telefone: null,
+                        telefone:
+                          completeHospede.celular.length > 0
+                            ? completeHospede.celular
+                            : null,
                       });
 
                     if (
