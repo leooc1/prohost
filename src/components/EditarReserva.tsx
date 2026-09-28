@@ -335,7 +335,7 @@ export default function EditarReserva(props: propsEdicao) {
   }, [dataToken]);
 
   return (
-    <div className="w-screen h-screen fixed z-10 top-0 right-0">
+    <div className="w-screen h-screen fixed z-50 top-0 right-0">
       <div
         className="w-screen h-screen bg-black absolute top-0 right-0 bg-opacity-20"
         onClick={props.close}
@@ -346,7 +346,7 @@ export default function EditarReserva(props: propsEdicao) {
           onSubmit={(e) => {
             e.preventDefault();
           }}
-          className="flex rounded-md flex-col absolute min-w-80 px-4 py-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white max-h-screen overflow-scroll scroll-default"
+          className="flex rounded-md flex-col max-h-screen overflow-scroll scroll-default absolute md:min-w-80 px-4 md:py-3 py-16 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white"
         >
           <h5 className="font-semibold text-2xl mb-2">Editar Reserva</h5>
           <label htmlFor="acomodacao" className="flex flex-col">
@@ -393,8 +393,7 @@ export default function EditarReserva(props: propsEdicao) {
             </select>
           </label>
           <div
-            className="grid gap-4"
-            style={{ gridTemplateColumns: "3fr 1fr" }}
+            className="grid gap-4 md:grid-cols-4 grid-cols-2"
           >
             <label htmlFor="hospede" className="flex flex-col relative">
               <span className="text-zinc-500 font-medium mb-1 text-xs">
@@ -514,7 +513,7 @@ export default function EditarReserva(props: propsEdicao) {
               </label>
             </div>
           )}
-          <div className="grid gap-4 grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-4 grid-cols-2">
             <label htmlFor="checkin-date" className="flex flex-col justify-end">
               <span className="text-zinc-500 font-medium mb-1 text-xs">
                 Check-in<span className="text-red-500 font-bold"> *</span>
@@ -585,7 +584,7 @@ export default function EditarReserva(props: propsEdicao) {
             </select>
           </label>
           {/*  */}
-          <div className="grid gap-4 grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-3 grid-cols-1">
             <label htmlFor="tot" className="flex flex-col">
               <div className="flex items-center">
                 <span className="text-zinc-500 font-medium mb-1 text-xs">

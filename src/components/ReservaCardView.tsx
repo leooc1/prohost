@@ -161,7 +161,7 @@ export default function ReservaCardView(props: propsReserva) {
     }, [dataToken])
 
     return (
-        <div className='w-screen min-h-screen fixed z-10 top-0 right-0'>
+        <div className='w-screen min-h-screen fixed z-50 top-0 right-0'>
             {continuidade && <NovaContinuidade
                 idReserva={props.id}
                 close={() => setContinuidade(false)}
@@ -197,7 +197,7 @@ export default function ReservaCardView(props: propsReserva) {
             />}
             <div className="w-screen h-screen bg-black absolute  top-0 right-0 bg-opacity-20" onClick={props.close}></div>
             {showNotify && <Notify type={notify.type} text={notify.text} />}
-            <div className="flex rounded-md flex-col absolute min-w-80 px-4 pb-3 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white max-h-[calc(100vh-40px)] overflow-y-scroll scroll-default">
+            <div className="flex rounded-md flex-col absolute md:min-w-80 min-w-[90%] px-4 md:py-3 py-16 gap-4 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 bg-white max-h-[calc(100vh-40px)] overflow-y-scroll scroll-default">
                 <section className="flex items-center mt-2 gap-5">
                     <img className="w-14 h-14 rounded-full border-2 border-blue-600 object-cover" src={reserva?.acomodacao.foto || 'https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F78ab8f5429dc59ec2dc40a1eb766757b.cdn.bubble.io%2Ff1694459505519x180355330462507170%2Fdefault-placeholder-300x300%255B1%255D%255B2%255D.png?w=256&h=144&auto=compress&dpr=1.25&fit=max'} />
                     <div className="flex flex-col gap-3 mt-2">
@@ -218,8 +218,7 @@ export default function ReservaCardView(props: propsReserva) {
                         <span className="text-zinc-500 font-medium mb-1 text-sm">Hóspede</span>
                         <p className="font-semibold text-sm">{reserva?.hospede?.nome}</p>
                     </div>}
-                    <div className="grid gap-4"
-                        style={{ gridTemplateColumns: '1fr 1fr' }}>
+                    <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
                         <div className="border border-zinc-300 rounded-md px-3 py-2 flex flex-col justify-center relative pl-12">
                             <svg className="absolute w-8 h-8 left-2 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 32 32" ><g><path d="M25 3.96h-1.5V3a1 1 0 1 0-2 0v.96h-11V3a1 1 0 1 0-2 0v.96H7c-2.757 0-5 2.243-5 5V25c0 2.757 2.243 5 5 5h18c2.757 0 5-2.243 5-5V8.96c0-2.757-2.243-5-5-5zm-21 5c0-1.654 1.346-3 3-3h1.5v.96a1 1 0 1 0 2 0v-.96h11v.96a1 1 0 1 0 2 0v-.96H25c1.654 0 3 1.346 3 3v1.01H4zM25 28H7c-1.654 0-3-1.346-3-3V11.97h24V25c0 1.654-1.346 3-3 3z" fill="#6279f2" opacity="1" data-original="#000000" ></path><path d="M20 18.985h-3v-3a1 1 0 1 0-2 0v3h-3a1 1 0 1 0 0 2h3v3a1 1 0 1 0 2 0v-3h3a1 1 0 1 0 0-2z" fill="#6279f2" opacity="1" data-original="#000000" ></path></g></svg>
                             <span className="text-zinc-500 font-medium mb-1 text-sm">{reserva?.tipo_reserva == 'Indisponibilidade' ? 'De:' : 'Chegada'}</span>
@@ -231,8 +230,7 @@ export default function ReservaCardView(props: propsReserva) {
                             <p className="font-semibold text-sm">{formatDate(reserva?.check_out || '')}</p>
                         </div>
                     </div>
-                    <div className="grid gap-4"
-                        style={{ gridTemplateColumns: '2fr 1fr' }}>
+                    <div className="grid md:grid-cols-[2fr_1fr] gap-4">
                         <div className="border border-zinc-300 rounded-md px-3 py-2 flex flex-col justify-center relative pl-12">
                             <svg className="absolute w-8 h-8 left-2 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 460.298 460.297" ><g><path d="M230.149 120.939 65.986 256.274c0 .191-.048.472-.144.855-.094.38-.144.656-.144.852v137.041c0 4.948 1.809 9.236 5.426 12.847 3.616 3.613 7.898 5.431 12.847 5.431h109.63V303.664h73.097v109.64h109.629c4.948 0 9.236-1.814 12.847-5.435 3.617-3.607 5.432-7.898 5.432-12.847V257.981c0-.76-.104-1.334-.288-1.707L230.149 120.939z" fill="#6279f2" opacity="1" data-original="#000000" ></path><path d="M457.122 225.438 394.6 173.476V56.989c0-2.663-.856-4.853-2.574-6.567-1.704-1.712-3.894-2.568-6.563-2.568h-54.816c-2.666 0-4.855.856-6.57 2.568-1.711 1.714-2.566 3.905-2.566 6.567v55.673l-69.662-58.245c-6.084-4.949-13.318-7.423-21.694-7.423-8.375 0-15.608 2.474-21.698 7.423L3.172 225.438c-1.903 1.52-2.946 3.566-3.14 6.136-.193 2.568.472 4.811 1.997 6.713l17.701 21.128c1.525 1.712 3.521 2.759 5.996 3.142 2.285.192 4.57-.476 6.855-1.998L230.149 95.817l197.57 164.741c1.526 1.328 3.521 1.991 5.996 1.991h.858c2.471-.376 4.463-1.43 5.996-3.138l17.703-21.125c1.522-1.906 2.189-4.145 1.991-6.716-.195-2.563-1.242-4.609-3.141-6.132z" fill="#6279f2" opacity="1" data-original="#000000"></path></g></svg>
                             <span className="text-zinc-500 font-medium mb-1 text-sm">Acomodação</span>
@@ -244,8 +242,7 @@ export default function ReservaCardView(props: propsReserva) {
                             <p className="font-semibold text-sm">{calcularDiasEntreDatas(reserva?.check_in || '', reserva?.check_out || '')}</p>
                         </div>
                     </div>
-                    {reserva?.tipo_reserva == 'Indisponibilidade' ? null : <div className="grid gap-4"
-                        style={{ gridTemplateColumns: '1fr 1fr' }}>
+                    {reserva?.tipo_reserva == 'Indisponibilidade' ? null : <div className="grid gap-4 md:grid-cols-2 grid-cols-1">
                         <div className="border border-zinc-300 rounded-md px-3 py-2 flex flex-col justify-center relative pl-12">
                             <svg className="absolute w-8 h-8 left-2 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 80.13 80.13"><g><path d="M48.355 17.922c3.705 2.323 6.303 6.254 6.776 10.817a11.69 11.69 0 0 0 4.966 1.112c6.491 0 11.752-5.261 11.752-11.751 0-6.491-5.261-11.752-11.752-11.752-6.429.002-11.644 5.169-11.742 11.574zm-7.699 24.062c6.491 0 11.752-5.262 11.752-11.752s-5.262-11.751-11.752-11.751c-6.49 0-11.754 5.262-11.754 11.752s5.264 11.751 11.754 11.751zm4.985.801h-9.972c-8.297 0-15.047 6.751-15.047 15.048v12.195l.031.191.84.263c7.918 2.474 14.797 3.299 20.459 3.299 11.059 0 17.469-3.153 17.864-3.354l.785-.397h.084V57.833c.003-8.297-6.747-15.048-15.044-15.048zm19.443-12.132h-9.895a14.483 14.483 0 0 1-4.47 10.088c7.375 2.193 12.771 9.032 12.771 17.11v3.758c9.77-.358 15.4-3.127 15.771-3.313l.785-.398h.084V45.699c0-8.296-6.75-15.046-15.046-15.046zm-45.049-.8c2.299 0 4.438-.671 6.25-1.814a14.544 14.544 0 0 1 5.467-9.276c.012-.22.033-.438.033-.66 0-6.491-5.262-11.752-11.75-11.752-6.492 0-11.752 5.261-11.752 11.752 0 6.488 5.26 11.75 11.752 11.75zm10.554 10.888a14.492 14.492 0 0 1-4.467-10.032c-.367-.027-.73-.056-1.104-.056h-9.971C6.75 30.653 0 37.403 0 45.699v12.197l.031.188.84.265c6.352 1.983 12.021 2.897 16.945 3.185v-3.683c.002-8.078 5.396-14.915 12.773-17.11z" fill="#6279f2" opacity="1" data-original="#000000"></path></g></svg>
                             <span className="text-zinc-500 font-medium mb-1 text-sm">Qtd. Hóspedes</span>
@@ -257,8 +254,7 @@ export default function ReservaCardView(props: propsReserva) {
                             {reserva?.tipo_reserva != 'Continuidade' && <p className="font-semibold text-sm">R$ {formatedNumber(Number(reserva?.comissao_ota).toFixed(2))}</p>}
                         </div>
                     </div>}
-                    {reserva?.tipo_reserva == 'Indisponibilidade' ? null : <div className="grid gap-4"
-                        style={{ gridTemplateColumns: hasSeparateFee ? '1fr 1fr 1fr' : '1fr 1fr' }}>
+                    {reserva?.tipo_reserva == 'Indisponibilidade' ? null : <div className={`grid gap-4 ${hasSeparateFee?'md:grid-cols-3':'md:grid-cols:2'} grid-cols-1`}>
                         <div className="border border-zinc-300 rounded-md px-3 py-2 flex flex-col justify-center relative pl-12">
                             <svg className="absolute w-8 h-8 left-2 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 484.184 484.184" ><g><path d="M309.43 219.944c-19-10.5-39.2-18.5-59.2-26.8-11.6-4.8-22.7-10.4-32.5-18.2-19.3-15.4-15.6-40.4 7-50.3 6.4-2.8 13.1-3.7 19.9-4.1 26.2-1.4 51.1 3.4 74.8 14.8 11.8 5.7 15.7 3.9 19.7-8.4 4.2-13 7.7-26.2 11.6-39.3 2.6-8.8-.6-14.6-8.9-18.3-15.2-6.7-30.8-11.5-47.2-14.1-21.4-3.3-21.4-3.4-21.5-24.9-.1-30.3-.1-30.3-30.5-30.3-4.4 0-8.8-.1-13.2 0-14.2.4-16.6 2.9-17 17.2-.2 6.4 0 12.8-.1 19.3-.1 19-.2 18.7-18.4 25.3-44 16-71.2 46-74.1 94-2.6 42.5 19.6 71.2 54.5 92.1 21.5 12.9 45.3 20.5 68.1 30.6 8.9 3.9 17.4 8.4 24.8 14.6 21.9 18.1 17.9 48.2-8.1 59.6-13.9 6.1-28.6 7.6-43.7 5.7-23.3-2.9-45.6-9-66.6-19.9-12.3-6.4-15.9-4.7-20.1 8.6-3.6 11.5-6.8 23.1-10 34.7-4.3 15.6-2.7 19.3 12.2 26.6 19 9.2 39.3 13.9 60 17.2 16.2 2.6 16.7 3.3 16.9 20.1.1 7.6.1 15.3.2 22.9.1 9.6 4.7 15.2 14.6 15.4 11.2.2 22.5.2 33.7-.1 9.2-.2 13.9-5.2 13.9-14.5 0-10.4.5-20.9.1-31.3-.5-10.6 4.1-16 14.3-18.8 23.5-6.4 43.5-19 58.9-37.8 42.8-52 26.5-128.1-34.1-161.6z" fill="#6279f2" opacity="1" data-original="#000000" ></path></g></svg>
                             <span className="text-zinc-500 font-medium mb-1 text-sm">{hasSeparateFee ? 'Valor Diárias' : 'Valor Total'}</span>
@@ -284,7 +280,7 @@ export default function ReservaCardView(props: propsReserva) {
                             <p className="font-semibold text-sm ml-2">{reserva.obs}</p>
                         </div>
                     </div> : null}
-                    {reserva?.tipo_reserva != 'Indisponibilidade' && reserva?.tipo_reserva != 'Continuidade' && (props.permissao >= 2) ? <div className="flex justify-between mt-3">
+                    {reserva?.tipo_reserva != 'Indisponibilidade' && reserva?.tipo_reserva != 'Continuidade' && (props.permissao >= 2) ? <div className="flex md:flex-row flex-col md:gap-0 gap-4 justify-between mt-3">
                         <button
                             onClick={() => {
                                 setCancelamento(true)
