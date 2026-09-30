@@ -3,8 +3,11 @@ import toast, { Toaster } from "react-hot-toast";
 import { z } from "zod";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 import { useNavigate } from "react-router-dom";
+import RelatorioCompleto from "../report/RelatorioCompleto";
 const apiURL = import.meta.env.VITE_API_URL;
 
+const mes = ("0" + (new Date().getUTCMonth() + 1)).slice(-2);
+const ano = new Date().getUTCFullYear();
 export default function TourRelatorio() {
   const navigate = useNavigate();
   const [step, setStep] = useState<number>(0);
@@ -25,8 +28,8 @@ export default function TourRelatorio() {
       acomodacao: {
         id: idAcomodacao,
       },
-      check_in: "2026-09-26 15:00:00",
-      check_out: "2026-09-30 11:00:00",
+      check_in: `${ano}-${mes}-26 15:00:00`,
+      check_out: `${ano}-${mes}-30 11:00:00`,
       taxa_limpeza: 0,
       canal_reserva: {
         id: canalReserva.id,
@@ -52,8 +55,8 @@ export default function TourRelatorio() {
       acomodacao: {
         id: idAcomodacao,
       },
-      check_in: "2026-09-09 15:00:00",
-      check_out: "2026-09-12 11:00:00",
+      check_in: `${ano}-${mes}-09 15:00:00`,
+      check_out: `${ano}-${mes}-12 11:00:00`,
       taxa_limpeza: 286,
       canal_reserva: {
         id: canalReserva.id,
@@ -79,8 +82,8 @@ export default function TourRelatorio() {
       acomodacao: {
         id: idAcomodacao,
       },
-      check_in: "2026-09-03 15:00:00",
-      check_out: "2026-09-07 11:00:00",
+      check_in: `${ano}-${mes}-03 15:00:00`,
+      check_out: `${ano}-${mes}-07 11:00:00`,
       taxa_limpeza: 178.75,
       canal_reserva: {
         id: canalReserva.id,
@@ -243,7 +246,7 @@ export default function TourRelatorio() {
 
   return (
     <div
-      className={`fixed z-50 top-0 left-0 w-screen h-screen bg-primary/95 ${step === -1 && "hidden"} transition-all duration-300 
+      className={`fixed z-50 pointer-events-none top-0 left-0 w-screen h-screen bg-primary/95 ${step === -1 && "hidden"} transition-all duration-300 
       ${step !== 5 && "pointer-events-none"}
       `}
     >
@@ -427,7 +430,7 @@ export default function TourRelatorio() {
             <button
               onClick={() => {
                 {
-                  navigate('/reservas')
+                  navigate("/reservas");
                   window.localStorage.setItem("tour", "false");
                 }
               }}
@@ -450,9 +453,11 @@ export default function TourRelatorio() {
                     });
                   }),
                 );
+                // navigate("/relatorio");
                 alert(retornos.join("\n"));
                 localStorage.setItem("tour", "false");
-                navigate("/relatorio");
+                toast("Para sair deste tour, basta atualizar a página.");
+                setStep(2);
               }}
               className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-md"
             >
@@ -463,6 +468,22 @@ export default function TourRelatorio() {
             {nome} cadastrado. <br />
             Falta um passo para o relatório ficar pronto.
           </p>
+        </div>
+      )}
+      {step == 2 && (
+        <div className="overflow-scroll pointer-events-auto absolute max-h-dvh w-dvw scroll-default">
+          <RelatorioCompleto
+            saas={Number(dataToken.id)}
+            acomodacao={idAcomodacao as number}
+            mes={Number(mes)}
+            ano={ano}
+            imagem={""}
+            cores={{
+              letra: "#ffffff",
+              primario: "#003347",
+              secundario: "#08fab8",
+            }}
+          />
         </div>
       )}
     </div>
