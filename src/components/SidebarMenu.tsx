@@ -254,34 +254,34 @@ export default function SidebarMenu({ route }: { route: string }) {
                 </li>
               )}
               {/* relatorio */}
-              {permissoes.config == 4 &&
-                permissoes.hospede == 4 &&
-                permissoes.reserva == 4 &&
+              {(permissoes.config > 1 ||
+                permissoes.hospede > 1 ||
+                permissoes.reserva > 1 ||
                 (typeof permissoes.dashboard == "number"
-                  ? permissoes.dashboard == 4
-                  : permissoes.dashboard.indiOpe == 4 ||
-                    permissoes.dashboard.resultAc == 4 ||
-                    permissoes.dashboard.resultGestor == 4) &&
-                permissoes.financeiro == 4 &&
-                permissoes.acomodacoes == 4 && (
-                  <li>
-                    <a
-                      href={"/relatorio"}
-                      className={`${route == "/relatorio" ? "nav-active" : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover ${active ? "w-44" : "w-fit justify-center"}`}
+                  ? permissoes.dashboard > 1
+                  : permissoes.dashboard.indiOpe > 1 ||
+                    permissoes.dashboard.resultAc > 1 ||
+                    permissoes.dashboard.resultGestor > 1) ||
+                permissoes.financeiro > 1 ||
+                permissoes.acomodacoes > 1) && (
+                <li>
+                  <a
+                    href={"/relatorio"}
+                    className={`${route == "/relatorio" ? "nav-active" : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover ${active ? "w-44" : "w-fit justify-center"}`}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="#ACDBFF"
+                      height="24"
+                      width="24"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="#ACDBFF"
-                        height="24"
-                        width="24"
-                      >
-                        <path d="M20 22H4C3.44772 22 3 21.5523 3 21V3C3 2.44772 3.44772 2 4 2H20C20.5523 2 21 2.44772 21 3V21C21 21.5523 20.5523 22 20 22ZM19 20V4H5V20H19ZM7 6H11V10H7V6ZM7 12H17V14H7V12ZM7 16H17V18H7V16ZM13 7H17V9H13V7Z"></path>
-                      </svg>
-                      {active && <p className="text-zinc-300">Relatório</p>}
-                    </a>
-                  </li>
-                )}
+                      <path d="M20 22H4C3.44772 22 3 21.5523 3 21V3C3 2.44772 3.44772 2 4 2H20C20.5523 2 21 2.44772 21 3V21C21 21.5523 20.5523 22 20 22ZM19 20V4H5V20H19ZM7 6H11V10H7V6ZM7 12H17V14H7V12ZM7 16H17V18H7V16ZM13 7H17V9H13V7Z"></path>
+                    </svg>
+                    {active && <p className="text-zinc-300">Relatório</p>}
+                  </a>
+                </li>
+              )}
               {/* agent chat */}
               {permissoes.config == 4 &&
                 permissoes.hospede == 4 &&
@@ -556,63 +556,63 @@ export default function SidebarMenu({ route }: { route: string }) {
             )}
             {/* relatorio */}
             {permissoes.config == 4 &&
-                permissoes.hospede == 4 &&
-                permissoes.reserva == 4 &&
-                (typeof permissoes.dashboard == "number"
-                  ? permissoes.dashboard == 4
-                  : permissoes.dashboard.indiOpe == 4 ||
-                    permissoes.dashboard.resultAc == 4 ||
-                    permissoes.dashboard.resultGestor == 4) &&
-                permissoes.financeiro == 4 &&
-                permissoes.acomodacoes == 4 &&  (
-              <li>
-                <a
-                  href={"/relatorio"}
-                  className={`${route == "/relatorio" ? "nav-active" : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover w-44`}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="#ACDBFF"
-                    height="24"
-                    width="24"
+              permissoes.hospede == 4 &&
+              permissoes.reserva == 4 &&
+              (typeof permissoes.dashboard == "number"
+                ? permissoes.dashboard == 4
+                : permissoes.dashboard.indiOpe == 4 ||
+                  permissoes.dashboard.resultAc == 4 ||
+                  permissoes.dashboard.resultGestor == 4) &&
+              permissoes.financeiro == 4 &&
+              permissoes.acomodacoes == 4 && (
+                <li>
+                  <a
+                    href={"/relatorio"}
+                    className={`${route == "/relatorio" ? "nav-active" : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover w-44`}
                   >
-                    <path d="M20 22H4C3.44772 22 3 21.5523 3 21V3C3 2.44772 3.44772 2 4 2H20C20.5523 2 21 2.44772 21 3V21C21 21.5523 20.5523 22 20 22ZM19 20V4H5V20H19ZM7 6H11V10H7V6ZM7 12H17V14H7V12ZM7 16H17V18H7V16ZM13 7H17V9H13V7Z"></path>
-                  </svg>
-                  {<p className="text-zinc-300">Relatório</p>}
-                </a>
-              </li>
-            )}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="#ACDBFF"
+                      height="24"
+                      width="24"
+                    >
+                      <path d="M20 22H4C3.44772 22 3 21.5523 3 21V3C3 2.44772 3.44772 2 4 2H20C20.5523 2 21 2.44772 21 3V21C21 21.5523 20.5523 22 20 22ZM19 20V4H5V20H19ZM7 6H11V10H7V6ZM7 12H17V14H7V12ZM7 16H17V18H7V16ZM13 7H17V9H13V7Z"></path>
+                    </svg>
+                    {<p className="text-zinc-300">Relatório</p>}
+                  </a>
+                </li>
+              )}
             {/* agent chat */}
             {permissoes.config == 4 &&
-                permissoes.hospede == 4 &&
-                permissoes.reserva == 4 &&
-                (typeof permissoes.dashboard == "number"
-                  ? permissoes.dashboard == 4
-                  : permissoes.dashboard.indiOpe == 4 ||
-                    permissoes.dashboard.resultAc == 4 ||
-                    permissoes.dashboard.resultGestor == 4) &&
-                permissoes.financeiro == 4 &&
-                permissoes.acomodacoes == 4 &&  (
-              <li>
-                <a
-                  href={"/agent-chat"}
-                  target="_blank"
-                  className={`${route == "/agent-chat" ? "nav-active" : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover w-44`}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    height="24"
-                    fill="#ACDBFF"
-                    width="24"
+              permissoes.hospede == 4 &&
+              permissoes.reserva == 4 &&
+              (typeof permissoes.dashboard == "number"
+                ? permissoes.dashboard == 4
+                : permissoes.dashboard.indiOpe == 4 ||
+                  permissoes.dashboard.resultAc == 4 ||
+                  permissoes.dashboard.resultGestor == 4) &&
+              permissoes.financeiro == 4 &&
+              permissoes.acomodacoes == 4 && (
+                <li>
+                  <a
+                    href={"/agent-chat"}
+                    target="_blank"
+                    className={`${route == "/agent-chat" ? "nav-active" : null} flex items-center py-3 gap-3 px-4 rounded-md transition-all nav-hover w-44`}
                   >
-                    <path d="M13.5 2C13.5 2.44425 13.3069 2.84339 13 3.11805V5H18C19.6569 5 21 6.34315 21 8V18C21 19.6569 19.6569 21 18 21H6C4.34315 21 3 19.6569 3 18V8C3 6.34315 4.34315 5 6 5H11V3.11805C10.6931 2.84339 10.5 2.44425 10.5 2C10.5 1.17157 11.1716 0.5 12 0.5C12.8284 0.5 13.5 1.17157 13.5 2ZM6 7C5.44772 7 5 7.44772 5 8V18C5 18.5523 5.44772 19 6 19H18C18.5523 19 19 18.5523 19 18V8C19 7.44772 18.5523 7 18 7H13H11H6ZM2 10H0V16H2V10ZM22 10H24V16H22V10ZM9 14.5C9.82843 14.5 10.5 13.8284 10.5 13C10.5 12.1716 9.82843 11.5 9 11.5C8.17157 11.5 7.5 12.1716 7.5 13C7.5 13.8284 8.17157 14.5 9 14.5ZM15 14.5C15.8284 14.5 16.5 13.8284 16.5 13C16.5 12.1716 15.8284 11.5 15 11.5C14.1716 11.5 13.5 12.1716 13.5 13C13.5 13.8284 14.1716 14.5 15 14.5Z"></path>
-                  </svg>
-                  {<p className="text-zinc-300 text-sm">IA de avaliação</p>}
-                </a>
-              </li>
-            )}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      height="24"
+                      fill="#ACDBFF"
+                      width="24"
+                    >
+                      <path d="M13.5 2C13.5 2.44425 13.3069 2.84339 13 3.11805V5H18C19.6569 5 21 6.34315 21 8V18C21 19.6569 19.6569 21 18 21H6C4.34315 21 3 19.6569 3 18V8C3 6.34315 4.34315 5 6 5H11V3.11805C10.6931 2.84339 10.5 2.44425 10.5 2C10.5 1.17157 11.1716 0.5 12 0.5C12.8284 0.5 13.5 1.17157 13.5 2ZM6 7C5.44772 7 5 7.44772 5 8V18C5 18.5523 5.44772 19 6 19H18C18.5523 19 19 18.5523 19 18V8C19 7.44772 18.5523 7 18 7H13H11H6ZM2 10H0V16H2V10ZM22 10H24V16H22V10ZM9 14.5C9.82843 14.5 10.5 13.8284 10.5 13C10.5 12.1716 9.82843 11.5 9 11.5C8.17157 11.5 7.5 12.1716 7.5 13C7.5 13.8284 8.17157 14.5 9 14.5ZM15 14.5C15.8284 14.5 16.5 13.8284 16.5 13C16.5 12.1716 15.8284 11.5 15 11.5C14.1716 11.5 13.5 12.1716 13.5 13C13.5 13.8284 14.1716 14.5 15 14.5Z"></path>
+                    </svg>
+                    {<p className="text-zinc-300 text-sm">IA de avaliação</p>}
+                  </a>
+                </li>
+              )}
             {/* hospedes */}
             {permissoes.hospede > 0 && (
               <li>
