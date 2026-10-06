@@ -61,16 +61,16 @@ export default function RentabilidadeDesempenho(props: RentabilidadeDesempenhoPr
                         <div style={{ backgroundColor: props.cores.primario }} className={`w-full h-px bg-[${props.cores.primario}]`}></div>
                         <img src={props.imagem} alt="" className='bg-primary max-w-56 max-h-28 h-28' />
                     </div>
-                    <section className='flex gap-10 mt-16'>
+                    <section className='flex md:gap-10 md:mt-16 flex-wrap'>
                         <div className='bg-zinc-400 bg-opacity-10 px-2 py-1 rounded-lg h-fit'>
-                            <div style={{ color: props.cores.letra }} className={`w-40 text-[${props.cores.letra}]`}>Faturamento do período</div>
+                            <div style={{ color: props.cores.letra }} className={`w-40 text-[${props.cores.letra}] text-sm md:text-base`}>Faturamento do período</div>
                             <div style={{ color: props.cores.letra }} className={`text-end text-[${props.cores.letra}] font-medium`}><span className='text-base pr-3'>R$</span>{new Intl.NumberFormat('pt-BR', {
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 2
                             }).format(Number(dados.faturamento_periodo))}</div>
                         </div>
                         <div className='bg-zinc-400 bg-opacity-10 px-2 py-1 rounded-lg h-fit'>
-                            <div style={{ color: props.cores.letra }} className={`w-40 text-[${props.cores.letra}]`}>Rentabilidade do imóvel</div>
+                            <div style={{ color: props.cores.letra }} className={`w-40 text-[${props.cores.letra}] text-sm md:text-base`}>Rentabilidade do imóvel</div>
                             <div style={{ color: props.cores.letra }} className={`text-end text-[${props.cores.letra}] font-medium`}>{Number(dados.rentabilidade).toFixed(1)}%</div>
                         </div>
                     </section>

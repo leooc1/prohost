@@ -366,7 +366,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
         <div className="max-w-full overflow-x-scroll">
             <div
               id="relatorio-container"
-              className="flex flex-col relative gap-1 min-w-[730px]"
+              className="flex flex-col relative gap-1"
               ref={pdfRef}
             >
               {/* RELATORIO */}
@@ -416,7 +416,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                       </p>
                       <p
                         style={{ color: props.cores.letra }}
-                        className={`text-[${props.cores.letra}] text-2xl`}
+                        className={`text-[${props.cores.letra}] md:text-2xl text-sm`}
                       >
                         {meses[props.mes - 1]}.{props.ano}
                       </p>
@@ -490,7 +490,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                 <section className="px-5 h-full mt-20 flex flex-col justify-center">
                   <ul className="flex flex-col gap-4">
                     <li
-                      className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex items-center relative ${editPages[0] ? "opacity-100" : "opacity-30"}`}
+                      className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 md:h-14 h-full rounded-lg flex items-center relative ${editPages[0] ? "opacity-100" : "opacity-30"}`}
                     >
                       <span
                         style={{ color: props.cores.secundario }}
@@ -500,7 +500,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                       </span>
                       <p
                         style={{ color: props.cores.letra }}
-                        className={`text-[${props.cores.letra}] text-2xl`}
+                        className={`text-[${props.cores.letra}] md:text-2xl text-sm`}
                       >
                         Calendário do mês e resumo das reservas
                       </p>
@@ -516,7 +516,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                       </button>
                     </li>
                     <li
-                      className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex items-center relative ${editPages[1] ? "opacity-100" : "opacity-30"}`}
+                      className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 md:h-14 h-full rounded-lg flex items-center relative ${editPages[1] ? "opacity-100" : "opacity-30"}`}
                     >
                       <span
                         style={{ color: props.cores.secundario }}
@@ -526,7 +526,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                       </span>
                       <p
                         style={{ color: props.cores.letra }}
-                        className={`text-[${props.cores.letra}] text-2xl`}
+                        className={`text-[${props.cores.letra}] md:text-2xl text-sm`}
                       >
                         Detalhamento das reservas
                       </p>
@@ -542,7 +542,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                       </button>
                     </li>
                     <li
-                      className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex items-center relative ${editPages[2] ? "opacity-100" : "opacity-30"}`}
+                      className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 md:h-14 h-full rounded-lg flex items-center relative ${editPages[2] ? "opacity-100" : "opacity-30"}`}
                     >
                       <span
                         style={{ color: props.cores.secundario }}
@@ -552,7 +552,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                       </span>
                       <p
                         style={{ color: props.cores.letra }}
-                        className={`text-[${props.cores.letra}] text-2xl`}
+                        className={`text-[${props.cores.letra}] md:text-2xl text-sm`}
                       >
                         Desempenho e rentabilidade do imóvel
                       </p>
@@ -568,7 +568,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                       </button>
                     </li>
                     <li
-                      className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex items-center relative ${editPages[3] ? "opacity-100" : "opacity-30"}`}
+                      className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 md:h-14 h-full rounded-lg flex items-center relative ${editPages[3] ? "opacity-100" : "opacity-30"}`}
                     >
                       <span
                         style={{ color: props.cores.secundario }}
@@ -578,7 +578,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                       </span>
                       <p
                         style={{ color: props.cores.letra }}
-                        className={`text-[${props.cores.letra}] text-2xl`}
+                        className={`text-[${props.cores.letra}] md:text-2xl text-sm`}
                       >
                         Comparativo do faturamento
                       </p>
@@ -594,7 +594,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                       </button>
                     </li>
                     <li
-                      className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex items-center relative ${editPages[4] ? "opacity-100" : "opacity-30"}`}
+                      className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 md:h-14 h-full rounded-lg flex items-center relative ${editPages[4] ? "opacity-100" : "opacity-30"}`}
                     >
                       <span
                         style={{ color: props.cores.secundario }}
@@ -604,7 +604,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                       </span>
                       <p
                         style={{ color: props.cores.letra }}
-                        className={`text-[${props.cores.letra}] text-2xl`}
+                        className={`text-[${props.cores.letra}] md:text-2xl text-sm`}
                       >
                         Detalhamento das despesas
                       </p>
@@ -620,7 +620,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                       </button>
                     </li>
                     <li
-                      className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 h-14 rounded-lg flex items-center relative ${editPages[5] ? "opacity-100" : "opacity-30"}`}
+                      className={`bg-zinc-400 bg-opacity-10 px-2 py-1 gap-4 md:h-14 h-full rounded-lg flex items-center relative ${editPages[5] ? "opacity-100" : "opacity-30"}`}
                     >
                       <span
                         style={{ color: props.cores.secundario }}
@@ -630,7 +630,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                       </span>
                       <p
                         style={{ color: props.cores.letra }}
-                        className={`text-[${props.cores.letra}] text-2xl`}
+                        className={`text-[${props.cores.letra}] md:text-2xl text-sm`}
                       >
                         Resultado da acomodação e repasse
                       </p>

@@ -72,7 +72,7 @@ export default function CalendarioEResumo(props: CalendarioEResumoProps) {
                         <div style={{ backgroundColor: props.cores.primario }} className={`w-full h-px bg-[${props.cores.primario}]`}></div>
                         <img src={props.imagem} alt="" className='bg-primary max-w-56 max-h-28 h-28' />
                     </div>
-                    <section className='grid grid-cols-3 gap-10 h-full mt-20 items-center'>
+                    <section className='grid md:grid-cols-3 grid-cols-2 md:gap-10 h-full md:mt-20 items-center'>
                         <div className='col-span-2 h-full'>
                             <CalendarioR
                                 data={`${props.dataIni} 00:00:00`}
@@ -90,7 +90,7 @@ export default function CalendarioEResumo(props: CalendarioEResumoProps) {
                                 }))}
                             />
                         </div>
-                        <ul className='flex flex-col gap-5 self-start mt-6'>
+                        <ul className='md:flex md:flex-col grid grid-cols-2 gap-5 md:self-start mt-6 w-max md:w-full'>
                             <li className={`flex flex-col bg-zinc-400 bg-opacity-10 px-2 py-1 rounded-lg relative ${props.editCalendar[0] ? 'opacity-100' : 'opacity-30'}`}>
                                 <button
                                     className='absolute right-2 invert'
@@ -100,8 +100,8 @@ export default function CalendarioEResumo(props: CalendarioEResumoProps) {
                                 >
                                     {props.editCalendar[0] ? open : closed}
                                 </button>
-                                <span style={{ color: props.cores.letra }} className={`text-xl text-[${props.cores.letra}]`}>Ocupação</span>
-                                {<span style={{ color: props.cores.letra }} className={`text-xl text-[${props.cores.letra}] font-semibold text-end pr-4`}>{dados.ocupacaoPorSemana.toFixed(1)}%</span>}
+                                <span style={{ color: props.cores.letra }} className={`md:text-xl text-sm text-[${props.cores.letra}]`}>Ocupação</span>
+                                {<span style={{ color: props.cores.letra }} className={`md:text-xl text-sm text-[${props.cores.letra}] font-semibold text-end pr-4`}>{dados.ocupacaoPorSemana.toFixed(1)}%</span>}
                             </li>
                             <li className={`flex flex-col bg-zinc-400 bg-opacity-10 px-2 py-1 rounded-lg relative ${props.editCalendar[1] ? 'opacity-100' : 'opacity-30'}`}>
                                 <button
@@ -112,8 +112,8 @@ export default function CalendarioEResumo(props: CalendarioEResumoProps) {
                                 >
                                     {props.editCalendar[1] ? open : closed}
                                 </button>
-                                <span style={{ color: props.cores.letra }} className={`text-xl text-[${props.cores.letra}]`}>Reservas</span>
-                                <span style={{ color: props.cores.letra }} className={`text-xl text-[${props.cores.letra}] font-semibold text-end pr-4`}>{dados.totalReservas}</span>
+                                <span style={{ color: props.cores.letra }} className={`md:text-xl text-sm text-[${props.cores.letra}]`}>Reservas</span>
+                                <span style={{ color: props.cores.letra }} className={`md:text-xl text-sm text-[${props.cores.letra}] font-semibold text-end pr-4`}>{dados.totalReservas}</span>
                             </li>
                             <li className={`flex flex-col bg-zinc-400 bg-opacity-10 px-2 py-1 rounded-lg relative ${props.editCalendar[2] ? 'opacity-100' : 'opacity-30'}`}>
                                 <button
@@ -124,8 +124,8 @@ export default function CalendarioEResumo(props: CalendarioEResumoProps) {
                                 >
                                     {props.editCalendar[2] ? open : closed}
                                 </button>
-                                <span style={{ color: props.cores.letra }} className={`text-xl text-[${props.cores.letra}]`}>Diária Média</span>
-                                <span style={{ color: props.cores.letra }} className={`text-xl text-[${props.cores.letra}] font-semibold text-end pr-4`}>R$ {new Intl.NumberFormat('pt-BR', {
+                                <span style={{ color: props.cores.letra }} className={`md:text-xl text-sm text-[${props.cores.letra}]`}>Diária Média</span>
+                                <span style={{ color: props.cores.letra }} className={`md:text-xl text-sm text-[${props.cores.letra}] font-semibold text-end pr-4`}>R$ {new Intl.NumberFormat('pt-BR', {
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2
                                 }).format(Number(dados.diariaMedia || 0))}</span>
@@ -139,8 +139,8 @@ export default function CalendarioEResumo(props: CalendarioEResumoProps) {
                                 >
                                     {props.editCalendar[3] ? open : closed}
                                 </button>
-                                <span style={{ color: props.cores.letra }} className={`text-xl text-[${props.cores.letra}]`}>Faturamento</span>
-                                <span style={{ color: props.cores.letra }} className={`text-xl text-[${props.cores.letra}] font-semibold text-end pr-4`}>R$ {new Intl.NumberFormat('pt-BR', {
+                                <span style={{ color: props.cores.letra }} className={`md:text-xl text-sm text-[${props.cores.letra}]`}>Faturamento</span>
+                                <span style={{ color: props.cores.letra }} className={`md:text-xl text-sm text-[${props.cores.letra}] font-semibold text-end pr-4`}>R$ {new Intl.NumberFormat('pt-BR', {
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2
                                 }).format(Number(dados.faturamentoLiquido || 0))}</span>

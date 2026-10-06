@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import CanaisDeReserva from "../components/CanaisDeReserva";
 import NovaIndisponibilidade from "../components/NovaIndisponibilidade";
 import NovaReserva from "../components/NovaReserva";
@@ -74,6 +74,7 @@ export default function Reserva() {
     (_, i) => new Date().getFullYear() + 1 - i,
   );
   const [canais, setCanais] = useState<Acomodacao[]>([]);
+  const [filtersCalendar, setFiltersCalendar] = useState<string[]>([]);
   const [images, setImages] = useState<{ id: number; foto: string }[]>([]);
   // const [ids, setIds] = useState<{ id: number, index: number }[]>([])
 
@@ -446,10 +447,53 @@ export default function Reserva() {
                     )}
                   </div>
                 }
+                <div className="mb-5">
+                  <h3>Filtrar</h3>
+                  <form className="flex gap-4 flex-wrap">
+                    <input
+                      className="bg-white border border-zinc-400 p-1 rounded-md"
+                      type="reset"
+                      value={"Limpar filtros"}
+                      onClick={() => setFiltersCalendar([])}
+                    />
+                    {acomodacoesFormatadas.map((a) => (
+                      <label className="flex items-center gap-2 max-w-40">
+                        <input
+                          className="size-4"
+                          type="checkbox"
+                          name="acomodacao-calendario"
+                          aria-label={a.title}
+                          alt={a.id}
+                          onClick={() => {
+                            const acomodacaoCalendario =
+                              document.querySelectorAll(
+                                'input[name="acomodacao-calendario"]',
+                              ) as NodeListOf<HTMLInputElement>;
+                            const filters: string[] = [];
+
+                            acomodacaoCalendario.forEach((f) => {
+                              if (f.checked) filters.push(f.alt);
+                            });
+                            setFiltersCalendar(filters);
+                          }}
+                        />
+                        <p className="overflow-hidden whitespace-nowrap text-ellipsis">
+                          {a.title}
+                        </p>
+                      </label>
+                    ))}
+                  </form>
+                </div>
                 {
                   <Calendario
                     permissao={permissao}
-                    acomodacoes={acomodacoesFormatadas}
+                    acomodacoes={
+                      filtersCalendar.length > 0
+                        ? acomodacoesFormatadas.filter((a) =>
+                            filtersCalendar.includes(a.id),
+                          )
+                        : acomodacoesFormatadas
+                    }
                     reservas={reserva
                       .filter((r) => r.tipo_reserva != "Cancelamento")
                       .map((r) => ({
