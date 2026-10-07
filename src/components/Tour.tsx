@@ -7,11 +7,6 @@ export default function Tour() {
 
   const bg = [
     dashboard,
-    // "",
-    // criarAcomodacao,
-    // criarReserva,
-    // financeiro,
-    // relatorio,
   ];
   const [step, setStep] = useState<number>(5);
 
@@ -27,7 +22,6 @@ export default function Tour() {
     else if (path === "/reservas") setStep(2);
     else if (path === "/movimentacoes") setStep(3);
     else if (path === "/relatorio") setStep(5);
-    // else if (path === "/reservas") setStep(5);
   }, []);
   return (
     <div
