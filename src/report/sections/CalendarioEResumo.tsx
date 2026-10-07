@@ -27,9 +27,10 @@ export default function CalendarioEResumo(props: CalendarioEResumoProps) {
 
     async function getDados() {
         await fetch(`${apiURL}/relatorio/calendario/${props.saas}/${props.dataIni}/${props.dataFim}/${props.acomodacao}`)
-            .then(res => res.json())
+            .then(res => res.ok ? res.json() : {})
+            .catch(() => ({}))
             .then(data => {
-                setDados(data)
+                setDados(data ?? {})
             })
     }
 
@@ -76,7 +77,7 @@ export default function CalendarioEResumo(props: CalendarioEResumoProps) {
                         <div className='col-span-2 h-full'>
                             <CalendarioR
                                 data={`${props.dataIni} 00:00:00`}
-                                reservas={dados.reservas.map((item: any, index: any) => ({
+                                reservas={(dados.reservas ?? []).map((item: any, index: any) => ({
                                     title: item.hospede ? item.hospede : 'Indisponibilidade',
                                     start: item.check_in.slice(0, 19).replace('T', ' '),
                                     end: item.check_out.slice(0, 19).replace('T', ' '),
@@ -101,7 +102,7 @@ export default function CalendarioEResumo(props: CalendarioEResumoProps) {
                                     {props.editCalendar[0] ? open : closed}
                                 </button>
                                 <span style={{ color: props.cores.letra }} className={`text-xl text-[${props.cores.letra}]`}>Ocupação</span>
-                                {<span style={{ color: props.cores.letra }} className={`text-xl text-[${props.cores.letra}] font-semibold text-end pr-4`}>{dados.ocupacaoPorSemana.toFixed(1)}%</span>}
+                                {<span style={{ color: props.cores.letra }} className={`text-xl text-[${props.cores.letra}] font-semibold text-end pr-4`}>{Number(dados.ocupacaoPorSemana || 0).toFixed(1)}%</span>}
                             </li>
                             <li className={`flex flex-col bg-zinc-400 bg-opacity-10 px-2 py-1 rounded-lg relative ${props.editCalendar[1] ? 'opacity-100' : 'opacity-30'}`}>
                                 <button
@@ -113,7 +114,7 @@ export default function CalendarioEResumo(props: CalendarioEResumoProps) {
                                     {props.editCalendar[1] ? open : closed}
                                 </button>
                                 <span style={{ color: props.cores.letra }} className={`text-xl text-[${props.cores.letra}]`}>Reservas</span>
-                                <span style={{ color: props.cores.letra }} className={`text-xl text-[${props.cores.letra}] font-semibold text-end pr-4`}>{dados.totalReservas}</span>
+                                <span style={{ color: props.cores.letra }} className={`text-xl text-[${props.cores.letra}] font-semibold text-end pr-4`}>{dados.totalReservas ?? 0}</span>
                             </li>
                             <li className={`flex flex-col bg-zinc-400 bg-opacity-10 px-2 py-1 rounded-lg relative ${props.editCalendar[2] ? 'opacity-100' : 'opacity-30'}`}>
                                 <button

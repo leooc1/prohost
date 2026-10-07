@@ -21,9 +21,10 @@ export default function DetalheDespesa(props: DetalheDespesaProps) {
 
     async function getDados() {
         await fetch(`${apiURL}/relatorio/despesa/${props.saas}/${props.dataIni}/${props.dataFim}/${props.acomodacao}`)
-            .then(res => res.json())
+            .then(res => res.ok ? res.json() : {})
+            .catch(() => ({}))
             .then(data => {
-                setDados(data)
+                setDados(data ?? {})
             })
     }
 
@@ -60,7 +61,7 @@ export default function DetalheDespesa(props: DetalheDespesaProps) {
                         <img src={props.imagem} alt="" className='bg-primary max-w-56 max-h-28 h-28' />
                     </div>
                     <div className='h-3/4 grid items-center'>
-                        <DespesasR despesas={dados.despesas} />
+                        <DespesasR despesas={dados.despesas ?? []} />
                     </div>
                 </section>
                 : <section style={{ backgroundColor: props.cores.primario }} id='calendario' className={`${!props.editPages[0] && 'pointer-events-none opacity-30'} flex flex-col justify-center items-center text-white p-10 h-screen bg-[${props.cores.primario}] relative`}><div
