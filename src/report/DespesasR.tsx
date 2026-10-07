@@ -1,5 +1,5 @@
 
-export default function DespesasR({ despesas }: { despesas: any[] }) {
+export default function DespesasR({ despesas = [] }: { despesas?: any[] }) {
     return (
         <div>
             <table className='mx-20'>
