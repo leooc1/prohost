@@ -470,7 +470,7 @@ export default function TourRelatorio() {
           </p>
         </div>
       )}
-      {step == 2 && (
+      {step == 2 && idAcomodacao && dataToken?.id && (
         <div className="overflow-scroll pointer-events-auto absolute max-h-dvh w-dvw scroll-default">
           <RelatorioCompleto
             saas={Number(dataToken.id)}
