@@ -24,9 +24,10 @@ export default function DetalheReserva(props: DetalheReservaProps) {
     await fetch(
       `${apiURL}/relatorio/detalhe/${props.saas}/${props.dataIni}/${props.dataFim}/${props.acomodacao}`,
     )
-      .then((res) => res.json())
+      .then((res) => (res.ok ? res.json() : {}))
+      .catch(() => ({}))
       .then((data) => {
-        setDados(data);
+        setDados(data ?? {});
       });
   }
 
@@ -91,7 +92,7 @@ export default function DetalheReserva(props: DetalheReservaProps) {
             />
           </div>
           <section className="h-full flex items-center">
-            <ListaReservaR reservas={dados.reservas} />
+            <ListaReservaR reservas={dados.reservas ?? []} />
           </section>
         </section>
       ) : (
