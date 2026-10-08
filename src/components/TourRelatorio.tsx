@@ -4,18 +4,96 @@ import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 import RelatorioCompletoTour from "../report/RelatorioCompletoTour";
+import PromocaoRelatorio from "./PromocaoRelatorio";
+import { TourBoasVindas } from "./tour/TourBoasVindas";
+
+const prohostLogo = "/prohost-logo.png";
 const imgAC =
   "//af19a0c58ea3d8ff8c151e96f3e2400f.cdn.bubble.io/f1720121395037x748090676094426100/Francisco%20de%20Paula%20600%20BL%201%20ap%20502%20-%2005.jpg";
 const apiURL = import.meta.env.VITE_API_URL;
 
 const mes = ("0" + (new Date().getUTCMonth() + 1)).slice(-2);
 const ano = new Date().getUTCFullYear();
+
+type TourPassoCardProps = {
+  stepLabel: string;
+  stepNumber: number;
+  totalSteps: number;
+  title: string;
+  eyebrow?: string;
+  description?: string;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
+  className?: string;
+};
+
+function TourPassoCard({
+  stepLabel,
+  stepNumber,
+  totalSteps,
+  title,
+  eyebrow,
+  description,
+  children,
+  footer,
+  className = "",
+}: TourPassoCardProps) {
+  const progress = (stepNumber / totalSteps) * 100;
+
+  return (
+    <div
+      className={`w-full max-w-[420px] overflow-hidden rounded-[18px] border border-[#d7dde1] bg-white shadow-[0_18px_40px_rgba(11,21,30,0.12)] ${className}`}
+    >
+      <div className="flex items-center justify-between bg-[#003347] px-4 py-3.5 text-white">
+        <div className="flex items-center gap-2">
+          <img src={prohostLogo} alt="logo do prohost" />
+          <span className="text-[28px] font-black leading-none tracking-[-0.05em]">
+            prohost
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#bce8eb]">
+            {stepLabel}
+          </span>
+          <div className="h-1.5 w-14 overflow-hidden rounded-full bg-white/15">
+            <div
+              className="h-full rounded-full bg-[#18E2B2] transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-[#f4f7f8] px-4 pb-4 pt-5">
+        {eyebrow && (
+          <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.15em] text-[#5d7680]">
+            {eyebrow}
+          </p>
+        )}
+
+        <h2 className="text-[17px] font-bold leading-tight tracking-[-0.03em] text-[#0f2a35]">
+          {title}
+        </h2>
+
+        {description && (
+          <p className="mt-3 text-sm leading-5 text-[#546c77]">{description}</p>
+        )}
+
+        <div className="mt-4">{children}</div>
+
+        {footer && <div className="mt-4">{footer}</div>}
+      </div>
+    </div>
+  );
+}
+
 export default function TourRelatorio() {
   const navigate = useNavigate();
   const [step, setStep] = useState<number>(0);
   const [tipo, setTipo] = useState<string>("terceiro");
   const [nome, setNome] = useState<string>("");
   const [idAcomodacao, setIdAcomodacao] = useState<number>();
+  const [idCategoria, setIdCategoria] = useState<number>();
   const { dataToken } = useContext(SideBarContext);
   const [hospede, setHospede] = useState<any[]>([]);
   const [idHospede, setIdHospede] = useState<number>();
@@ -1916,7 +1994,7 @@ export default function TourRelatorio() {
         if (data.id) {
           setIdAcomodacao(data.id);
           toast.success("Acomodação cadastrada");
-          setStep(1);
+          setStep(2);
         }
       })
       .catch((err) => console.log(err));
@@ -1942,246 +2020,412 @@ export default function TourRelatorio() {
       .catch((err) => console.error(err));
     return retorno;
   }
+  async function adicionarDespesa() {
+    async function categorias() {
+      if (dataToken.id)
+        await fetch(`${apiURL}/categoria_financeiro/${dataToken.id}`, {
+          method: "GET",
+        })
+          .then((data) => data.json())
+          .then(
+            async (
+              data: {
+                cor: string;
+                editavel: Boolean;
+                receita: Boolean;
+                nome: string;
+                id: number;
+                saas: number;
+                tipo_despesa: null | string;
+              }[],
+            ) => {
+              if (data.map((d) => d.nome.toLowerCase()).includes("luz")) {
+                setIdCategoria(
+                  (
+                    data.find((d) => d.nome.toLowerCase().includes("luz")) as {
+                      cor: string;
+                      editavel: Boolean;
+                      receita: Boolean;
+                      nome: string;
+                      id: number;
+                      saas: number;
+                      tipo_despesa: null | string;
+                    }
+                  ).id as number,
+                );
+              } else await createCategoria();
+            },
+          )
+          .catch((err) => console.log(err));
+    }
+    async function createCategoria() {
+      const body = {
+        receita: false,
+        saas: { id: dataToken.id },
+        cor: "#820000",
+        nome: "LUZ",
+        tipo_despesa: "Despesas Fixas",
+      };
+
+      const response = await fetch(`${apiURL}/categoria_financeiro/`, {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (response.ok) {
+        response.json().then((data) => setIdCategoria(data.id));
+      }
+    }
+    categorias();
+  }
+
+  async function createDespesa() {
+    const dateValue = [
+      { data: "2026-09-10", valor: 230 },
+      { data: "2026-08-10", valor: 400 },
+      { data: "2026-07-10", valor: 500 },
+      { data: "2026-06-10", valor: 310 },
+      { data: "2026-05-10", valor: 340 },
+      { data: "2026-04-10", valor: 370 },
+    ];
+    const despesas = dateValue.map((dv) => ({
+      acomodacao: {
+        id: idAcomodacao,
+      },
+      categoria_financeiro: {
+        id: idCategoria,
+      },
+      data: deslocarData(dv.data),
+      canal_reserva: {
+        id: null,
+      },
+      nome: "Luz",
+      saas: {
+        id: dataToken.id,
+      },
+      valor: dv.valor,
+      valor_liq: dv.valor,
+      valor_prop: 0,
+      valor_gestor: 0,
+      comissao_ota: 0,
+      reserva: {
+        id: null,
+      },
+      pago: true,
+      receita: false,
+      tipo_despesa: "Despesas Fixas",
+      recebedor: "",
+      obs: "",
+    }));
+
+    despesas.forEach(async (d) => {
+      await fetch(`${apiURL}/movimentacao/`, {
+        method: "POST",
+        body: JSON.stringify(d),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((data) => data.json())
+        // .then((data) => {
+        //   if (data.id) {
+        //   }
+        // })
+        .catch((err) => console.log(err));
+    });
+  }
 
   useEffect(() => {
     getHospede();
     getCanalReserva();
-    const tour = window.localStorage.getItem("tour") || "true";
-    if (!JSON.parse(tour)) setStep(-1);
+    adicionarDespesa();
+    // if (!JSON.parse(window.localStorage.getItem("tour") || "true")) setStep(-1);
   }, []);
 
   return (
     <div
-      className={`fixed z-50 pointer-events-auto top-0 left-0 w-screen h-screen bg-primary/95 ${step === -1 && "hidden"} transition-all duration-300 
-      ${step !== 5 && "pointer-events-auto"}
-      `}
+      className={`fixed inset-0 z-50 bg-primary/95 transition-all duration-300 ${step === -1 && "hidden"} ${step !== 5 && "pointer-events-auto"} overflow-y-auto`}
     >
       <Toaster />
       {step == 0 && (
-        <div className="pointer-events-auto scale-100 absolute bg-white left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 flex flex-col gap-5 px-6 py-4 rounded-xl md:w-1/2 w-11/12">
-          <h2 className="text-primary text-3xl font-bold">
-            Vamos gerar seu{" "}
-            <strong className="text-secondary">primeiro relatório</strong>
-          </h2>
-          <p className="font-light">
-            O ProHost transforma reservas, hóspedes e movimentações financeiras
-            em indicadores que ajudam você a tomar decisões melhores todos os
-            dias
-          </p>
-          <form className="flex flex-col gap-1">
-            {/* nome do imóvel */}
-            <label htmlFor="identificador" className="flex flex-col">
-              <span className="text-zinc-500 font-medium mb-1 text-xs">
-                Identificador
-                <span className="text-red-500 font-bold"> *</span>
-              </span>
-              <input
-                placeholder="Ex: Apartamento Guarujá"
-                type="text"
-                name="identificador"
-                id="identificador"
-                className={`border ${false ? "border-red-500" : "border-zinc-300"} rounded-md px-2 py-1 outline-none`}
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-              />
-            </label>
-            {/* tipo */}
-            <div
-              className={`grid gap-4 items-center ${tipo == "terceiro" ? "grid-cols-2" : "grid-cols-1"}`}
-            >
-              <label htmlFor="status" className={`flex flex-col`}>
-                <span className="text-zinc-500 font-medium mb-1 text-xs">
-                  Status
-                  <span className="text-red-500 font-bold"> *</span>
-                </span>
-                <select
-                  name="status"
-                  id="status"
-                  className={`border ${false ? "border-red-500" : "border-zinc-300"} rounded-md px-2 py-1 outline-none`}
-                  value={tipo}
-                  onChange={(e) => setTipo(e.target.value)}
-                >
-                  <option value="proprio">Próprio</option>
-                  <option value="terceiro">Terceiro</option>
-                </select>
-              </label>
-              {tipo == "terceiro" && (
-                <label htmlFor="comissao" className="flex flex-col relative">
-                  <span className="text-zinc-500 font-medium mb-1 text-xs">
-                    Comissão
-                    <span className="text-red-500 font-bold"> *</span>
-                  </span>
-                  <input
-                    type="number"
-                    step="0.01"
-                    name="comissao"
-                    id="comissao"
-                    className="border border-zinc-300 rounded-md px-1 input-number py-1 outline-none"
-                    placeholder="%"
-                  />
-                  <span className="absolute right-2 bottom-1">%</span>
-                </label>
-              )}
-            </div>
-          </form>
-          <p className="font-light text-sm text-center">
-            Você completa o restante do cadastro depois, quando quiser.
-          </p>
-          <div className="w-full flex justify-around">
-            <button
-              onClick={() => {
-                {
-                  setStep(step - 1);
-                  window.localStorage.setItem("tour", "false");
-                }
-              }}
-              className="border border-zinc-800 text-zinc-800 font-bold py-2 px-4 rounded-md"
-            >
-              Pular tour
-            </button>
-            <button
-              onClick={async () => {
-                let hospedeId;
-                if (
-                  hospede.filter(
-                    (h) =>
-                      h.nome.toLowerCase() == "Hóspede Padrão".toLowerCase(),
-                  ).length > 0
-                ) {
-                  hospedeId =
-                    hospede.filter(
-                      (h) =>
-                        h.nome.toLowerCase() == "Hóspede Padrão".toLowerCase(),
-                    )[0].id || 0;
-                } else {
-                  hospedeId = await createHospede({
-                    nome: "Hóspede Padrão",
-                    email: null,
-                    saas: { id: dataToken.id },
-                    telefone: null,
-                  });
-                }
-                setIdHospede(hospedeId);
-                const cadastroAcomodacao = z.discriminatedUnion("tipo", [
-                  z.object({
-                    tipo: z.literal("proprio"),
-                    nome: z
-                      .string()
-                      .min(
-                        1,
-                        "Nome da acomodação precisa ter no mínimo 1 caractere",
-                      )
-                      .max(50, "Coloque um nome com no máximo 50 caracteres"),
-
-                    comissao: z.null(),
-                  }),
-
-                  z.object({
-                    tipo: z.literal("terceiro"),
-                    nome: z
-                      .string()
-                      .min(
-                        1,
-                        "Nome da acomodação precisa ter no mínimo 1 caractere",
-                      )
-                      .max(50, "Coloque um nome com no máximo 50 caracteres"),
-
-                    comissao: z
-                      .number({
-                        error: "A comissão deve ser um número",
-                      })
-                      .min(0.01, "A comissão deve ser maior que zero"),
-                  }),
-                ]);
-
-                const comissao =
-                  tipo == "terceiro"
-                    ? (document.getElementById("comissao") as HTMLInputElement)
-                        .value
-                    : null;
-
-                const { success, error } = cadastroAcomodacao.safeParse({
-                  nome,
-                  tipo,
-                  comissao: Number(comissao) > 0 ? Number(comissao) : null,
-                });
-                if (success) {
-                  createAcomodacao(
-                    nome,
-                    tipo,
-                    Number(comissao) > 0 ? Number(comissao) : null,
-                  );
-                } else {
-                  error.issues.forEach((err) => toast.error(err.message));
-                }
-              }}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-md"
-            >
-              Vamos começar &rarr;
-            </button>
-          </div>
+        <div className="pointer-events-auto flex min-h-screen w-full items-center justify-center px-3 py-6 sm:px-4">
+          <TourBoasVindas
+            logoSrc={prohostLogo}
+            onStart={() => {
+              setStep(1);
+            }}
+            onSkip={() => {
+              window.localStorage.setItem("tour", "false");
+              setStep(-1);
+            }}
+          />
         </div>
       )}
       {step == 1 && (
-        <div className="pointer-events-auto scale-100 absolute bg-white left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 flex flex-col gap-5 px-6 py-4 rounded-xl md:w-1/2 w-11/12">
-          <h2 className="text-primary text-3xl font-bold">
-            Agora suba <strong className="text-secondary">suas reservas</strong>
-          </h2>
-          <p className="font-light">
-            Use uma planilha de exemplo para visualizar o relatório. O histórico
-            que você ja tem entra junto.
-          </p>
+        <div className="pointer-events-auto flex min-h-screen w-full items-center justify-center px-3 py-6 sm:px-4">
+          <TourPassoCard
+            stepLabel="Passo 1 de 3"
+            stepNumber={1}
+            totalSteps={3}
+            title="Cadastro da acomodação"
+            description="Vamos gerar seu primeiro relatório. Comece por um cadastro simples e em seguida continue quando quiser."
+            footer={
+              <div className="flex items-center justify-between gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStep(0);
+                  }}
+                  className="text-sm font-medium text-[#526c76] underline underline-offset-2"
+                >
+                  Voltar
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    let hospedeId;
+                    if (
+                      hospede.filter(
+                        (h) =>
+                          h.nome.toLowerCase() ==
+                          "Hóspede Padrão".toLowerCase(),
+                      ).length > 0
+                    ) {
+                      hospedeId =
+                        hospede.filter(
+                          (h) =>
+                            h.nome.toLowerCase() ==
+                            "Hóspede Padrão".toLowerCase(),
+                        )[0].id || 0;
+                    } else {
+                      hospedeId = await createHospede({
+                        nome: "Hóspede Padrão",
+                        email: null,
+                        saas: { id: dataToken.id },
+                        telefone: null,
+                      });
+                    }
+                    setIdHospede(hospedeId);
+                    const cadastroAcomodacao = z.discriminatedUnion("tipo", [
+                      z.object({
+                        tipo: z.literal("proprio"),
+                        nome: z
+                          .string()
+                          .min(
+                            1,
+                            "Nome da acomodação precisa ter no mínimo 1 caractere",
+                          )
+                          .max(
+                            50,
+                            "Coloque um nome com no máximo 50 caracteres",
+                          ),
 
-          <div className="w-full flex flex-col-reverse gap-4 justify-around">
-            <button
-              onClick={() => {
-                {
-                  navigate("/reservas");
-                  window.localStorage.setItem("tour", "false");
-                }
-              }}
-              className="border border-zinc-800 text-zinc-800 font-bold py-2 px-4 rounded-md"
-            >
-              Pular e lançar manualmente
-            </button>
-            <button
-              onClick={async () => {
-                const retornos: string[] = [];
-                await Promise.all(
-                  reservasParaImportar.map(async (imp) => {
-                    await createReserva(imp).then((res) => {
-                      retornos.push(
-                        `${res == 0 ? "Erro: " : "Adicionado: "}` +
-                          `${imp.check_in.split("-")[2]}/${imp.check_in.split("-")[1]}/${imp.check_in.split("-")[0]} => ` +
-                          `${imp.check_out.split("-")[2]}/${imp.check_out.split("-")[1]}/${imp.check_out.split("-")[0]}`,
-                      );
-                      res;
+                        comissao: z.null(),
+                      }),
+
+                      z.object({
+                        tipo: z.literal("terceiro"),
+                        nome: z
+                          .string()
+                          .min(
+                            1,
+                            "Nome da acomodação precisa ter no mínimo 1 caractere",
+                          )
+                          .max(
+                            50,
+                            "Coloque um nome com no máximo 50 caracteres",
+                          ),
+
+                        comissao: z
+                          .number({
+                            error: "A comissão deve ser um número",
+                          })
+                          .min(0.01, "A comissão deve ser maior que zero"),
+                      }),
+                    ]);
+
+                    const comissao =
+                      tipo == "terceiro"
+                        ? (
+                            document.getElementById(
+                              "comissao",
+                            ) as HTMLInputElement
+                          ).value
+                        : null;
+
+                    const { success, error } = cadastroAcomodacao.safeParse({
+                      nome,
+                      tipo,
+                      comissao: Number(comissao) > 0 ? Number(comissao) : null,
                     });
-                  }),
-                );
-                // navigate("/relatorio");
-                alert(retornos.join("\n"));
-                localStorage.setItem("tour", "false");
-                toast("Para sair deste tour, basta atualizar a página.");
-                setStep(2);
-              }}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-md"
-            >
-              Importar reservas de exemplo
-            </button>
-          </div>
-          <p className="font-light text-sm text-center">
-            {nome} cadastrado. <br />
-            Falta um passo para o relatório ficar pronto.
-          </p>
+                    if (success) {
+                      createAcomodacao(
+                        nome,
+                        tipo,
+                        Number(comissao) > 0 ? Number(comissao) : null,
+                      );
+                    } else {
+                      error.issues.forEach((err) => toast.error(err.message));
+                    }
+                  }}
+                  className="flex-1 rounded-md bg-[#0d8d69] px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-[#0a7a5d]"
+                >
+                  Cadastrar e continuar
+                </button>
+              </div>
+            }
+          >
+            <form className="flex flex-col gap-3">
+              <label htmlFor="identificador" className="flex flex-col gap-1.5">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#546c77]">
+                  Identificador
+                  <span className="ml-1 text-[#df3b43]">*</span>
+                </span>
+                <input
+                  placeholder="Ex: Apartamento Guarujá"
+                  type="text"
+                  name="identificador"
+                  id="identificador"
+                  className="rounded-md border border-[#d0d8dc] bg-white px-3 py-2 text-sm text-[#143644] outline-none transition focus:border-[#0f8a79] focus:ring-2 focus:ring-[#0dbf9d]/20"
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                />
+              </label>
+
+              <div
+                className={`grid items-start gap-3 ${tipo == "terceiro" ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"}`}
+              >
+                <label htmlFor="status" className="flex flex-col gap-1.5">
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#546c77]">
+                    Status
+                    <span className="ml-1 text-[#df3b43]">*</span>
+                  </span>
+                  <select
+                    name="status"
+                    id="status"
+                    className="rounded-md border border-[#d0d8dc] bg-white px-3 py-2 text-sm text-[#143644] outline-none transition focus:border-[#0f8a79] focus:ring-2 focus:ring-[#0dbf9d]/20"
+                    value={tipo}
+                    onChange={(e) => setTipo(e.target.value)}
+                  >
+                    <option value="proprio">Próprio</option>
+                    <option value="terceiro">Terceiro</option>
+                  </select>
+                </label>
+
+                {tipo == "terceiro" && (
+                  <label
+                    htmlFor="comissao"
+                    className="relative flex flex-col gap-1.5"
+                  >
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#546c77]">
+                      Comissão
+                      <span className="ml-1 text-[#df3b43]">*</span>
+                    </span>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        step="0.01"
+                        name="comissao"
+                        id="comissao"
+                        className="w-full rounded-md border border-[#d0d8dc] bg-white px-3 py-2 pr-8 text-sm text-[#143644] outline-none transition focus:border-[#0f8a79] focus:ring-2 focus:ring-[#0dbf9d]/20"
+                        placeholder="%"
+                      />
+                      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-[#677d87]">
+                        %
+                      </span>
+                    </div>
+                  </label>
+                )}
+              </div>
+            </form>
+          </TourPassoCard>
         </div>
       )}
       {step == 2 && (
-        <div className="overflow-y-scroll overflow-x-hidden pointer-events-auto absolute max-h-dvh w-dvw scroll-default flex justify-center items-">
+        <div className="pointer-events-auto flex min-h-screen w-full items-center justify-center px-3 py-6 sm:px-4">
+          <TourPassoCard
+            stepLabel="Passo 2 de 3"
+            stepNumber={2}
+            totalSteps={3}
+            title="Importar reservas"
+            description="Use uma planilha de exemplo para visualizar o relatório. O histórico que você já tem entra junto."
+            footer={
+              <div className="flex flex-col gap-3">
+                <button
+                  type="button"
+                  onClick={async (e) => {
+                    e.currentTarget.disabled = true;
+                    e.currentTarget.classList.add("cursor-wait");
+                    e.currentTarget.classList.add("opacity-70");
+                    const retornos: string[] = [];
+                    await createDespesa();
+                    await Promise.all(
+                      reservasParaImportar.map(async (imp) => {
+                        await createReserva(imp).then((res) => {
+                          retornos.push(
+                            `${res == 0 ? "Erro: " : "Adicionado: "}` +
+                              `${imp.check_in.split("-")[2]}/${imp.check_in.split("-")[1]}/${imp.check_in.split("-")[0]} => ` +
+                              `${imp.check_out.split("-")[2]}/${imp.check_out.split("-")[1]}/${imp.check_out.split("-")[0]}`,
+                          );
+                          res;
+                        });
+                      }),
+                    );
+                    console.log(retornos.join("\n"));
+                    setStep(3);
+                  }}
+                  className="w-full rounded-md bg-[#0d8d69] px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-[#0a7a5d]"
+                >
+                  Importar reservas de exemplo
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigate("/reservas");
+                    window.localStorage.setItem("tour", "false");
+                  }}
+                  className="text-sm font-medium text-[#526c76] underline underline-offset-2"
+                >
+                  Pular e lançar manualmente
+                </button>
+              </div>
+            }
+          >
+            <div className="rounded-xl border border-[#dce4e7] bg-white p-3">
+              <div className="mb-3 flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.12em] text-[#526c76]">
+                <span>Arquivo de exemplo</span>
+                <span className="rounded-full bg-[#e7f8f2] px-2 py-0.5 text-[#0f8a79]">
+                  Pronto
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 rounded-lg bg-[#f4f7f8] p-3 text-sm text-[#143644]">
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-[#dfeef0] text-sm font-bold text-[#0f4a5a]">
+                  📄
+                </span>
+                <div className="flex-1">
+                  <p className="font-medium">Planilha de reservas de exemplo</p>
+                  <p className="text-xs text-[#677d87]">
+                    {nome || "Seu cadastro"} · próximo passo para o relatório
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <p className="mt-4 text-center text-xs text-[#526c76]">
+              {nome} cadastrado. <br />
+              Falta um passo para o relatório ficar pronto.
+            </p>
+          </TourPassoCard>
+        </div>
+      )}
+      {step == 3 && (
+        <div className="pointer-events-auto flex min-h-screen w-full justify-center overflow-y-auto px-2 py-4 sm:px-4">
           <RelatorioCompletoTour
             saas={Number(dataToken.id)}
-            // acomodacao={idAcomodacao as number}
-            acomodacao={1021}
+            acomodacao={idAcomodacao as number}
             mes={Number(mes)}
             ano={ano}
             imagem={""}
@@ -2191,6 +2435,17 @@ export default function TourRelatorio() {
               secundario: "#08fab8",
             }}
           />
+          <button
+            className="bg-secondary text-primary top-10 right-5 px-2 py-1 rounded-md fixed h-min"
+            onClick={() => setStep(4)}
+          >
+            Avançar
+          </button>
+        </div>
+      )}
+      {step == 4 && (
+        <div className="pointer-events-auto flex min-h-screen w-full justify-center overflow-y-auto bg-[#f3f5f4] px-3 py-6 sm:px-4 lg:px-6">
+          <PromocaoRelatorio />
         </div>
       )}
     </div>

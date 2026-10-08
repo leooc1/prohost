@@ -4,12 +4,12 @@ import { InputMask } from "@react-input/mask";
 import { intervalToDuration } from "date-fns";
 import Notify from "./notify/Notify";
 
-interface Plan {
+export interface Plan {
   accommodations: number;
   monthlyPrice: number;
 }
 
-const plans: Plan[] = [
+export const plans: Plan[] = [
   { accommodations: 1, monthlyPrice: 24.9 },
   { accommodations: 3, monthlyPrice: 39.9 },
   { accommodations: 5, monthlyPrice: 54.9 },

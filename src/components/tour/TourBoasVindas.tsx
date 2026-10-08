@@ -33,11 +33,11 @@ export function TourBoasVindas({ logoSrc, onStart, onSkip }: TourBoasVindasProps
         <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#4A626D]">
           Bem-vindo ao ProHost
         </p>
-        <h1 className="text-[26px] font-extrabold leading-[1.16] tracking-[-0.02em] sm:text-[30px]">
+        <h1 className="text-sm font-extrabold leading-[1.16] tracking-[-0.02em] sm:text-xl">
           Sua gestão, do jeito que o{" "}
           <span className="text-[#1DE9B6]">proprietário confia</span>
         </h1>
-        <p className="text-base leading-normal">
+        <p className="sm:text-base text-sm leading-normal">
           Reservas, receitas, despesas e repasses em um só lugar, transformados em números
           claros para você decidir e prestar contas.
         </p>

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import CanaisDeReserva from "../components/CanaisDeReserva";
 import NovaIndisponibilidade from "../components/NovaIndisponibilidade";
 import NovaReserva from "../components/NovaReserva";

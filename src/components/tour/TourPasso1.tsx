@@ -2,7 +2,7 @@
 // Renderiza apenas o painel (cartão) do modal. Coloque dentro do overlay/modal
 // que o ProHost já usa no tour.
 
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 
 // AJUSTAR: use os mesmos valores de status que o cadastro de acomodação do sistema espera.
 export type StatusAcomodacao = "TERCEIRO" | "PROPRIO";
@@ -41,9 +41,9 @@ export function TourPasso1({
   const [identificador, setIdentificador] = useState("");
   const [status, setStatus] = useState<StatusAcomodacao>("TERCEIRO");
   const [comissao, setComissao] = useState("");
-  const [erros, setErros] = useState<{ identificador?: string; comissao?: string }>({});
-  const [enviando, setEnviando] = useState(false);
-  const [erroEnvio, setErroEnvio] = useState<string | null>(null);
+  const [erros] = useState<{ identificador?: string; comissao?: string }>({});
+  const [enviando] = useState(false);
+  const [erroEnvio] = useState<string | null>(null);
 
   /* async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();

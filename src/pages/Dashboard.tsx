@@ -526,6 +526,7 @@ export default function Dashboard() {
         dataToken.email == "luisgs.figueiredo_TESTE001@gmail.com" && (
           <TourRelatorio />
         )}
+        <TourRelatorio />
       <h3 className="text-3xl font-semibold mb-7 pt-2">Painel do Negócio</h3>
       <div className="flex flex-wrap gap-4 mb-8">
         <label
