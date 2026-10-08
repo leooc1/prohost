@@ -2140,7 +2140,7 @@ export default function TourRelatorio() {
     getHospede();
     getCanalReserva();
     adicionarDespesa();
-    // if (!JSON.parse(window.localStorage.getItem("tour") || "true")) setStep(-1);
+    if (!JSON.parse(window.localStorage.getItem("tour") || "true")) setStep(-1);
   }, []);
 
   return (
