@@ -28,7 +28,13 @@ const formatarMoeda = (valor: number) =>
     maximumFractionDigits: 2,
   });
 
-export default function PromocaoRelatorio() {
+interface PromocaoRelatorioProps {
+  saas: number;
+}
+
+export default function PromocaoRelatorio(props: PromocaoRelatorioProps) {
+  const apiURL = import.meta.env.VITE_API_URL;
+
   const [quantidadeAcomodacoes, setQuantidadeAcomodacoes] = useState(
     promocao.quantidadeAcomodacoesSelecionada,
   );
@@ -40,7 +46,7 @@ export default function PromocaoRelatorio() {
   const valorPromocional = valorMensal - valorDesconto;
 
   return (
-    <div className="w-full max-w-[1220px] overflow-hidden rounded-[18px] border border-[#dfe5e7] bg-[#f3f5f4] shadow-[0_20px_50px_rgba(15,29,36,0.12)]">
+    <div className="w-full min-w-0 max-w-[1220px] overflow-hidden rounded-[18px] border border-[#dfe5e7] bg-[#f3f5f4] shadow-[0_20px_50px_rgba(15,29,36,0.12)]">
       <div className="flex flex-col gap-3 bg-[#003347] px-4 py-3 text-white sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
           <span className="text-[22px] font-black leading-none tracking-[-0.05em] sm:text-[28px]">
@@ -49,19 +55,23 @@ export default function PromocaoRelatorio() {
         </div>
       </div>
 
-      <div className="grid gap-6 bg-[#eef1f0] p-4 sm:p-6 lg:grid-cols-[1.35fr_0.9fr]">
-        <div className="space-y-5">
-          <div className="rounded-[18px] border border-[#dfe5e7] bg-[#f4f6f5] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
+      <div className="grid min-w-0 gap-4 bg-[#eef1f0] p-3 sm:gap-6 sm:p-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.9fr)]">
+        <div className="min-w-0 space-y-5">
+          <div className="min-w-0 rounded-[18px] border border-[#dfe5e7] bg-[#f4f6f5] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] sm:p-4">
             <h2 className="max-w-[540px] text-[26px] font-black leading-[1.04] tracking-[-0.06em] text-[#0b2d3b] sm:text-[34px] md:text-[46px]">
               Gostou do relatório? <br />
-              Assine com <span className="text-[#0f4a5a]">{promocao.percentualDesconto}%</span> de desconto
+              Assine com{" "}
+              <span className="text-[#0f4a5a]">
+                {promocao.percentualDesconto}%
+              </span>{" "}
+              de desconto
             </h2>
 
             <p className="mt-4 max-w-[560px] text-[15px] leading-7 text-[#4d646d]">
               Em 3 passos você gerou o relatório que seus proprietários
-              gostariam               de receber todo mês. Assine agora e garanta o desconto de{" "}
-              {promocao.percentualDesconto}% nos {promocao.mesesComDesconto} primeiros
-              meses.
+              gostariam de receber todo mês. Assine agora e garanta o desconto
+              de {promocao.percentualDesconto}% nos {promocao.mesesComDesconto}{" "}
+              primeiros meses.
             </p>
 
             <div className="mt-6">
@@ -93,7 +103,8 @@ export default function PromocaoRelatorio() {
 
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-[16px] font-bold tracking-[-0.03em] text-[#0d2f3d]">
-                          Relatório {proprietario.acomodacao.replace("Apto ", "")}{" "}
+                          Relatório{" "}
+                          {proprietario.acomodacao.replace("Apto ", "")}{" "}
                           {promocao.competenciaRelatorio}.pdf
                         </p>
                         <p className="mt-1 text-[12px] text-[#5d7179]">
@@ -109,7 +120,9 @@ export default function PromocaoRelatorio() {
                       </p>
                       <ul className="mt-1 list-disc space-y-1 pl-5">
                         <li>Taxa de ocupação: {promocao.taxaOcupacao}%</li>
-                        <li>Faturamento: R$ {formatarMoeda(promocao.faturamento)}</li>
+                        <li>
+                          Faturamento: R$ {formatarMoeda(promocao.faturamento)}
+                        </li>
                         <li>Repasse: R$ {formatarMoeda(promocao.repasse)}</li>
                       </ul>
                     </div>
@@ -131,7 +144,7 @@ export default function PromocaoRelatorio() {
           </div>
         </div>
 
-        <aside className="rounded-[18px] border border-[#dfe5e7] bg-[#f4f6f5] p-4 shadow-[0_10px_30px_rgba(11,21,30,0.06)]">
+        <aside className="min-w-0 rounded-[18px] border border-[#dfe5e7] bg-[#f4f6f5] p-3 shadow-[0_10px_30px_rgba(11,21,30,0.06)] sm:p-4">
           <h3 className="text-[24px] font-bold tracking-[-0.05em] text-[#0b2d3b] sm:text-[28px]">
             Resumo da sua assinatura
           </h3>
@@ -155,18 +168,18 @@ export default function PromocaoRelatorio() {
           </select>
 
           <div className="mt-5 space-y-3 border-b border-[#dfe5e7] pb-4 text-[15px] text-[#4e6770]">
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex items-start justify-between gap-3">
               <span>Plano mensal</span>
-              <span className="font-medium text-[#0b2d3b]">
+              <span className="whitespace-nowrap font-medium text-[#0b2d3b]">
                 R$ {formatarMoeda(valorMensal)}
               </span>
             </div>
-            <div className="flex items-center justify-between gap-4">
-              <span>
+            <div className="flex items-start justify-between gap-3">
+              <span className="min-w-0">
                 Desconto de {promocao.percentualDesconto}% ·{" "}
                 {promocao.mesesComDesconto} primeiros meses
               </span>
-              <span className="font-medium text-[#0a8b73]">
+              <span className="whitespace-nowrap font-medium text-[#0a8b73]">
                 - R$ {formatarMoeda(valorDesconto)}
               </span>
             </div>
@@ -176,14 +189,14 @@ export default function PromocaoRelatorio() {
             <span className="text-[16px] font-medium text-[#4d646d]">
               Você paga
             </span>
-            <div className="flex items-end gap-1">
+            <div className="flex min-w-0 flex-wrap items-end gap-x-1 gap-y-1">
               <span className="text-[18px] font-black tracking-[-0.06em] text-[#0b2d3b] sm:text-[20px]">
                 R$
               </span>
-              <span className="text-[42px] font-black leading-none tracking-[-0.08em] text-[#0b2d3b] sm:text-[54px]">
+              <span className="whitespace-nowrap text-[clamp(2rem,11vw,3.375rem)] font-black leading-none tracking-[-0.08em] text-[#0b2d3b] sm:text-[54px]">
                 {formatarMoeda(valorPromocional)}
               </span>
-              <span className="pb-2 text-[16px] font-medium text-[#4d646d] sm:text-[18px]">
+              <span className="whitespace-nowrap pb-1 text-[16px] font-medium text-[#4d646d] sm:pb-2 sm:text-[18px]">
                 / mês
               </span>
             </div>
@@ -191,13 +204,32 @@ export default function PromocaoRelatorio() {
 
           <p className="mt-4 text-[14px] leading-6 text-[#4d646d]">
             A partir do {promocao.mesInicioPrecoCheio}º mês, R${" "}
-            {formatarMoeda(valorMensal)}/mês. Esta condição aparece uma
-            única vez, ao final do tour, e não volta depois que o contador zerar.
+            {formatarMoeda(valorMensal)}/mês. Esta condição aparece uma única
+            vez, ao final do tour, e não volta depois que o contador zerar.
           </p>
 
           <button
             type="button"
             className="mt-5 w-full rounded-[12px] bg-[#0d8d69] px-4 py-4 text-[16px] font-black tracking-[-0.04em] text-white transition hover:bg-[#0a7a5d]"
+            onClick={async () => {
+              const result = await fetch(`${apiURL}/assinatura/pos`, {
+                method: "POST",
+                body: JSON.stringify({
+                  saas: props.saas,
+                  value: valorDesconto,
+                  qtdAcomodacao: quantidadeAcomodacoes,
+                }),
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }).then((data) => data.json());
+              console.log(result);
+              if (result.invoiceUrl) {
+                window.localStorage.setItem("tour", "false");
+                window.open(result.invoiceUrl, "_blank");
+                window.location.reload();
+              }
+            }}
           >
             Garantir meus {promocao.percentualDesconto}% de desconto →
           </button>
@@ -205,6 +237,10 @@ export default function PromocaoRelatorio() {
           <button
             type="button"
             className="mt-3 w-full rounded-[12px] border border-[#d4dfe3] bg-white px-4 py-3 text-[15px] font-medium text-[#49616b]"
+            onClick={() => {
+              window.localStorage.setItem("tour", "false");
+              window.location.reload();
+            }}
           >
             Deixar para depois
           </button>

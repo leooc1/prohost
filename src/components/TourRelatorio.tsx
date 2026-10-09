@@ -2444,8 +2444,8 @@ export default function TourRelatorio() {
         </div>
       )}
       {step == 4 && (
-        <div className="pointer-events-auto flex min-h-screen w-full justify-center overflow-y-auto bg-[#f3f5f4] px-3 py-6 sm:px-4 lg:px-6">
-          <PromocaoRelatorio />
+        <div className="pointer-events-auto flex min-h-screen w-full justify-center overflow-y-auto px-3 py-6 sm:px-4 lg:px-6">
+          <PromocaoRelatorio saas={dataToken.id} />
         </div>
       )}
     </div>
