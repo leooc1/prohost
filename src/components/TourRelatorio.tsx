@@ -1979,7 +1979,7 @@ export default function TourRelatorio() {
         nome: nome,
         taxa_limpeza: Number(100),
         numero_hospedes: Number(3),
-        valor_imovel: Number(1),
+        valor_imovel: Number(500000),
         desativado: false,
         saas: {
           id: dataToken.id,

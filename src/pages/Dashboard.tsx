@@ -522,11 +522,8 @@ export default function Dashboard() {
   return loaded ? (
     <div className="w-full px-8">
       {/* {acomodacao[0].id == 0 && <Tour />} */}
-      {acomodacao[0].id == 0 &&
-        dataToken.email == "luisgs.figueiredo_TESTE001@gmail.com" && (
-          <TourRelatorio />
-        )}
-        {/* <TourRelatorio /> */}
+      {acomodacao[0].id == 0 && <TourRelatorio />}
+      {/* <TourRelatorio /> */}
       <h3 className="text-3xl font-semibold mb-7 pt-2">Painel do Negócio</h3>
       <div className="flex flex-wrap gap-4 mb-8">
         <label
