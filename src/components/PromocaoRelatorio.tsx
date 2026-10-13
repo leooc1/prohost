@@ -61,17 +61,119 @@ export default function PromocaoRelatorio(props: PromocaoRelatorioProps) {
             <h2 className="max-w-[540px] text-[26px] font-black leading-[1.04] tracking-[-0.06em] text-[#0b2d3b] sm:text-[34px] md:text-[46px]">
               Gostou do relatório? <br />
               Assine com{" "}
-              <span className="text-[#0f4a5a]">
+              <span className="bg-primary text-secondary">
                 {promocao.percentualDesconto}%
               </span>{" "}
-              de desconto
+              de desconto nos 3 primeiros meses
             </h2>
+            <aside className="min-w-0 rounded-[18px] block md:hidden border border-[#dfe5e7] bg-[#f4f6f5] p-3 shadow-[0_10px_30px_rgba(11,21,30,0.06)] sm:p-4">
+              <h3 className="text-[24px] font-bold tracking-[-0.05em] text-[#0b2d3b] sm:text-[28px]">
+                Resumo da sua assinatura
+              </h3>
+              <p className="mt-2 text-[13px] text-[#546d77]">
+                Acomodações que você administra
+              </p>
+
+              <select
+                value={quantidadeAcomodacoes}
+                onChange={(event) =>
+                  setQuantidadeAcomodacoes(Number(event.target.value))
+                }
+                className="mt-3 w-full rounded-[10px] border border-[#cfd9dd] bg-white px-3 py-3 text-[16px] text-[#0d2f3d] outline-none ring-0"
+              >
+                {plans.map((plan) => (
+                  <option key={plan.accommodations} value={plan.accommodations}>
+                    Até {plan.accommodations} acomoda
+                    {plan.accommodations === 1 ? "ção" : "ções"}
+                  </option>
+                ))}
+              </select>
+
+              <div className="mt-5 space-y-3 border-b border-[#dfe5e7] pb-4 text-[15px] text-[#4e6770]">
+                <div className="flex items-start justify-between gap-3">
+                  <span>Plano mensal</span>
+                  <span className="whitespace-nowrap font-medium text-[#0b2d3b]">
+                    R$ {formatarMoeda(valorMensal)}
+                  </span>
+                </div>
+                <div className="flex items-start justify-between gap-3">
+                  <span className="min-w-0">
+                    Desconto de {promocao.percentualDesconto}% ·{" "}
+                    {promocao.mesesComDesconto} primeiros meses
+                  </span>
+                  <span className="whitespace-nowrap font-medium text-[#0a8b73]">
+                    - R$ {formatarMoeda(valorDesconto)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <span className="text-[16px] font-medium text-[#4d646d]">
+                  Você paga
+                </span>
+                <div className="flex min-w-0 flex-wrap items-end gap-x-1 gap-y-1">
+                  <span className="text-[18px] font-black tracking-[-0.06em] text-[#0b2d3b] sm:text-[20px]">
+                    R$
+                  </span>
+                  <span className="whitespace-nowrap text-[clamp(2rem,11vw,3.375rem)] font-black leading-none tracking-[-0.08em] text-[#0b2d3b] sm:text-[54px]">
+                    {formatarMoeda(valorPromocional)}
+                  </span>
+                  <span className="whitespace-nowrap pb-1 text-[16px] font-medium text-[#4d646d] sm:pb-2 sm:text-[18px]">
+                    / mês
+                  </span>
+                </div>
+              </div>
+
+              <p className="mt-4 text-[14px] leading-6 text-[#4d646d]">
+                A partir do {promocao.mesInicioPrecoCheio}º mês, R${" "}
+                {formatarMoeda(valorMensal)}/mês. Esta condição aparece uma
+                única vez, ao final do tour, e não volta depois que o contador
+                zerar.
+              </p>
+
+              <button
+                type="button"
+                className="mt-5 w-full text-sm rounded-[12px] bg-[#0d8d69] px-4 py-4 text-[16px] font-black tracking-[-0.04em] text-white transition hover:bg-[#0a7a5d]"
+                onClick={async () => {
+                  const result = await fetch(`${apiURL}/assinatura/pos`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                      saas: props.saas,
+                      value: valorDesconto,
+                      qtdAcomodacao: quantidadeAcomodacoes,
+                    }),
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                  }).then((data) => data.json());
+                  console.log(result);
+                  if (result.invoiceUrl) {
+                    window.localStorage.setItem("tour", "0");
+                    window.localStorage.setItem("tour-relatorio", "false");
+                    window.open(result.invoiceUrl, "_blank");
+                    window.location.reload();
+                  }
+                }}
+              >
+                Garantir meus {promocao.percentualDesconto}% de desconto →
+              </button>
+
+              <button
+                type="button"
+                className="mt-3 w-full rounded-[12px] border border-[#d4dfe3] bg-white px-4 py-3 text-[15px] font-medium text-[#49616b]"
+                onClick={() => {
+                  window.localStorage.setItem("tour", "0");
+                  window.localStorage.setItem("tour-relatorio", "false");
+                  window.location.reload();
+                }}
+              >
+                Deixar para depois
+              </button>
+            </aside>
 
             <p className="mt-4 max-w-[560px] text-[15px] leading-7 text-[#4d646d]">
               Em 3 passos você gerou o relatório que seus proprietários
-              gostariam de receber todo mês. Assine agora e garanta o desconto
-              de {promocao.percentualDesconto}% nos {promocao.mesesComDesconto}{" "}
-              primeiros meses.
+              gostariam de receber todo mês.
             </p>
 
             <div className="mt-6">
@@ -144,7 +246,7 @@ export default function PromocaoRelatorio(props: PromocaoRelatorioProps) {
           </div>
         </div>
 
-        <aside className="min-w-0 rounded-[18px] border border-[#dfe5e7] bg-[#f4f6f5] p-3 shadow-[0_10px_30px_rgba(11,21,30,0.06)] sm:p-4">
+        <aside className="min-w-0 md:block hidden rounded-[18px] border border-[#dfe5e7] bg-[#f4f6f5] p-3 shadow-[0_10px_30px_rgba(11,21,30,0.06)] sm:p-4">
           <h3 className="text-[24px] font-bold tracking-[-0.05em] text-[#0b2d3b] sm:text-[28px]">
             Resumo da sua assinatura
           </h3>
@@ -225,7 +327,8 @@ export default function PromocaoRelatorio(props: PromocaoRelatorioProps) {
               }).then((data) => data.json());
               console.log(result);
               if (result.invoiceUrl) {
-                window.localStorage.setItem("tour", "false");
+                window.localStorage.setItem("tour", "0");
+                window.localStorage.setItem("tour-relatorio", "false");
                 window.open(result.invoiceUrl, "_blank");
                 window.location.reload();
               }
@@ -238,7 +341,8 @@ export default function PromocaoRelatorio(props: PromocaoRelatorioProps) {
             type="button"
             className="mt-3 w-full rounded-[12px] border border-[#d4dfe3] bg-white px-4 py-3 text-[15px] font-medium text-[#49616b]"
             onClick={() => {
-              window.localStorage.setItem("tour", "false");
+              window.localStorage.setItem("tour", "0");
+              window.localStorage.setItem("tour-relatorio", "false");
               window.location.reload();
             }}
           >

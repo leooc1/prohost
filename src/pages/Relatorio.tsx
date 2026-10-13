@@ -6,6 +6,7 @@ import {
 import RelatorioCompleto from "../report/RelatorioCompleto";
 import { ModalAlert } from "../components/ModalAlert";
 import Loader from "../components/Loader";
+import Tour from "../components/Tour";
 // import Tour from "../components/Tour";
 
 export default function Relatorio() {
@@ -124,7 +125,7 @@ export default function Relatorio() {
 
   return loaded ? (
     <section className="md:mb-0 mb-20">
-      {/* {localStorage.getItem("tour") == "4" && <Tour />} */}
+      {localStorage.getItem("tour") == "4" && <Tour />}
 
       <SideBarProvider>
         <>

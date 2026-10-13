@@ -2140,7 +2140,8 @@ export default function TourRelatorio() {
     getHospede();
     getCanalReserva();
     adicionarDespesa();
-    if (!JSON.parse(window.localStorage.getItem("tour") || "true")) setStep(-1);
+    if (!JSON.parse(window.localStorage.getItem("tour-relatorio") || "true"))
+      setStep(-1);
   }, []);
 
   return (
@@ -2156,7 +2157,9 @@ export default function TourRelatorio() {
               setStep(1);
             }}
             onSkip={() => {
-              window.localStorage.setItem("tour", "false");
+              window.localStorage.setItem("tour-relatorio", "false");
+              window.localStorage.setItem("tour", "0");
+              location.reload();
               setStep(-1);
             }}
           />
@@ -2384,7 +2387,9 @@ export default function TourRelatorio() {
                   type="button"
                   onClick={() => {
                     navigate("/reservas");
-                    window.localStorage.setItem("tour", "false");
+                    window.localStorage.setItem("tour-relatorio", "false");
+                    window.localStorage.setItem("tour", "0");
+                    location.reload();
                   }}
                   className="text-sm font-medium text-[#526c76] underline underline-offset-2"
                 >
