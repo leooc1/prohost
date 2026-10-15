@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import posthog from "../posthog";
 import { plans } from "./MelhorarPlanos";
 
 const promocao = {
@@ -30,10 +31,18 @@ const formatarMoeda = (valor: number) =>
 
 interface PromocaoRelatorioProps {
   saas: number;
+  origem?: "fim_do_onboarding" | "outra";
 }
 
 export default function PromocaoRelatorio(props: PromocaoRelatorioProps) {
   const apiURL = import.meta.env.VITE_API_URL;
+  useEffect(() => {
+    posthog.capture("oferta_vista", {
+      origem: props.origem ?? "outra",
+      desconto: promocao.percentualDesconto,
+      meses: promocao.mesesComDesconto,
+    });
+  }, [props.origem]);
 
   const [quantidadeAcomodacoes, setQuantidadeAcomodacoes] = useState(
     promocao.quantidadeAcomodacoesSelecionada,

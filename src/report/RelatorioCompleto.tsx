@@ -40,6 +40,7 @@ interface propsRelatorio {
   imagem?: string;
   cores: { primario: string; secundario: string; letra: string };
   onReady?: () => void;
+  onReservationDataLoaded?: (reservas: number) => void;
 }
 
 export default function RelatorioCompleto(props: propsRelatorio) {
@@ -671,6 +672,7 @@ export default function RelatorioCompleto(props: propsRelatorio) {
                 dataFim={`${props.ano}-${("0" + props.mes).slice(-2)}-${diasDoMes(props.mes, props.ano)}`}
                 acomodacao={props.acomodacao}
                 imagem={props.imagem}
+                onDataLoaded={props.onReservationDataLoaded}
               />
               {/* DESEMPENHO E RENTABILIDADE DO IMOVEL */}
               <RentabilidadeDesempenho

@@ -211,7 +211,7 @@ export default function Cadastro() {
                     .then((data) => {
                         if (data.id) {
                             const email = user.email.trim().toLowerCase();
-                            posthog.identify(email, {
+                            posthog.identify(String(data.id), {
                                 email,
                                 name: user.nome,
                             });

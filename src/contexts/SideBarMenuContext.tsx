@@ -14,6 +14,7 @@ export const SideBarProvider = ({ children }: { children: React.JSX.Element }) =
         id: number,
         idUsu: number,
         nome: string,
+        create_date?: string,
         is_admin?: boolean,
         acomodacoes?: string[]
     } | null>(null)

@@ -1,7 +1,8 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
+import posthog from "../posthog";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 import RelatorioCompletoTour from "../report/RelatorioCompletoTour";
 import PromocaoRelatorio from "./PromocaoRelatorio";
@@ -11,6 +12,12 @@ const prohostLogo = "/prohost-logo.png";
 const imgAC =
   "//af19a0c58ea3d8ff8c151e96f3e2400f.cdn.bubble.io/f1720121395037x748090676094426100/Francisco%20de%20Paula%20600%20BL%201%20ap%20502%20-%2005.jpg";
 const apiURL = import.meta.env.VITE_API_URL;
+const TOUR_VERSION = "tour_relatorio_v1";
+const TOUR_STEPS = [
+  "cadastrar_acomodacao",
+  "importar_reservas",
+  "ver_relatorio_demo",
+];
 
 const mes = ("0" + (new Date().getUTCMonth() + 1)).slice(-2);
 const ano = new Date().getUTCFullYear();
@@ -89,7 +96,9 @@ function TourPassoCard({
 
 export default function TourRelatorio() {
   const navigate = useNavigate();
-  const [step, setStep] = useState<number>(0);
+  const [step, setStep] = useState<number>(() =>
+    window.localStorage.getItem("tour-relatorio") === "false" ? -1 : 0,
+  );
   const [tipo, setTipo] = useState<string>("terceiro");
   const [nome, setNome] = useState<string>("");
   const [idAcomodacao, setIdAcomodacao] = useState<number>();
@@ -97,6 +106,8 @@ export default function TourRelatorio() {
   const { dataToken } = useContext(SideBarContext);
   const [hospede, setHospede] = useState<any[]>([]);
   const [idHospede, setIdHospede] = useState<number>();
+  const hasStartedOnboarding = useRef(false);
+  const stepStartedAt = useRef<number | null>(null);
   const [canalReserva, setCanalReserva] = useState<{
     nome: string;
     id: number;
@@ -108,6 +119,30 @@ export default function TourRelatorio() {
 
   const ultimoMesDoArquivo = 9;
   const ultimoAnoDoArquivo = 2026;
+
+  function concluirPasso(passo: number) {
+    const passoNome = TOUR_STEPS[passo - 1];
+    if (!passoNome) return;
+
+    posthog.capture("onboarding_passo_concluido", {
+      passo,
+      passo_nome: passoNome,
+      segundos_no_passo:
+        stepStartedAt.current == null
+          ? 0
+          : Math.max(0, Math.floor((Date.now() - stepStartedAt.current) / 1000)),
+    });
+  }
+
+  function abandonarOnboarding(motivo: "fechou_x" | "clicou_fora" | "navegou_para_outra_tela") {
+    const passoNome =
+      step === 0 ? "boas_vindas" : TOUR_STEPS[Math.min(step, TOUR_STEPS.length) - 1];
+    posthog.capture("onboarding_abandonado", {
+      passo: step,
+      passo_nome: passoNome,
+      motivo,
+    });
+  }
 
   function deslocarData(data: string) {
     const [ano, mes, dia] = data.split("-").map(Number);
@@ -1993,7 +2028,15 @@ export default function TourRelatorio() {
       .then((data) => {
         if (data.id) {
           setIdAcomodacao(data.id);
+          const userId = dataToken?.idUsu ?? dataToken?.id;
+          if (userId != null) {
+            window.localStorage.setItem(
+              `ph_onboarding_demo_accommodation_${userId}`,
+              String(data.id),
+            );
+          }
           toast.success("Acomodação cadastrada");
+          concluirPasso(1);
           setStep(2);
         }
       })
@@ -2140,9 +2183,35 @@ export default function TourRelatorio() {
     getHospede();
     getCanalReserva();
     adicionarDespesa();
-    if (!JSON.parse(window.localStorage.getItem("tour-relatorio") || "true"))
-      setStep(-1);
   }, []);
+
+  useEffect(() => {
+    if (step < 0 || step > TOUR_STEPS.length) return;
+
+    if (step === 0 && !hasStartedOnboarding.current) {
+      const userId = dataToken?.idUsu ?? dataToken?.id;
+      const storageKey =
+        userId == null
+          ? "ph_onboarding_relatorio_started"
+          : `ph_onboarding_relatorio_started_${userId}`;
+      const resumed = window.localStorage.getItem(storageKey) != null;
+      if (!resumed) window.localStorage.setItem(storageKey, String(Date.now()));
+      posthog.capture("onboarding_iniciado", {
+        origem: resumed ? "retomada" : "primeiro_login",
+        versao_tour: TOUR_VERSION,
+      });
+      hasStartedOnboarding.current = true;
+    }
+
+    if (step === 0) return;
+
+    posthog.capture("onboarding_passo_visto", {
+      passo: step,
+      passo_nome: TOUR_STEPS[step - 1],
+      versao_tour: TOUR_VERSION,
+    });
+    stepStartedAt.current = Date.now();
+  }, [step, dataToken?.id, dataToken?.idUsu]);
 
   return (
     <div
@@ -2157,6 +2226,7 @@ export default function TourRelatorio() {
               setStep(1);
             }}
             onSkip={() => {
+              abandonarOnboarding("fechou_x");
               window.localStorage.setItem("tour-relatorio", "false");
               window.localStorage.setItem("tour", "0");
               location.reload();
@@ -2363,19 +2433,25 @@ export default function TourRelatorio() {
                     e.currentTarget.classList.add("opacity-70");
                     const retornos: string[] = [];
                     await createDespesa();
-                    await Promise.all(
+                    const reservasCriadas = await Promise.all(
                       reservasParaImportar.map(async (imp) => {
-                        await createReserva(imp).then((res) => {
+                        return createReserva(imp).then((res) => {
                           retornos.push(
                             `${res == 0 ? "Erro: " : "Adicionado: "}` +
                               `${imp.check_in.split("-")[2]}/${imp.check_in.split("-")[1]}/${imp.check_in.split("-")[0]} => ` +
                               `${imp.check_out.split("-")[2]}/${imp.check_out.split("-")[1]}/${imp.check_out.split("-")[0]}`,
                           );
-                          res;
+                          return res;
                         });
                       }),
                     );
                     console.log(retornos.join("\n"));
+                    if (
+                      reservasCriadas.length > 0 &&
+                      reservasCriadas.every((id) => id > 0)
+                    ) {
+                      concluirPasso(2);
+                    }
                     setStep(3);
                   }}
                   className="w-full rounded-md bg-[#0d8d69] px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-[#0a7a5d]"
@@ -2386,6 +2462,7 @@ export default function TourRelatorio() {
                 <button
                   type="button"
                   onClick={() => {
+                    abandonarOnboarding("navegou_para_outra_tela");
                     navigate("/reservas");
                     window.localStorage.setItem("tour-relatorio", "false");
                     window.localStorage.setItem("tour", "0");
@@ -2442,7 +2519,10 @@ export default function TourRelatorio() {
           />
           <button
             className="bg-secondary text-primary top-10 right-5 px-2 py-1 rounded-md fixed h-min"
-            onClick={() => setStep(4)}
+            onClick={() => {
+              concluirPasso(3);
+              setStep(4);
+            }}
           >
             Avançar
           </button>
@@ -2450,7 +2530,7 @@ export default function TourRelatorio() {
       )}
       {step == 4 && (
         <div className="pointer-events-auto flex min-h-screen w-full justify-center overflow-y-auto px-3 py-6 sm:px-4 lg:px-6">
-          <PromocaoRelatorio saas={dataToken.id} />
+          <PromocaoRelatorio saas={dataToken.id} origem="fim_do_onboarding" />
         </div>
       )}
     </div>

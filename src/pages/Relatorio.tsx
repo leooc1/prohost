@@ -1,4 +1,5 @@
 import { ChangeEvent, useContext, useEffect, useMemo, useState } from "react";
+import posthog, { posthogEnabled } from "../posthog";
 import {
   SideBarContext,
   SideBarProvider,
@@ -121,6 +122,44 @@ export default function Relatorio() {
   function confirmarModal() {
     if (!modalToAlert) return;
     fecharModalAlert();
+  }
+
+  function registrarPrimeiroRelatorio(reservasNoPeriodo: number) {
+    const userId = dataToken?.idUsu;
+    if (!posthogEnabled || userId == null || reservasNoPeriodo <= 0 || !chooseAc) {
+      return;
+    }
+
+    const demoAccommodationKey = `ph_onboarding_demo_accommodation_${userId}`;
+    if (
+      window.localStorage.getItem(demoAccommodationKey) === String(chooseAc)
+    ) {
+      return;
+    }
+
+    const eventKey = `ph_first_report_generated_${userId}`;
+    if (window.localStorage.getItem(eventKey)) return;
+
+    const propriedades: {
+      acomodacoes: number;
+      reservas_no_periodo: number;
+      mes_referencia: string;
+      segundos_desde_cadastro?: number;
+    } = {
+      acomodacoes: allAcomodacoes.length,
+      reservas_no_periodo: reservasNoPeriodo,
+      mes_referencia: `${chooseAno}-${String(chooseMes).padStart(2, "0")}`,
+    };
+    const dataCadastro = Date.parse(dataToken.create_date);
+    if (Number.isFinite(dataCadastro)) {
+      propriedades.segundos_desde_cadastro = Math.max(
+        0,
+        Math.floor((Date.now() - dataCadastro) / 1000),
+      );
+    }
+
+    posthog.capture("primeiro_relatorio_gerado", propriedades);
+    window.localStorage.setItem(eventKey, String(Date.now()));
   }
 
   return loaded ? (
@@ -532,6 +571,7 @@ export default function Relatorio() {
               ano={chooseAno}
               imagem={foto || ""}
               onReady={() => setIsGenerating(false)}
+              onReservationDataLoaded={registrarPrimeiroRelatorio}
               cores={{
                 letra: corLetra,
                 primario: corPrimaria,
