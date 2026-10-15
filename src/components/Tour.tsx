@@ -5,12 +5,16 @@ import dashboard from "../../public/tour/dash.jpeg";
 export default function Tour() {
   const navigate = useNavigate();
 
-  const bg = [dashboard];
-  const [step, setStep] = useState<number>(0);
+  const bg = [
+    dashboard,
+  ];
+  const [step, setStep] = useState<number>(5);
 
   useEffect(() => {
     const tour = window.localStorage.getItem("tour") || "true";
-    if (tour == "false" || Number(tour) < 0) setStep(-1);
+    if (!JSON.parse(tour)) setStep(-1);
+
+    // alert(tour);
 
     const path = location.pathname;
     if (path === "/dashboard") setStep(0);
@@ -21,7 +25,7 @@ export default function Tour() {
   }, []);
   return (
     <div
-      className={`fixed z-50 top-0 left-0 w-screen h-screen bg-black/5 ${step === -1 && "hidden"} transition-all duration-300 
+      className={`fixed hidden z-50 top-0 left-0 w-screen h-screen bg-black/5 ${step === -1 && "hidden"} transition-all duration-300 
       ${step !== 5 && "pointer-events-none"}
       `}
       onClick={() => {

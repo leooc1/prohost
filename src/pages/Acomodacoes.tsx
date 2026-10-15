@@ -23,7 +23,6 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import Tour from "../components/Tour";
 // import Tour from "../components/Tour";
 
 interface Acomodacao {
@@ -412,7 +411,10 @@ export default function Acomodacoes() {
 
   return loaded ? (
     <div className="md:w-main w-full px-8 md:mb-0 mb-12">
-      {localStorage.getItem("tour") == "1" && <Tour />}
+      {/* {proprio.length === 0 &&
+        terceiro.length === 0 &&
+        desativados.length === 0 && <Tour />} */}
+      {/* {localStorage.getItem("tour") == "1" && <Tour />} */}
 
       {permissao == 0 && <SemPermissao />}
       <div className="mb-7 pt-2 flex justify-between gap-5 flex-wrap">

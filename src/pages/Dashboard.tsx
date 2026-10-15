@@ -9,7 +9,6 @@ import ResultadosGestorSkeleton from "../components/skeleton/ResultadosGestorSke
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 // import Tour from "../components/Tour";
 import TourRelatorio from "../components/TourRelatorio";
-import Tour from "../components/Tour";
 interface Acomodacao {
   id: number;
   tipo: string;
@@ -522,7 +521,7 @@ export default function Dashboard() {
 
   return loaded ? (
     <div className="w-full px-8">
-      {localStorage.getItem("tour") == "0" && <Tour />}
+      {/* {acomodacao[0].id == 0 && <Tour />} */}
       {acomodacao[0].id == 0 && <TourRelatorio />}
       {/* <TourRelatorio /> */}
       <h3 className="text-3xl font-semibold mb-7 pt-2">Painel do Negócio</h3>

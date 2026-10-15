@@ -7,7 +7,6 @@ import ListaMovimentacoes from "../components/list/ListaMovimentacoes";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 import Loader from "../components/Loader";
 import SemPermissao from "../components/SemPermissao";
-import Tour from "../components/Tour";
 // import Tour from "../components/Tour";
 
 interface Movimentacao {
@@ -512,7 +511,7 @@ export default function Financeiro() {
   ]);
   return loaded ? (
     <div className="w-full md:mb-0 mb-24">
-      {localStorage.getItem("tour") == "3" && <Tour />}
+      {/* {localStorage.getItem("tour") == "3" && <Tour />} */}
 
       {permissao == 0 && <SemPermissao />}
       <TopBar>
