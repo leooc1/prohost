@@ -49,8 +49,8 @@ export default function SidebarMenu({ route }: { route: string }) {
         .then((data) => {
           setDataToken(data);
           const email = data?.email?.trim().toLowerCase();
-          if (data?.idUsu != null) {
-            posthog.identify(String(data.idUsu), {
+          if (email) {
+            posthog.identify(email, {
               email,
               name: data.nome,
               conta_criada_em: data.create_date,

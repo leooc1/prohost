@@ -36,9 +36,8 @@ export default function Auth() {
                             .then((response) => response.json())
                             .then((user) => {
                                 const email = user?.email?.trim().toLowerCase();
-                                const userId = user?.idUsu;
-                                if (userId != null) {
-                                    posthog.identify(String(userId), {
+                                if (email) {
+                                    posthog.identify(email, {
                                         email,
                                         name: user.nome,
                                         conta_criada_em: user.create_date,

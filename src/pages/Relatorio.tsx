@@ -1,5 +1,4 @@
 import { ChangeEvent, useContext, useEffect, useMemo, useState } from "react";
-import posthog, { posthogEnabled } from "../posthog";
 import {
   SideBarContext,
   SideBarProvider,
@@ -7,6 +6,7 @@ import {
 import RelatorioCompleto from "../report/RelatorioCompleto";
 import { ModalAlert } from "../components/ModalAlert";
 import Loader from "../components/Loader";
+import Tour from "../components/Tour";
 // import Tour from "../components/Tour";
 
 export default function Relatorio() {
@@ -123,47 +123,9 @@ export default function Relatorio() {
     fecharModalAlert();
   }
 
-  function registrarPrimeiroRelatorio(reservasNoPeriodo: number) {
-    const userId = dataToken?.idUsu;
-    if (!posthogEnabled || userId == null || reservasNoPeriodo <= 0 || !chooseAc) {
-      return;
-    }
-
-    const demoAccommodationKey = `ph_onboarding_demo_accommodation_${userId}`;
-    if (
-      window.localStorage.getItem(demoAccommodationKey) === String(chooseAc)
-    ) {
-      return;
-    }
-
-    const eventKey = `ph_first_report_generated_${userId}`;
-    if (window.localStorage.getItem(eventKey)) return;
-
-    const propriedades: {
-      acomodacoes: number;
-      reservas_no_periodo: number;
-      mes_referencia: string;
-      segundos_desde_cadastro?: number;
-    } = {
-      acomodacoes: allAcomodacoes.length,
-      reservas_no_periodo: reservasNoPeriodo,
-      mes_referencia: `${chooseAno}-${String(chooseMes).padStart(2, "0")}`,
-    };
-    const dataCadastro = Date.parse(dataToken.create_date);
-    if (Number.isFinite(dataCadastro)) {
-      propriedades.segundos_desde_cadastro = Math.max(
-        0,
-        Math.floor((Date.now() - dataCadastro) / 1000),
-      );
-    }
-
-    posthog.capture("primeiro_relatorio_gerado", propriedades);
-    window.localStorage.setItem(eventKey, String(Date.now()));
-  }
-
   return loaded ? (
     <section className="md:mb-0 mb-20">
-      {/* {localStorage.getItem("tour") == "4" && <Tour />} */}
+      {localStorage.getItem("tour") == "4" && <Tour />}
 
       <SideBarProvider>
         <>
@@ -570,7 +532,6 @@ export default function Relatorio() {
               ano={chooseAno}
               imagem={foto || ""}
               onReady={() => setIsGenerating(false)}
-              onReservationDataLoaded={registrarPrimeiroRelatorio}
               cores={{
                 letra: corLetra,
                 primario: corPrimaria,

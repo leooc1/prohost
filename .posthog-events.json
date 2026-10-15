@@ -53,35 +53,5 @@
     "event_name": "password_reset_requested",
     "event_description": "User requests a password reset email.",
     "file": "src/pages/EsqueciSenha.tsx"
-  },
-  {
-    "event_name": "onboarding_iniciado",
-    "event_description": "The onboarding tour is shown for the first time or resumed.",
-    "file": "src/components/TourRelatorio.tsx"
-  },
-  {
-    "event_name": "onboarding_passo_visto",
-    "event_description": "An onboarding tour step is displayed to the user.",
-    "file": "src/components/TourRelatorio.tsx"
-  },
-  {
-    "event_name": "onboarding_passo_concluido",
-    "event_description": "The user successfully completes an onboarding tour step.",
-    "file": "src/components/TourRelatorio.tsx"
-  },
-  {
-    "event_name": "onboarding_abandonado",
-    "event_description": "The user leaves the onboarding tour before completing it.",
-    "file": "src/components/TourRelatorio.tsx"
-  },
-  {
-    "event_name": "primeiro_relatorio_gerado",
-    "event_description": "The user's first report contains at least one real reservation for a non-demo accommodation.",
-    "file": "src/pages/Relatorio.tsx"
-  },
-  {
-    "event_name": "oferta_vista",
-    "event_description": "The 70% three-month subscription offer is displayed.",
-    "file": "src/components/PromocaoRelatorio.tsx"
   }
 ]
