@@ -69,10 +69,26 @@ export default function Auth() {
       })
       .catch((err) => console.log(err));
   }
+  async function autoLogin(token: string) {
+    await fetch(`${apiURL}/users/auto-login/${token}`, {
+      method: "GET",
+    })
+      .then((data) => {
+        if (data.status == 200) return data.json();
+        else return null;
+      })
+      .then(async (data) => {
+        if (data) {
+          await logar({ email: data.email, senha: data.senha });
+          console.log(data);
+        }
+      })
+      .catch((err) => console.log(err));
+  }
 
   useEffect(() => {
-    if (params.email && params.senha) {
-      logar({ email: params.email, senha: params.senha });
+    if (params.token) {
+      autoLogin(params.token);
       // console.log({ email: params.email, senha: params.senha });
     }
   }, []);
