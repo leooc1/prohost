@@ -79,11 +79,11 @@ export default function Auth() {
       })
       .then(async (data) => {
         if (data) {
-          posthog.capture("login_completed");
           window.localStorage.setItem("ph_token_acc", data.token);
           window.localStorage.removeItem("ph_user_data_lg");
           window.location.assign("/");
         }
+        else location.assign('/auth')
       })
       .catch((err) => console.log(err));
   }
@@ -91,7 +91,6 @@ export default function Auth() {
   useEffect(() => {
     if (params.token) {
       autoLogin(params.token);
-      // console.log({ email: params.email, senha: params.senha });
     }
   }, []);
 
