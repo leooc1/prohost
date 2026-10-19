@@ -79,8 +79,10 @@ export default function Auth() {
       })
       .then(async (data) => {
         if (data) {
-          await logar({ email: data.email, senha: data.senha });
-          console.log(data);
+          posthog.capture("login_completed");
+          window.localStorage.setItem("ph_token_acc", data.token);
+          window.localStorage.removeItem("ph_user_data_lg");
+          window.location.assign("/");
         }
       })
       .catch((err) => console.log(err));
