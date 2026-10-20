@@ -1,4 +1,4 @@
-import posthog from "../posthog";
+import posthog, { identifyUser } from "../posthog";
 import { useContext, useEffect, useState } from "react";
 import prohostLogo from "/prohost-logo.png";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
@@ -41,21 +41,23 @@ export default function SidebarMenu({ route }: { route: string }) {
       })
         .then((data) => {
           if (data.status == 500) {
+            posthog.reset();
+            window.localStorage.removeItem("ph_token_acc");
             window.location.assign("/auth");
+            return null;
           } else {
             return data.json();
           }
         })
         .then((data) => {
+          if (!data) return;
+
           setDataToken(data);
-          const email = data?.email?.trim().toLowerCase();
-          if (email) {
-            posthog.identify(email, {
-              email,
-              name: data.nome,
-              conta_criada_em: data.create_date,
-            });
-          }
+          identifyUser({
+            email: data?.email,
+            nome: data?.nome,
+            create_date: data?.create_date,
+          });
         })
         .catch((err) => console.log(err));
     } else {

@@ -1,4 +1,4 @@
-import posthog from "../posthog";
+import posthog, { identifyUser } from "../posthog";
 import { useEffect, useState } from "react";
 import prohostLogo from "/prohost-logo.png";
 import Notify from "../components/notify/Notify";
@@ -41,14 +41,11 @@ export default function Auth() {
             fetch(`${apiURL}/users/token/${data.token}`, { method: "GET" })
               .then((response) => response.json())
               .then((user) => {
-                const email = user?.email?.trim().toLowerCase();
-                if (email) {
-                  posthog.identify(email, {
-                    email,
-                    name: user.nome,
-                    conta_criada_em: user.create_date,
-                  });
-                }
+                identifyUser({
+                  email: user?.email,
+                  nome: user?.nome,
+                  create_date: user?.create_date,
+                });
               })
               .catch((err) => console.log(err))
               .finally(() => {

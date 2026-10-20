@@ -1,4 +1,4 @@
-import posthog from '../posthog';
+import { identifyUser } from '../posthog';
 import { InputMask } from "@react-input/mask"
 import { useContext, useState } from "react"
 import { AssinaturaContext } from "../contexts/AssinaturaContext"
@@ -212,10 +212,9 @@ export default function CadastroSemTrial() {
                     .then(data => data.json())
                     .then((data) => {
                         if (data.id) {
-                            const email = user.email.trim().toLowerCase();
-                            posthog.identify(email, {
-                                email,
-                                name: user.nome,
+                            identifyUser({
+                                email: user.email,
+                                nome: user.nome,
                             });
                             setNotify({ type: 1, text: 'Criado!' })
                             setShowNotify(true)
