@@ -9,7 +9,8 @@ if (posthogConfigured) {
     api_host: posthogHost,
     defaults: '2026-05-30',
     autocapture: false,//autocapture
-    capture_pageview: 'history_change',
+    capture_pageview: false,
+    capture_pageleave: false,
   });
   posthog.startExceptionAutocapture({
     capture_unhandled_errors: true,
