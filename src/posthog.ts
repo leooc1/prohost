@@ -8,7 +8,7 @@ if (posthogConfigured) {
   posthog.init(posthogKey, {
     api_host: posthogHost,
     defaults: '2026-05-30',
-    autocapture: false,
+    autocapture: false,//autocapture
     capture_pageview: 'history_change',
   });
   posthog.startExceptionAutocapture({
