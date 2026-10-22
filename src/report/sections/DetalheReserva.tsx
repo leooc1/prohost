@@ -14,6 +14,7 @@ type DetalheReservaProps = {
   dataIni: string;
   dataFim: string;
   acomodacao: number;
+  onDataLoaded?: (hasReservations: boolean) => void;
 };
 
 export default function DetalheReserva(props: DetalheReservaProps) {
@@ -27,6 +28,9 @@ export default function DetalheReserva(props: DetalheReservaProps) {
       .then((res) => res.json())
       .then((data) => {
         setDados(data);
+        props.onDataLoaded?.(
+          Array.isArray(data?.reservas) && data.reservas.length > 0,
+        );
       });
   }
 

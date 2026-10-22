@@ -1,8 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
+import posthog from "../posthog";
 import RelatorioCompletoTour from "../report/RelatorioCompletoTour";
 import PromocaoRelatorio from "./PromocaoRelatorio";
 import { TourBoasVindas } from "./tour/TourBoasVindas";
@@ -14,6 +15,11 @@ const apiURL = import.meta.env.VITE_API_URL;
 
 const mes = ("0" + (new Date().getUTCMonth() + 1)).slice(-2);
 const ano = new Date().getUTCFullYear();
+const ONBOARDING_STEP_NAMES: Record<number, string> = {
+  1: "Cadastro da acomodação",
+  2: "Importar reservas",
+  3: "Visualizar relatório",
+};
 
 type TourPassoCardProps = {
   stepLabel: string;
@@ -90,6 +96,8 @@ function TourPassoCard({
 export default function TourRelatorio() {
   const navigate = useNavigate();
   const [step, setStep] = useState<number>(0);
+  const onboardingStarted = useRef(false);
+  const previousStep = useRef(step);
   const [tipo, setTipo] = useState<string>("terceiro");
   const [nome, setNome] = useState<string>("");
   const [idAcomodacao, setIdAcomodacao] = useState<number>();
@@ -108,6 +116,35 @@ export default function TourRelatorio() {
 
   const ultimoMesDoArquivo = 9;
   const ultimoAnoDoArquivo = 2026;
+
+  function trackStepCompleted(stepNumber: number) {
+    posthog.capture("onboarding_passo_concluido", {
+      numero_passo: stepNumber,
+      nome_passo: ONBOARDING_STEP_NAMES[stepNumber],
+    });
+  }
+
+  function trackOnboardingAbandoned(stepNumber: number) {
+    if (!onboardingStarted.current) return;
+
+    posthog.capture("onboarding_abandonado", {
+      numero_passo: stepNumber,
+      nome_passo:
+        stepNumber === 0
+          ? "Boas-vindas"
+          : ONBOARDING_STEP_NAMES[stepNumber],
+    });
+  }
+
+  function handleTourReportDataLoaded(hasReservations: boolean) {
+    if (!hasReservations || !dataToken?.id) return;
+
+    const firstReportKey = `ph-primeiro-relatorio-gerado-${dataToken.id}`;
+    if (window.localStorage.getItem(firstReportKey)) return;
+
+    posthog.capture("primeiro_relatorio_gerado");
+    window.localStorage.setItem(firstReportKey, "true");
+  }
 
   function deslocarData(data: string) {
     const [ano, mes, dia] = data.split("-").map(Number);
@@ -1994,6 +2031,7 @@ export default function TourRelatorio() {
         if (data.id) {
           setIdAcomodacao(data.id);
           toast.success("Acomodação cadastrada");
+          trackStepCompleted(1);
           setStep(2);
         }
       })
@@ -2144,6 +2182,29 @@ export default function TourRelatorio() {
       setStep(-1);
   }, []);
 
+  useEffect(() => {
+    if (
+      step === 0 &&
+      !onboardingStarted.current &&
+      JSON.parse(window.localStorage.getItem("tour-relatorio") || "true")
+    ) {
+      onboardingStarted.current = true;
+      posthog.capture("onboarding_iniciado");
+    }
+
+    if (previousStep.current !== step) {
+      if (step >= 1 && step <= 3) {
+        posthog.capture("onboarding_passo_visto", {
+          numero_passo: step,
+          nome_passo: ONBOARDING_STEP_NAMES[step],
+        });
+      } else if (step === 4) {
+        posthog.capture("oferta_vista", { percentual_desconto: 70 });
+      }
+      previousStep.current = step;
+    }
+  }, [step]);
+
   return (
     <div
       className={`fixed inset-0 z-50 bg-primary/95 transition-all duration-300 ${step === -1 && "hidden"} ${step !== 5 && "pointer-events-auto"} overflow-y-auto`}
@@ -2157,6 +2218,7 @@ export default function TourRelatorio() {
               setStep(1);
             }}
             onSkip={() => {
+              trackOnboardingAbandoned(0);
               window.localStorage.setItem("tour-relatorio", "false");
               window.localStorage.setItem("tour", "0");
               location.reload();
@@ -2363,18 +2425,23 @@ export default function TourRelatorio() {
                     e.currentTarget.classList.add("opacity-70");
                     const retornos: string[] = [];
                     await createDespesa();
-                    await Promise.all(
+                    const reservasImportadas = await Promise.all(
                       reservasParaImportar.map(async (imp) => {
-                        await createReserva(imp).then((res) => {
-                          retornos.push(
-                            `${res == 0 ? "Erro: " : "Adicionado: "}` +
-                              `${imp.check_in.split("-")[2]}/${imp.check_in.split("-")[1]}/${imp.check_in.split("-")[0]} => ` +
-                              `${imp.check_out.split("-")[2]}/${imp.check_out.split("-")[1]}/${imp.check_out.split("-")[0]}`,
-                          );
-                          res;
-                        });
+                        const res = await createReserva(imp);
+                        retornos.push(
+                          `${res == 0 ? "Erro: " : "Adicionado: "}` +
+                            `${imp.check_in.split("-")[2]}/${imp.check_in.split("-")[1]}/${imp.check_in.split("-")[0]} => ` +
+                            `${imp.check_out.split("-")[2]}/${imp.check_out.split("-")[1]}/${imp.check_out.split("-")[0]}`,
+                        );
+                        return res;
                       }),
                     );
+                    if (
+                      reservasImportadas.length > 0 &&
+                      reservasImportadas.every((id) => id > 0)
+                    ) {
+                      trackStepCompleted(2);
+                    }
                     console.log(retornos.join("\n"));
                     setStep(3);
                   }}
@@ -2386,6 +2453,7 @@ export default function TourRelatorio() {
                 <button
                   type="button"
                   onClick={() => {
+                    trackOnboardingAbandoned(2);
                     navigate("/reservas");
                     window.localStorage.setItem("tour-relatorio", "false");
                     window.localStorage.setItem("tour", "0");
@@ -2439,10 +2507,14 @@ export default function TourRelatorio() {
               primario: "#003347",
               secundario: "#08fab8",
             }}
+            onDataLoaded={handleTourReportDataLoaded}
           />
           <button
             className="bg-secondary text-primary top-10 right-5 px-2 py-1 rounded-md fixed h-min"
-            onClick={() => setStep(4)}
+            onClick={() => {
+              trackStepCompleted(3);
+              setStep(4);
+            }}
           >
             Avançar
           </button>

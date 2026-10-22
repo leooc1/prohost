@@ -8,6 +8,7 @@ import { ModalAlert } from "../components/ModalAlert";
 import Loader from "../components/Loader";
 import Tour from "../components/Tour";
 // import Tour from "../components/Tour";
+import posthog from "../posthog";
 
 export default function Relatorio() {
   const apiURL = import.meta.env.VITE_API_URL;
@@ -121,6 +122,16 @@ export default function Relatorio() {
   function confirmarModal() {
     if (!modalToAlert) return;
     fecharModalAlert();
+  }
+
+  function handleReportDataLoaded(hasReservations: boolean) {
+    if (!hasReservations || !dataToken?.id) return;
+
+    const firstReportKey = `ph-primeiro-relatorio-gerado-${dataToken.id}`;
+    if (localStorage.getItem(firstReportKey)) return;
+
+    posthog.capture("primeiro_relatorio_gerado");
+    localStorage.setItem(firstReportKey, "true");
   }
 
   return loaded ? (
@@ -532,6 +543,7 @@ export default function Relatorio() {
               ano={chooseAno}
               imagem={foto || ""}
               onReady={() => setIsGenerating(false)}
+              onDataLoaded={handleReportDataLoaded}
               cores={{
                 letra: corLetra,
                 primario: corPrimaria,
