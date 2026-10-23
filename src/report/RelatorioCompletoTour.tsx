@@ -39,9 +39,13 @@ interface propsRelatorio {
   cores: { primario: string; secundario: string; letra: string };
   onReady?: () => void;
   onDataLoaded?: (hasReservations: boolean) => void;
+  onScrollEnd?: () => void;
 }
 
 export default function RelatorioCompletoTour(props: propsRelatorio) {
+  const reportEndRef = useRef<HTMLDivElement>(null);
+  const hasReachedEnd = useRef(false);
+
   const chart = (
     <svg
       className="w-10 h-fit"
@@ -283,6 +287,21 @@ export default function RelatorioCompletoTour(props: propsRelatorio) {
       props.onReady?.();
     });
   }, [props.saas, props.acomodacao, props.mes, props.ano]);
+
+  useEffect(() => {
+    const reportEnd = reportEndRef.current;
+    if (!loaded || !reportEnd || !props.onScrollEnd) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !hasReachedEnd.current) {
+        hasReachedEnd.current = true;
+        props.onScrollEnd?.();
+      }
+    });
+
+    observer.observe(reportEnd);
+    return () => observer.disconnect();
+  }, [loaded, props.onScrollEnd]);
 
   return (
     <div className="flex flex-col">
@@ -742,6 +761,7 @@ export default function RelatorioCompletoTour(props: propsRelatorio) {
               </section>
             </div>
           </div>
+          <div ref={reportEndRef} aria-hidden="true" className="h-px" />
         </div>
       )}
     </div>

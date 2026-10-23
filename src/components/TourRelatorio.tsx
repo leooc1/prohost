@@ -117,10 +117,14 @@ export default function TourRelatorio() {
   const ultimoMesDoArquivo = 9;
   const ultimoAnoDoArquivo = 2026;
 
-  function trackStepCompleted(stepNumber: number) {
+  function trackStepCompleted(
+    stepNumber: number,
+    properties: Record<string, number> = {},
+  ) {
     posthog.capture("onboarding_passo_concluido", {
       numero_passo: stepNumber,
       nome_passo: ONBOARDING_STEP_NAMES[stepNumber],
+      ...properties,
     });
   }
 
@@ -2436,11 +2440,13 @@ export default function TourRelatorio() {
                         return res;
                       }),
                     );
-                    if (
-                      reservasImportadas.length > 0 &&
-                      reservasImportadas.every((id) => id > 0)
-                    ) {
-                      trackStepCompleted(2);
+                    const quantidadeImportada = reservasImportadas.filter(
+                      (id) => id > 0,
+                    ).length;
+                    if (quantidadeImportada > 0) {
+                      trackStepCompleted(2, {
+                        quantidade_reservas_importadas: quantidadeImportada,
+                      });
                     }
                     console.log(retornos.join("\n"));
                     setStep(3);
@@ -2508,16 +2514,11 @@ export default function TourRelatorio() {
               secundario: "#08fab8",
             }}
             onDataLoaded={handleTourReportDataLoaded}
-          />
-          <button
-            className="bg-secondary text-primary top-10 right-5 px-2 py-1 rounded-md fixed h-min"
-            onClick={() => {
+            onScrollEnd={() => {
               trackStepCompleted(3);
               setStep(4);
             }}
-          >
-            Avançar
-          </button>
+          />
         </div>
       )}
       {step == 4 && (
