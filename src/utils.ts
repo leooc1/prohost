@@ -15,3 +15,42 @@ export function getCookieValid(name: string) {
 export function deleteCookie(name: string) {
   document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=strict`;
 }
+
+export const options = {
+  get(token?: string) {
+    return {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+  },
+  post(body: Record<string, any>, token?: string) {
+    return {
+      method: 'POST',
+      body: JSON.stringify({ ...body }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+    };
+  },
+  put(body: Record<string, any>, token?: string) {
+    return {
+      method: 'PUT',
+      body: JSON.stringify({ ...body }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+    };
+  },
+  delete(token?: string) {
+    return {
+      method: 'DELETE',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+  },
+};

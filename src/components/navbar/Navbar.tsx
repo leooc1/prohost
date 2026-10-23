@@ -6,29 +6,33 @@ import RecorrenciaList from './RecorrenciaList';
 
 const abas = [
   {
-    to: '/',
-    text: 'Home',
+    to: '/acomodacao',
+    text: 'acomodacao',
   },
   {
-    to: '/page2',
-    text: 'Page 2',
+    to: '/reserva',
+    text: 'reserva',
   },
   {
-    to: '/page3',
-    text: 'Page 3',
+    to: '/financeiro',
+    text: 'financeiro',
   },
   {
-    to: '/mouse-follow',
-    text: 'Seguir mouse',
+    to: '/dashboard',
+    text: 'dashboard',
   },
   {
-    to: '/scroll-e-l-i',
-    text: 'Itens entrando e saindo da tela',
+    to: '/relatorio',
+    text: 'relatorio',
+  },
+  {
+    to: '/hospede',
+    text: 'hospede',
   },
 ];
 export default function Navbar() {
   const menuRef = useRef<HTMLInputElement>(null);
-  
+
   return (
     <div className="drawer">
       <input
@@ -77,7 +81,9 @@ export default function Navbar() {
                 if (menuRef.current) menuRef.current.checked = false;
               }}
             >
-              <Link to={a.to} className='text-white'>{a.text}</Link>
+              <Link to={a.to} className="text-white">
+                {a.text}
+              </Link>
             </li>
           ))}
         </ul>
