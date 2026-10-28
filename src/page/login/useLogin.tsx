@@ -2,7 +2,6 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { z } from 'zod';
 import { options, setCookie } from '../../utils';
-import { useNavigate } from 'react-router-dom';
 const apiURL = import.meta.env.VITE_API_URL;
 
 export function useLogin() {
@@ -13,7 +12,6 @@ export function useLogin() {
   const [verSenha, setVerSenha] = useState(false);
   const [login, setLogin] = useState({ email: '', senha: '' });
   const [loginDisable, setLoginDisable] = useState<boolean>(false);
-  const navigate = useNavigate();
 
   function toggleVerSenha() {
     setVerSenha((verSenha) => !verSenha);

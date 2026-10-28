@@ -44,11 +44,11 @@ export default function Navbar() {
       <div className="drawer-content min-h-dvh">
         <section
           id="top-bar"
-          className="bg-zinc-100 h-20 shadow-md shadow-zinc-500/50 rounded-xl fixed top-2 inset-0 flex justify-between items-center mx-2 px-8 z-10"
+          className="bg-zinc-100 h-16 shadow-md shadow-zinc-500/50 rounded-xl fixed top-2 inset-0 flex justify-between items-center mx-2 px-8 z-10"
         >
           <div>
             <label htmlFor="side-menu" className="cursor-pointer drawer-button">
-              <Menu className="text-black md:size-10 size-8" />
+              <Menu className="text-black size-8" />
             </label>
           </div>
           <div className="flex gap-8">
@@ -59,7 +59,7 @@ export default function Navbar() {
               <ProfileDropdown />
             </button>
             <button>
-              <BadgeQuestionMark className="text-black md:size-10 size-8" />
+              <BadgeQuestionMark className="text-black size-8" />
             </button>
           </div>
         </section>

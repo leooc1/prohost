@@ -6,7 +6,7 @@ export default function ProfileDropdown() {
     <div className="dropdown dropdown-center ">
       <div tabIndex={0} role="button" className="cursor-pointer">
         <div className="rounded-full">
-          <UserPen className="text-black md:size-10 size-8" />
+          <UserPen className="text-black size-8" />
         </div>
       </div>
       <ul

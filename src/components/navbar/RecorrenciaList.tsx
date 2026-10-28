@@ -5,8 +5,8 @@ export default function RecorrenciaList() {
     <div className="dropdown dropdown-center ">
       <div tabIndex={0} role="button" className="cursor-pointer">
         <div className="rounded-full indicator">
-          <div className="indicator-item badge badge-primary text-white font-bold tracking-widest md:text-base text-xs">10</div>
-          <Bell className="text-black md:size-10 size-8" />
+          <div className="indicator-item badge badge-error badge-sm text-white font-bold tracking-widest ">10</div>
+          <Bell className="text-black size-8" />
         </div>
       </div>
       <ul
