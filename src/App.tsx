@@ -5,6 +5,9 @@ import Navbar from './components/navbar/Navbar';
 import { getCookieValid } from './utils';
 import { Toaster } from 'react-hot-toast';
 import Acomodacao from './page/acomodacao/Acomodacao';
+import Reserva from './page/reserva/Reserva';
+import Calendario from './page/reserva/calendario/Calendario';
+import Lista from './page/reserva/lista/Lista';
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
@@ -26,14 +29,14 @@ export default function App() {
           <Routes>
             <Route element={<Navbar />}>
               <Route path="/acomodacao" element={<Acomodacao />} />
-              <Route
-                path="/reserva"
-                element={
-                  <div className="min-h-dvh w-full flex justify-center items-center">
-                    reserva
-                  </div>
-                }
-              />
+              <Route path="/reserva" element={<Reserva />}>
+                <Route
+                  index
+                  element={<Navigate to="/reserva/calendario" replace />}
+                />
+                <Route path="calendario" element={<Calendario />} />
+                <Route path="lista" element={<Lista />} />
+              </Route>
               <Route
                 path="/financeiro"
                 element={
