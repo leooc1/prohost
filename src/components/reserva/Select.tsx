@@ -20,7 +20,7 @@ export default function Select(props: InputProps) {
         value={props.value}
         required={props.obrigatorio}
         onChange={(e) => props.onChange(e.target.value)}
-        className="select w-full"
+        className="select select-sm w-full"
       >
         {props.options.map((o) => (
           <option value={o.value}>{o.nome}</option>

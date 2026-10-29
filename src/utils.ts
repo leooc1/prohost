@@ -16,6 +16,13 @@ export function deleteCookie(name: string) {
   document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=strict`;
 }
 
+export function countDiaria(check_in: string, check_out: string) {
+  return Math.max(
+    1,
+    Math.round((Date.parse(check_out) - Date.parse(check_in)) / 86_400_000),
+  );
+}
+
 export const options = {
   get(token?: string) {
     return {

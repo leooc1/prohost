@@ -56,7 +56,7 @@ export default function Calendario() {
         />
 
         <button
-          className="btn btn-primary translate-y-3"
+          className="btn btn-sm btn-primary translate-y-3"
           onClick={() => setInitialDate(ano + '-' + mes + '-' + '01')}
         >
           Aplicar

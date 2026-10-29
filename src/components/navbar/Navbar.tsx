@@ -7,27 +7,27 @@ import RecorrenciaList from './RecorrenciaList';
 const abas = [
   {
     to: '/acomodacao',
-    text: 'acomodacao',
+    text: 'Acomodação',
   },
   {
     to: '/reserva',
-    text: 'reserva',
+    text: 'Reserva',
   },
   {
     to: '/financeiro',
-    text: 'financeiro',
+    text: 'Financeiro',
   },
   {
     to: '/dashboard',
-    text: 'dashboard',
+    text: 'Dashboard',
   },
   {
     to: '/relatorio',
-    text: 'relatorio',
+    text: 'Relatorio',
   },
   {
     to: '/hospede',
-    text: 'hospede',
+    text: 'Hospede',
   },
 ];
 export default function Navbar() {
