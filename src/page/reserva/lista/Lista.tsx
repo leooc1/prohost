@@ -66,17 +66,6 @@ export default function Lista() {
             obrigatorio={false}
           />
         </div>
-        <div className="grid grid-cols-1 gap-2">
-          <Select
-            key={'canal-reserva'}
-            id="canal-reserva"
-            nome="Canal"
-            value={''}
-            onChange={() => {}}
-            options={[{ value: '', nome: '' }]}
-            obrigatorio={false}
-          />
-        </div>
       </section>
       <main className="md:px-8 px-2">
         <Listagem reservas={todasReservas} />

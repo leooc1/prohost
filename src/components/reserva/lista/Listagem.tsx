@@ -1,3 +1,6 @@
+import { useState } from "react";
+import CardReserva from "../modal/CardReserva";
+
 interface ListagemProps {
   reservas: {
     id: number;
@@ -15,8 +18,11 @@ interface ListagemProps {
 }
 
 export default function Listagem(props: ListagemProps) {
+  const [idReserva, setIdReserva] = useState<number | null>(null);
+
   return (
     <div className="overflow-x-auto rounded-box border border-black/40 bg-zinc-100 max-h-100">
+      <CardReserva cancel={() => setIdReserva(null)} id={idReserva} />
       <table className="table table-xs table-pin-rows">
         <thead>
           <tr>
@@ -33,7 +39,15 @@ export default function Listagem(props: ListagemProps) {
         </thead>
         <tbody>
           {props.reservas.map((r) => (
-            <tr>
+            <tr
+              className="cursor-pointer"
+              onClick={() => {
+                (
+                  document.getElementById(`card-reserva`) as HTMLDialogElement
+                ).showModal();
+                setIdReserva(r.id);
+              }}
+            >
               <th className="text-center">{r.acomodacao}</th>
               <td className="text-center">
                 <div
@@ -45,7 +59,7 @@ export default function Listagem(props: ListagemProps) {
               </td>
               <td className="text-center">{r.hospede}</td>
               <td className="text-center">
-                {r.canalReserva == 'Indisponibilidade' ? null : r.qtdHospede}
+                {r.canalReserva == "Indisponibilidade" ? null : r.qtdHospede}
               </td>
               <td className="text-center">{r.checkIn}</td>
               <td className="text-center">{r.checkOut}</td>
@@ -60,15 +74,42 @@ export default function Listagem(props: ListagemProps) {
             <th className="font-semibold text-center text-primary"></th>
             <th className="font-semibold text-center text-primary"></th>
             <th className="font-semibold text-center text-primary"></th>
-            <th className="font-semibold text-center text-primary">2</th>
-            <th className="font-semibold text-center text-primary"></th>
-            <th className="font-semibold text-center text-primary"></th>
-            <th className="font-semibold text-center text-primary">20</th>
             <th className="font-semibold text-center text-primary">
-              R$ 20.000,00
+              {props.reservas.reduce(
+                (total, r) => total + (r.qtdHospede ?? 0),
+                0,
+              )}
+            </th>
+            <th className="font-semibold text-center text-primary"></th>
+            <th className="font-semibold text-center text-primary"></th>
+            <th className="font-semibold text-center text-primary">
+              {props.reservas.reduce((total, r) => total + r.diarias, 0)}
             </th>
             <th className="font-semibold text-center text-primary">
-              R$ 20.000,00
+              R${" "}
+              {new Intl.NumberFormat("pt-BR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              }).format(
+                props.reservas.reduce(
+                  (total, r) =>
+                    total + (Number(r.valor?.replace(/\D/gm, "")) ?? 0) / 100,
+                  0,
+                ),
+              )}
+            </th>
+            <th className="font-semibold text-center text-primary">
+              R${" "}
+              {new Intl.NumberFormat("pt-BR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              }).format(
+                props.reservas.reduce(
+                  (total, r) =>
+                    total + (Number(r.valorLiq?.replace(/\D/gm, "")) ?? 0) / 100,
+                  0,
+                ),
+              )}
             </th>
           </tr>
         </tfoot>

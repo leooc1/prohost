@@ -1,8 +1,10 @@
-import notImage from '../../../assets/not-image.jpg';
-import Loading from '../../../components/loading/Loading';
-import CalendarioReserva from '../../../components/reserva/calendario/CalendarioReservas';
-import Select from '../../../components/reserva/Select';
-import useCalendario from './useCalendario';
+import { useState } from "react";
+import notImage from "../../../assets/not-image.jpg";
+import Loading from "../../../components/loading/Loading";
+import CalendarioReserva from "../../../components/reserva/calendario/CalendarioReservas";
+import CardReserva from "../../../components/reserva/modal/CardReserva";
+import Select from "../../../components/reserva/Select";
+import useCalendario from "./useCalendario";
 
 export default function Calendario() {
   const {
@@ -13,37 +15,40 @@ export default function Calendario() {
     setAno,
     initialDate,
     setInitialDate,
-    todasReservas
+    todasReservas,
   } = useCalendario();
+
+  const [idReserva, setIdReserva] = useState<number | null>(null);
 
   return (
     <div>
       <section className="flex gap-4 mb-4 items-center w-xs mx-auto">
+        <CardReserva cancel={() => setIdReserva(null)} id={idReserva} />
         <Select
-          key={'mes-calendario'}
+          key={"mes-calendario"}
           id="mes-calendario"
           nome="Mês"
           value={mes}
           onChange={setMes}
           options={[
-            { value: '01', nome: 'Janeiro' },
-            { value: '02', nome: 'Feveiro' },
-            { value: '03', nome: 'Março' },
-            { value: '04', nome: 'Abril' },
-            { value: '05', nome: 'Maio' },
-            { value: '06', nome: 'Junho' },
-            { value: '07', nome: 'Julho' },
-            { value: '08', nome: 'Agosto' },
-            { value: '09', nome: 'Setembro' },
-            { value: '10', nome: 'Outubro' },
-            { value: '11', nome: 'Novembro' },
-            { value: '12', nome: 'Dezembro' },
+            { value: "01", nome: "Janeiro" },
+            { value: "02", nome: "Feveiro" },
+            { value: "03", nome: "Março" },
+            { value: "04", nome: "Abril" },
+            { value: "05", nome: "Maio" },
+            { value: "06", nome: "Junho" },
+            { value: "07", nome: "Julho" },
+            { value: "08", nome: "Agosto" },
+            { value: "09", nome: "Setembro" },
+            { value: "10", nome: "Outubro" },
+            { value: "11", nome: "Novembro" },
+            { value: "12", nome: "Dezembro" },
           ]}
           obrigatorio={false}
         />
 
         <Select
-          key={'ano-calendario'}
+          key={"ano-calendario"}
           id="ano-calendario"
           nome="Ano"
           value={ano}
@@ -57,7 +62,7 @@ export default function Calendario() {
 
         <button
           className="btn btn-sm btn-primary translate-y-3"
-          onClick={() => setInitialDate(ano + '-' + mes + '-' + '01')}
+          onClick={() => setInitialDate(ano + "-" + mes + "-" + "01")}
         >
           Aplicar
         </button>
@@ -72,7 +77,12 @@ export default function Calendario() {
               image: a.foto ?? notImage,
             }))}
             events={todasReservas}
-            onEventClick={(e) => console.log(e)}
+            onEventClick={(e) => {
+              (
+                document.getElementById(`card-reserva`) as HTMLDialogElement
+              ).showModal();
+              setIdReserva(Number(e.id));
+            }}
           />
         ) : (
           <Loading />
