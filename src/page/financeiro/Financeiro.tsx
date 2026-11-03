@@ -1,16 +1,15 @@
-import { CalendarCheck, List } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { Link, Outlet } from "react-router-dom";
 
 export default function Financeiro() {
   const [pageActive, setPageActive] = useState<"todos" | "receita" | "despesa">(
-    "todos",
+    location.pathname === "/financeiro/receita"
+      ? "receita"
+      : location.pathname === "/financeiro/despesa"
+        ? "despesa"
+        : "todos",
   );
-
-  useEffect(() => {
-    console.log(location.pathname);
-  }, []);
 
   return (
     <div className="min-h-dvh w-full py-20 bg-background">
@@ -28,21 +27,21 @@ export default function Financeiro() {
             <Link
               onClick={() => setPageActive("todos")}
               to={"/financeiro"}
-              className={`group hover:text-blue-500 btn lg:btn-md md:btn-sm btn-xs join-item ${pageActive ==='todos'?'text-blue-500':''}`}
+              className={`group hover:text-blue-500 btn lg:btn-md md:btn-sm btn-xs join-item ${pageActive === "todos" ? "text-blue-500" : ""}`}
             >
               Todas
             </Link>
             <Link
               onClick={() => setPageActive("receita")}
               to={"/financeiro/receita"}
-              className={`group hover:text-blue-500 btn lg:btn-md md:btn-sm btn-xs join-item ${pageActive ==='receita'?'text-blue-500':''}`}
+              className={`group hover:text-blue-500 btn lg:btn-md md:btn-sm btn-xs join-item ${pageActive === "receita" ? "text-blue-500" : ""}`}
             >
               Receitas
             </Link>
             <Link
               onClick={() => setPageActive("despesa")}
               to={"/financeiro/despesa"}
-              className={`group hover:text-blue-500 btn lg:btn-md md:btn-sm btn-xs join-item ${pageActive ==='despesa'?'text-blue-500':''}`}
+              className={`group hover:text-blue-500 btn lg:btn-md md:btn-sm btn-xs join-item ${pageActive === "despesa" ? "text-blue-500" : ""}`}
             >
               Despesas
             </Link>

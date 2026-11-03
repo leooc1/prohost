@@ -12,6 +12,10 @@ import { getCookieValid } from "./utils";
 import Todas from "./page/financeiro/todas/Todas";
 import Receitas from "./page/financeiro/receitas/Receitas";
 import Despesas from "./page/financeiro/despesas/Despesas";
+import Dashboard from "./page/dashboard/Dashboard";
+import IndicadoresOperacionais from "./page/dashboard/indicadores-operacionais/IndicadoresOperacionais";
+import ResultadoAcomodacoes from "./page/dashboard/resultado-acomodacoes/ResultadoAcomodacoes";
+import ResultadoGestor from "./page/dashboard/resultado-gestor/ResultadoGestor";
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
@@ -46,14 +50,26 @@ export default function App() {
                 <Route path="receita" element={<Receitas />} />
                 <Route path="despesa" element={<Despesas />} />
               </Route>
-              <Route
-                path="/dashboard"
-                element={
-                  <div className="min-h-dvh w-full flex justify-center items-center">
-                    dashboard
-                  </div>
-                }
-              />
+              <Route path="/dashboard" element={<Dashboard />}>
+                <Route
+                  index
+                  element={
+                    <Navigate
+                      to="/dashboard/indicadores-operacionais"
+                      replace
+                    />
+                  }
+                />
+                <Route
+                  path="indicadores-operacionais"
+                  element={<IndicadoresOperacionais />}
+                />
+                <Route
+                  path="resultado-acomodacoes"
+                  element={<ResultadoAcomodacoes />}
+                />
+                <Route path="resultado-gestor" element={<ResultadoGestor />} />
+              </Route>
               <Route
                 path="/relatorio"
                 element={

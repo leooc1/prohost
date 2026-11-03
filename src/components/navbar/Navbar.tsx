@@ -1,33 +1,48 @@
-import { BadgeQuestionMark, Menu } from 'lucide-react';
-import { useRef } from 'react';
-import { Link, Outlet } from 'react-router-dom';
-import ProfileDropdown from './ProfileDropdown';
-import RecorrenciaList from './RecorrenciaList';
+import {
+  BadgeQuestionMark,
+  CalendarCheck,
+  CircleDollarSign,
+  FileText,
+  Houses,
+  LayoutDashboard,
+  Menu,
+  SquareUserRound,
+} from "lucide-react";
+import { useRef } from "react";
+import { Link, Outlet } from "react-router-dom";
+import ProfileDropdown from "./ProfileDropdown";
+import RecorrenciaList from "./RecorrenciaList";
 
 const abas = [
   {
-    to: '/acomodacao',
-    text: 'Acomodação',
+    to: "/acomodacao",
+    text: "Acomodação",
+    icon: <Houses className="text-secondary" />,
   },
   {
-    to: '/reserva',
-    text: 'Reserva',
+    to: "/reserva",
+    text: "Reserva",
+    icon: <CalendarCheck className="text-secondary" />,
   },
   {
-    to: '/financeiro',
-    text: 'Financeiro',
+    to: "/financeiro",
+    text: "Financeiro",
+    icon: <CircleDollarSign className="text-secondary" />,
   },
   {
-    to: '/dashboard',
-    text: 'Dashboard',
+    to: "/dashboard",
+    text: "Dashboard",
+    icon: <LayoutDashboard className="text-secondary" />,
   },
   {
-    to: '/relatorio',
-    text: 'Relatorio',
+    to: "/relatorio",
+    text: "Relatorio",
+    icon: <FileText className="text-secondary" />,
   },
   {
-    to: '/hospede',
-    text: 'Hospede',
+    to: "/hospede",
+    text: "Hospede",
+    icon: <SquareUserRound className="text-secondary" />,
   },
 ];
 export default function Navbar() {
@@ -82,6 +97,7 @@ export default function Navbar() {
               }}
             >
               <Link to={a.to} className="text-white">
+                {a.icon}
                 {a.text}
               </Link>
             </li>
