@@ -30,7 +30,7 @@ export default function Acomodacao() {
             <h2 className="text-2xl font-medium text-primary">
               Próprios ({todasAcomodacoes.proprio.length})
             </h2>
-            <ul className="flex gap-4 overflow-x-scroll">
+            <ul className="flex gap-4 overflow-x-scroll overflow-y-clip">
               {todasAcomodacoes.proprio.map((a) => (
                 <CardAcomodacao
                   buscarAcomodacoes={getAcomodacao}
@@ -51,7 +51,7 @@ export default function Acomodacao() {
             <h2 className="text-2xl font-medium text-primary">
               Terceiros ({todasAcomodacoes.terceiro.length})
             </h2>
-            <ul className="flex gap-4 overflow-x-scroll">
+            <ul className="flex gap-4 overflow-x-scroll overflow-y-clip">
               {todasAcomodacoes.terceiro.map((a) => (
                 <CardAcomodacao
                   buscarAcomodacoes={getAcomodacao}
@@ -72,7 +72,7 @@ export default function Acomodacao() {
             <h2 className="text-2xl font-medium text-primary">
               Suspensos ({todasAcomodacoes.desativado.length})
             </h2>
-            <ul className="flex gap-4 overflow-x-scroll">
+            <ul className="flex gap-4 overflow-x-scroll overflow-y-clip">
               {todasAcomodacoes.desativado.map((a) => (
                 <CardAcomodacao
                   id={a.id}
