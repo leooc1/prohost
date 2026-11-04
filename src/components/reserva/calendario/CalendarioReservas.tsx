@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from "react";
 
 /* ----------------------------- Tipos ----------------------------- */
 
-export type EventType = 'Reserva' | 'Continuidade' | 'Indisponibilidade';
+export type EventType = "Reserva" | "Continuidade" | "Indisponibilidade";
 
 export interface CalendarResource {
   id: string;
@@ -34,17 +34,17 @@ export interface CalendarioReservaProps {
 
 /* --------------------------- Constantes --------------------------- */
 
-const TZ = 'America/Sao_Paulo';
-const TZ_OFFSET = '-03:00'; // Brasil não tem horário de verão desde 2019
+const TZ = "America/Sao_Paulo";
+const TZ_OFFSET = "-03:00"; // Brasil não tem horário de verão desde 2019
 const DAY_MS = 24 * 60 * 60 * 1000;
 const DAY_WIDTH = 60; // px por dia (slotMinWidth)
 const RESOURCE_WIDTH = 140; // px da coluna "Acomodações"
 const ROW_HEIGHT = 64; // px por linha
 
 const DEFAULT_COLORS: Record<EventType, string> = {
-  Reserva: '#2563eb',
-  Continuidade: '#30C46D',
-  Indisponibilidade: '#303030',
+  Reserva: "#2563eb",
+  Continuidade: "#30C46D",
+  Indisponibilidade: "#303030",
 };
 
 /* ----------------------------- Helpers ----------------------------- */
@@ -57,7 +57,7 @@ function parseSP(value: string): number {
 }
 
 function todaySP(): string {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date());
+  return new Intl.DateTimeFormat("en-CA", { timeZone: TZ }).format(new Date());
 }
 
 /* ------------------------------ Ícones ------------------------------ */
@@ -99,30 +99,30 @@ export default function CalendarioReserva({
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const { monthStart, daysInMonth, monthLabel, days } = useMemo(() => {
-    const [y, m] = (initialDate ?? todaySP()).split('-').map(Number);
+    const [y, m] = (initialDate ?? todaySP()).split("-").map(Number);
     const monthStart = Date.parse(
-      `${y}-${String(m).padStart(2, '0')}-01T00:00:00${TZ_OFFSET}`,
+      `${y}-${String(m).padStart(2, "0")}-01T00:00:00${TZ_OFFSET}`,
     );
     const daysInMonth = new Date(Date.UTC(y, m, 0)).getUTCDate();
 
-    const weekdayFmt = new Intl.DateTimeFormat('pt-BR', {
+    const weekdayFmt = new Intl.DateTimeFormat("pt-BR", {
       timeZone: TZ,
-      weekday: 'short',
+      weekday: "short",
     });
-    const dayFmt = new Intl.DateTimeFormat('pt-BR', {
+    const dayFmt = new Intl.DateTimeFormat("pt-BR", {
       timeZone: TZ,
-      day: '2-digit',
+      day: "2-digit",
     });
-    const monthFmt = new Intl.DateTimeFormat('pt-BR', {
+    const monthFmt = new Intl.DateTimeFormat("pt-BR", {
       timeZone: TZ,
-      month: 'long',
-      year: 'numeric',
+      month: "long",
+      year: "numeric",
     });
 
     const days = Array.from({ length: daysInMonth }, (_, i) => {
       const noon = new Date(monthStart + i * DAY_MS + 12 * 60 * 60 * 1000);
       return {
-        weekday: weekdayFmt.format(noon).replace('.', ''),
+        weekday: weekdayFmt.format(noon).replace(".", ""),
         day: dayFmt.format(noon),
       };
     });
@@ -221,7 +221,7 @@ export default function CalendarioReserva({
                 <div
                   key={i}
                   className={`shrink-0 whitespace-pre-line border-r border-[#e7e9eb] py-2 text-center text-[13px] uppercase leading-tight text-[#747474] ${
-                    i === todayIndex ? 'bg-[rgba(49,234,114,0.2)]' : ''
+                    i === todayIndex ? "bg-[rgba(49,234,114,0.2)]" : ""
                   }`}
                   style={{ width: DAY_WIDTH }}
                 >
@@ -315,9 +315,9 @@ function EventBlock({
   onClick?: (event: CalendarEvent) => void;
 }) {
   const bg = event.color ?? DEFAULT_COLORS[event.tipo];
-  const isBlock = event.tipo === 'Indisponibilidade';
+  const isBlock = event.tipo === "Indisponibilidade";
 
-  const shape = 'top-1/2 h-8 -translate-y-1/2 rounded-full hover:scale-105';
+  const shape = "top-1/2 h-8 -translate-y-1/2 rounded-full hover:scale-105";
 
   return (
     <button
@@ -327,7 +327,7 @@ function EventBlock({
       className={`absolute z-1 flex cursor-pointer items-center overflow-hidden px-3 text-xs font-medium text-white transition-transform duration-200 ${shape}`}
       style={{ left, width, backgroundColor: bg }}
     >
-      {event.tipo === 'Continuidade' && (
+      {event.tipo === "Continuidade" && (
         <>
           {/* losango à esquerda, como no original */}
           <span
@@ -349,7 +349,7 @@ function EventBlock({
         </span>
       )}
 
-      {event.tipo === 'Reserva' && (
+      {event.tipo === "Reserva" && (
         <span className="flex w-full items-center justify-between gap-2">
           <span className="truncate">{event.title}</span>
           <span className="flex shrink-0 items-center text-[13px]">
@@ -374,7 +374,7 @@ function EventBlock({
       { id: "b", resourceId: "1", tipo: "Indisponibilidade", obs: "Manutenção",
         start: "2026-10-20T00:00:00", end: "2026-10-22T00:00:00" },
     ]}
-    onEventClick={(e) => console.log(e)}
+    onEventClick={(e) => (e)}
   />
 </div>
 

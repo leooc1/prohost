@@ -93,7 +93,8 @@ export default function Listagem(props: ListagemProps) {
               }).format(
                 props.reservas.reduce(
                   (total, r) =>
-                    total + (Number(r.valor?.replace(/\D/gm, "")) ?? 0) / 100,
+                    total +
+                    Number(r.valor ? r.valor.replace(/\D/gm, "") : "0") / 100,
                   0,
                 ),
               )}
@@ -106,7 +107,9 @@ export default function Listagem(props: ListagemProps) {
               }).format(
                 props.reservas.reduce(
                   (total, r) =>
-                    total + (Number(r.valorLiq?.replace(/\D/gm, "")) ?? 0) / 100,
+                    total +
+                    Number(r.valorLiq ? r.valorLiq.replace(/\D/gm, "") : "0") /
+                      100,
                   0,
                 ),
               )}

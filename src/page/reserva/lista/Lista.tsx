@@ -4,7 +4,6 @@ import useLista from './useLista';
 
 export default function Lista() {
   const { todasReservas } = useLista();
-  console.log(todasReservas);
   return (
     <div>
       <section className="bg-white rounded-box p-4 md:mx-8 mx-2 mb-4">

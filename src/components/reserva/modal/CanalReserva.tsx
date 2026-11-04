@@ -7,13 +7,18 @@ interface CanalReservaEdicao {
   cor: string;
 }
 
-export default function CanalReserva() {
+interface CanalReservaProps {
+  aberto: boolean;
+  aoFechar: () => void;
+}
+
+export default function CanalReserva({ aberto, aoFechar }: CanalReservaProps) {
   const {
     todosCanais,
     deleteCanalReserva,
     editCanalReserva,
     createCanalReserva,
-  } = useCanalReserva();
+  } = useCanalReserva(aberto);
   const [edicoes, setEdicoes] = useState<Record<number, CanalReservaEdicao>>(
     {},
   );
@@ -29,7 +34,11 @@ export default function CanalReserva() {
   }
 
   return (
-    <dialog id="canal-reserva" className="modal modal-bottom sm:modal-middle">
+    <dialog
+      id="canal-reserva"
+      onClose={aoFechar}
+      className="modal modal-bottom sm:modal-middle"
+    >
       <div className="modal-box">
         <h3 className="font-bold text-lg">{"Canais de Reserva"}</h3>
         <ul className="mt-4 flex flex-col gap-2">

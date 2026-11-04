@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { getCookieValid, options } from "../../../utils";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { getCookieValid, options } from "../../../utils";
 
 const apiURL = import.meta.env.VITE_API_URL;
 
@@ -10,31 +11,39 @@ interface CanalReserva {
   cor: string;
 }
 
-export default function useCanalReserva() {
+async function buscarCanaisReserva(token: string) {
+  const result = await fetch(`${apiURL}/canal-reserva`, options.get(token));
+
+  if (!result.ok) {
+    throw new Error("Erro ao buscar canais de reserva.");
+  }
+
+  return (await result.json()) as CanalReserva[];
+}
+
+export default function useCanalReserva(aberto: boolean) {
+  const navigate = useNavigate();
+
   const { token } = getCookieValid("ph_lg_tk_acc");
   const [canaisReserva, setCanaisReserva] = useState<CanalReserva[] | null>(
     null,
   );
 
   async function getCanalReserva() {
-    const result = await fetch(
-      `${apiURL}/canal-reserva`,
-      options.get(token ?? ""),
-    );
-
-    if (!result.ok) {
-      throw new Error("Erro ao buscar acomodações");
-    }
-
-    const data: CanalReserva[] = await result.json();
+    const data = await buscarCanaisReserva(token ?? "");
     setCanaisReserva(data);
   }
 
   useEffect(() => {
-    if (!token) return;
+    if (!aberto || !token) return;
+    const tokenAtual = token;
 
-    getCanalReserva().catch(console.error);
-  }, [token]);
+    async function carregarCanaisReserva() {
+      setCanaisReserva(await buscarCanaisReserva(tokenAtual));
+    }
+
+    carregarCanaisReserva().catch(console.error);
+  }, [aberto, token]);
 
   const todosCanais = useMemo(() => {
     if (!canaisReserva) return null;
@@ -71,6 +80,7 @@ export default function useCanalReserva() {
       return;
     }
     toast.success(`${data.nome} foi editada com sucesso!`);
+    navigate(0);
     await getCanalReserva();
   }
 
@@ -87,6 +97,7 @@ export default function useCanalReserva() {
     }
 
     toast.success(`${data.nome} foi criado com sucesso!`);
+    navigate(0);
     await getCanalReserva();
     return true;
   }

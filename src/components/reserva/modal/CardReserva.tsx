@@ -15,7 +15,7 @@ export default function CardReserva(props: CardReservaProps) {
               Cancelar
             </button>
           </form>
-          <button className="btn btn-primary" onClick={() => console.log()}>
+          <button className="btn btn-primary" onClick={() => console.log(props.id)}>
             Cadastrar
           </button>
         </div>

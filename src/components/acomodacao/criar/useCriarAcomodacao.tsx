@@ -111,7 +111,6 @@ export default function useCriarAcomodacao(
       `${apiURL}/acomodacao`,
       options.post(body, token ?? ''),
     );
-    console.log(body)
     const data = await result.json();
 
     if (result.status !== 201) {

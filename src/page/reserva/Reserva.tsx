@@ -10,6 +10,10 @@ export default function Reserva() {
   const [pageActive, setPageActive] = useState<"calendario" | "lista">(
     location.pathname == "/reserva/lista" ? "lista" : "calendario",
   );
+  const [novaReservaAberta, setNovaReservaAberta] = useState(false);
+  const [novaIndisponibilidadeAberta, setNovaIndisponibilidadeAberta] =
+    useState(false);
+  const [canaisReservaAbertos, setCanaisReservaAbertos] = useState(false);
 
   return (
     <div className="min-h-dvh w-full py-20 bg-background">
@@ -39,6 +43,7 @@ export default function Reserva() {
             <button
               className="btn lg:btn-md md:btn-sm btn-xs btn-outline"
               onClick={() => {
+                setCanaisReservaAbertos(true);
                 (
                   document.getElementById(`canal-reserva`) as HTMLDialogElement
                 ).showModal();
@@ -49,6 +54,7 @@ export default function Reserva() {
             <button
               className="btn lg:btn-md md:btn-sm btn-xs btn-error text-white"
               onClick={() => {
+                setNovaIndisponibilidadeAberta(true);
                 (
                   document.getElementById(`criar-indisponibilidade`) as HTMLDialogElement
                 ).showModal();
@@ -59,6 +65,7 @@ export default function Reserva() {
             <button
               className="btn lg:btn-md md:btn-sm btn-xs btn-primary"
               onClick={() => {
+                setNovaReservaAberta(true);
                 (
                   document.getElementById(`criar-reserva`) as HTMLDialogElement
                 ).showModal();
@@ -69,9 +76,18 @@ export default function Reserva() {
           </div>
         </div>
       </div>
-      <NovaIndisponibilidade />
-      <CanalReserva />
-      <NovaReserva />
+      <NovaIndisponibilidade
+        aberto={novaIndisponibilidadeAberta}
+        aoFechar={() => setNovaIndisponibilidadeAberta(false)}
+      />
+      <CanalReserva
+        aberto={canaisReservaAbertos}
+        aoFechar={() => setCanaisReservaAbertos(false)}
+      />
+      <NovaReserva
+        aberto={novaReservaAberta}
+        aoFechar={() => setNovaReservaAberta(false)}
+      />
       <Outlet />
     </div>
   );
