@@ -1,7 +1,9 @@
 import Listagem from "../../../components/financeiro/Listagem";
 import Select from "../../../components/reserva/Select";
+import useReceitas from "./useReceitas";
 
 export default function Receitas() {
+  const { todasMovimentacoes } = useReceitas();
   return (
     <div>
       <section className="bg-white rounded-box p-4 md:mx-8 mx-2 mb-4">
@@ -36,20 +38,7 @@ export default function Receitas() {
         </div>
       </section>
       <main className="md:px-8 px-2">
-        <Listagem
-          movimentacao={[
-            {
-              id: 1,
-              data: "01/01/2023",
-              categoria: "Teste",
-              nome: "Teste",
-              cor: "#000000",
-              acomodacao: "Testinho",
-              valor: "100,00",
-              valorLiq: "80,00",
-            },
-          ]}
-        />
+        <Listagem movimentacao={todasMovimentacoes} />
       </main>
     </div>
   );

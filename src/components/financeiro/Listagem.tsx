@@ -6,8 +6,8 @@ interface ListagemProps {
     nome: string;
     categoria: string;
     data: string;
-    valor: string;
-    valorLiq: string;
+    valor: number;
+    valorLiq: number;
   }[];
 }
 
@@ -27,7 +27,7 @@ export default function Listagem(props: ListagemProps) {
         </thead>
         <tbody>
           {props.movimentacao.map((r) => (
-            <tr className="cursor-pointer">
+            <tr /* className="cursor-pointer" */>
               <th className="text-center">{r.data}</th>
               <td className="text-center">
                 <div
@@ -39,8 +39,18 @@ export default function Listagem(props: ListagemProps) {
               </td>
               <td className="text-center">{r.nome}</td>
               <td className="text-center">{r.acomodacao}</td>
-              <td className="text-center">{r.valor}</td>
-              <td className="text-center">{r.valorLiq}</td>
+              <td className="text-center">
+                {new Intl.NumberFormat("pt-BR", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                }).format(r.valor)}
+              </td>
+              <td className="text-center">
+                {new Intl.NumberFormat("pt-BR", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                }).format(r.valorLiq)}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -57,8 +67,7 @@ export default function Listagem(props: ListagemProps) {
                 maximumFractionDigits: 2,
               }).format(
                 props.movimentacao.reduce(
-                  (total, r) =>
-                    total + (Number(r.valor?.replace(/\D/gm, "")) ?? 0) / 100,
+                  (total, r) => total + (r.valor ?? 0),
                   0,
                 ),
               )}
@@ -70,9 +79,7 @@ export default function Listagem(props: ListagemProps) {
                 maximumFractionDigits: 2,
               }).format(
                 props.movimentacao.reduce(
-                  (total, r) =>
-                    total +
-                    (Number(r.valorLiq?.replace(/\D/gm, "")) ?? 0) / 100,
+                  (total, r) => total + (r.valorLiq ?? 0),
                   0,
                 ),
               )}
