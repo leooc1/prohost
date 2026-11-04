@@ -3,7 +3,7 @@ import notImage from "../../../assets/not-image.jpg";
 import Loading from "../../../components/loading/Loading";
 import CalendarioReserva from "../../../components/reserva/calendario/CalendarioReservas";
 import CardReserva from "../../../components/reserva/modal/CardReserva";
-import Select from "../../../components/reserva/Select";
+import Select from "../../../components/utils/Select";
 import useCalendario from "./useCalendario";
 
 export default function Calendario() {

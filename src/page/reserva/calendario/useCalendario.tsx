@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useState } from 'react';
-import { getCookieValid, options } from '../../../utils';
-import type { EventType } from '../../../components/reserva/calendario/CalendarioReservas';
+import { useEffect, useMemo, useState } from "react";
+import { getCookieValid, options } from "../../../utils";
+import type { EventType } from "../../../components/reserva/calendario/CalendarioReservas";
 
 const apiURL = import.meta.env.VITE_API_URL;
 
 interface Acomodacao {
   id: number;
   nome: string;
-  tipo: 'terceiro' | 'proprio';
+  tipo: "terceiro" | "proprio";
   desativado: boolean;
   foto: string | null;
 }
@@ -33,7 +33,7 @@ interface Reserva {
 }
 
 export default function useCalendario() {
-  const { token } = getCookieValid('ph_lg_tk_acc');
+  const { token } = getCookieValid("ph_lg_tk_acc");
 
   const [acomodacoes, setAcomodacoes] = useState<Acomodacao[] | null>(null);
   const [reservas, setReservas] = useState<Reserva[] | null>(null);
@@ -41,25 +41,25 @@ export default function useCalendario() {
     [],
   );
   const [mes, setMes] = useState<string>(
-    ('0' + (new Date().getMonth() + 1)).slice(-2),
+    ("0" + (new Date().getMonth() + 1)).slice(-2),
   );
   const [ano, setAno] = useState<string>(String(new Date().getFullYear()));
   const [initialDate, setInitialDate] = useState<string>(
     String(new Date().getFullYear()) +
-      '-' +
-      ('0' + (new Date().getMonth() + 1)).slice(-2) +
-      '-' +
-      '01',
+      "-" +
+      ("0" + (new Date().getMonth() + 1)).slice(-2) +
+      "-" +
+      "01",
   );
 
   async function getAcomodacao() {
     const result = await fetch(
       `${apiURL}/acomodacao`,
-      options.get(token ?? ''),
+      options.get(token ?? ""),
     );
 
     if (!result.ok) {
-      throw new Error('Erro ao buscar acomodações');
+      throw new Error("Erro ao buscar acomodações");
     }
 
     const data: Acomodacao[] = await result.json();
@@ -69,11 +69,11 @@ export default function useCalendario() {
   async function getReservas() {
     const result = await fetch(
       `${apiURL}/reserva/calendario?mes=${mes}&ano=${ano}`,
-      options.get(token ?? ''),
+      options.get(token ?? ""),
     );
 
     if (!result.ok) {
-      throw new Error('Erro ao buscar reservas');
+      throw new Error("Erro ao buscar reservas");
     }
 
     const data = await result.json();
@@ -96,11 +96,11 @@ export default function useCalendario() {
     async function getAcomodacaoImg() {
       const result = await fetch(
         `${apiURL}/acomodacao?img=true`,
-        options.get(token ?? ''),
+        options.get(token ?? ""),
       );
 
       if (!result.ok) {
-        throw new Error('Erro ao buscar imagens');
+        throw new Error("Erro ao buscar imagens");
       }
 
       const data: { id: number; foto: string | null }[] = await result.json();
@@ -133,7 +133,10 @@ export default function useCalendario() {
         title: r.hospede ? r.hospede.nome : undefined,
         tipo: r.tipoReserva,
         hospedes: r.qtdHospede ?? undefined,
-        color: r.canalReserva ? r.canalReserva.cor : undefined,
+        color:
+          r.canalReserva && r.tipoReserva == "Reserva"
+            ? r.canalReserva.cor
+            : undefined,
       }));
     return [];
   }, [reservas]);

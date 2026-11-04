@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { Link, Outlet } from "react-router-dom";
-import Select from "../../components/dashboard/Select";
+import Select from "../../components/utils/Select";
 
 export default function Dashboard() {
   const [pageActive, setPageActive] = useState<

@@ -1,8 +1,8 @@
 import useCriarAcomodacao from '../criar/useCriarAcomodacao';
 import useEditarAcomodacao from '../editar/useEditarAcomodacao';
-import ImageInput from './ImageInput';
-import Input from './Input';
-import Select from './Select';
+import ImageInput from '../../utils/ImageInput';
+import Input from '../../utils/Input';import Select from '../../utils/Select';
+;
 interface ModalProps {
   atualizar?: () => Promise<void>;
   id?: number;

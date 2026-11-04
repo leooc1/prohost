@@ -1,4 +1,4 @@
-import Select from "../../../components/dashboard/Select";
+import Select from "../../../components/utils/Select";
 
 export default function ResultadoAcomodacoes() {
   return (

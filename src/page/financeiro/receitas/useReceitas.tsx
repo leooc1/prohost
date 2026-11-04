@@ -50,6 +50,75 @@ export default function useReceitas() {
       .slice(0, 10),
   );
 
+  const [periodo, setPeriodo] = useState<
+    | "mes-atual"
+    | "mes-anterior"
+    | "ano-atual"
+    | "ano-anterior"
+    | "personalizado"
+  >("mes-atual");
+
+  useEffect(() => {
+    switch (periodo) {
+      case "mes-atual":
+        setDataInicio(
+          new Date(new Date().getFullYear(), new Date().getMonth() + 1 - 1, 1)
+            .toISOString()
+            .slice(0, 10),
+        );
+        setDataFim(
+          new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1)
+            .toISOString()
+            .slice(0, 10),
+        );
+        break;
+      case "mes-anterior":
+        setDataInicio(
+          new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
+            .toISOString()
+            .slice(0, 10),
+        );
+        setDataFim(
+          new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+            .toISOString()
+            .slice(0, 10),
+        );
+        break;
+      case "ano-atual":
+        setDataInicio(
+          new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0, 10),
+        );
+        setDataFim(
+          new Date(new Date().getFullYear() + 1, 0, 1)
+            .toISOString()
+            .slice(0, 10),
+        );
+        break;
+      case "ano-anterior":
+        setDataInicio(
+          new Date(new Date().getFullYear() - 1, 0, 1)
+            .toISOString()
+            .slice(0, 10),
+        );
+        setDataFim(
+          new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0, 10),
+        );
+        break;
+      case "personalizado":
+        setDataInicio(
+          new Date(new Date().getFullYear(), new Date().getMonth() + 1 - 1, 1)
+            .toISOString()
+            .slice(0, 10),
+        );
+        setDataFim(
+          new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1)
+            .toISOString()
+            .slice(0, 10),
+        );
+        break;
+    }
+  }, [periodo]);
+
   async function getMovimentacoes() {
     const result = await fetch(
       `${apiURL}/movimentacao?dataInicio=${dataInicio}&dataFim=${dataFim}&sortBy=data&order=asc&receita=true`,
@@ -67,13 +136,15 @@ export default function useReceitas() {
   useEffect(() => {
     if (!token) return;
     getMovimentacoes().catch(console.error);
-  }, [token]);
+  }, [token, dataInicio, dataFim]);
 
   const todasMovimentacoes = useMemo(() => {
     if (movimentacoes)
       return movimentacoes.map((m) => ({
         id: m.id,
-        data: new Intl.DateTimeFormat("pt-BR").format(new Date(m.data.slice(0, 10)+'T00:00:00-03:00')),
+        data: new Intl.DateTimeFormat("pt-BR").format(
+          new Date(m.data.slice(0, 10) + "T00:00:00-03:00"),
+        ),
         categoria: m.reserva
           ? m.reserva.tipoReserva === "Reserva"
             ? "Diária"
@@ -90,11 +161,16 @@ export default function useReceitas() {
         acomodacao: m.acomodacao?.nome ?? "",
         valor: Number(m.valor),
         valorLiq: Number(m.valorLiq),
+        receita: m.receita,
       }));
     return [];
   }, [movimentacoes]);
 
   return {
     todasMovimentacoes,
+    periodo,
+    setPeriodo,
+    setDataInicio,
+    setDataFim,
   };
 }

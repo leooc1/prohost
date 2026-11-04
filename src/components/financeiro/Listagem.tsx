@@ -1,6 +1,7 @@
 interface ListagemProps {
   movimentacao: {
     id: number;
+    receita: boolean;
     acomodacao?: string;
     cor: string;
     nome: string;
@@ -27,7 +28,7 @@ export default function Listagem(props: ListagemProps) {
         </thead>
         <tbody>
           {props.movimentacao.map((r) => (
-            <tr /* className="cursor-pointer" */>
+            <tr /* className="cursor-pointer" */ key={r.id}>
               <th className="text-center">{r.data}</th>
               <td className="text-center">
                 <div
@@ -67,7 +68,8 @@ export default function Listagem(props: ListagemProps) {
                 maximumFractionDigits: 2,
               }).format(
                 props.movimentacao.reduce(
-                  (total, r) => total + (r.valor ?? 0),
+                  (total, r) =>
+                    r.receita ? total + (r.valor ?? 0) : total - (r.valor ?? 0),
                   0,
                 ),
               )}
@@ -79,7 +81,10 @@ export default function Listagem(props: ListagemProps) {
                 maximumFractionDigits: 2,
               }).format(
                 props.movimentacao.reduce(
-                  (total, r) => total + (r.valorLiq ?? 0),
+                  (total, r) =>
+                    r.receita
+                      ? total + (r.valorLiq ?? 0)
+                      : total - (r.valorLiq ?? 0),
                   0,
                 ),
               )}
