@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Listagem from "../../../components/reserva/lista/Listagem";
 import Select from "../../../components/utils/Select";
 import useLista from "./useLista";
@@ -14,6 +15,9 @@ export default function Lista() {
   const tiposReserva = new Set(
     todasReservas.map((r) => r.tipoReserva),
   ) as Set<string>;
+  const [filterCanais, setFilterCanais] = useState("all");
+  const [filterAcomodacao, setFilterAcomodacao] = useState("all");
+  const [filterTipoReserva, setFilterTipoReserva] = useState("all");
 
   return (
     <div>
@@ -23,8 +27,8 @@ export default function Lista() {
             key={"canal-reserva"}
             id="canal-reserva"
             nome="Canal"
-            value={""}
-            onChange={() => {}}
+            value={filterCanais}
+            onChange={setFilterCanais}
             options={[
               { value: "all", nome: "Todas" },
               ...Array.from(canais)
@@ -39,8 +43,8 @@ export default function Lista() {
             key={"tipo-reserva"}
             id="tipo-reserva"
             nome="Tipo de Reserva"
-            value={""}
-            onChange={() => {}}
+            value={filterTipoReserva}
+            onChange={setFilterTipoReserva}
             options={[
               { value: "all", nome: "Todas" },
               ...Array.from(tiposReserva).map((t) => ({ value: t, nome: t })),
@@ -62,8 +66,8 @@ export default function Lista() {
             key={"acomodacao"}
             id="acomodacao"
             nome="Acomodação"
-            value={""}
-            onChange={() => {}}
+            value={filterAcomodacao}
+            onChange={setFilterAcomodacao}
             options={[
               { value: "all", nome: "Todas" },
               ...Array.from(acomodacoes).map((a) => ({ value: a, nome: a })),
@@ -91,7 +95,11 @@ export default function Lista() {
         </div>
       </section>
       <main className="md:px-8 px-2">
-        <Listagem reservas={todasReservas} />
+        <Listagem reservas={todasReservas
+          .filter(r=>r.canalReserva === filterCanais || filterCanais === "all")
+          .filter(r=>r.tipoReserva === filterTipoReserva || filterTipoReserva === "all")
+          .filter(r=>r.acomodacao === filterAcomodacao || filterAcomodacao === "all")
+          } />
       </main>
     </div>
   );

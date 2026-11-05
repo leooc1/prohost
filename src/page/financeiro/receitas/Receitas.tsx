@@ -69,15 +69,17 @@ export default function Receitas() {
         </div>
       </section>
       <main className="md:px-8 px-2">
-        <Listagem movimentacao={todasMovimentacoes
-            .filter((m) => {
-              if (filterCategoria == "all") return true;
-              return m.categoria == filterCategoria;
-            })
-            .filter((m) => {
-              if (filterAcomodacao == "all") return true;
-              return m.acomodacao == filterAcomodacao;
-            })} />
+        <Listagem
+          movimentacao={todasMovimentacoes
+            .filter(
+              (m) =>
+                m.categoria === filterCategoria || filterCategoria === "all",
+            )
+            .filter(
+              (m) =>
+                m.acomodacao == filterAcomodacao || filterAcomodacao === "all",
+            )}
+        />
       </main>
     </div>
   );
