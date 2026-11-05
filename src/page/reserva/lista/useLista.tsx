@@ -129,7 +129,7 @@ export default function useLista() {
   useEffect(() => {
     if (!token) return;
     getReservas().catch(console.error);
-  }, [token]);
+  }, [token, dataInicio, dataFim]);
 
   const todasReservas = useMemo(() => {
     if (reservas)

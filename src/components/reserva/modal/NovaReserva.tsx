@@ -1,5 +1,5 @@
 import { type FormEvent } from "react";
-import { Info, Plus } from "lucide-react";
+import { Info } from "lucide-react";
 import useNovaReserva from "./useNovaReserva";
 
 interface NovaReservaProps {
@@ -16,7 +16,6 @@ export default function NovaReserva({ aberto, aoFechar }: NovaReservaProps) {
     atualizarCampo,
     selecionarAcomodacao,
     selecionarHospede,
-    criarHospede,
     atualizarValor,
     criarReserva,
   } = useNovaReserva(aberto);
@@ -81,16 +80,6 @@ export default function NovaReserva({ aberto, aoFechar }: NovaReservaProps) {
                   <option key={hospede.id} value={hospede.nome} />
                 ))}
               </datalist>
-              <button
-                type="button"
-                className="btn btn-sm btn-primary join-item"
-                aria-label="Cadastrar hóspede"
-                title="Cadastrar hóspede"
-                disabled={!reserva.hospedeNome.trim()}
-                onClick={criarHospede}
-              >
-                <Plus className="size-4" />
-              </button>
             </div>
           </fieldset>
           <fieldset className="fieldset">

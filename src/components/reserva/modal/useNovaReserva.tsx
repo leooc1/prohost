@@ -141,11 +141,11 @@ export default function useNovaReserva(aberto: boolean) {
     }));
   }
 
-  async function criarHospede() {
-    const nome = reserva.hospedeNome.trim();
+  async function criarHospede(nomeInformado: string): Promise<string | null> {
+    const nome = nomeInformado.trim();
     if (!nome) {
       toast.error("Informe o nome do hóspede.");
-      return false;
+      return null;
     }
 
     const existente = hospedes.find(
@@ -157,7 +157,7 @@ export default function useNovaReserva(aberto: boolean) {
         hospedeNome: existente.nome,
         hospedeId: String(existente.id),
       }));
-      return true;
+      return String(existente.id);
     }
 
     try {
@@ -169,7 +169,7 @@ export default function useNovaReserva(aberto: boolean) {
 
       if (result.status !== 201 || !data.id) {
         toast.error("Não foi possível cadastrar o hóspede.");
-        return false;
+        return null;
       }
 
       setHospedes((atuais) => [...atuais, data]);
@@ -179,11 +179,11 @@ export default function useNovaReserva(aberto: boolean) {
         hospedeId: String(data.id),
       }));
       toast.success(`${data.nome} foi cadastrado(a) com sucesso!`);
-      return true;
+      return String(data.id);
     } catch (error) {
       console.error(error);
       toast.error("Não foi possível cadastrar o hóspede.");
-      return false;
+      return null;
     }
   }
 
@@ -233,8 +233,8 @@ export default function useNovaReserva(aberto: boolean) {
   }
 
   async function criarReserva() {
-    if (!reserva.hospedeId) {
-      toast.error("Selecione ou cadastre um hóspede.");
+    if (!reserva.hospedeNome.trim()) {
+      toast.error("Informe o nome do hóspede.");
       return false;
     }
 
@@ -262,6 +262,9 @@ export default function useNovaReserva(aberto: boolean) {
     const valor = valorCentavos / 100;
     const comissao = comissaoCentavos / 100;
     const valorLiquido = liquidoCentavos / 100;
+    const hospedeId =
+      reserva.hospedeId || (await criarHospede(reserva.hospedeNome));
+    if (!hospedeId) return false;
 
     try {
       const result = await fetch(
@@ -273,7 +276,7 @@ export default function useNovaReserva(aberto: boolean) {
             checkOut: formatarDataHora(reserva.checkOut, reserva.horaCheckOut),
             canalReservaId: Number(reserva.canalReservaId),
             comissaoOta: comissao,
-            hospedeId: Number(reserva.hospedeId),
+            hospedeId: Number(hospedeId),
             qtdHospede: Number(reserva.qtdHospede),
             valor,
             valorLiq: valorLiquido,
@@ -308,7 +311,6 @@ export default function useNovaReserva(aberto: boolean) {
     atualizarCampo,
     selecionarAcomodacao,
     selecionarHospede,
-    criarHospede,
     atualizarValor,
     criarReserva,
   };
