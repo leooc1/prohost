@@ -10,9 +10,14 @@ interface CanalReservaEdicao {
 interface CanalReservaProps {
   aberto: boolean;
   aoFechar: () => void;
+  atualizar: () => void;
 }
 
-export default function CanalReserva({ aberto, aoFechar }: CanalReservaProps) {
+export default function CanalReserva({
+  aberto,
+  aoFechar,
+  atualizar,
+}: CanalReservaProps) {
   const {
     todosCanais,
     deleteCanalReserva,
@@ -30,7 +35,10 @@ export default function CanalReserva({ aberto, aoFechar }: CanalReservaProps) {
     if (!nome) return;
 
     const criado = await createCanalReserva({ ...novoCanal, nome });
-    if (criado) setNovoCanal({ nome: "", cor: "#000000" });
+    if (criado) {
+      setNovoCanal({ nome: "", cor: "#000000" });
+      atualizar();
+    }
   }
 
   return (
@@ -82,7 +90,12 @@ export default function CanalReserva({ aberto, aoFechar }: CanalReservaProps) {
                   className="btn btn-sm btn-primary"
                   aria-label={`Salvar alterações de ${canal.nome}`}
                   disabled={!alterado}
-                  onClick={() => editCanalReserva(canal.id, edicao)}
+                  onClick={async () => {
+                    const editado = await editCanalReserva(canal.id, edicao);
+                    if (editado) {
+                      atualizar();
+                    }
+                  }}
                 >
                   <Save className="size-4" />
                 </button>

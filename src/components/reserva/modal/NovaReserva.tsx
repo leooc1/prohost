@@ -5,15 +5,21 @@ import useNovaReserva from "./useNovaReserva";
 interface NovaReservaProps {
   aberto: boolean;
   aoFechar: () => void;
+  aoSalvar: () => void;
 }
 
-export default function NovaReserva({ aberto, aoFechar }: NovaReservaProps) {
+export default function NovaReserva({
+  aberto,
+  aoFechar,
+  aoSalvar,
+}: NovaReservaProps) {
   const {
     acomodacoes,
     canais,
     hospedes,
     reserva,
     atualizarCampo,
+    atualizarDataHora,
     selecionarAcomodacao,
     selecionarHospede,
     atualizarValor,
@@ -24,6 +30,7 @@ export default function NovaReserva({ aberto, aoFechar }: NovaReservaProps) {
     event.preventDefault();
     const criada = await criarReserva();
     if (criada) {
+      aoSalvar();
       (document.getElementById("criar-reserva") as HTMLDialogElement).close();
     }
   }
@@ -105,56 +112,44 @@ export default function NovaReserva({ aberto, aoFechar }: NovaReservaProps) {
             <label className="label text-black" htmlFor="reserva-checkin">
               Check-in <span className="text-red-500">*</span>
             </label>
-            <div className="flex gap-2">
-              <input
-                id="reserva-checkin"
-                type="date"
-                className="input input-sm min-w-0 flex-1"
-                value={reserva.checkIn}
-                onChange={(event) =>
-                  atualizarCampo("checkIn", event.target.value)
-                }
-                required
-              />
-              <input
-                type="time"
-                aria-label="Horário do check-in"
-                className="input input-sm w-24"
-                value={reserva.horaCheckIn}
-                onChange={(event) =>
-                  atualizarCampo("horaCheckIn", event.target.value)
-                }
-                required
-              />
-            </div>
+            <input
+              id="reserva-checkin"
+              type="datetime-local"
+              className="input input-sm w-full"
+              value={
+                reserva.checkIn
+                  ? `${reserva.checkIn}T${reserva.horaCheckIn}`
+                  : ""
+              }
+              onChange={(event) =>
+                atualizarDataHora("checkIn", event.target.value)
+              }
+              required
+            />
           </fieldset>
           <fieldset className="fieldset min-w-0">
             <label className="label text-black" htmlFor="reserva-checkout">
               Check-out <span className="text-red-500">*</span>
             </label>
-            <div className="flex gap-2">
-              <input
-                id="reserva-checkout"
-                type="date"
-                min={reserva.checkIn || undefined}
-                className="input input-sm min-w-0 flex-1"
-                value={reserva.checkOut}
-                onChange={(event) =>
-                  atualizarCampo("checkOut", event.target.value)
-                }
-                required
-              />
-              <input
-                type="time"
-                aria-label="Horário do check-out"
-                className="input input-sm w-24"
-                value={reserva.horaCheckOut}
-                onChange={(event) =>
-                  atualizarCampo("horaCheckOut", event.target.value)
-                }
-                required
-              />
-            </div>
+            <input
+              id="reserva-checkout"
+              type="datetime-local"
+              min={
+                reserva.checkIn
+                  ? `${reserva.checkIn}T${reserva.horaCheckIn}`
+                  : undefined
+              }
+              className="input input-sm w-full"
+              value={
+                reserva.checkOut
+                  ? `${reserva.checkOut}T${reserva.horaCheckOut}`
+                  : ""
+              }
+              onChange={(event) =>
+                atualizarDataHora("checkOut", event.target.value)
+              }
+              required
+            />
           </fieldset>
         </div>
 

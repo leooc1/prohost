@@ -1,12 +1,16 @@
 import { useState } from "react";
+import { useOutletContext } from "react-router-dom";
 import notImage from "../../../assets/not-image.jpg";
 import Loading from "../../../components/loading/Loading";
 import CalendarioReserva from "../../../components/reserva/calendario/CalendarioReservas";
-import CardReserva from "../../../components/reserva/modal/CardReserva";
+import CardReserva from "../../../components/reserva/modal/card/CardReserva";
 import Select from "../../../components/utils/Select";
+import type { ReservaOutletContext } from "../Reserva";
 import useCalendario from "./useCalendario";
 
 export default function Calendario() {
+  const { refreshKey, atualizarReservas } =
+    useOutletContext<ReservaOutletContext>();
   const {
     todasAcomodacoes,
     mes,
@@ -16,14 +20,18 @@ export default function Calendario() {
     initialDate,
     setInitialDate,
     todasReservas,
-  } = useCalendario();
+  } = useCalendario(refreshKey);
 
   const [idReserva, setIdReserva] = useState<number | null>(null);
 
   return (
     <div>
       <section className="flex gap-4 mb-4 items-center w-xs mx-auto">
-        <CardReserva cancel={() => setIdReserva(null)} id={idReserva} />
+        <CardReserva
+          cancel={() => setIdReserva(null)}
+          id={idReserva}
+          aoAtualizar={atualizarReservas}
+        />
         <Select
           key={"mes-calendario"}
           id="mes-calendario"

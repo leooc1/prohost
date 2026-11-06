@@ -4,11 +4,13 @@ import useNovaIndisponibilidade from "./useNovaIndisponibilidade";
 interface NovaIndisponibilidadeProps {
   aberto: boolean;
   aoFechar: () => void;
+  aoSalvar: () => void;
 }
 
 export default function NovaIndisponibilidade({
   aberto,
   aoFechar,
+  aoSalvar,
 }: NovaIndisponibilidadeProps) {
   const {
     acomodacoes,
@@ -21,6 +23,7 @@ export default function NovaIndisponibilidade({
     event.preventDefault();
     const criada = await criarIndisponibilidade();
     if (criada) {
+      aoSalvar();
       (
         document.getElementById(
           "criar-indisponibilidade",

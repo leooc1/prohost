@@ -27,7 +27,7 @@ interface Reserva {
   valorLiq: number;
 }
 
-export default function useLista() {
+export default function useLista(refreshKey: number) {
   const { token } = getCookieValid("ph_lg_tk_acc");
 
   const [reservas, setReservas] = useState<Reserva[] | null>(null);
@@ -129,7 +129,7 @@ export default function useLista() {
   useEffect(() => {
     if (!token) return;
     getReservas().catch(console.error);
-  }, [token, dataInicio, dataFim]);
+  }, [token, dataInicio, dataFim, refreshKey]);
 
   const todasReservas = useMemo(() => {
     if (reservas)

@@ -77,7 +77,7 @@ export default function useNovaIndisponibilidade(aberto: boolean) {
           {
             acomodacaoId: Number(indisponibilidade.acomodacaoId),
             checkIn: indisponibilidade.checkIn+'T00:00:00-03:00',
-            checkOut: indisponibilidade.checkOut+'T00:00:00-03:00',
+            checkOut: indisponibilidade.checkOut+'T23:59:00-03:00',
             tipoReserva: "Indisponibilidade",
             obs: indisponibilidade.motivo.trim() || undefined,
           },

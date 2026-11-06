@@ -32,7 +32,7 @@ interface Reserva {
   tipoReserva: EventType;
 }
 
-export default function useCalendario() {
+export default function useCalendario(refreshKey: number) {
   const { token } = getCookieValid("ph_lg_tk_acc");
 
   const [acomodacoes, setAcomodacoes] = useState<Acomodacao[] | null>(null);
@@ -88,7 +88,7 @@ export default function useCalendario() {
   useEffect(() => {
     if (!token) return;
     getReservas().catch(console.error);
-  }, [token, initialDate]);
+  }, [token, initialDate, refreshKey]);
 
   useEffect(() => {
     if (!token || acomodacoes?.length === 0) return;

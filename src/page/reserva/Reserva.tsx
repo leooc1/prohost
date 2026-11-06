@@ -6,14 +6,24 @@ import NovaReserva from "../../components/reserva/modal/NovaReserva";
 import NovaIndisponibilidade from "../../components/reserva/modal/NovaIndisponibilidade";
 import CanalReserva from "../../components/reserva/modal/CanalReserva";
 
+export interface ReservaOutletContext {
+  refreshKey: number;
+  atualizarReservas: () => void;
+}
+
 export default function Reserva() {
   const [pageActive, setPageActive] = useState<"calendario" | "lista">(
     location.pathname == "/reserva/lista" ? "lista" : "calendario",
   );
+  const [refreshKey, setRefreshKey] = useState(0);
   const [novaReservaAberta, setNovaReservaAberta] = useState(false);
   const [novaIndisponibilidadeAberta, setNovaIndisponibilidadeAberta] =
     useState(false);
   const [canaisReservaAbertos, setCanaisReservaAbertos] = useState(false);
+
+  function atualizarReservas() {
+    setRefreshKey((atual) => atual + 1);
+  }
 
   return (
     <div className="min-h-dvh w-full py-20 bg-background">
@@ -79,16 +89,19 @@ export default function Reserva() {
       <NovaIndisponibilidade
         aberto={novaIndisponibilidadeAberta}
         aoFechar={() => setNovaIndisponibilidadeAberta(false)}
-      />
+        aoSalvar={atualizarReservas}
+        />
       <CanalReserva
         aberto={canaisReservaAbertos}
         aoFechar={() => setCanaisReservaAbertos(false)}
+        atualizar={atualizarReservas}
       />
       <NovaReserva
         aberto={novaReservaAberta}
         aoFechar={() => setNovaReservaAberta(false)}
+        aoSalvar={atualizarReservas}
       />
-      <Outlet />
+      <Outlet context={{ refreshKey, atualizarReservas }} />
     </div>
   );
 }

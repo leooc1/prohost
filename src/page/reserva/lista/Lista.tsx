@@ -1,12 +1,16 @@
 import { useState } from "react";
+import { useOutletContext } from "react-router-dom";
 import Listagem from "../../../components/reserva/lista/Listagem";
 import Select from "../../../components/utils/Select";
 import useLista from "./useLista";
 import PeriodoPersonalizado from "../../../components/utils/PeriodoPersonalizado";
+import type { ReservaOutletContext } from "../Reserva";
 
 export default function Lista() {
+  const { refreshKey, atualizarReservas } =
+    useOutletContext<ReservaOutletContext>();
   const { todasReservas, periodo, setPeriodo, setDataInicio, setDataFim } =
-    useLista();
+    useLista(refreshKey);
   const acomodacoes = new Set(
     todasReservas.map((r) => r.acomodacao),
   ) as Set<string>;
@@ -121,6 +125,7 @@ export default function Lista() {
       </section>
       <main className="md:px-8 px-2">
         <Listagem
+          aoAtualizar={atualizarReservas}
           reservas={todasReservas
             .filter(
               (r) => r.canalReserva === filterCanais || filterCanais === "all",

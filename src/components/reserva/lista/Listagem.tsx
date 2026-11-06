@@ -1,7 +1,8 @@
 import { useState } from "react";
-import CardReserva from "../modal/CardReserva";
+import CardReserva from "../modal/card/CardReserva";
 
 interface ListagemProps {
+  aoAtualizar: () => void;
   reservas: {
     id: number;
     acomodacao: string;
@@ -22,7 +23,11 @@ export default function Listagem(props: ListagemProps) {
 
   return (
     <div className="overflow-x-auto rounded-box border border-black/40 bg-zinc-100 max-h-100">
-      <CardReserva cancel={() => setIdReserva(null)} id={idReserva} />
+      <CardReserva
+        cancel={() => setIdReserva(null)}
+        id={idReserva}
+        aoAtualizar={props.aoAtualizar}
+      />
       <table className="table table-xs table-pin-rows">
         <thead>
           <tr>

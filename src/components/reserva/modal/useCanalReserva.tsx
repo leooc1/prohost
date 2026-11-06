@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 import { getCookieValid, options } from "../../../utils";
 
 const apiURL = import.meta.env.VITE_API_URL;
@@ -22,8 +21,6 @@ async function buscarCanaisReserva(token: string) {
 }
 
 export default function useCanalReserva(aberto: boolean) {
-  const navigate = useNavigate();
-
   const { token } = getCookieValid("ph_lg_tk_acc");
   const [canaisReserva, setCanaisReserva] = useState<CanalReserva[] | null>(
     null,
@@ -80,8 +77,8 @@ export default function useCanalReserva(aberto: boolean) {
       return;
     }
     toast.success(`${data.nome} foi editada com sucesso!`);
-    navigate(0);
     await getCanalReserva();
+    return true
   }
 
   async function createCanalReserva(body: { nome: string; cor: string }) {
@@ -97,7 +94,6 @@ export default function useCanalReserva(aberto: boolean) {
     }
 
     toast.success(`${data.nome} foi criado com sucesso!`);
-    navigate(0);
     await getCanalReserva();
     return true;
   }

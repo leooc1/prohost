@@ -120,6 +120,16 @@ export default function useNovaReserva(aberto: boolean) {
     setReserva((atual) => ({ ...atual, [campo]: valor }));
   }
 
+  function atualizarDataHora(campo: "checkIn" | "checkOut", valor: string) {
+    const [data, hora] = valor.split("T");
+    const campoHora = campo === "checkIn" ? "horaCheckIn" : "horaCheckOut";
+    setReserva((atual) => ({
+      ...atual,
+      [campo]: data || "",
+      [campoHora]: hora || atual[campoHora],
+    }));
+  }
+
   function selecionarAcomodacao(id: string) {
     const acomodacao = acomodacoes.find((item) => String(item.id) === id);
     setReserva((atual) => ({
@@ -132,7 +142,8 @@ export default function useNovaReserva(aberto: boolean) {
 
   function selecionarHospede(nome: string) {
     const hospede = hospedes.find(
-      (item) => item.nome.toLocaleLowerCase() === nome.trim().toLocaleLowerCase(),
+      (item) =>
+        item.nome.toLocaleLowerCase() === nome.trim().toLocaleLowerCase(),
     );
     setReserva((atual) => ({
       ...atual,
@@ -309,6 +320,7 @@ export default function useNovaReserva(aberto: boolean) {
     hospedes,
     reserva,
     atualizarCampo,
+    atualizarDataHora,
     selecionarAcomodacao,
     selecionarHospede,
     atualizarValor,
