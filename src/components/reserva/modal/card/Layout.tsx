@@ -1,6 +1,7 @@
 import {
   BanknoteArrowUp,
   BanknoteCheck,
+  BrushCleaning,
   CalendarCheck2,
   CalendarPlus,
   House,
@@ -13,7 +14,7 @@ import type React from "react";
 import { countDiaria } from "../../../../utils";
 interface Reserva {
   id: number;
-  acomodacao: { id: number; nome: string };
+  acomodacao: { id: number; nome: string; modeloNegocio: number };
   canalReserva?: { id: number; nome: string };
   hospede?: { id: number; nome: string };
   qtdHospede?: number;
@@ -23,6 +24,7 @@ interface Reserva {
   valor?: number;
   valorLiq?: number;
   comissaoOta?: number;
+  taxaLimpeza?: number;
   obs?: string | null;
 }
 
@@ -62,7 +64,6 @@ export default function Layout(props: LayoutProps) {
 }
 
 function Reserva(props: { reserva: Reserva }) {
-  console.log(props.reserva);
   return (
     <div className="w-full grid gap-2">
       <div className="grid min-w-0">
@@ -121,7 +122,22 @@ function Reserva(props: { reserva: Reserva }) {
           }
         />
       </div>
-      <div className="grid min-w-0">
+      <div
+        className={`grid min-w-0 gap-2 ${props.reserva.acomodacao.modeloNegocio !== 1 ? "grid-cols-2" : ""}`}
+      >
+        {props.reserva.acomodacao.modeloNegocio !== 1 && (
+          <GridIcon
+            icon={<BrushCleaning className="size-6" />}
+            title="Taxa de limpeza"
+            value={
+              "R$ " +
+              new Intl.NumberFormat("pt-BR", {
+                maximumFractionDigits: 2,
+                minimumFractionDigits: 2,
+              }).format(props.reserva.taxaLimpeza ?? 0)
+            }
+          />
+        )}
         <GridIcon
           icon={<Scissors className="size-6" />}
           title="Comissão"
@@ -215,7 +231,6 @@ function Continuidade(props: { reserva: Reserva }) {
 }
 
 function Indisponibilidade(props: { reserva: Reserva }) {
-  console.log(props);
   return (
     <div className="w-full grid gap-2">
       <div className="grid min-w-0 grid-cols-2 gap-2">

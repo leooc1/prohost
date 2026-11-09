@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { getCookieValid, options } from "../../../utils";
+import type { ReservaEdicao } from "./ReservaEdicao";
 
 const apiURL = import.meta.env.VITE_API_URL;
 
@@ -10,6 +11,8 @@ interface Acomodacao {
   desativado: boolean;
   checkinPadrao: string | null;
   checkoutPadrao: string | null;
+  modeloNegocio: number;
+  taxaLimpeza: number | null;
 }
 
 interface CanalReserva {
@@ -37,6 +40,7 @@ interface NovaReservaForm {
   valor: string;
   comissao: string;
   valorLiquido: string;
+  taxaLimpeza: string;
   obs: string;
 }
 
@@ -53,6 +57,7 @@ const estadoInicial: NovaReservaForm = {
   valor: "",
   comissao: "",
   valorLiquido: "",
+  taxaLimpeza: "",
   obs: "",
 };
 
@@ -71,12 +76,77 @@ function formatarDataHora(data: string, hora: string) {
   return `${data}T${hora}:00-03:00`;
 }
 
-export default function useNovaReserva(aberto: boolean) {
+function extrairDataHora(valor: string) {
+  const partes = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(new Date(valor));
+  const parte = (tipo: Intl.DateTimeFormatPartTypes) =>
+    partes.find((item) => item.type === tipo)?.value ?? "";
+
+  return {
+    data: `${parte("year")}-${parte("month")}-${parte("day")}`,
+    hora: `${parte("hour")}:${parte("minute")}`,
+  };
+}
+
+function estadoInicialReserva(
+  reservaInicial?: ReservaEdicao | null,
+): NovaReservaForm {
+  if (!reservaInicial) return estadoInicial;
+
+  const checkIn = extrairDataHora(reservaInicial.checkIn);
+  const checkOut = extrairDataHora(reservaInicial.checkOut);
+  return {
+    acomodacaoId: String(reservaInicial.acomodacao.id),
+    hospedeId: reservaInicial.hospede?.id
+      ? String(reservaInicial.hospede.id)
+      : "",
+    hospedeNome: reservaInicial.hospede?.nome ?? "",
+    qtdHospede: String(reservaInicial.qtdHospede ?? 1),
+    checkIn: checkIn.data,
+    horaCheckIn: checkIn.hora,
+    checkOut: checkOut.data,
+    horaCheckOut: checkOut.hora,
+    canalReservaId: reservaInicial.canalReserva?.id
+      ? String(reservaInicial.canalReserva.id)
+      : "",
+    valor:
+      reservaInicial.valor == null
+        ? ""
+        : formatarValor(Math.round(reservaInicial.valor * 100)),
+    comissao:
+      reservaInicial.comissaoOta == null
+        ? ""
+        : formatarValor(Math.round(reservaInicial.comissaoOta * 100)),
+    valorLiquido:
+      reservaInicial.valorLiq == null
+        ? ""
+        : formatarValor(Math.round(reservaInicial.valorLiq * 100)),
+    taxaLimpeza:
+      reservaInicial.taxaLimpeza == null
+        ? ""
+        : formatarValor(Math.round(reservaInicial.taxaLimpeza * 100)),
+    obs: reservaInicial.obs ?? "",
+  };
+}
+
+export default function useNovaReserva(
+  aberto: boolean,
+  reservaInicial?: ReservaEdicao | null,
+) {
   const { token } = getCookieValid("ph_lg_tk_acc");
   const [acomodacoes, setAcomodacoes] = useState<Acomodacao[]>([]);
   const [canais, setCanais] = useState<CanalReserva[]>([]);
   const [hospedes, setHospedes] = useState<Hospede[]>([]);
-  const [reserva, setReserva] = useState<NovaReservaForm>(estadoInicial);
+  const [reserva, setReserva] = useState<NovaReservaForm>(() =>
+    estadoInicialReserva(reservaInicial),
+  );
 
   useEffect(() => {
     if (!aberto || !token) return;
@@ -104,7 +174,11 @@ export default function useNovaReserva(aberto: boolean) {
       ]);
 
       setAcomodacoes(
-        acomodacoesData.filter((acomodacao) => !acomodacao.desativado),
+        acomodacoesData.filter(
+          (acomodacao) =>
+            !acomodacao.desativado ||
+            acomodacao.id === reservaInicial?.acomodacao.id,
+        ),
       );
       setCanais(canaisData);
       setHospedes(hospedesData);
@@ -114,7 +188,7 @@ export default function useNovaReserva(aberto: boolean) {
       console.error(error);
       toast.error("Não foi possível carregar os dados da reserva.");
     });
-  }, [aberto, token]);
+  }, [aberto, reservaInicial?.acomodacao.id, token]);
 
   function atualizarCampo(campo: keyof NovaReservaForm, valor: string) {
     setReserva((atual) => ({ ...atual, [campo]: valor }));
@@ -137,6 +211,10 @@ export default function useNovaReserva(aberto: boolean) {
       acomodacaoId: id,
       horaCheckIn: acomodacao?.checkinPadrao?.slice(0, 5) || "15:00",
       horaCheckOut: acomodacao?.checkoutPadrao?.slice(0, 5) || "15:00",
+      taxaLimpeza:
+        acomodacao?.taxaLimpeza == null
+          ? ""
+          : formatarValor(Math.round(acomodacao.taxaLimpeza * 100)),
     }));
   }
 
@@ -243,7 +321,12 @@ export default function useNovaReserva(aberto: boolean) {
     }
   }
 
-  async function criarReserva() {
+  function atualizarTaxaLimpeza(valor: string) {
+    const formatado = valor ? formatarValor(valorEmCentavos(valor)) : "";
+    atualizarCampo("taxaLimpeza", formatado);
+  }
+
+  async function salvarReserva(idReserva?: number) {
     if (!reserva.hospedeNome.trim()) {
       toast.error("Informe o nome do hóspede.");
       return false;
@@ -278,38 +361,51 @@ export default function useNovaReserva(aberto: boolean) {
     if (!hospedeId) return false;
 
     try {
+      const body = {
+        acomodacaoId: Number(reserva.acomodacaoId),
+        checkIn: formatarDataHora(reserva.checkIn, reserva.horaCheckIn),
+        checkOut: formatarDataHora(reserva.checkOut, reserva.horaCheckOut),
+        canalReservaId: Number(reserva.canalReservaId),
+        comissaoOta: comissao,
+        hospedeId: Number(hospedeId),
+        qtdHospede: Number(reserva.qtdHospede),
+        valor,
+        valorLiq: valorLiquido,
+        taxaLimpeza:
+          acomodacoes.find(
+            (acomodacao) => acomodacao.id === Number(reserva.acomodacaoId),
+          )?.modeloNegocio !== 1 && reserva.taxaLimpeza
+            ? valorEmCentavos(reserva.taxaLimpeza) / 100
+            : undefined,
+        tipoReserva: "Reserva",
+        obs: reserva.obs.trim() || undefined,
+      };
       const result = await fetch(
-        `${apiURL}/reserva`,
-        options.post(
-          {
-            acomodacaoId: Number(reserva.acomodacaoId),
-            checkIn: formatarDataHora(reserva.checkIn, reserva.horaCheckIn),
-            checkOut: formatarDataHora(reserva.checkOut, reserva.horaCheckOut),
-            canalReservaId: Number(reserva.canalReservaId),
-            comissaoOta: comissao,
-            hospedeId: Number(hospedeId),
-            qtdHospede: Number(reserva.qtdHospede),
-            valor,
-            valorLiq: valorLiquido,
-            tipoReserva: "Reserva",
-            obs: reserva.obs.trim() || undefined,
-          },
-          token ?? "",
-        ),
+        idReserva ? `${apiURL}/reserva/${idReserva}` : `${apiURL}/reserva`,
+        idReserva
+          ? options.put(body, token ?? "")
+          : options.post(body, token ?? ""),
       );
       const data = await result.json();
 
-      if (result.status !== 201) {
-        toast.error(data.message ?? "Não foi possível cadastrar a reserva.");
+      if (result.status !== (idReserva ? 200 : 201)) {
+        toast.error(
+          data.message ??
+            `Não foi possível ${idReserva ? "editar" : "cadastrar"} a reserva.`,
+        );
         return false;
       }
 
-      toast.success("Reserva cadastrada com sucesso!");
+      toast.success(
+        `Reserva ${idReserva ? "atualizada" : "cadastrada"} com sucesso!`,
+      );
       setReserva(estadoInicial);
       return true;
     } catch (error) {
       console.error(error);
-      toast.error("Não foi possível cadastrar a reserva.");
+      toast.error(
+        `Não foi possível ${idReserva ? "editar" : "cadastrar"} a reserva.`,
+      );
       return false;
     }
   }
@@ -324,6 +420,7 @@ export default function useNovaReserva(aberto: boolean) {
     selecionarAcomodacao,
     selecionarHospede,
     atualizarValor,
-    criarReserva,
+    atualizarTaxaLimpeza,
+    salvarReserva,
   };
 }

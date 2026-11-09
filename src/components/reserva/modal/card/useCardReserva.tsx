@@ -1,21 +1,12 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { getCookieValid, options } from "../../../../utils";
+import type { ReservaEdicao } from "../ReservaEdicao";
 
 const apiURL = import.meta.env.VITE_API_URL;
 
-interface Reserva {
-  id: number;
-  acomodacao: { id: number; nome: string };
-  canalReserva?: { id: number; nome: string };
-  hospede?: { id: number; nome: string };
-  qtdHospede?: number;
-  checkIn: string;
-  checkOut: string;
+interface Reserva extends ReservaEdicao {
   tipoReserva: "Reserva" | "Indisponibilidade" | "Continuidade";
-  valor?: number;
-  valorLiq?: number;
-  obs?: string | null;
 }
 
 export default function useCardReserva(id: number | null) {
@@ -75,7 +66,9 @@ export default function useCardReserva(id: number | null) {
       toast.error(data?.message ?? "Não foi possível excluir.");
       return false;
     }
-    toast.success(`${data?.tipoReserva ?? "Reserva"} foi excluída com sucesso!`);
+    toast.success(
+      `${data?.tipoReserva ?? "Reserva"} foi excluída com sucesso!`,
+    );
     return true;
   }
 

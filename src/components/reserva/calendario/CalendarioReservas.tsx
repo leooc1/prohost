@@ -315,7 +315,6 @@ function EventBlock({
   onClick?: (event: CalendarEvent) => void;
 }) {
   const bg = event.color ?? DEFAULT_COLORS[event.tipo];
-  console.log(bg, event.tipo)
   const isBlock = event.tipo === "Indisponibilidade";
 
   const shape = "top-1/2 h-8 -translate-y-1/2 rounded-full hover:scale-105";
