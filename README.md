@@ -1,5 +1,9 @@
 # React + TypeScript + Vite + Brevo + Asaas + Schedule
 
+## Guided onboarding WhatsApp contact
+
+The guided onboarding call to action opens a WhatsApp conversation with the ProHost contact number already used by the app.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

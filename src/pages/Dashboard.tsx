@@ -8,6 +8,7 @@ import ResultadosAcomodacoesSkeleton from "../components/skeleton/ResultadosAcom
 import ResultadosGestorSkeleton from "../components/skeleton/ResultadosGestorSkeleton";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 // import Tour from "../components/Tour";
+import OnboardingGuiadoCta from "../components/OnboardingGuiadoCta";
 import TourRelatorio from "../components/TourRelatorio";
 interface Acomodacao {
   id: number;
@@ -76,7 +77,7 @@ export default function Dashboard() {
     document.title = "Dashboard | Prohost";
   }, []);
 
-  const { dataToken } = useContext(SideBarContext);
+  const { dataToken, statusData } = useContext(SideBarContext);
 
   const [loaded, setLoaded] = useState(false);
 
@@ -135,6 +136,22 @@ export default function Dashboard() {
     }[]
   >([]);
   const [acomodacao, setAcomodacao] = useState<Acomodacao[]>([]);
+  const createdAt = dataToken?.create_date
+    ? new Date(dataToken.create_date).getTime()
+    : Number.NaN;
+  const onboardingDaysSinceCreation = (Date.now() - createdAt) / 86_400_000;
+  const tourWasSkipped =
+    localStorage.getItem(
+      `ph-onboarding-guiado-tour-pulado-${dataToken?.id}`,
+    ) === "true";
+  const tourIsNotShownForExistingAccommodations =
+    acomodacao.length > 0 && acomodacao[0].id !== 0;
+  const showOnboardingGuiado =
+    Boolean(dataToken?.id) &&
+    (statusData?.qtd_acomodacao ?? 0) >= 10 &&
+    onboardingDaysSinceCreation >= 0 &&
+    onboardingDaysSinceCreation <= 10 &&
+    (tourWasSkipped || tourIsNotShownForExistingAccommodations);
   const [filterAC, setFilterAC] = useState<string>("all");
   const [fatProCanal, setFatPorCanal] = useState<
     {
@@ -525,6 +542,22 @@ export default function Dashboard() {
       {acomodacao[0].id == 0 && <TourRelatorio />}
       {/* <TourRelatorio /> */}
       <h3 className="text-3xl font-semibold mb-7 pt-2">Painel do Negócio</h3>
+      {showOnboardingGuiado && (
+        <section className="mb-8 flex flex-col items-start gap-3 rounded-lg border border-[#C9D3D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-lg font-semibold text-primary">
+              Quer ajuda para configurar sua operação?
+            </h2>
+            <p className="mt-1 text-sm text-zinc-600">
+              Fale com nosso time pelo WhatsApp e comece com tudo pronto.
+            </p>
+          </div>
+          <OnboardingGuiadoCta
+            qtdAcomodacoes={statusData?.qtd_acomodacao ?? 0}
+            origem="dashboard"
+          />
+        </section>
+      )}
       <div className="flex flex-wrap gap-4 mb-8">
         <label
           htmlFor="periodo"

@@ -5,6 +5,7 @@ import { z } from "zod";
 import { SideBarContext } from "../contexts/SideBarMenuContext";
 import posthog from "../posthog";
 import RelatorioCompletoTour from "../report/RelatorioCompletoTour";
+import OnboardingGuiadoCta from "./OnboardingGuiadoCta";
 import PromocaoRelatorio from "./PromocaoRelatorio";
 import { TourBoasVindas } from "./tour/TourBoasVindas";
 
@@ -102,7 +103,7 @@ export default function TourRelatorio() {
   const [nome, setNome] = useState<string>("");
   const [idAcomodacao, setIdAcomodacao] = useState<number>();
   const [idCategoria, setIdCategoria] = useState<number>();
-  const { dataToken } = useContext(SideBarContext);
+  const { dataToken, statusData } = useContext(SideBarContext);
   const [hospede, setHospede] = useState<any[]>([]);
   const [idHospede, setIdHospede] = useState<number>();
   const [canalReserva, setCanalReserva] = useState<{
@@ -2223,11 +2224,27 @@ export default function TourRelatorio() {
             }}
             onSkip={() => {
               trackOnboardingAbandoned(0);
+              if (dataToken?.id) {
+                window.localStorage.setItem(
+                  `ph-onboarding-guiado-tour-pulado-${dataToken.id}`,
+                  "true",
+                );
+              }
               window.localStorage.setItem("tour-relatorio", "false");
               window.localStorage.setItem("tour", "0");
               location.reload();
               setStep(-1);
             }}
+            guidedSetup={
+              statusData?.qtd_acomodacao >= 10 ? (
+                <div className="mt-2 flex justify-center">
+                  <OnboardingGuiadoCta
+                    qtdAcomodacoes={statusData.qtd_acomodacao}
+                    origem="boas_vindas"
+                  />
+                </div>
+              ) : null
+            }
           />
         </div>
       )}

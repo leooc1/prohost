@@ -2,6 +2,8 @@
 // Renderiza apenas o painel (cartão) do modal. Coloque dentro do overlay/modal
 // que o ProHost já usa no tour.
 
+import type { ReactNode } from "react";
+
 type TourBoasVindasProps = {
   /** Caminho da logo (ex.: import logo from "@/assets/prohost-logo.png"). */
   logoSrc: string;
@@ -9,6 +11,7 @@ type TourBoasVindasProps = {
   onStart: () => void;
   /** Encerra o tour. */
   onSkip: () => void;
+  guidedSetup?: ReactNode;
 };
 
 const PASSOS = [
@@ -17,7 +20,12 @@ const PASSOS = [
   { titulo: "Emita o relatório", descricao: "Pronto para enviar ao proprietário." },
 ];
 
-export function TourBoasVindas({ logoSrc, onStart, onSkip }: TourBoasVindasProps) {
+export function TourBoasVindas({
+  logoSrc,
+  onStart,
+  onSkip,
+  guidedSetup,
+}: TourBoasVindasProps) {
   return (
     <div className="flex w-full max-w-[640px] flex-col overflow-hidden rounded-[20px] bg-white text-[#0B2B3A] shadow-xl">
       {/* Faixa de marca */}
@@ -74,6 +82,7 @@ export function TourBoasVindas({ logoSrc, onStart, onSkip }: TourBoasVindasProps
           >
             Pular tour
           </button>
+          {guidedSetup}
         </div>
       </div>
     </div>
