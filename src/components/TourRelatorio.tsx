@@ -2241,6 +2241,7 @@ export default function TourRelatorio() {
                   <OnboardingGuiadoCta
                     qtdAcomodacoes={statusData.qtd_acomodacao}
                     origem="boas_vindas"
+                    variant="secondary"
                   />
                 </div>
               ) : null

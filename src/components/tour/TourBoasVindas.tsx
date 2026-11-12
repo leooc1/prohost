@@ -75,6 +75,7 @@ export function TourBoasVindas({
           >
             Começar o tour →
           </button>
+          {guidedSetup}
           <button
             type="button"
             onClick={onSkip}
@@ -82,7 +83,6 @@ export function TourBoasVindas({
           >
             Pular tour
           </button>
-          {guidedSetup}
         </div>
       </div>
     </div>
