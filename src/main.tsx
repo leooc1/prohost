@@ -1,4 +1,4 @@
-import './posthog';
+import "./posthog";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -28,15 +28,21 @@ import Relatorio from "./pages/Relatorio.tsx";
 import Reserva from "./pages/Reserva.tsx";
 
 import Admin from "./pages/Admin.tsx";
+import AssinaturaCartao from "./pages/AssinaturaCartao.tsx";
 import AreaProprietario from "./pages/AreaProprietario.tsx";
 import AgentAdminPage from "./pages/IA/AgentAdminPage.tsx";
 import AgentChatPage from "./pages/IA/AgentChatPage.tsx";
 import Tutorial from "./pages/Tutorial.tsx";
 import ImportacaoAirbnb from "./pages/import/ImportacaoAirbnb.tsx";
 import ImportacaoBooking from "./pages/import/ImportacaoBooking.tsx";
-import JivoChat from './JivoChat.tsx';
+import JivoChat from "./JivoChat.tsx";
 
 const router = createBrowserRouter([
+  {
+    path: "/assinatura/cartao",
+    element: <AssinaturaCartao />,
+    errorElement: <NotFound />,
+  },
   {
     path: "/",
     element: <App />,

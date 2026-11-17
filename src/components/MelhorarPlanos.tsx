@@ -3,6 +3,7 @@ import { SideBarContext } from "../contexts/SideBarMenuContext";
 import { InputMask } from "@react-input/mask";
 import { intervalToDuration } from "date-fns";
 import Notify from "./notify/Notify";
+import { useNavigate } from "react-router-dom";
 
 export interface Plan {
   accommodations: number;
@@ -39,6 +40,7 @@ const formatCurrency = (value: number) => {
 };
 
 export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
+  const navigate = useNavigate();
   const apiURL = import.meta.env.VITE_API_URL;
   const { dataToken } = useContext(SideBarContext);
   const [isAnnual, setIsAnnual] = useState(false);
@@ -808,7 +810,20 @@ export default function MelhorarPlanos({ upgrade }: { upgrade: boolean }) {
                     </div>
                     <button
                       className="mt-5 inline-flex items-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-blue-700 transition hover:bg-blue-50"
-                      onClick={() => setShowPaymentMethod(true)}
+                      onClick={() => {
+                        if (!upgrade) {
+                          const checkoutParams = new URLSearchParams({
+                            saasId: String(dataToken?.id || ""),
+                            qtdAcomodacao: String(selectedAccommodations[0]),
+                            cycle: isAnnual ? "YEARLY" : "MONTHLY",
+                          });
+                          navigate(
+                            `/assinatura/cartao?${checkoutParams.toString()}`,
+                          );
+                          return;
+                        }
+                        setShowPaymentMethod(true);
+                      }}
                     >
                       Continuar com cartão
                     </button>
