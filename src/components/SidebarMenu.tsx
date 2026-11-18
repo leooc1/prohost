@@ -96,16 +96,23 @@ export default function SidebarMenu({ route }: { route: string }) {
       .then((data) => data.json())
       .then((data) => {
         const page = location.pathname;
+        const startingCheckoutTour =
+          localStorage.getItem("ph-checkout-start-tour") === "true";
+        if (startingCheckoutTour) {
+          localStorage.removeItem("ph-checkout-start-tour");
+        }
         if (
           new Date(data.trial_end) <
             new Date(new Date().setDate(new Date().getDate())) &&
-          page != "/assinatura"
+          page != "/assinatura" &&
+          !startingCheckoutTour
         ) {
           location.assign("/assinatura");
         } else if (
           dataToken?.acomodacoes &&
           dataToken.acomodacoes.length > 0 &&
-          page != "/proprietario"
+          page != "/proprietario" &&
+          !startingCheckoutTour
         ) {
           location.assign("/proprietario");
         }

@@ -80,6 +80,15 @@ export default function Dashboard() {
   const { dataToken, statusData } = useContext(SideBarContext);
 
   const [loaded, setLoaded] = useState(false);
+  const [startCheckoutTour] = useState(
+    () => localStorage.getItem("ph-checkout-start-tour") === "true",
+  );
+
+  useEffect(() => {
+    if (startCheckoutTour) {
+      localStorage.setItem("tour-relatorio", "true");
+    }
+  }, [startCheckoutTour]);
 
   const meses = [
     "janeiro",
@@ -539,7 +548,7 @@ export default function Dashboard() {
   return loaded ? (
     <div className="w-full px-8">
       {/* {acomodacao[0].id == 0 && <Tour />} */}
-      {acomodacao[0].id == 0 && <TourRelatorio />}
+      {(acomodacao[0].id == 0 || startCheckoutTour) && <TourRelatorio />}
       {/* <TourRelatorio /> */}
       <h3 className="text-3xl font-semibold mb-7 pt-2">Painel do Negócio</h3>
       {showOnboardingGuiado && (
