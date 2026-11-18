@@ -1,6 +1,5 @@
 import { FormEvent, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { plans } from "../components/MelhorarPlanos";
 
 type SubscriptionCycle = "MONTHLY" | "YEARLY";
 
@@ -27,20 +26,13 @@ export default function AssinaturaCartao() {
   const cycleParam = params.get("cycle")?.toUpperCase();
   const cycle: SubscriptionCycle | null =
     cycleParam === "MONTHLY" || cycleParam === "YEARLY" ? cycleParam : null;
-  const selectedPlan =
+  const validCheckout =
+    Number.isInteger(saasId) &&
+    saasId > 0 &&
     Number.isInteger(accommodations) &&
     accommodations >= 1 &&
-    accommodations <= 30
-      ? (plans.find((plan) => accommodations <= plan.accommodations) ??
-        plans[plans.length - 1])
-      : null;
-  const value = selectedPlan
-    ? Number(
-        (selectedPlan.monthlyPrice * (cycle === "YEARLY" ? 10 : 1)).toFixed(2),
-      )
-    : 0;
-  const validCheckout =
-    Number.isInteger(saasId) && saasId > 0 && Boolean(cycle && selectedPlan);
+    accommodations <= 30 &&
+    Boolean(cycle);
 
   const [cardForm, setCardForm] = useState<CardForm>({
     holderName: "",
@@ -57,7 +49,7 @@ export default function AssinaturaCartao() {
     event.preventDefault();
     setError("");
 
-    if (!validCheckout || !cycle || !selectedPlan) {
+    if (!validCheckout || !cycle) {
       setError("O link de pagamento está incompleto ou inválido.");
       return;
     }
@@ -90,8 +82,8 @@ export default function AssinaturaCartao() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             userId: saasId,
+            qtdAcomodacao: accommodations,
             cycle,
-            value,
             cardForm: {
               ...cardForm,
               holderName: cardForm.holderName.trim(),
@@ -162,8 +154,8 @@ export default function AssinaturaCartao() {
     return (
       <main className="flex min-h-screen items-center justify-center bg-zinc-100 p-6">
         <p className="rounded-lg bg-emerald-50 p-4 text-emerald-800">
-          Assinatura criada. A primeira cobrança está prevista para
-          daqui a 8 dias.
+          Assinatura criada. A primeira cobrança está prevista para daqui a 8
+          dias.
         </p>
       </main>
     );
